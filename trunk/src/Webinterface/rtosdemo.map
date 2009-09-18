@@ -2521,75 +2521,75 @@ OUTPUT(Luminary_Webinterface.axf elf32-littlearm)
  .debug_ranges  0x00000a08       0x20 ../Source/portable/MemMang/heap_2.o
  .debug_ranges  0x00000a28       0x38 startup.o
 
-.debug_str      0x00000000     0x374f
+.debug_str      0x00000000     0x3725
  .debug_str     0x00000000      0x20d main.o
                                 0x268 (size before relaxing)
- .debug_str     0x0000020d       0xbe timertest.o
-                                0x10c (size before relaxing)
- .debug_str     0x000002cb      0x1d1 rit128x96x4.o
-                                0x25b (size before relaxing)
- .debug_str     0x0000049c      0x12e osram128x64x4.o
-                                0x24b (size before relaxing)
- .debug_str     0x000005ca      0x32b formike128x128x16.o
-                                0x456 (size before relaxing)
- .debug_str     0x000008f5       0x4a ./ParTest/ParTest.o
-                                 0xbd (size before relaxing)
- .debug_str     0x0000093f       0xd9 ../Common/drivers/LuminaryMicro/ustdlib.o
+ .debug_str     0x0000020d       0x94 timertest.o
+                                0x10d (size before relaxing)
+ .debug_str     0x000002a1      0x1d1 rit128x96x4.o
+                                0x25c (size before relaxing)
+ .debug_str     0x00000472      0x12e osram128x64x4.o
+                                0x24c (size before relaxing)
+ .debug_str     0x000005a0      0x32b formike128x128x16.o
+                                0x457 (size before relaxing)
+ .debug_str     0x000008cb       0x4a ./ParTest/ParTest.o
+                                 0xbe (size before relaxing)
+ .debug_str     0x00000915       0xd9 ../Common/drivers/LuminaryMicro/ustdlib.o
                                 0x19b (size before relaxing)
- .debug_str     0x00000a18      0x21b ../Common/Minimal/BlockQ.o
+ .debug_str     0x000009ee      0x21b ../Common/Minimal/BlockQ.o
                                 0x316 (size before relaxing)
- .debug_str     0x00000c33      0x13b ../Common/Minimal/blocktim.o
+ .debug_str     0x00000c09      0x13b ../Common/Minimal/blocktim.o
                                 0x1e1 (size before relaxing)
- .debug_str     0x00000d6e       0xee ../Common/Minimal/death.o
+ .debug_str     0x00000d44       0xee ../Common/Minimal/death.o
                                 0x1f4 (size before relaxing)
- .debug_str     0x00000e5c       0x8f ../Common/Minimal/integer.o
+ .debug_str     0x00000e32       0x8f ../Common/Minimal/integer.o
                                 0x17c (size before relaxing)
- .debug_str     0x00000eeb       0xbf ../Common/Minimal/PollQ.o
+ .debug_str     0x00000ec1       0xbf ../Common/Minimal/PollQ.o
                                 0x1cb (size before relaxing)
- .debug_str     0x00000faa      0x162 ../Common/Minimal/semtest.o
+ .debug_str     0x00000f80      0x162 ../Common/Minimal/semtest.o
                                 0x274 (size before relaxing)
- .debug_str     0x0000110c      0x15d ../Common/Minimal/GenQTest.o
+ .debug_str     0x000010e2      0x15d ../Common/Minimal/GenQTest.o
                                 0x26d (size before relaxing)
- .debug_str     0x00001269       0xed ../Common/Minimal/QPeek.o
+ .debug_str     0x0000123f       0xed ../Common/Minimal/QPeek.o
                                 0x211 (size before relaxing)
- .debug_str     0x00001356      0x185 ../Common/Minimal/recmutex.o
+ .debug_str     0x0000132c      0x185 ../Common/Minimal/recmutex.o
                                 0x239 (size before relaxing)
- .debug_str     0x000014db      0x40d ../Common/Minimal/IntQueue.o
+ .debug_str     0x000014b1      0x40d ../Common/Minimal/IntQueue.o
                                 0x50c (size before relaxing)
- .debug_str     0x000018e8       0x58 ./IntQueueTimer.o
-                                 0xd0 (size before relaxing)
- .debug_str     0x00001940      0x292 ./webserver/uIP_Task.o
-                                0x3dc (size before relaxing)
- .debug_str     0x00001bd2      0x10c ./webserver/emac.o
-                                0x23e (size before relaxing)
- .debug_str     0x00001cde      0x211 ./webserver/httpd.o
-                                0x432 (size before relaxing)
- .debug_str     0x00001eef      0x1d6 ./webserver/httpd-cgi.o
-                                0x469 (size before relaxing)
- .debug_str     0x000020c5      0x170 ./webserver/httpd-fs.o
+ .debug_str     0x000018be       0x58 ./IntQueueTimer.o
+                                 0xd1 (size before relaxing)
+ .debug_str     0x00001916      0x292 ./webserver/uIP_Task.o
+                                0x3dd (size before relaxing)
+ .debug_str     0x00001ba8      0x10c ./webserver/emac.o
+                                0x23f (size before relaxing)
+ .debug_str     0x00001cb4      0x211 ./webserver/httpd.o
+                                0x433 (size before relaxing)
+ .debug_str     0x00001ec5      0x1d6 ./webserver/httpd-cgi.o
+                                0x46a (size before relaxing)
+ .debug_str     0x0000209b      0x170 ./webserver/httpd-fs.o
                                 0x26f (size before relaxing)
- .debug_str     0x00002235       0xc3 ./webserver/http-strings.o
-                                0x22b (size before relaxing)
- .debug_str     0x000022f8      0x165 ../Common/ethernet/uIP/uip-1.0/uip/uip_arp.o
+ .debug_str     0x0000220b       0xc3 ./webserver/http-strings.o
+                                0x22c (size before relaxing)
+ .debug_str     0x000022ce      0x165 ../Common/ethernet/uIP/uip-1.0/uip/uip_arp.o
                                 0x2db (size before relaxing)
- .debug_str     0x0000245d       0xef ../Common/ethernet/uIP/uip-1.0/uip/psock.o
+ .debug_str     0x00002433       0xef ../Common/ethernet/uIP/uip-1.0/uip/psock.o
                                 0x345 (size before relaxing)
- .debug_str     0x0000254c       0x5d ../Common/ethernet/uIP/uip-1.0/uip/timer.o
+ .debug_str     0x00002522       0x5d ../Common/ethernet/uIP/uip-1.0/uip/timer.o
                                  0xde (size before relaxing)
- .debug_str     0x000025a9      0x278 ../Common/ethernet/uIP/uip-1.0/uip/uip.o
+ .debug_str     0x0000257f      0x278 ../Common/ethernet/uIP/uip-1.0/uip/uip.o
                                 0x606 (size before relaxing)
- .debug_str     0x00002821      0x12f ../Source/list.o
-                                0x200 (size before relaxing)
- .debug_str     0x00002950      0x39a ../Source/queue.o
-                                0x54a (size before relaxing)
- .debug_str     0x00002cea      0x7ae ../Source/tasks.o
-                                0x9c3 (size before relaxing)
- .debug_str     0x00003498      0x12d ../Source/portable/GCC/ARM_CM3/port.o
-                                0x1b0 (size before relaxing)
- .debug_str     0x000035c5      0x10e ../Source/portable/MemMang/heap_2.o
-                                0x1e6 (size before relaxing)
- .debug_str     0x000036d3       0x7c startup.o
-                                 0xcf (size before relaxing)
+ .debug_str     0x000027f7      0x12f ../Source/list.o
+                                0x202 (size before relaxing)
+ .debug_str     0x00002926      0x39a ../Source/queue.o
+                                0x54c (size before relaxing)
+ .debug_str     0x00002cc0      0x7ae ../Source/tasks.o
+                                0x9c5 (size before relaxing)
+ .debug_str     0x0000346e      0x12d ../Source/portable/GCC/ARM_CM3/port.o
+                                0x1b2 (size before relaxing)
+ .debug_str     0x0000359b      0x10e ../Source/portable/MemMang/heap_2.o
+                                0x1e8 (size before relaxing)
+ .debug_str     0x000036a9       0x7c startup.o
+                                 0xd0 (size before relaxing)
 
 .comment        0x00000000      0x770
  .comment       0x00000000       0x2b main.o

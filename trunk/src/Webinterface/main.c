@@ -428,24 +428,6 @@ void vOLEDTask(void *pvParameters) {
 	}
 }
 
-
-void vApplicationTickHook(void) {
-	static xOLEDMessage xMessage = { "1000 Ticks" };
-	static unsigned portLONG ulTicksSinceLastDisplay = 0;
-	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
-
-	/* Called from every tick interrupt.  Have enough ticks passed to make it
-	 time to perform our health status check again? */
-	ulTicksSinceLastDisplay++;
-	if (ulTicksSinceLastDisplay >= 1000) {
-		ulTicksSinceLastDisplay = 0;
-
-		/* Send the message to the OLED gatekeeper for display. */
-		xHigherPriorityTaskWoken = pdFALSE;
-		xQueueSendFromISR( xOLEDQueue, &xMessage, &xHigherPriorityTaskWoken );
-	}
-}
-
 void vApplicationStackOverflowHook(xTaskHandle *pxTask,
 		signed portCHAR *pcTaskName) {
 	for (;;)
