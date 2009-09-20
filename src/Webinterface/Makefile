@@ -137,3 +137,5 @@ clean :
 flash :
 	openocd -f ../lm3s_scripts/lm3s8962_ft2232_flash.cfg
 
+doc : 
+	doxygen ../../doc/code/DoxyFile
