@@ -83,7 +83,6 @@ SOURCE=	main.c \
 		rit128x96x4.c \
 		osram128x64x4.c \
 		formike128x128x16.c \
-        ./ParTest/ParTest.c \
 		$(LUMINARY_DRIVER_DIR)/ustdlib.c \
 		$(DEMO_COMMON_DIR)/BlockQ.c \
 		$(DEMO_COMMON_DIR)/blocktim.c \
@@ -134,5 +133,6 @@ clean :
 	touch Makefile
 	rm $(OBJS) Luminary_Webinterface.bin Luminary_Webinterface.axf
 
-
+flash :
+	openocd -f ../lm3s_scripts/lm3s8962_ft2232_flash.cfg
 
