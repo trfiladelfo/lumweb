@@ -109,21 +109,8 @@
 #include "osram128x64x4.h"
 #include "formike128x128x16.h"
 
-/* Demo app includes. */
-#include "BlockQ.h"
-#include "death.h"
-#include "integer.h"
-#include "blocktim.h"
-#include "flash.h"
-#include "partest.h"
-#include "semtest.h"
-#include "PollQ.h"
-#include "lcd_message.h"
 #include "bitmap.h"
-#include "GenQTest.h"
-#include "QPeek.h"
-#include "recmutex.h"
-#include "IntQueue.h"
+#include "lcd_message.h"
 
 /*-----------------------------------------------------------*/
 
@@ -230,17 +217,6 @@ int main(void) {
 				NULL);
 	}
 
-	/* Start the standard demo tasks. */
-	vStartBlockingQueueTasks(mainBLOCK_Q_PRIORITY);
-	vCreateBlockTimeTasks();
-	vStartSemaphoreTasks(mainSEM_TEST_PRIORITY);
-	vStartPolledQueueTasks(mainQUEUE_POLL_PRIORITY);
-	vStartIntegerMathTasks(mainINTEGER_TASK_PRIORITY);
-	vStartGenericQueueTasks(mainGEN_QUEUE_TASK_PRIORITY);
-	vStartQueuePeekTasks();
-	vStartRecursiveMutexTasks();
-	vStartInterruptQueueTasks();
-
 	/* Start the tasks defined within this file/specific to this demo. */
 	xTaskCreate(vOLEDTask, (signed portCHAR *) "OLED",
 			mainOLED_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
@@ -289,7 +265,7 @@ void prvSetupHardware(void) {
 /*-----------------------------------------------------------*/
 
 void vApplicationTickHook(void) {
-	static xOLEDMessage xMessage = { "PASS1" };
+	static xOLEDMessage xMessage = { "PASS" };
 	static unsigned portLONG ulTicksSinceLastDisplay = 0;
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
@@ -298,31 +274,6 @@ void vApplicationTickHook(void) {
 	ulTicksSinceLastDisplay++;
 	if (ulTicksSinceLastDisplay >= mainCHECK_DELAY) {
 		ulTicksSinceLastDisplay = 0;
-
-		/* Has an error been found in any task? */
-		if (xAreGenericQueueTasksStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN GEN Q";
-		} else if (xAreQueuePeekTasksStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN PEEK Q";
-		} else if (xAreBlockingQueuesStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN BLOCK Q";
-		} else if (xAreBlockTimeTestTasksStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN BLOCK TIME";
-		} else if (xAreSemaphoreTasksStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN SEMAPHORE";
-		} else if (xArePollingQueuesStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN POLL Q";
-		} else if (xIsCreateTaskStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN CREATE";
-		} else if (xAreIntegerMathsTaskStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN MATH";
-		} else if (xAreRecursiveMutexTasksStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN REC MUTEX";
-		} else if (ulIdleError != pdFALSE) {
-			xMessage.pcMessage = "ERROR IN HOOK";
-		} else if (xAreIntQueueTasksStillRunning() != pdTRUE) {
-			xMessage.pcMessage = "ERROR IN INT QUEUE";
-		}
 
 		/* Send the message to the OLED gatekeeper for display. */
 		xHigherPriorityTaskWoken = pdFALSE;
