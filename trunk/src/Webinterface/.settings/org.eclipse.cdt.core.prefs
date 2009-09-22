@@ -1,3 +1,3 @@
-#Sun Sep 20 15:19:41 CEST 2009
+#Tue Sep 22 21:02:20 CEST 2009
 eclipse.preferences.version=1
 environment/project/0.1170775927=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<environment append\="true" appendContributed\="true">\n<variable delimiter\=";" name\="PATH" operation\="replace" value\="/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/usr/X11R6/bin\:${PATH}\:/home/d3f3nd3r/openocd/arm-2009q1/bin"/>\n</environment>\n
