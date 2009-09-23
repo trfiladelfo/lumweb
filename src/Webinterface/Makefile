@@ -1,7 +1,4 @@
 #/*
-#    (c) 2009 anzinger, hahn GPLv3
-#
-#
 #	FreeRTOS.org V5.3.1 - Copyright (C) 2003-2009 Richard Barry.
 #
 #	This file is part of the FreeRTOS.org distribution.
@@ -59,21 +56,20 @@
 # * various Luminary Micro EKs.
 # *************************************************************************/
 
-
 RTOS_SOURCE_DIR=../Source
 DEMO_COMMON_DIR=../Common/Minimal
 DEMO_INCLUDE_DIR=../Common/include
 UIP_COMMON_DIR=../Common/ethernet/uIP/uip-1.0/uip
 LUMINARY_DRIVER_DIR=../Common/drivers/LuminaryMicro
 
-TARGET_NAME=Luminary_Webinterface
+NAME = Luminary_Webinterface
 
 CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 LDSCRIPT=standalone.ld
 
 # should use --gc-sections but the debugger does not seem to be able to cope with the option.
-LINKER_FLAGS=-nostartfiles -Xlinker -oLuminary_Webinterface.axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --no-gc-sections
+LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --no-gc-sections
 
 DEBUG=-g
 OPTIM=-O0
@@ -122,12 +118,12 @@ LIBS= $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libdriver.a $(LUMINARY_DRIVER_DIR
 
 OBJS = $(SOURCE:.c=.o)
 
-all: $(TARGET_NAME).bin
+all: $(NAME).bin
 
-Luminary_Webinterface.bin : $(TARGET_NAME).axf
-	$(OBJCOPY) $(TARGET_NAME).axf -O binary $(TARGET_NAME).bin
+$(NAME).bin : $(NAME).axf
+	$(OBJCOPY) $(NAME).axf -O binary $(NAME).bin
 
-Luminary_Webinterface.axf : $(OBJS) startup.o Makefile
+$(NAME).axf : $(OBJS) startup.o Makefile
 	$(CC) $(CFLAGS) $(OBJS) startup.o $(LIBS) $(LINKER_FLAGS)
 
 $(OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
@@ -138,10 +134,10 @@ startup.o : startup.c Makefile
 
 clean :
 	touch Makefile
-	rm $(OBJS) Luminary_Webinterface.bin Luminary_Webinterface.axf
+	rm $(OBJS) $(NAME).bin $(NAME).axf
 
-flash :
-	openocd -f ../lm3s_scripts/lm3s8962_ft2232_flash.cfg
+flash : all
+	openocd -f ../lm3s_scripts/lm3s_flash_start.cfg -c "flash write_bank 0 ./$(NAME).bin 0" -f ../lm3s_scripts/lm3s_flash_end.cfg 
 
 doc : 
 	doxygen ../../doc/code/DoxyFile
