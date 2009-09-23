@@ -1,4 +1,7 @@
 #/*
+#    (c) 2009 anzinger, hahn GPLv3
+#
+#
 #	FreeRTOS.org V5.3.1 - Copyright (C) 2003-2009 Richard Barry.
 #
 #	This file is part of the FreeRTOS.org distribution.
@@ -56,11 +59,14 @@
 # * various Luminary Micro EKs.
 # *************************************************************************/
 
+
 RTOS_SOURCE_DIR=../Source
 DEMO_COMMON_DIR=../Common/Minimal
 DEMO_INCLUDE_DIR=../Common/include
 UIP_COMMON_DIR=../Common/ethernet/uIP/uip-1.0/uip
 LUMINARY_DRIVER_DIR=../Common/drivers/LuminaryMicro
+
+TARGET_NAME=Luminary_Webinterface
 
 CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
@@ -116,10 +122,10 @@ LIBS= $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libdriver.a $(LUMINARY_DRIVER_DIR
 
 OBJS = $(SOURCE:.c=.o)
 
-all: Luminary_Webinterface.bin
+all: $(TARGET_NAME).bin
 
-Luminary_Webinterface.bin : Luminary_Webinterface.axf
-	$(OBJCOPY) Luminary_Webinterface.axf -O binary Luminary_Webinterface.bin
+Luminary_Webinterface.bin : $(TARGET_NAME).axf
+	$(OBJCOPY) $(TARGET_NAME).axf -O binary $(TARGET_NAME).bin
 
 Luminary_Webinterface.axf : $(OBJS) startup.o Makefile
 	$(CC) $(CFLAGS) $(OBJS) startup.o $(LIBS) $(LINKER_FLAGS)
