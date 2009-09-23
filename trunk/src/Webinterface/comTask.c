@@ -1,5 +1,6 @@
 /*
- * comTask.c $Rev$ $Author$ $LastChangedDate$
+ * comTask.c $Rev$ $Author$
+ * $LastChangedDate$
  *
  * (c) 2009 Anziner, Hahn
  * GPV v3
