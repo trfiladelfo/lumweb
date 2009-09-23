@@ -112,6 +112,8 @@
 #include "bitmap.h"
 #include "lcd_message.h"
 
+#include "comTask.h"   /* include communication task header */
+
 /*-----------------------------------------------------------*/
 
 /* The time between cycles of the 'check' functionality (defined within the
@@ -220,6 +222,12 @@ int main(void) {
 	/* Start the tasks defined within this file/specific to this demo. */
 	xTaskCreate(vOLEDTask, (signed portCHAR *) "OLED",
 			mainOLED_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+
+
+	/* Start the Communication Task (vComTask) to interact with the machine */
+	xTaskCreate(vComTask, (signed portCHAR *) "comTask",
+			Com_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+
 
 	/* The suicide tasks must be created last as they need to know how many
 	 tasks were running prior to their creation in order to ascertain whether

@@ -85,6 +85,7 @@ SOURCE=	main.c \
 		rit128x96x4.c \
 		osram128x64x4.c \
 		formike128x128x16.c \
+		comTask.c \
 		./ParTest/ParTest.c \
 		$(LUMINARY_DRIVER_DIR)/ustdlib.c \
 		$(DEMO_COMMON_DIR)/BlockQ.c \
