@@ -105,6 +105,8 @@ SOURCE=	main.c \
 		./webserver/httpd-cgi.c \
 		./webserver/httpd-fs.c \
 		./webserver/http-strings.c \
+		./GraphicsLibary/runTestTask.c \
+		./GraphicsLibary/graphicObjects.c \
 		$(UIP_COMMON_DIR)/uip_arp.c \
 		$(UIP_COMMON_DIR)/psock.c \
 		$(UIP_COMMON_DIR)/timer.c \
