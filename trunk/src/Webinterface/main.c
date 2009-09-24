@@ -1,5 +1,4 @@
 
-
 /*
  FreeRTOS.org V5.3.1 - Copyright (C) 2003-2009 Richard Barry.
 
@@ -105,12 +104,12 @@
 #include "sysctl.h"
 #include "gpio.h"
 #include "grlib.h"
-#include "rit128x96x4.h"
-#include "osram128x64x4.h"
-#include "formike128x128x16.h"
+//#include "rit128x96x4.h"
+//#include "osram128x64x4.h"
+//#include "formike128x128x16.h"
 
-#include "bitmap.h"
-#include "lcd_message.h"
+//#include "bitmap.h"
+//#include "lcd_message.h"
 
 #include "comTask.h"   /* include communication task header */
 
@@ -123,36 +122,35 @@
 /* Size of the stack allocated to the uIP task. */
 #define mainBASIC_WEB_STACK_SIZE            ( configMINIMAL_STACK_SIZE * 3 )
 
+/* Size of the stack allocated to the OLED task. */
+#define mainGRAPHIC_OBJECTS_STACK_SIZE      ( configMINIMAL_STACK_SIZE * 3 )
+
 /* The OLED task uses the sprintf function so requires a little more stack too. */
 #define mainOLED_TASK_STACK_SIZE			( configMINIMAL_STACK_SIZE + 50 )
 
 /* Task priorities. */
-#define mainQUEUE_POLL_PRIORITY				( tskIDLE_PRIORITY + 2 )
+
 #define mainCHECK_TASK_PRIORITY				( tskIDLE_PRIORITY + 3 )
-#define mainSEM_TEST_PRIORITY				( tskIDLE_PRIORITY + 1 )
-#define mainBLOCK_Q_PRIORITY				( tskIDLE_PRIORITY + 2 )
 #define mainCREATOR_TASK_PRIORITY           ( tskIDLE_PRIORITY + 3 )
-#define mainINTEGER_TASK_PRIORITY           ( tskIDLE_PRIORITY )
-#define mainGEN_QUEUE_TASK_PRIORITY			( tskIDLE_PRIORITY )
 
 /* The maximum number of message that can be waiting for display at any one
  time. */
 #define mainOLED_QUEUE_SIZE					( 3 )
 
 /* Dimensions the buffer into which the jitter time is written. */
-#define mainMAX_MSG_LEN						25
+//#define mainMAX_MSG_LEN						25
 
 /* The period of the system clock in nano seconds.  This is used to calculate
  the jitter time in nano seconds. */
-#define mainNS_PER_CLOCK					( ( unsigned portLONG ) ( ( 1.0 / ( double ) configCPU_CLOCK_HZ ) * 1000000000.0 ) )
+//#define mainNS_PER_CLOCK					( ( unsigned portLONG ) ( ( 1.0 / ( double ) configCPU_CLOCK_HZ ) * 1000000000.0 ) )
 
 /* Constants used when writing strings to the display. */
-#define mainCHARACTER_HEIGHT				( 9 )
-#define mainMAX_ROWS_128					( mainCHARACTER_HEIGHT * 14 )
-#define mainMAX_ROWS_96						( mainCHARACTER_HEIGHT * 10 )
-#define mainMAX_ROWS_64						( mainCHARACTER_HEIGHT * 7 )
-#define mainFULL_SCALE						( 15 )
-#define ulSSI_FREQUENCY						( 3500000UL )
+//#define mainCHARACTER_HEIGHT				( 9 )
+//#define mainMAX_ROWS_128					( mainCHARACTER_HEIGHT * 14 )
+//#define mainMAX_ROWS_96						( mainCHARACTER_HEIGHT * 10 )
+//#define mainMAX_ROWS_64						( mainCHARACTER_HEIGHT * 7 )
+//#define mainFULL_SCALE						( 15 )
+//#define ulSSI_FREQUENCY						( 3500000UL )
 
 /*-----------------------------------------------------------*/
 
@@ -163,12 +161,17 @@
 extern void vuIP_Task(void *pvParameters);
 
 /*
+ * The tast that handles the graphicObjects on the LCD/OLED Screen
+ */
+extern void vuGraphicObjectsTestTask(void *pvParameters);
+
+/*
  * The display is written two by more than one task so is controlled by a
  * 'gatekeeper' task.  This is the only task that is actually permitted to
  * access the display directly.  Other tasks wanting to display a message send
  * the message to the gatekeeper.
  */
-static void vOLEDTask(void *pvParameters);
+//static void vOLEDTask(void *pvParameters);
 
 /*
  * Configure the hardware for the demo.
@@ -192,7 +195,7 @@ void vApplicationIdleHook(void) __attribute__((naked));
 xQueueHandle xOLEDQueue;
 
 /* The welcome text. */
-const portCHAR * const pcWelcomeMessage = "   www.FreeRTOS.org";
+const portCHAR * const pcWelcomeMessage = " DebuggingScreen RTOS";
 
 /* Variables used to detect the test in the idle hook failing. */
 unsigned portLONG ulIdleError = pdFALSE;
@@ -209,7 +212,7 @@ int main(void) {
 
 	/* Create the queue used by the OLED task.  Messages for display on the OLED
 	 are received via this queue. */
-	xOLEDQueue = xQueueCreate(mainOLED_QUEUE_SIZE, sizeof(xOLEDMessage));
+//	xOLEDQueue = xQueueCreate(mainOLED_QUEUE_SIZE, sizeof(xOLEDMessage));
 
 	/* Create the uIP task if running on a processor that includes a MAC and
 	 PHY. */
@@ -219,9 +222,13 @@ int main(void) {
 				NULL);
 	}
 
+	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
+			mainGRAPHIC_OBJECTS_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
+			NULL);
+
 	/* Start the tasks defined within this file/specific to this demo. */
-	xTaskCreate(vOLEDTask, (signed portCHAR *) "OLED",
-			mainOLED_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	//xTaskCreate(vOLEDTask, (signed portCHAR *) "OLED",
+	//		mainOLED_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
 
 	/* Start the Communication Task (vComTask) to interact with the machine */
@@ -273,119 +280,119 @@ void prvSetupHardware(void) {
 /*-----------------------------------------------------------*/
 
 void vApplicationTickHook(void) {
-	static xOLEDMessage xMessage = { "PASS" };
-	static unsigned portLONG ulTicksSinceLastDisplay = 0;
-	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+//	static xOLEDMessage xMessage = { "PASS" };
+//	static unsigned portLONG ulTicksSinceLastDisplay = 0;
+//	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
 	/* Called from every tick interrupt.  Have enough ticks passed to make it
 	 time to perform our health status check again? */
-	ulTicksSinceLastDisplay++;
-	if (ulTicksSinceLastDisplay >= mainCHECK_DELAY) {
-		ulTicksSinceLastDisplay = 0;
+//	ulTicksSinceLastDisplay++;
+//	if (ulTicksSinceLastDisplay >= mainCHECK_DELAY) {
+//		ulTicksSinceLastDisplay = 0;
 
 		/* Send the message to the OLED gatekeeper for display. */
-		xHigherPriorityTaskWoken = pdFALSE;
-		xQueueSendFromISR( xOLEDQueue, &xMessage, &xHigherPriorityTaskWoken );
-	}
+//		xHigherPriorityTaskWoken = pdFALSE;
+//		xQueueSendFromISR( xOLEDQueue, &xMessage, &xHigherPriorityTaskWoken );
+//	}
 }
 /*-----------------------------------------------------------*/
 
-void vOLEDTask(void *pvParameters) {
-	int q, w, e;
-	xOLEDMessage xMessage;
-	unsigned portLONG ulY, ulMaxY;
-	static portCHAR cMessage[mainMAX_MSG_LEN];
-	extern volatile unsigned portLONG ulMaxJitter;
-	unsigned portBASE_TYPE uxUnusedStackOnEntry, uxUnusedStackNow;
-	const unsigned portCHAR *pucImage;
+//void vOLEDTask(void *pvParameters) {
+//	int q, w, e;
+//	xOLEDMessage xMessage;
+//	unsigned portLONG ulY, ulMaxY;
+//	static portCHAR cMessage[mainMAX_MSG_LEN];
+//	extern volatile unsigned portLONG ulMaxJitter;
+//	unsigned portBASE_TYPE uxUnusedStackOnEntry, uxUnusedStackNow;
+//	const unsigned portCHAR *pucImage;
 
 	/* Functions to access the OLED.  The one used depends on the dev kit
 	 being used. */
-	void (*vOLEDInit)(unsigned portLONG ) = NULL;
-	void (*vOLEDStringDraw)(const portCHAR *, unsigned portLONG,
-			unsigned portLONG, unsigned portCHAR ) = NULL;
-	void (*vOLEDImageDraw)(const unsigned portCHAR *, unsigned portLONG,
-			unsigned portLONG, unsigned portLONG, unsigned portLONG ) = NULL;
-	void (*vOLEDClear)(void) = NULL;
+//	void (*vOLEDInit)(unsigned portLONG ) = NULL;
+//	void (*vOLEDStringDraw)(const portCHAR *, unsigned portLONG,
+//			unsigned portLONG, unsigned portCHAR ) = NULL;
+//	void (*vOLEDImageDraw)(const unsigned portCHAR *, unsigned portLONG,
+//			unsigned portLONG, unsigned portLONG, unsigned portLONG ) = NULL;
+//	void (*vOLEDClear)(void) = NULL;
 
 	/* Just for demo purposes. */
-	uxUnusedStackOnEntry = uxTaskGetStackHighWaterMark(NULL);
+//	uxUnusedStackOnEntry = uxTaskGetStackHighWaterMark(NULL);
 
 	/* Map the OLED access functions to the driver functions that are appropriate
 	 for the evaluation kit being used. */
-	switch (HWREG( SYSCTL_DID1 ) & SYSCTL_DID1_PRTNO_MASK) {
-	case SYSCTL_DID1_PRTNO_6965:
-	case SYSCTL_DID1_PRTNO_2965:
-		vOLEDInit = OSRAM128x64x4Init;
-		vOLEDStringDraw = OSRAM128x64x4StringDraw;
-		vOLEDImageDraw = OSRAM128x64x4ImageDraw;
-		vOLEDClear = OSRAM128x64x4Clear;
-		ulMaxY = mainMAX_ROWS_64;
-		pucImage = pucBasicBitmap;
-		break;
+//	switch (HWREG( SYSCTL_DID1 ) & SYSCTL_DID1_PRTNO_MASK) {
+//	case SYSCTL_DID1_PRTNO_6965:
+//	case SYSCTL_DID1_PRTNO_2965:
+//		vOLEDInit = OSRAM128x64x4Init;
+//		vOLEDStringDraw = OSRAM128x64x4StringDraw;
+//		vOLEDImageDraw = OSRAM128x64x4ImageDraw;
+//		vOLEDClear = OSRAM128x64x4Clear;
+//		ulMaxY = mainMAX_ROWS_64;
+//		pucImage = pucBasicBitmap;
+//		break;
 
-	case SYSCTL_DID1_PRTNO_1968:
-	case SYSCTL_DID1_PRTNO_8962:
-		vOLEDInit = RIT128x96x4Init;
-		vOLEDStringDraw = RIT128x96x4StringDraw;
-		vOLEDImageDraw = RIT128x96x4ImageDraw;
-		vOLEDClear = RIT128x96x4Clear;
-		ulMaxY = mainMAX_ROWS_96;
-		pucImage = pucBasicBitmap;
-		break;
+//	case SYSCTL_DID1_PRTNO_1968:
+//	case SYSCTL_DID1_PRTNO_8962:
+//		vOLEDInit = RIT128x96x4Init;
+//		vOLEDStringDraw = RIT128x96x4StringDraw;
+//		vOLEDImageDraw = RIT128x96x4ImageDraw;
+//		vOLEDClear = RIT128x96x4Clear;
+//		ulMaxY = mainMAX_ROWS_96;
+//		pucImage = pucBasicBitmap;
+//		break;
 
-	default:
-		vOLEDInit = vFormike128x128x16Init;
-		vOLEDStringDraw = vFormike128x128x16StringDraw;
-		vOLEDImageDraw = vFormike128x128x16ImageDraw;
-		vOLEDClear = vFormike128x128x16Clear;
-		ulMaxY = mainMAX_ROWS_128;
-		pucImage = pucGrLibBitmap;
-		break;
-	}
+//	default:
+//		vOLEDInit = vFormike128x128x16Init;
+//		vOLEDStringDraw = vFormike128x128x16StringDraw;
+//		vOLEDImageDraw = vFormike128x128x16ImageDraw;
+//		vOLEDClear = vFormike128x128x16Clear;
+//		ulMaxY = mainMAX_ROWS_128;
+//		pucImage = pucGrLibBitmap;
+//		break;
+//	}
 
-	ulY = ulMaxY;
-	vOLEDInit(ulSSI_FREQUENCY);
-	vOLEDImageDraw(pucImage, 0, (96 - bmpBITMAP_HEIGHT) / 2, bmpBITMAP_WIDTH,
-			bmpBITMAP_HEIGHT);
+//	ulY = ulMaxY;
+//	vOLEDInit(ulSSI_FREQUENCY);
+//	vOLEDImageDraw(pucImage, 0, (96 - bmpBITMAP_HEIGHT) / 2, bmpBITMAP_WIDTH,
+//			bmpBITMAP_HEIGHT);
 
-	for (q = 0; q < 500; q++) {
-		for (w = 0; w < 500; w++) {
-			e = q * w;
-		}
-	}
+//	for (q = 0; q < 500; q++) {
+//		for (w = 0; w < 500; w++) {
+//			e = q * w;
+//		}
+//	}
 
 	/* Initialise the OLED and display a startup message. */
-	vOLEDClear();
+//	vOLEDClear();
 
-	w = (96 - (3 * mainCHARACTER_HEIGHT + 3)) / 2;
+//	w = (96 - (3 * mainCHARACTER_HEIGHT + 3)) / 2;
 
-	vOLEDStringDraw("Hainzl Webinterface", 0, w, mainFULL_SCALE);
+//	vOLEDStringDraw("Hainzl Webinterface", 0, w, mainFULL_SCALE);
 
-	vOLEDStringDraw("Eine Diplomarbeit von", 0, w + mainCHARACTER_HEIGHT + 1,
-			mainFULL_SCALE);
-	vOLEDStringDraw("Anzinger und Hahn", 0,  w + 2 * mainCHARACTER_HEIGHT + 2,
-			mainFULL_SCALE);
+//	vOLEDStringDraw("Eine Diplomarbeit von", 0, w + mainCHARACTER_HEIGHT + 1,
+//			mainFULL_SCALE);
+//	vOLEDStringDraw("Anzinger und Hahn", 0, w + 2 * mainCHARACTER_HEIGHT + 2,
+//			mainFULL_SCALE);
 
-	for (;;) {
+//	for (;;) {
 		/* Wait for a message to arrive that requires displaying. */
-		xQueueReceive( xOLEDQueue, &xMessage, portMAX_DELAY );
+//		xQueueReceive( xOLEDQueue, &xMessage, portMAX_DELAY );
 
 		/* Write the message on the next available row. */
-		ulY += mainCHARACTER_HEIGHT;
-		if (ulY >= ulMaxY) {
-			ulY = mainCHARACTER_HEIGHT;
-			vOLEDClear();
-			vOLEDStringDraw(pcWelcomeMessage, 0, 0, mainFULL_SCALE);
-		}
+//		ulY += mainCHARACTER_HEIGHT;
+//		if (ulY >= ulMaxY) {
+//			ulY = mainCHARACTER_HEIGHT;
+//			vOLEDClear();
+//			vOLEDStringDraw(pcWelcomeMessage, 0, 0, mainFULL_SCALE);
+//		}
 
 		/* Display the message along with the maximum jitter time from the
 		 high priority time test. */
-		sprintf(cMessage, "%s [%uns]", xMessage.pcMessage, ulMaxJitter
-				* mainNS_PER_CLOCK);
-		vOLEDStringDraw(cMessage, 0, ulY, mainFULL_SCALE);
-	}
-}
+//		sprintf(cMessage, "%s [%uns]", xMessage.pcMessage, ulMaxJitter
+//				* mainNS_PER_CLOCK);
+//		vOLEDStringDraw(cMessage, 0, ulY, mainFULL_SCALE);
+//	}
+//}
 
 void vApplicationStackOverflowHook(xTaskHandle *pxTask,
 		signed portCHAR *pcTaskName) {
@@ -393,5 +400,4 @@ void vApplicationStackOverflowHook(xTaskHandle *pxTask,
 		;
 }
 /*-----------------------------------------------------------*/
-
 
