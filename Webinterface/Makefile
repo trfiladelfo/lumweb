@@ -59,10 +59,15 @@
 RTOS_SOURCE_DIR=../Source
 DEMO_COMMON_DIR=../Common/Minimal
 DEMO_INCLUDE_DIR=../Common/include
-UIP_COMMON_DIR=../Common/ethernet/uIP/uip-1.0/uip
 LUMINARY_DRIVER_DIR=../Common/drivers/LuminaryMicro
 
+LWIP_DIR=../Common/ethernet/lwip/lwip-1.3.1/src
+LWIP_PORT_DIR=../Common/ethernet/lwip/lwip-1.3.1/port
+
+
+
 NAME = Luminary_Webinterface
+
 
 CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
@@ -76,9 +81,11 @@ OPTIM=-O0
 
 
 CFLAGS=$(DEBUG) -I . -I $(RTOS_SOURCE_DIR)/include -I $(RTOS_SOURCE_DIR)/portable/gcc/ARM_CM3 \
-		-I $(DEMO_INCLUDE_DIR) -D GCC_ARMCM3_LM3S102 -D inline= -mthumb -mcpu=cortex-m3 $(OPTIM) -T$(LDSCRIPT) \
+		-I $(DEMO_INCLUDE_DIR) \
+		-D GCC_ARMCM3_LM3S102 -D inline= -mthumb -mcpu=cortex-m3 $(OPTIM) -T$(LDSCRIPT) \
 		-D PACK_STRUCT_END=__attribute\(\(packed\)\) -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) -D sprintf=usprintf -D snprintf=usnprintf -D printf=uipprintf \
-		 -I ./webserver -ffunction-sections -fdata-sections -I $(LUMINARY_DRIVER_DIR)
+		-ffunction-sections -fdata-sections -I $(LUMINARY_DRIVER_DIR) \
+		-I $(LWIP_DIR)/include -I $(LWIP_DIR)/include/ipv4 -I $(LWIP_DIR)/include/lwip -I $(LWIP_DIR)/include/netif -I $(LWIP_DIR)/include/ipv4/lwip -I $(LWIP_PORT_DIR)/include  
 
 SOURCE=	main.c \
 		timertest.c \
@@ -105,7 +112,42 @@ SOURCE=	main.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3/port.c \
-		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c
+		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
+		$(LWIP_DIR)/api/api_lib.c \
+        $(LWIP_DIR)/api/api_msg.c \
+        $(LWIP_DIR)/api/err.c \
+        $(LWIP_DIR)/api/netbuf.c \
+        $(LWIP_DIR)/api/netifapi.c \
+        $(LWIP_DIR)/api/tcpip.c \
+        $(LWIP_DIR)/core/ipv4/icmp.c \
+        $(LWIP_DIR)/core/ipv4/inet.c \
+        $(LWIP_DIR)/core/ipv4/inet_chksum.c \
+        $(LWIP_DIR)/core/ipv4/ip.c \
+        $(LWIP_DIR)/core/ipv4/ip_addr.c \
+        $(LWIP_DIR)/core/ipv4/ip_frag.c \
+        $(LWIP_DIR)/core/dhcp.c \
+        $(LWIP_DIR)/core/dns.c \
+        $(LWIP_DIR)/core/init.c \
+        $(LWIP_DIR)/core/mem.c \
+        $(LWIP_DIR)/core/memp.c \
+        $(LWIP_DIR)/core/netif.c \
+        $(LWIP_DIR)/core/pbuf.c \
+        $(LWIP_DIR)/core/raw.c \
+        $(LWIP_DIR)/core/stats.c \
+        $(LWIP_DIR)/core/sys.c \
+        $(LWIP_DIR)/core/tcp.c \
+        $(LWIP_DIR)/core/tcp_in.c \
+        $(LWIP_DIR)/core/tcp_out.c \
+        $(LWIP_DIR)/core/udp.c \
+        $(LWIP_DIR)/core/snmp/asn1_dec.c \
+        $(LWIP_DIR)/core/snmp/asn1_enc.c \
+        $(LWIP_DIR)/core/snmp/mib_structs.c \
+        $(LWIP_DIR)/core/snmp/mib2.c \
+        $(LWIP_DIR)/core/snmp/msg_in.c \
+        $(LWIP_DIR)/core/snmp/msg_out.c \
+        $(LWIP_DIR)/netif/etharp.c \
+        $(LWIP_PORT_DIR)/sys_arch.c \
+        $(LWIP_PORT_DIR)/netif/stellarisif.c 
 
 LIBS= $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libdriver.a $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libgr.a
 
