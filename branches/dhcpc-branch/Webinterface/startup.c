@@ -47,7 +47,7 @@ extern void vPortSVCHandler( void );
 extern void Timer0IntHandler( void );
 extern void vT2InterruptHandler( void );
 extern void vT3InterruptHandler( void );
-extern void vEMAC_ISR(void);
+//extern void vEMAC_ISR(void);
 
 //*****************************************************************************
 //
@@ -128,7 +128,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // CAN0
     IntDefaultHandler,                      // CAN1
     0,                                      // Reserved
-    vEMAC_ISR,                              // Ethernet
+    IntDefaultHandler,                              // Ethernet
     IntDefaultHandler                       // Hibernate
 };
 
