@@ -161,7 +161,7 @@
 extern void vuIP_Task(void *pvParameters);
 
 /*
- * The tast that handles the graphicObjects on the LCD/OLED Screen
+ * The task that handles the graphicObjects on the LCD/OLED Screen
  */
 extern void vuGraphicObjectsTestTask(void *pvParameters);
 
@@ -216,15 +216,18 @@ int main(void) {
 
 	/* Create the uIP task if running on a processor that includes a MAC and
 	 PHY. */
+
+	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
+			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY - 1,
+			NULL);
+
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
 				NULL);
 	}
 
-	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
-			mainGRAPHIC_OBJECTS_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
-			NULL);
+
 
 	/* Start the tasks defined within this file/specific to this demo. */
 	//xTaskCreate(vOLEDTask, (signed portCHAR *) "OLED",
