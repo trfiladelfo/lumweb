@@ -158,7 +158,7 @@
  * The task that handles the uIP stack.  All TCP/IP processing is performed in
  * this task.
  */
-extern void vuIP_Task(void *pvParameters);
+//extern void vuIP_Task(void *pvParameters);
 
 /*
  * The task that handles the graphicObjects on the LCD/OLED Screen
@@ -221,11 +221,11 @@ int main(void) {
 			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY - 1,
 			NULL);
 
-	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
+/*	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
 				NULL);
-	}
+	} */
 
 
 

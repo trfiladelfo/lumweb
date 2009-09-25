@@ -78,7 +78,7 @@ OPTIM=-O0
 CFLAGS=$(DEBUG) -I . -I $(RTOS_SOURCE_DIR)/include -I $(RTOS_SOURCE_DIR)/portable/gcc/ARM_CM3 \
 		-I $(DEMO_INCLUDE_DIR) -D GCC_ARMCM3_LM3S102 -D inline= -mthumb -mcpu=cortex-m3 $(OPTIM) -T$(LDSCRIPT) \
 		-D PACK_STRUCT_END=__attribute\(\(packed\)\) -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) -D sprintf=usprintf -D snprintf=usnprintf -D printf=uipprintf \
-		-I $(UIP_COMMON_DIR) -I ./webserver -ffunction-sections -fdata-sections -I $(LUMINARY_DRIVER_DIR)
+		 -I ./webserver -ffunction-sections -fdata-sections -I $(LUMINARY_DRIVER_DIR)
 
 SOURCE=	main.c \
 		timertest.c \
@@ -99,18 +99,8 @@ SOURCE=	main.c \
 		$(DEMO_COMMON_DIR)/recmutex.c \
 		$(DEMO_COMMON_DIR)/IntQueue.c \
 		./IntQueueTimer.c \
-		./webserver/uIP_Task.c \
-		./webserver/emac.c \
-		./webserver/httpd.c \
-		./webserver/httpd-cgi.c \
-		./webserver/httpd-fs.c \
-		./webserver/http-strings.c \
 		./GraphicsLibary/runTestTask.c \
 		./GraphicsLibary/graphicObjects.c \
-		$(UIP_COMMON_DIR)/uip_arp.c \
-		$(UIP_COMMON_DIR)/psock.c \
-		$(UIP_COMMON_DIR)/timer.c \
-		$(UIP_COMMON_DIR)/uip.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
