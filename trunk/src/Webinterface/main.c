@@ -111,7 +111,7 @@
 //#include "bitmap.h"
 //#include "lcd_message.h"
 
-#include "comTask.h"   /* include communication task header */
+#include "ComTask/comTask.h"   /* include communication task header */
 
 /*-----------------------------------------------------------*/
 
