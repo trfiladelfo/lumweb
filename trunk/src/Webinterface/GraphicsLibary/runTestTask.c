@@ -27,14 +27,12 @@ void vuGraphicObjectsTestTask(void *pvParameters) {
 	b2 = goNewButton(10, 10, 10, 30, goButtonUp);
 	b3 = goNewButton(10, 10, 30, 30, goButtonUp);
 
-	goDrawButton(b, pucButtonNormal);
-	goDrawButton(b1, pucButtonClicked);
-	goDrawButton(b2, pucButtonSelected);
-	goDrawButton(b3, pucButtonDeactivated);
+	goDrawButtons ();
+
+	goStartListener();
 
 	goDeleteButton(b);
 	goDeleteButton(b1);
 	goDeleteButton(b2);
 	goDeleteButton(b3);
-
 }

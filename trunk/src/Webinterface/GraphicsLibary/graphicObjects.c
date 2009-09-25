@@ -12,6 +12,11 @@
  */
 
 #include "graphicObjects.h"
+#include "hw_memmap.h"
+#include "hw_types.h"
+#include "debug.h"
+#include "gpio.h"
+#include "sysctl.h"
 
 /*
  * Prototypes
@@ -37,14 +42,47 @@ char isAlreadyInitilized = 0;
  */
 pgoButton buttonListRoot;
 pgoButton buttonListLast;
+pgoButton buttonSelected;
 
 /**
  * Initializes the Display to Draw the Buttons
  */
 void goInit() {
 	if (!isAlreadyInitilized) {
+
+		SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN
+				| SYSCTL_XTAL_8MHZ);
+
+		// Configure the GPIO that drives the on-board LED.
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+		GPIOPadConfigSet(GPIO_PORTF_BASE, SELECT, GPIO_STRENGTH_2MA,
+				GPIO_PIN_TYPE_STD_WPU);
+		GPIODirModeSet(GPIO_PORTF_BASE, SELECT, GPIO_DIR_MODE_IN);
+
+		// Configure UP Button as INPUT
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+		GPIOPadConfigSet(GPIO_PORTE_BASE, UP, GPIO_STRENGTH_2MA,
+				GPIO_PIN_TYPE_STD_WPU);
+		GPIODirModeSet(GPIO_PORTE_BASE, UP, GPIO_DIR_MODE_IN);
+
+		GPIOPadConfigSet(GPIO_PORTE_BASE, DOWN, GPIO_STRENGTH_2MA,
+				GPIO_PIN_TYPE_STD_WPU);
+		GPIODirModeSet(GPIO_PORTE_BASE, DOWN, GPIO_DIR_MODE_IN);
+
+		GPIOPadConfigSet(GPIO_PORTE_BASE, LEFT, GPIO_STRENGTH_2MA,
+				GPIO_PIN_TYPE_STD_WPU);
+		GPIODirModeSet(GPIO_PORTE_BASE, LEFT, GPIO_DIR_MODE_IN);
+
+		GPIOPadConfigSet(GPIO_PORTE_BASE, RIGHT, GPIO_STRENGTH_2MA,
+				GPIO_PIN_TYPE_STD_WPU);
+		GPIODirModeSet(GPIO_PORTE_BASE, RIGHT, GPIO_DIR_MODE_IN);
+
+		// Configure the GPIO that drives the on-board LED.
+		GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0);
+
 		RIT128x96x4Init(1000000);
 		RIT128x96x4DisplayOn();
+
 		isAlreadyInitilized = 1;
 	}
 }
@@ -90,18 +128,18 @@ void goDrawEmptyButton(int height_, int width_, int left, int top,
 	}
 
 	for (i = 0; i < width; i++) { // ok
-			pucImage[i] = type[0];
-			pucImage[(width * (height - 1)) + i ] = type[0];
-		}
+		pucImage[i] = type[0];
+		pucImage[(width * (height - 1)) + i] = type[0];
+	}
 
 	for (i = 1; i < height - 1; i++) {
-		pucImage[i * width] = type[1] ;
+		pucImage[i * width] = type[1];
 		pucImage[i * width + width - 1] = type[1];
 	}
 
 	for (i = 1; i < width - 1; i++) { // ok
 		pucImage[width + i] = type[2];
-		pucImage[(width * (height - 2)) + i ] = type[2];
+		pucImage[(width * (height - 2)) + i] = type[2];
 	}
 
 	for (i = 2; i < height - 2; i++) {
@@ -127,10 +165,10 @@ void goDrawButton(pgoButton btn, unsigned const char* type) {
 	if (type == NULL) {
 		type = pucButtonNormal;
 	}
-	goDrawEmptyButton(btn->height, btn->width, btn->left, btn->top,
-			type);
+	goDrawEmptyButton(btn->height, btn->width, btn->left, btn->top, type);
 
-	RIT128x96x4ImageDraw(btn->value, btn->left, btn->top, btn->width, btn->height);
+	RIT128x96x4ImageDraw(btn->value, btn->left, btn->top, btn->width,
+			btn->height);
 }
 
 void goDrawButtons(void) {
@@ -185,6 +223,9 @@ pgoButton goGetFirstButton(void) {
 	return buttonListRoot;
 }
 
+/*
+ * Inserts the Button into the List
+ */
 void goInsertButton(pgoButton btn) {
 	if (buttonListRoot == NULL) {
 		buttonListRoot = btn;
@@ -192,4 +233,85 @@ void goInsertButton(pgoButton btn) {
 		buttonListLast->next = btn;
 	}
 	buttonListLast = btn;
+}
+
+/*
+ *
+ */
+void goStartListener(void) {
+	tBoolean pressed = false;
+	while (1) {
+
+		//GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTE_BASE,
+		//		UP));
+		if (buttonSelected == NULL) {
+			buttonSelected = buttonListRoot;
+			goDrawButton(buttonSelected, pucButtonSelected);
+
+		}
+
+		if (!pressed) {
+
+			// UP
+			if (!GPIOPinRead(GPIO_PORTE_BASE, UP)) {
+				pressed = true;
+			}
+			// DOWN
+			if (!GPIOPinRead(GPIO_PORTE_BASE, DOWN)) {
+				pressed = true;
+			}
+			// LEFT
+			if (!GPIOPinRead(GPIO_PORTE_BASE, LEFT)) {
+				if (buttonSelected != NULL) {
+									goDrawButton(buttonSelected, pucButtonNormal);
+									buttonSelected = goGetPrevButton(buttonSelected);
+									if (buttonSelected == NULL) {
+										buttonSelected = buttonListLast;
+									}
+									if (buttonSelected != NULL) {
+										goDrawButton(buttonSelected, pucButtonSelected);
+									}
+								}
+								pressed = true;
+				pressed = true;
+			}
+			// RIGHT
+			if (!GPIOPinRead(GPIO_PORTE_BASE, RIGHT)) {
+				if (buttonSelected != NULL) {
+					goDrawButton(buttonSelected, pucButtonNormal);
+					buttonSelected = buttonSelected->next;
+					if (buttonSelected != NULL) {
+						goDrawButton(buttonSelected, pucButtonSelected);
+					}
+				}
+				pressed = true;
+			}
+
+			// SELECT
+			if (!GPIOPinRead(GPIO_PORTF_BASE, SELECT)) {
+
+				goDrawButton(buttonSelected, pucButtonClicked);
+				pressed = true;
+			}
+
+			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 0);
+		} else {
+			if (GPIOPinRead(GPIO_PORTE_BASE, UP)) {
+				if (GPIOPinRead(GPIO_PORTE_BASE, DOWN)) {
+					if (GPIOPinRead(GPIO_PORTE_BASE, LEFT)) {
+						if (GPIOPinRead(GPIO_PORTE_BASE, RIGHT)) {
+							if (GPIOPinRead(GPIO_PORTF_BASE, SELECT)) {
+								pressed = false;
+								goDrawButton(buttonSelected, pucButtonSelected);
+								GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 1);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTF_BASE,
+				SELECT));
+	}
 }
