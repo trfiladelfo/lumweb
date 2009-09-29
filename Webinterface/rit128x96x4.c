@@ -2,18 +2,18 @@
 //
 // rit128x96x4.c - Driver for the RIT 128x96x4 graphical OLED display.
 //
-// Copyright (c) 2007 Luminary Micro, Inc.  All rights reserved.
-// 
+// Copyright (c) 2007-2008 Luminary Micro, Inc.  All rights reserved.
 // Software License Agreement
 // 
 // Luminary Micro, Inc. (LMI) is supplying this software for use solely and
 // exclusively on LMI's microcontroller products.
 // 
 // The software is owned by LMI and/or its suppliers, and is protected under
-// applicable copyright laws.  All rights are reserved.  Any use in violation
-// of the foregoing restrictions may subject the user to criminal sanctions
-// under applicable laws, as well as to civil liability for the breach of the
-// terms and conditions of this license.
+// applicable copyright laws.  All rights are reserved.  You may not combine
+// this software with "viral" open-source software in order to form a larger
+// program.  Any use in violation of the foregoing restrictions may subject
+// the user to criminal sanctions under applicable laws, as well as to civil
+// liability for the breach of the terms and conditions of this license.
 // 
 // THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
 // OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -21,13 +21,13 @@
 // LMI SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
 // CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 1504-conf of the Stellaris Peripheral Driver Library.
+// This is part of revision 3618 of the EK-LM3S6965 Rev C Firmware Package.
 //
 //*****************************************************************************
 
 //*****************************************************************************
 //
-//! \addtogroup ek_lm3sLM3S8962_api
+//! \addtogroup display_api
 //! @{
 //
 //*****************************************************************************
@@ -48,19 +48,10 @@
 // panel control signal.
 //
 //*****************************************************************************
-
-unsigned long ulGPIOId = 0, ulGPIOBase = 0, ulOLEDDC_PIN = 0, ulOLEDEN_PIN = 0;
-
-#define LM3S8962_SYSCTL_PERIPH_GPIO_OLEDDC   SYSCTL_PERIPH_GPIOA
-#define LM3S8962_GPIO_OLEDDC_BASE            GPIO_PORTA_BASE
-#define LM3S8962_GPIO_OLEDDC_PIN             GPIO_PIN_6
-#define LM3S8962_GPIO_OLEDEN_PIN             GPIO_PIN_7
-
-#define LM3S1968_SYSCTL_PERIPH_GPIO_OLEDDC   SYSCTL_PERIPH_GPIOH
-#define LM3S1968_GPIO_OLEDDC_BASE            GPIO_PORTH_BASE
-#define LM3S1968_GPIO_OLEDDC_PIN             GPIO_PIN_2
-#define LM3S1968_GPIO_OLEDEN_PIN             GPIO_PIN_3
-
+#define SYSCTL_PERIPH_GPIO_OLEDDC   SYSCTL_PERIPH_GPIOC
+#define GPIO_OLEDDC_BASE            GPIO_PORTC_BASE
+#define GPIO_OLEDDC_PIN             GPIO_PIN_7
+#define GPIO_OLEDEN_PIN             GPIO_PIN_6
 
 //*****************************************************************************
 //
@@ -93,7 +84,7 @@ static unsigned char g_pucBuffer[8];
 //        the other.
 // Bit 5: Reserved
 // Bit 4: Disable(0)/Enable(1) COM Remap
-//        When Enabled, ROW 0-127 map to COM 127-0 (i.e. reverse row order)
+//        When Enabled, ROW 0-127 map to COM 127-0 (that is, reverse row order)
 // Bit 3: Reserved
 // Bit 2: Horizontal(0)/Vertical(1) Address Increment
 //        When set, data RAM address will increment along the column rather
@@ -220,7 +211,7 @@ static const unsigned char g_pucFont[96][5] =
     { 0x00, 0x00, 0x7f, 0x00, 0x00 }, // |
     { 0x00, 0x41, 0x36, 0x08, 0x00 }, // }
     { 0x02, 0x01, 0x02, 0x04, 0x02 }, // ~
-    { 0x02, 0x01, 0x02, 0x04, 0x02 }, // ~
+    { 0x00, 0x00, 0x00, 0x00, 0x00 }
 };
 
 //*****************************************************************************
@@ -351,7 +342,7 @@ RITWriteCommand(const unsigned char *pucBuffer, unsigned long ulCount)
     //
     // Clear the command/control bit to enable command mode.
     //
-    GPIOPinWrite(ulGPIOBase, ulOLEDDC_PIN, 0); 
+    GPIOPinWrite(GPIO_OLEDDC_BASE, GPIO_OLEDDC_PIN, 0);
 
     //
     // Loop while there are more bytes left to be transferred.
@@ -403,7 +394,7 @@ RITWriteData(const unsigned char *pucBuffer, unsigned long ulCount)
     //
     // Set the command/control bit to enable data mode.
     //
-    GPIOPinWrite(ulGPIOBase, ulOLEDDC_PIN, ulOLEDDC_PIN);
+    GPIOPinWrite(GPIO_OLEDDC_BASE, GPIO_OLEDDC_PIN, GPIO_OLEDDC_PIN);
 
     //
     // Loop while there are more bytes left to be transferred.
@@ -450,6 +441,7 @@ RIT128x96x4Clear(void)
 
     //
     // Clear out the buffer used for sending bytes to the display.
+    //
     *(unsigned long *)&g_pucBuffer[0] = 0;
     *(unsigned long *)&g_pucBuffer[4] = 0;
 
@@ -491,25 +483,26 @@ RIT128x96x4Clear(void)
 //! columns from the left edge of the display.
 //! \param ulY is the vertical position to display the string, specified in
 //! rows from the top edge of the display.
-//! \param ucLevel is the 4-bit grey scale value to be used for displayed text.
+//! \param ucLevel is the 4-bit gray scale value to be used for displayed text.
 //!
 //! This function will draw a string on the display.  Only the ASCII characters
 //! between 32 (space) and 126 (tilde) are supported; other characters will
 //! result in random data being draw on the display (based on whatever appears
 //! before/after the font in memory).  The font is mono-spaced, so characters
-//! such as "i" and "l" have more white space around them than characters such
-//! as "m" or "w".
+//! such as ``i'' and ``l'' have more white space around them than characters
+//! such as ``m'' or ``w''.
 //!
 //! If the drawing of the string reaches the right edge of the display, no more
 //! characters will be drawn.  Therefore, special care is not required to avoid
-//! supplying a string that is "too long" to display.
+//! supplying a string that is ``too long'' to display.
 //!
 //! This function is contained in <tt>rit128x96x4.c</tt>, with
 //! <tt>rit128x96x4.h</tt> containing the API definition for use by
 //! applications.
 //!
 //! \note Because the OLED display packs 2 pixels of data in a single byte, the
-//! parameter \e ulX must be an even column number (e.g. 0, 2, 4, etc).
+//! parameter \e ulX must be an even column number (for example, 0, 2, 4, and
+//! so on).
 //!
 //! \return None.
 //
@@ -553,11 +546,10 @@ RIT128x96x4StringDraw(const char *pcStr, unsigned long ulX,
         // Get a working copy of the current character and convert to an
         // index into the character bit-map array.
         //
-        ucTemp = *pcStr;
-        ucTemp &= 0x7F;
+        ucTemp = *pcStr++ & 0x7f;
         if(ucTemp < ' ')
         {
-            ucTemp = ' ';
+            ucTemp = 0;
         }
         else
         {
@@ -567,7 +559,7 @@ RIT128x96x4StringDraw(const char *pcStr, unsigned long ulX,
         //
         // Build and display the character buffer.
         //
-        for(ulIdx1 = 0; ulIdx1 < 3; ulIdx1++)
+        for(ulIdx1 = 0; ulIdx1 < 6; ulIdx1 += 2)
         {
             //
             // Convert two columns of 1-bit font data into a single data
@@ -576,36 +568,31 @@ RIT128x96x4StringDraw(const char *pcStr, unsigned long ulX,
             for(ulIdx2 = 0; ulIdx2 < 8; ulIdx2++)
             {
                 g_pucBuffer[ulIdx2] = 0;
-                if(g_pucFont[ucTemp][ulIdx1*2] & (1 << ulIdx2))
+                if(g_pucFont[ucTemp][ulIdx1] & (1 << ulIdx2))
                 {
-                    g_pucBuffer[ulIdx2] = ((ucLevel << 4) & 0xf0);
+                    g_pucBuffer[ulIdx2] = (ucLevel << 4) & 0xf0;
                 }
-                if((ulIdx1 < 2) &&
-                    (g_pucFont[ucTemp][ulIdx1*2+1] & (1 << ulIdx2)))
+                if((ulIdx1 < 4) &&
+                   (g_pucFont[ucTemp][ulIdx1 + 1] & (1 << ulIdx2)))
                 {
-                    g_pucBuffer[ulIdx2] |= ((ucLevel << 0) & 0x0f);
+                    g_pucBuffer[ulIdx2] |= (ucLevel << 0) & 0x0f;
                 }
             }
 
             //
-            // If there is room, dump the single data byte column to the
-            // display.  Otherwise, bail out.
+            // Send this byte column to the display.
             //
-            if(ulX < 126)
-            {
-                RITWriteData(g_pucBuffer, 8);
-                ulX += 2;
-            }
-            else
+            RITWriteData(g_pucBuffer, 8);
+            ulX += 2;
+
+            //
+            // Return if the right side of the display has been reached.
+            //
+            if(ulX == 128)
             {
                 return;
             }
         }
-
-        //
-        // Advance to the next character.
-        //
-        pcStr++;
     }
 }
 
@@ -749,7 +736,8 @@ RIT128x96x4Enable(unsigned long ulFrequency)
     //
     // Configure the SSI0 port for master mode.
     //
-    SSIConfig(SSI0_BASE, SSI_FRF_MOTO_MODE_2, SSI_MODE_MASTER, ulFrequency, 8);
+    SSIConfigSetExpClk(SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_2,
+                       SSI_MODE_MASTER, ulFrequency, 8);
 
     //
     // (Re)Enable SSI control of the FSS pin.
@@ -766,7 +754,7 @@ RIT128x96x4Enable(unsigned long ulFrequency)
     //
     // Drain the receive fifo.
     //
-    while(SSIDataNonBlockingGet(SSI0_BASE, &ulTemp) != 0)
+    while(SSIDataGetNonBlocking(SSI0_BASE, &ulTemp) != 0)
     {
     }
 
@@ -802,7 +790,7 @@ RIT128x96x4Disable(void)
     //
     // Drain the receive fifo.
     //
-    while(SSIDataNonBlockingGet(SSI0_BASE, &ulTemp) != 0)
+    while(SSIDataGetNonBlocking(SSI0_BASE, &ulTemp) != 0)
     {
     }
 
@@ -841,31 +829,12 @@ RIT128x96x4Init(unsigned long ulFrequency)
 {
     unsigned long ulIdx;
 
-
-	/* Determine which board is being used. */
-	if( SysCtlPeripheralPresent( SYSCTL_PERIPH_ETH ) )
-	{
-		/* Ethernet is present, we must be using the LM3S8962 EK. */
-		ulGPIOId = LM3S8962_SYSCTL_PERIPH_GPIO_OLEDDC;
-		ulGPIOBase = LM3S8962_GPIO_OLEDDC_BASE;
-		ulOLEDDC_PIN = GPIO_PIN_6;
-		ulOLEDEN_PIN = GPIO_PIN_7;
-	}
-	else
-	{
-		/* Ethernet is not present, we must be using the LM3S1968 EK. */
-		ulGPIOId = LM3S1968_SYSCTL_PERIPH_GPIO_OLEDDC;
-		ulGPIOBase = LM3S1968_GPIO_OLEDDC_BASE;
-		ulOLEDDC_PIN = GPIO_PIN_2;
-		ulOLEDEN_PIN = GPIO_PIN_3;
-	}
-
     //
     // Enable the SSI0 and GPIO port blocks as they are needed by this driver.
     //
     SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    SysCtlPeripheralEnable(ulGPIOId); 
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIO_OLEDDC);
 
     //
     // Configure the SSI0CLK and SSIOTX pins for SSI operation.
@@ -878,11 +847,11 @@ RIT128x96x4Init(unsigned long ulFrequency)
     // Configure the GPIO port pin used as a D/Cn signal for OLED device,
     // and the port pin used to enable power to the OLED panel.
     //
-    GPIOPinTypeGPIOOutput(ulGPIOBase, ulOLEDDC_PIN | ulOLEDEN_PIN);
-    GPIOPadConfigSet(ulGPIOBase, ulOLEDDC_PIN | ulOLEDEN_PIN,
+    GPIOPinTypeGPIOOutput(GPIO_OLEDDC_BASE, GPIO_OLEDDC_PIN | GPIO_OLEDEN_PIN);
+    GPIOPadConfigSet(GPIO_OLEDDC_BASE, GPIO_OLEDDC_PIN | GPIO_OLEDEN_PIN,
                      GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
-    GPIOPinWrite(ulGPIOBase, ulOLEDDC_PIN | ulOLEDEN_PIN,
-                 ulOLEDDC_PIN | ulOLEDEN_PIN);
+    GPIOPinWrite(GPIO_OLEDDC_BASE, GPIO_OLEDDC_PIN | GPIO_OLEDEN_PIN,
+                 GPIO_OLEDDC_PIN | GPIO_OLEDEN_PIN);
 
     //
     // Configure and enable the SSI0 port for master mode.

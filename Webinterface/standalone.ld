@@ -57,4 +57,5 @@ SECTIONS
         *(COMMON)
         _ebss = .;
     } > SRAM
+PROVIDE(__HEAP_START = _ebss );
 }

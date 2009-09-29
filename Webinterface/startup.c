@@ -3,24 +3,24 @@
 // startup.c - Boot code for Stellaris.
 //
 // Copyright (c) 2005-2007 Luminary Micro, Inc.  All rights reserved.
-// 
+//
 // Software License Agreement
-// 
+//
 // Luminary Micro, Inc. (LMI) is supplying this software for use solely and
 // exclusively on LMI's microcontroller products.
-// 
+//
 // The software is owned by LMI and/or its suppliers, and is protected under
 // applicable copyright laws.  All rights are reserved.  Any use in violation
 // of the foregoing restrictions may subject the user to criminal sanctions
 // under applicable laws, as well as to civil liability for the breach of the
 // terms and conditions of this license.
-// 
+//
 // THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
 // OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
 // MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
 // LMI SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
 // CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
+//
 // This is part of revision 1392 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
@@ -47,7 +47,11 @@ extern void vPortSVCHandler( void );
 extern void Timer0IntHandler( void );
 extern void vT2InterruptHandler( void );
 extern void vT3InterruptHandler( void );
-//extern void vEMAC_ISR(void);
+extern void vEMAC_ISR(void);
+void UART0StdioIntHandler(void);
+void UART1StdioIntHandler(void);
+void lwIPEthernetIntHandler(void);
+void ETH0IntHandler(void);
 
 //*****************************************************************************
 //
@@ -91,8 +95,8 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // GPIO Port C
     IntDefaultHandler,                      // GPIO Port D
     IntDefaultHandler,                      // GPIO Port E
-    IntDefaultHandler,                      // UART0 Rx and Tx
-    IntDefaultHandler,                      // UART1 Rx and Tx
+    UART0StdioIntHandler,                    // UART0 Rx and Tx
+    UART1StdioIntHandler,                      // UART1 Rx and Tx
     IntDefaultHandler,                      // SSI Rx and Tx
     IntDefaultHandler,                      // I2C Master and Slave
     IntDefaultHandler,                      // PWM Fault
@@ -105,11 +109,11 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // ADC Sequence 2
     IntDefaultHandler,                      // ADC Sequence 3
     IntDefaultHandler,                      // Watchdog timer
-    Timer0IntHandler,                      // Timer 0 subtimer A
+    IntDefaultHandler,                      // Timer 0 subtimer A
     IntDefaultHandler,                      // Timer 0 subtimer B
     IntDefaultHandler,                      // Timer 1 subtimer A
     IntDefaultHandler,                      // Timer 1 subtimer B
-    vT2InterruptHandler,                      // Timer 2 subtimer A
+    IntDefaultHandler,                      // Timer 2 subtimer A
     IntDefaultHandler,                      // Timer 2 subtimer B
     IntDefaultHandler,                      // Analog Comparator 0
     IntDefaultHandler,                      // Analog Comparator 1
@@ -121,14 +125,14 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // GPIO Port H
     IntDefaultHandler,                      // UART2 Rx and Tx
     IntDefaultHandler,                      // SSI1 Rx and Tx
-    vT3InterruptHandler,                    // Timer 3 subtimer A
+    IntDefaultHandler,                      // Timer 3 subtimer A
     IntDefaultHandler,                      // Timer 3 subtimer B
     IntDefaultHandler,                      // I2C1 Master and Slave
     IntDefaultHandler,                      // Quadrature Encoder 1
     IntDefaultHandler,                      // CAN0
     IntDefaultHandler,                      // CAN1
     0,                                      // Reserved
-    IntDefaultHandler,                              // Ethernet
+    ETH0IntHandler,                 // Ethernet
     IntDefaultHandler                       // Hibernate
 };
 
