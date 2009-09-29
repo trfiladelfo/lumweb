@@ -278,7 +278,6 @@ void prvSetupHardware(void) {
 	GPIOPadConfigSet(GPIO_PORTF_BASE, (GPIO_PIN_2 | GPIO_PIN_3),
 			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
 
-	vParTestInitialise();
 }
 /*-----------------------------------------------------------*/
 
