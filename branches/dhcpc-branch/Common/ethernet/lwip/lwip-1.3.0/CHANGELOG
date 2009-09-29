@@ -19,51 +19,6 @@ HISTORY
 
   ++ New features:
 
-(LUMINARY Additions/Ports)
-
-2008-04-03:
-  * Modify conditional code in stellarisif.c for timestamps.
-  * Change parameter order in LWIP_ASSERT calls in httpserver_raw application.
-
-2008-04-03:
-  * Modify the httpserver_raw application to use fs_open/close/read.  This is
-    done to allow custom file system support (including dynamic content).
-
-2008-04-02:
-  * Add custom option to lwIP (LWIP_UPNP).  This option will simply allow UDP
-    packtets on the Universal Plug and Play port (1900) to pass the IP and UDP
-    filters.
-  * Enable multi-cast packet reception on low-level interface.
-
-2008-04-02:
-  * Add support for AUTOIP to porting layer code.
-
-2008-04-02:
-  * Change sys_arch.h and stellarisif.c to use absolute paths for DriverLib
-    includes.  This allows the library to be built without adding "Driverlib"
-    to the IPATH.
-  * Add lwiplib.c/h - A high level abstraction layer that includes all
-    required lwIP source code, and provides high-level Init, Timer and
-    Interrupt functions.  This allows lwIP to be included in a project by
-    simply including one additional file.
-
-2008-04-01:
-  * Comment out a single "printf" function call in the http server
-    application.  The other "printf" functions had already been commented out
-    and it appeared that this one was just missed.
-
-2008-04-01:
-  * Add "apps" folder, with a copy (unchanged) of the httpserver_raw
-    application that is available from the lwIP CVS archives.
-  * Add "ports" folder, that is based on the "ports" folder structure
-    available from the lwIP CVS archives.  This "ports" folder contains a
-    single porting layer (stellaris) that supports the Luminary Micro Stellaris
-    Ethernet peripheral.
-
-2008-03-26:
-  * Add lwIP-STABLE-1.3.0.pdf and Rx_flow.pdf to the doc folder for easier
-    reference to this addtional documentation that was found on the lwIP
-    Wiki.
 
   ++ Bugfixes:
 

@@ -92,6 +92,7 @@
 #define CHAP_WITHPEER   4
 #define CHAP_PEER       8
 
+#define UPAP_AUTHACK 2 /* Authenticate-Ack */
 
 /************************/
 /*** LOCAL DATA TYPES ***/
@@ -139,7 +140,8 @@ static void callback_phase (int);
 /*****************************/
 /*** LOCAL DATA STRUCTURES ***/
 /*****************************/
-#if PAP_SUPPORT || CHAP_SUPPORT
+/*#ifdef PAP_SUPPORT //|| CHAP_SUPPORT*/
+#ifdef PAP_SUPPORT
 /* The name by which the peer authenticated itself to us. */
 static char peer_authname[MAXNAMELEN];
 #endif /* PAP_SUPPORT || CHAP_SUPPORT */
@@ -162,7 +164,8 @@ static int num_np_open;
 /* Number of network protocols which have come up. */
 static int num_np_up;
 
-#if PAP_SUPPORT || CHAP_SUPPORT
+/*#ifdef PAP_SUPPORT || CHAP_SUPPORT*/
+#ifdef PAP_SUPPORT
 /* Set if we got the contents of passwd[] from the pap-secrets file. */
 static int passwd_from_file;
 #endif /* PAP_SUPPORT || CHAP_SUPPORT */
@@ -247,9 +250,12 @@ link_established(int unit)
   struct protent *protp;
   lcp_options *wo = &lcp_wantoptions[unit];
   lcp_options *go = &lcp_gotoptions[unit];
-#if PAP_SUPPORT || CHAP_SUPPORT
+/*#ifdef PAP_SUPPORT || CHAP_SUPPORT*/
+#ifdef PAP_SUPPORT
   lcp_options *ho = &lcp_hisoptions[unit];
 #endif /* PAP_SUPPORT || CHAP_SUPPORT */
+
+printf("\n\nlink_established\n\n");
 
   AUTHDEBUG((LOG_INFO, "link_established: %d\n", unit));
   /*
@@ -261,6 +267,7 @@ link_established(int unit)
     }
   }
   if (ppp_settings.auth_required && !(go->neg_chap || go->neg_upap)) {
+printf("\n\nAUTH-REQUIRED\n\n");
     /*
      * We wanted the peer to authenticate itself, and it refused:
      * treat it as though it authenticated with PAP using a username
@@ -275,31 +282,35 @@ link_established(int unit)
     
   lcp_phase[unit] = PHASE_AUTHENTICATE;
   auth = 0;
-#if CHAP_SUPPORT
+#ifdef CHAP_SUPPORT
+printf("\n\nCHAP SUPPORT\n\n");
   if (go->neg_chap) {
     ChapAuthPeer(unit, ppp_settings.our_name, go->chap_mdtype);
     auth |= CHAP_PEER;
   } 
 #endif /* CHAP_SUPPORT */
-#if PAP_SUPPORT && CHAP_SUPPORT
+/*#ifdef PAP_SUPPORT && CHAP_SUPPORT*/
+#ifdef PAP_SUPPORT
   else
 #endif /* PAP_SUPPORT && CHAP_SUPPORT */
-#if PAP_SUPPORT
+#ifdef PAP_SUPPORT
+printf("\n\nCHAP SUPPORT\n\n");
   if (go->neg_upap) {
     upap_authpeer(unit);
     auth |= PAP_PEER;
   }
 #endif /* PAP_SUPPORT */
-#if CHAP_SUPPORT
+#ifdef CHAP_SUPPORT
   if (ho->neg_chap) {
     ChapAuthWithPeer(unit, ppp_settings.user, ho->chap_mdtype);
     auth |= CHAP_WITHPEER;
   }
 #endif /* CHAP_SUPPORT */
-#if PAP_SUPPORT && CHAP_SUPPORT
+/*#ifdef PAP_SUPPORT && CHAP_SUPPORT*/
+#ifdef PAP_SUPPORT
   else
 #endif /* PAP_SUPPORT && CHAP_SUPPORT */
-#if PAP_SUPPORT
+#ifdef PAP_SUPPORT
   if (ho->neg_upap) {
     if (ppp_settings.passwd[0] == 0) {
       passwd_from_file = 1;
@@ -311,6 +322,7 @@ link_established(int unit)
     auth |= PAP_WITHPEER;
   }
 #endif /* PAP_SUPPORT */
+printf("\n\nAUTH PENDING\n\n");
   auth_pending[unit] = auth;
 
   if (!auth) {
@@ -334,7 +346,7 @@ auth_peer_fail(int unit, u16_t protocol)
 }
 
 
-#if PAP_SUPPORT || CHAP_SUPPORT
+#ifdef PAP_SUPPORT || CHAP_SUPPORT
 /*
  * The peer has been successfully authenticated using `protocol'.
  */
@@ -526,7 +538,7 @@ auth_reset(int unit)
   }
 }
 
-#if PAP_SUPPORT
+#ifdef PAP_SUPPORT
 /*
  * check_passwd - Check the user name and passwd against the PAP secrets
  * file.  If requested, also check against the system password database,
