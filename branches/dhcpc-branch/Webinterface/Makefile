@@ -61,7 +61,8 @@ DEMO_COMMON_DIR=../Common/Minimal
 COMMON_INCLUDE_DIR=../Common/include
 LUMINARY_DRIVER_DIR=../Common/drivers/LuminaryMicro
 
-LWIP_DIR=../Common/ethernet/lwip/lwip-1.3.0
+LWIP_SOURCE_DIR=../Common/ethernet/lwip/lwip-1.3.0
+WEB_SERVER_DIR=../Common/ethernet/lwip/lwip-1.3.0/Apps
 
 
 NAME = Luminary_Webinterface
@@ -72,114 +73,91 @@ OBJCOPY=arm-none-eabi-objcopy
 LDSCRIPT=standalone.ld
 
 # should use --gc-sections but the debugger does not seem to be able to cope with the option.
-LINKER_FLAGS=-nostartfiles -Xlinker -omain.elf -Xlinker -M -Xlinker -Map=main.map -Xlinker --no-gc-sections
+LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --no-gc-sections
 
 DEBUG=-g 
 OPTIM=-Os
 
-#CFLAGS=-g$(DEBUG) \
-		-O$(OPT) \
-		-T$(LDSCRIPT) \
-		-I . \
-		-I $(RTOS_SOURCE_DIR)/include \
-		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
-		-I $(DEMO_INCLUDE_DIR) \
-		-I $(ST_LIB_DIR)/inc \
-		-I $(ARM_CMSIS_DIR)/Core/CM3 \
-		-I $(LWIP_DIR)/include \
-		-I $(LWIP_DIR)/include/ipv4 \
-		-I $(LWIP_DIR)/include/lwip \
-		-I $(LWIP_DIR)/include/netif \
-		-I $(LWIP_DIR)/include/ipv4/lwip \
-		-I $(LWIP_PORT_DIR)/FreeRTOS/STR91x \
-		-D STM32F10X_CL \
-		-D USE_STDPERIPH_DRIVER \
-		-D VECT_TAB_FLASH \
-		-D GCC_ARMCM3 \
-		-D STACK_LWIP_130 \
-		-D inline= \
-		-D PACK_STRUCT_END=__attribute\(\(packed\)\) \
-		-D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) \
-		-mthumb \
-		-mcpu=cortex-m3 \
-		-ffunction-sections \
-		-fdata-sections 
+#/*
+#	#I am using linux to compile, and for a unknown reason in Eclipse environment
+#	this is necessary.
+#	If you are compiling using make from a commando line the COMPILE_DIR variable is not necessari.
+#*/
 
-#CFLAGS=$(DEBUG) $(OPTIM) -I . -I $(RTOS_SOURCE_DIR)/include  -I $(LWIP_DIR)/src/include/ipv4 \
-		-I $(LWIP_DIR)/src/include -I $(LWIP_DIR)/ports/stellaris/include \
+CC=arm-none-eabi-gcc
+OBJCOPY=arm-none-eabi-objcopy
+LDSCRIPT=standalone.ld
+
+# should use --gc-sections but the debugger does not seem to be able to cope with the option.
+LINKER_FLAGS=-nostartfiles -Xlinker -omain.elf -Xlinker -M -Xlinker -Map=main.map -Xlinker --no-gc-sections
+
+DEBUG=-g
+OPTIM=-Os
+
+CFLAGS=$(DEBUG) $(OPTIM) -I .  -I $(RTOS_SOURCE_DIR)/include  -I $(LWIP_SOURCE_DIR)/src/include/ipv4 \
+		-I $(LWIP_SOURCE_DIR)/src/include -I $(LWIP_SOURCE_DIR)/contrib/port/FreeRTOS/LM3S \
 		-I $(COMMOM_INCLUDE) -I $(LWIP_DRIVER_DIR) \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 -I $(LUMINARY_DRIVER_DIR) \
-		-D GCC_ARMCM3_LM3S102 -D LM3S6965_EK -D UART_BUFFERED  \
-		-D inline= -mthumb -mcpu=cortex-m3 $(OPTIM) -T$(LDSCRIPT) \
-		-D sprintf=usprintf -D snprintf=usnprintf -D printf=uipprintf \
-		-ffunction-sections -fdata-sections
-		
-CFLAGS=$(DEBUG) $(OPTIM) -I .  -I $(RTOS_SOURCE_DIR)/include  \
-		-I $(COMMOM_INCLUDE_DIR) -I $(LWIP_DRIVER_DIR) \
-		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 -I $(LUMINARY_DRIVER_DIR) \
-		-I $(LWIP_DIR)/src/include \
-		-I $(LWIP_DIR)/src/include/ipv4 \
-		-I $(LWIP_DIR)/src/include/lwip \
-		-I $(LWIP_DIR)/src/include/netif \
-		-I $(LWIP_DIR)/src/include/ipv4/lwip \
-		-I $(LWIP_DIR)/ports/stellaris/include \
 		-D GCC_ARMCM3_LM3S102   \
 		-D inline= -mthumb -mcpu=cortex-m3 $(OPTIM) -T$(LDSCRIPT) \
 		-D sprintf=usprintf -D snprintf=usnprintf -D printf=uipprintf \
-		-ffunction-sections -fdata-sections \
-		-D PACK_STRUCT_END=__attribute\(\(packed\)\) -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) \
-		-D LWIP_SOCKET
+		-ffunction-sections -fdata-sections
+#		-D PACK_STRUCT_END=__attribute\(\(packed\)\) -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) \
+#-D LWIP_SOCKET
 
-SOURCE=	main.c \
-		timertest.c \
-		rit128x96x4.c \
-		osram128x64x4.c \
-		formike128x128x16.c \
-		./ComTask/comTask.c \
-		$(LUMINARY_DRIVER_DIR)/ustdlib.c \
-		./GraphicsLibary/runTestTask.c \
+
+SOURCE=	main.c  \
+		./ComTask/comTask.c\
 		./GraphicsLibary/graphicObjects.c \
+		./GraphicsLibary/runTestTask.c \
+		rit128x96x4.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3/port.c \
-		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
-		$(LWIP_DIR)/src/api/api_lib.c \
-		$(LWIP_DIR)/src/api/api_msg.c \
-		$(LWIP_DIR)/src/api/tcpip.c \
-		$(LWIP_DIR)/src/api/err.c \
-		$(LWIP_DIR)/src/api/sockets.c \
-		$(LWIP_DIR)/src/api/netbuf.c \
-		$(LWIP_DIR)/src/api/netdb.c \
-		$(LWIP_DIR)/src/api/netifapi.c \
-		$(LWIP_DIR)/src/core/dhcp.c \
-		$(LWIP_DIR)/src/core/dns.c \
-		$(LWIP_DIR)/src/core/init.c \
-		$(LWIP_DIR)/src/core/mem.c \
-		$(LWIP_DIR)/src/core/memp.c \
-		$(LWIP_DIR)/src/core/netif.c \
-		$(LWIP_DIR)/src/core/pbuf.c \
-		$(LWIP_DIR)/src/core/raw.c \
-		$(LWIP_DIR)/src/core/stats.c \
-		$(LWIP_DIR)/src/core/sys.c \
-		$(LWIP_DIR)/src/core/tcp.c \
-		$(LWIP_DIR)/src/core/tcp_in.c \
-		$(LWIP_DIR)/src/core/tcp_out.c \
-		$(LWIP_DIR)/src/core/udp.c \
-		$(LWIP_DIR)/src/core/ipv4/autoip.c \
-		$(LWIP_DIR)/src/core/ipv4/icmp.c \
-		$(LWIP_DIR)/src/core/ipv4/igmp.c \
-		$(LWIP_DIR)/src/core/ipv4/inet.c \
-		$(LWIP_DIR)/src/core/ipv4/inet_chksum.c \
-		$(LWIP_DIR)/src/core/ipv4/ip_addr.c \
-		$(LWIP_DIR)/src/core/ipv4/ip.c \
-		$(LWIP_DIR)/src/core/ipv4/ip_frag.c \
-		$(LWIP_DIR)/ports/stellaris/sys_arch.c \
-		$(LWIP_DIR)/ports/stellaris/netif/stellarisif.c 
-		
+		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_3.c \
+		$(LWIP_SOURCE_DIR)/contrib/port/FreeRTOS/sys_arch.c \
+		$(LWIP_SOURCE_DIR)/src/api/api_lib.c \
+		$(LWIP_SOURCE_DIR)/src/api/api_msg.c \
+		$(LWIP_SOURCE_DIR)/src/api/tcpip.c \
+		$(LWIP_SOURCE_DIR)/src/api/err.c \
+		$(LWIP_SOURCE_DIR)/src/api/sockets.c \
+		$(LWIP_SOURCE_DIR)/src/api/netbuf.c \
+		$(LWIP_SOURCE_DIR)/src/api/netdb.c \
+		$(LWIP_SOURCE_DIR)/src/api/netifapi.c \
+		$(LWIP_SOURCE_DIR)/src/core/dhcp.c \
+		$(LWIP_SOURCE_DIR)/src/core/dns.c \
+		$(LWIP_SOURCE_DIR)/src/core/init.c \
+		$(LWIP_SOURCE_DIR)/src/core/mem.c \
+		$(LWIP_SOURCE_DIR)/src/core/memp.c \
+		$(LWIP_SOURCE_DIR)/src/core/netif.c \
+		$(LWIP_SOURCE_DIR)/src/core/pbuf.c \
+		$(LWIP_SOURCE_DIR)/src/core/raw.c \
+		$(LWIP_SOURCE_DIR)/src/core/stats.c \
+		$(LWIP_SOURCE_DIR)/src/core/sys.c \
+		$(LWIP_SOURCE_DIR)/src/core/tcp.c \
+		$(LWIP_SOURCE_DIR)/src/core/tcp_in.c \
+		$(LWIP_SOURCE_DIR)/src/core/tcp_out.c \
+		$(LWIP_SOURCE_DIR)/src/core/udp.c \
+		$(LWIP_SOURCE_DIR)/src/core/ipv4/autoip.c \
+		$(LWIP_SOURCE_DIR)/src/core/ipv4/icmp.c \
+		$(LWIP_SOURCE_DIR)/src/core/ipv4/igmp.c \
+		$(LWIP_SOURCE_DIR)/src/core/ipv4/inet.c \
+		$(LWIP_SOURCE_DIR)/src/core/ipv4/inet_chksum.c \
+		$(LWIP_SOURCE_DIR)/src/core/ipv4/ip_addr.c \
+		$(LWIP_SOURCE_DIR)/src/core/ipv4/ip.c \
+		$(LWIP_SOURCE_DIR)/src/core/ipv4/ip_frag.c
+# WEB_SERVER_FILES: Files to create a web server application
+WEB_SERVER_FILES=$(WEB_SERVER_DIR)/fs.c \
+				$(WEB_SERVER_DIR)/ustdlib.c \
+				$(WEB_SERVER_DIR)/httpd.c
+# NETIFFILES: Files implementing various generic network interface functions.
+NETIFFILES=$(LWIP_SOURCE_DIR)/src/netif/etharp.c \
+		$(LWIP_SOURCE_DIR)/src/netif/loopif.c
+
 LIBS= $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libdriver.a $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libgr.a
 
-OBJS = $(SOURCE:.c=.o)
+OBJS = $(SOURCE:.c=.o) $(NETIFFILES:.c=.o)   $(WEB_SERVER_FILES:.c=.o)
 
 all: $(NAME).bin
 
