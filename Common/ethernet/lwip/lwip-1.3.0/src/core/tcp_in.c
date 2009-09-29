@@ -6,7 +6,7 @@
  *
  * These functions are generally called in the order (ip_input() ->)
  * tcp_input() -> * tcp_process() -> tcp_receive() (-> application).
- * 
+ *
  */
 
 /*
@@ -176,7 +176,7 @@ tcp_input(struct pbuf *p, struct netif *inp)
      for an active connection. */
   prev = NULL;
 
-  
+
   for(pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb->next) {
     LWIP_ASSERT("tcp_input: active pcb->state != CLOSED", pcb->state != CLOSED);
     LWIP_ASSERT("tcp_input: active pcb->state != TIME-WAIT", pcb->state != TIME_WAIT);
@@ -237,7 +237,7 @@ tcp_input(struct pbuf *p, struct netif *inp)
                 /* put this listening pcb at the head of the listening list */
           tcp_listen_pcbs.listen_pcbs = lpcb;
         }
-      
+
         LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: packed for LISTENing connection.\n"));
         tcp_listen_input(lpcb);
         pbuf_free(p);
@@ -316,7 +316,7 @@ tcp_input(struct pbuf *p, struct netif *inp)
         if (pcb->acked > 0) {
           TCP_EVENT_SENT(pcb, pcb->acked, err);
         }
-      
+
         if (recv_data != NULL) {
           if(flags & TCP_PSH) {
             recv_data->flags |= PBUF_FLAG_PUSH;
@@ -357,7 +357,7 @@ tcp_input(struct pbuf *p, struct netif *inp)
     tcp_debug_print_state(pcb->state);
 #endif /* TCP_DEBUG */
 #endif /* TCP_INPUT_DEBUG */
-      
+
   } else {
 
     /* If no matching PCB was found, send a TCP RST (reset) to the
@@ -510,7 +510,7 @@ tcp_process(struct tcp_pcb *pcb)
         acceptable = 1;
       }
     } else {
-      if (TCP_SEQ_BETWEEN(seqno, pcb->rcv_nxt, 
+      if (TCP_SEQ_BETWEEN(seqno, pcb->rcv_nxt,
                           pcb->rcv_nxt+pcb->rcv_ann_wnd)) {
         acceptable = 1;
       }
@@ -789,7 +789,7 @@ tcp_receive(struct tcp_pcb *pcb)
       }
     } else if (TCP_SEQ_BETWEEN(ackno, pcb->lastack+1, pcb->snd_max)){
       /* We come here when the ACK acknowledges new data. */
-      
+
       /* Reset the "IN Fast Retransmit" flag, since we are no longer
          in fast retransmit. Also reset the congestion window to the
          slow start threshold. */
@@ -1037,10 +1037,10 @@ tcp_receive(struct tcp_pcb *pcb)
     /* The sequence number must be within the window (above rcv_nxt
        and below rcv_nxt + rcv_wnd) in order to be further
        processed. */
-    if (TCP_SEQ_BETWEEN(seqno, pcb->rcv_nxt, 
+    if (TCP_SEQ_BETWEEN(seqno, pcb->rcv_nxt,
                         pcb->rcv_nxt + pcb->rcv_ann_wnd - 1)){
       if (pcb->rcv_nxt == seqno) {
-        accepted_inseq = 1; 
+        accepted_inseq = 1;
         /* The incoming segment is the next in sequence. We check if
            we have to trim the end of the segment and update rcv_nxt
            and pass the data to the application. */
@@ -1143,7 +1143,7 @@ tcp_receive(struct tcp_pcb *pcb)
             recv_flags = TF_GOT_FIN;
             if (pcb->state == ESTABLISHED) { /* force passive close or we can move to active close */
               pcb->state = CLOSE_WAIT;
-            } 
+            }
           }
 
 
@@ -1232,7 +1232,7 @@ tcp_receive(struct tcp_pcb *pcb)
                   }
                   break;
                 }
-              } else 
+              } else
                 /*if (TCP_SEQ_LT(prev->tcphdr->seqno, seqno) &&
                   TCP_SEQ_LT(seqno, next->tcphdr->seqno)) {*/
                 if(TCP_SEQ_BETWEEN(seqno, prev->tcphdr->seqno+1, next->tcphdr->seqno-1)){
@@ -1282,7 +1282,7 @@ tcp_receive(struct tcp_pcb *pcb)
 
       }
     } else {
-      if(!TCP_SEQ_BETWEEN(seqno, pcb->rcv_nxt, 
+      if(!TCP_SEQ_BETWEEN(seqno, pcb->rcv_nxt,
                           pcb->rcv_nxt + pcb->rcv_ann_wnd-1)){
         tcp_ack_now(pcb);
       }

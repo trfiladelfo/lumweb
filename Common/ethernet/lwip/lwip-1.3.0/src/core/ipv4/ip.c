@@ -1,7 +1,7 @@
 /**
  * @file
  * This is the IPv4 layer implementation for incoming and outgoing IP traffic.
- * 
+ *
  * @see ip_frag.c
  *
  */
@@ -166,7 +166,7 @@ ip_forward(struct pbuf *p, struct ip_hdr *iphdr, struct netif *inp)
  * forwarded (using ip_forward). The IP checksum is always checked.
  *
  * Finally, the packet is sent to the upper layer protocol input function.
- * 
+ *
  * @param p the received IP packet (p->payload points to IP header)
  * @param inp the netif on which this packet was received
  * @return ERR_OK if the packet was processed (could return ERR_* if it wasn't
@@ -179,9 +179,9 @@ ip_input(struct pbuf *p, struct netif *inp)
   struct netif *netif;
   u16_t iphdr_hlen;
   u16_t iphdr_len;
-#if LWIP_DHCP || LWIP_UPNP
+#if LWIP_DHCP
   int check_ip_src=1;
-#endif /* LWIP_DHCP || LWIP_UPNP */
+#endif /* LWIP_DHCP */
 
   IP_STATS_INC(ip.recv);
   snmp_inc_ipinreceives();
@@ -306,28 +306,10 @@ ip_input(struct pbuf *p, struct netif *inp)
   }
 #endif /* LWIP_DHCP */
 
-#if LWIP_UPNP
-  /* Pass UPNP messages regardless of destination address. UPNP traffic is addressed
-   * using multicast addressing so we must not filter on IP.
-   */
-  if (netif == NULL) {
-    /* remote port is DHCP server? */
-    if (IPH_PROTO(iphdr) == IP_PROTO_UDP) {
-      LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE | 1, ("ip_input: UDP packet to UPNP client port %"U16_F"\n",
-        ntohs(((struct udp_hdr *)((u8_t *)iphdr + iphdr_hlen))->dest)));
-      if (ntohs(((struct udp_hdr *)((u8_t *)iphdr + iphdr_hlen))->dest) == 1900) {
-        LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE | 1, ("ip_input: UPNP packet accepted.\n"));
-        netif = inp;
-        check_ip_src = 0;
-      }
-    }
-  }
-#endif /* LWIP_UPNP */
-
   /* broadcast or multicast packet source address? Compliant with RFC 1122: 3.2.1.3 */
-#if LWIP_DHCP || LWIP_UPNP
+#if LWIP_DHCP
   if (check_ip_src)
-#endif /* LWIP_DHCP || LWIP_UPNP */
+#endif /* LWIP_DHCP */
   {  if ((ip_addr_isbroadcast(&(iphdr->src), inp)) ||
          (ip_addr_ismulticast(&(iphdr->src)))) {
       /* packet source is not valid */

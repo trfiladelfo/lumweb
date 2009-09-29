@@ -120,8 +120,7 @@
 #define PPP_CONTROL(p)  (((u_char *)(p))[1])
 #define PPP_PROTOCOL(p) ((((u_char *)(p))[2] << 8) + ((u_char *)(p))[3])
 
-/* PPP packet parser states.  Current state indicates operation yet to be
- * completed. */
+/* PPP packet parser states.  Current state indicates operation yet to be  completed. */
 typedef enum {
   PDIDLE = 0,  /* Idle state - waiting. */
   PDSTART,     /* Process start flag. */
@@ -770,7 +769,21 @@ pppAppend(u_char c, struct pbuf *nb, ext_accm *outACCM)
   }
 
   if (nb) {
-    if (outACCM && ESCAPE_P(*outACCM, c)) {
+/*
+	if (outACCM)
+		PPPDEBUG((LOG_INFO, " pppWrite: outACCM... "));
+	else
+		PPPDEBUG((LOG_INFO, " pppWrite: SEM outACCM... "));
+*/
+/*
+	if ( ESCAPE_P(*outACCM, c) )
+		PPPDEBUG((LOG_INFO, " ESCAPE " ));
+	else
+		PPPDEBUG((LOG_INFO, " SEM ESCAPE " ));
+*/
+
+    if (outACCM && ESCAPE_P(*outACCM, c)) { 
+/*    if (outACCM &&  c < 0x20 ) {*/
       *((u_char*)nb->payload + nb->len++) = PPP_ESCAPE;
       *((u_char*)nb->payload + nb->len++) = c ^ PPP_TRANS;
     } else {
@@ -1110,7 +1123,7 @@ pppWrite(int pd, const u_char *s, int n)
   /* Load output buffer. */
   while (n-- > 0) {
     c = *s++;
-
+/*PPPDEBUG((LOG_INFO, "pppWrite: calling pppApend\n"));*/
     /* Update FCS before checking for special characters. */
     fcsOut = PPP_FCS(fcsOut, c);
 

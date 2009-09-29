@@ -121,7 +121,6 @@ void
 upap_setloginpasswd(int unit, const char *luser, const char *lpassword)
 {
   upap_state *u = &upap[unit];
-  
   /* Save the username and password we're given */
   u->us_user = luser;
   u->us_userlen = strlen(luser);
