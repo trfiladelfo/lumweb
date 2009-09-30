@@ -56,10 +56,17 @@ LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtos
 DEBUG=-g
 OPTIM=-Os
 
-CFLAGS=$(DEBUG) $(OPTIM) -I . -I $(RTOS_SOURCE_DIR)/include  -I $(LWIP_SOURCE_DIR)/src/include/ipv4 \
-		-I $(LWIP_SOURCE_DIR)/src/include -I $(LWIP_SOURCE_DIR)/contrib/port/FreeRTOS/LM3S \
-		-I $(COMMOM_INCLUDE) -I $(LWIP_DRIVER_DIR) \
-		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 -I $(LUMINARY_DRIVER_DIR) \
+CFLAGS=$(DEBUG) $(OPTIM) -I . \
+		-I ./ComTask \
+		-I ./GraphicsLibrary \
+		-I $(RTOS_SOURCE_DIR)/include \
+		-I $(LWIP_SOURCE_DIR)/src/include/ipv4 \
+		-I $(LWIP_SOURCE_DIR)/src/include \
+		-I $(LWIP_SOURCE_DIR)/contrib/port/FreeRTOS/LM3S \
+		-I $(LWIP_DRIVER_DIR) \
+		-I $(COMMOM_INCLUDE) \
+		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
+		-I $(LUMINARY_DRIVER_DIR) \
 		-D GCC_ARMCM3_LM3S102 -D LM3S6965_EK -D UART_BUFFERED  \
 		-D inline= -mthumb -mcpu=cortex-m3 $(OPTIM) -T$(LDSCRIPT) \
 		-D sprintf=usprintf -D snprintf=usnprintf -D printf=uipprintf \
@@ -70,6 +77,9 @@ CFLAGS=$(DEBUG) $(OPTIM) -I . -I $(RTOS_SOURCE_DIR)/include  -I $(LWIP_SOURCE_DI
 
 SOURCE=	main.c uart0.c uart1.c \
 		rit128x96x4.c \
+		./ComTask/comTask.c \
+		./GraphicsLibrary/graphicObjects.c \
+		./GraphicsLibrary/runTestTask.c \
 		$(LWIP_DRIVER_DIR)/ETHIsr.c \
 		$(LWIP_DRIVER_DIR)/LWIPStack.c \
 		$(RTOS_SOURCE_DIR)/list.c \
