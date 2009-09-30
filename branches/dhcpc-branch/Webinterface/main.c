@@ -50,30 +50,28 @@
 #include "LWIPStack.h"
 #include "ETHIsr.h"
 
+#include "ComTask/comTask.h"   /* include communication task header */
+
+
 static struct netif lwip_netif;
 static unsigned long g_ulIPMode = IPADDR_USE_STATIC;
 
-#define LINHA0		0
-#define LINHA1		8
-#define LINHA2		16
-#define LINHA3		24
-#define LINHA4		32
-#define LINHA5		40
-#define LINHA6		48
-#define LINHA7		56
+/* Size of the stack allocated to the OLED task. */
+#define mainGRAPHIC_OBJECTS_STACK_SIZE      ( configMINIMAL_STACK_SIZE * 3 )
+
+/* Task priorities. */
+#define mainCHECK_TASK_PRIORITY				( tskIDLE_PRIORITY + 3 )
+#define mainCREATOR_TASK_PRIORITY           ( tskIDLE_PRIORITY + 3 )
 
 xQueueHandle xOLEDQueue;
-
-void UART0StdioInit(unsigned long ulPortNum);
-void uart1Init(void);
-void myputs(const unsigned char *pucBuffer);
-void UART1Send(const unsigned char *pucBuffer, unsigned long ulCount);
 
 int ETHServiceTaskInit(const unsigned long ulPort);
 int ETHServiceTaskFlush(const unsigned long ulPort, const unsigned long flCmd);
 void LWIPServiceTaskInit(void *pvParameters);
 
 extern int  __HEAP_START;
+
+extern void vuGraphicObjectsTestTask(void *pvParameters);
 
 extern void *_sbrk(int incr)
 {
@@ -88,45 +86,6 @@ extern void *_sbrk(int incr)
     heap += incr;
 
     return (void *)prev_heap;
-}
-
-void lcd(void *pvParameters)
-{
-	for(;;)
-	{
-		vTaskDelay(500);
-		RIT128x96x4StringDraw("Dado - 1", 0, LINHA5, 25);
-		vTaskDelay(500);
-		RIT128x96x4StringDraw("Dado - 2", 0, LINHA5, 25);
-	}
-}
-
-void uart0Thread(void *pvParameters)
-{
-	UART0StdioInit(0);
-	for(;;)
-	{
-		UART0printf("Test of uart0 9999\n\r");
-		RIT128x96x4StringDraw("Uart0 - 10", 0, LINHA6, 25);
-		vTaskDelay(1500);
-		UART0printf("Test of uart0 1000\n\r");
-		RIT128x96x4StringDraw("Uart0 - 12", 0, LINHA6, 25);
-		vTaskDelay(1500);
-	}
-}
-
-void uart1Thread(void *pvParameters)
-{
-	UART1StdioInit(1);
-	for(;;)
-	{
-		UART1printf("Test of uart1 9999\n\r");
-		RIT128x96x4StringDraw("Uart1 - 10", 0, LINHA7, 25);
-		vTaskDelay(2500);
-		UART1printf("Test of uart1 1000\n\r");
-		RIT128x96x4StringDraw("Uart1 - 12", 0, LINHA7, 25);
-		vTaskDelay(2500);
-	}
 }
 
 void prvSetupHardware( void )
@@ -172,15 +131,16 @@ int main(int argc, char *argv[])
 	prvSetupHardware();
 
 	RIT128x96x4Init(1000000);
-	RIT128x96x4StringDraw("FreeRTOS-5.1.1ok  ", 0, LINHA0, 15);
-	RIT128x96x4StringDraw("LWIP comp00  1.3.0", 0, LINHA1, 15);
-	RIT128x96x4StringDraw("Lwip Source from Wella   ", 0, LINHA2, 15);
+	RIT128x96x4StringDraw("FreeRTOS-5.1.1ok  ", 0, 10, 15);
 
-	UART1StdioInit(1);
+	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
+			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY - 1,
+			NULL);
 
-	xTaskCreate( lcd,"lcd", 1000, NULL, 3, NULL);
-	xTaskCreate( uart0Thread,"uart0", 1000, NULL, 3, NULL);
-	xTaskCreate( uart1Thread,"uart1", 1000, NULL, 3, NULL);
+	/* Start the Communication Task (vComTask) to interact with the machine */
+	xTaskCreate(vComTask, (signed portCHAR *) "comTask",
+			Com_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+
 	xTaskCreate( ethernetThread,"ethernet", 1000, NULL, 3, NULL);
 
 	vTaskStartScheduler();
