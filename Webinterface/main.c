@@ -106,11 +106,6 @@ void ethernetThread(void *pvParameters)
 {
 	IP_CONFIG ipconfig;
 
-	UART1printf("Aguardando 10segundos para iniciar Ethernet\n");
-	vTaskDelay(10000);
-	UART1printf("Iniciando a interface Ethernet\n");
-
-
 	ETHServiceTaskInit(0);
 	ETHServiceTaskFlush(0,ETH_FLUSH_RX | ETH_FLUSH_TX);
 
@@ -118,6 +113,14 @@ void ethernetThread(void *pvParameters)
 	ipconfig.IPAddr=0xC0A80064;
 	ipconfig.NetMask=0xFFFFFF00;
 	ipconfig.GWAddr=0xC0A80001;
+
+	/*
+    dhcp_start();
+    dhcp_renew();
+    dhcp_release();
+    dhcp_stop();
+    dhcp_inform(); */
+
 
 	LWIPServiceTaskInit((void *)&ipconfig);
 
@@ -128,20 +131,23 @@ void ethernetThread(void *pvParameters)
 
 int main(int argc, char *argv[])
 {
+	char s_ip[30];
 	prvSetupHardware();
 
 	RIT128x96x4Init(1000000);
 	RIT128x96x4StringDraw("FreeRTOS-5.1.1ok  ", 0, 10, 15);
 
-	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
+/*	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
 			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY - 1,
 			NULL);
+*/
 
 	/* Start the Communication Task (vComTask) to interact with the machine */
 	xTaskCreate(vComTask, (signed portCHAR *) "comTask",
 			Com_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
 	xTaskCreate( ethernetThread,"ethernet", 1000, NULL, 3, NULL);
+
 
 	vTaskStartScheduler();
 	for(;;)
