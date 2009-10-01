@@ -27,8 +27,8 @@ struct goButton {
 	struct goButton * next;
 };
 
-static const unsigned char pucButtonNormal[] = { 0x06, 0x0C, 0x06, 0x0C };
-static const unsigned char pucButtonSelected[] = { 0x06, 0x06, 0x0C, 0x0C };
+static const unsigned char pucButtonNormal[] = { 0x06, 0x06, 0x06, 0x06 };
+static const unsigned char pucButtonSelected[] = { 0x06, 0x0C, 0x06, 0x0C };
 static const unsigned char pucButtonClicked[] = { 0x0C, 0x0C, 0x06, 0x06 };
 static const unsigned char pucButtonDeactivated[] = { 0x0F, 0x0F, 0x0F, 0x0F };
 

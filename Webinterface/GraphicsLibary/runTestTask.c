@@ -22,10 +22,10 @@ void vuGraphicObjectsTestTask(void *pvParameters) {
 	goInit();
 
 	b = goNewButton(10, 10, 10, 10, goButtonUp);
-	b1 = goNewButton(10, 10, 30, 10, goButtonUp);
+	b1 = goNewButton(10, 10, 25, 10, goButtonDown);
 
 	b2 = goNewButton(10, 10, 10, 30, goButtonUp);
-	b3 = goNewButton(10, 10, 30, 30, goButtonUp);
+	b3 = goNewButton(10, 10, 25, 30, goButtonDown);
 
 	goDrawButtons ();
 
