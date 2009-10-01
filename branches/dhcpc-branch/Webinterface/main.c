@@ -1,77 +1,178 @@
 /*
- * Copyright (c) 2008-2009 Open Software S/C Ltda
- * All rights reserved.
+ * The Main Routine to start FreeRTOS with all Tasks
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
- * OF SUCH DAMAGE.
- *
- *
- * Author: Paulo da Silva (psilva@opensoftware-br.com)
- *
+ * @author anzinger, hahn
  */
 
+/* Standard includes. */
 #include <stdio.h>
-#include <string.h>
 
+/* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+
+/* Hardware library includes. */
+#include "hw_memmap.h"
 #include "hw_types.h"
 #include "hw_sysctl.h"
-#include "hw_memmap.h"
 #include "sysctl.h"
-#include "ethernet.h"
 #include "gpio.h"
-
-#include "lwip/tcpip.h"
-#include "lwiplib.h"
-#include "lwip/netif.h"
-
-#include "LWIPStack.h"
-#include "ETHIsr.h"
+#include "grlib.h"
 
 #include "ComTask/comTask.h"   /* include communication task header */
 
+/*-----------------------------------------------------------*/
 
-static struct netif lwip_netif;
-static unsigned long g_ulIPMode = IPADDR_USE_STATIC;
+/* The time between cycles of the 'check' functionality (defined within the
+ tick hook. */
+#define mainCHECK_DELAY						( ( portTickType ) 5000 / portTICK_RATE_MS )
+
+/* Size of the stack allocated to the uIP task. */
+#define mainBASIC_WEB_STACK_SIZE            ( configMINIMAL_STACK_SIZE * 3 )
 
 /* Size of the stack allocated to the OLED task. */
 #define mainGRAPHIC_OBJECTS_STACK_SIZE      ( configMINIMAL_STACK_SIZE * 3 )
 
+/* The OLED task uses the sprintf function so requires a little more stack too. */
+#define mainOLED_TASK_STACK_SIZE			( configMINIMAL_STACK_SIZE + 50 )
+
 /* Task priorities. */
+
 #define mainCHECK_TASK_PRIORITY				( tskIDLE_PRIORITY + 3 )
 #define mainCREATOR_TASK_PRIORITY           ( tskIDLE_PRIORITY + 3 )
 
+/* The maximum number of message that can be waiting for display at any one
+ time. */
+#define mainOLED_QUEUE_SIZE					( 3 )
+
+
+extern int __HEAP_START;
+/*
+ * The task that handles the uIP stack.  All TCP/IP processing is performed in
+ * this task.
+ */
+extern void vuIP_Task(void *pvParameters);
+
+/*
+ * The task that handles the graphicObjects on the LCD/OLED Screen
+ */
+extern void vuGraphicObjectsTestTask(void *pvParameters);
+
+/*
+ * Configure the hardware for the demo.
+ */
+static void prvSetupHardware(void);
+
+/*
+ * Configures the high frequency timers - those used to measure the timing
+ * jitter while the real time kernel is executing.
+ */
+extern void vSetupHighFrequencyTimer(void);
+
+/*
+ * Starts the Webserver
+ */
+extern void vEthernetTask(void *pvParameters);
+/*
+ * The idle hook is used to run a test of the scheduler context switch
+ * mechanism.
+ */
+void vApplicationIdleHook(void) __attribute__((naked));
+/*-----------------------------------------------------------*/
+
+/* The queue used to send messages to the OLED task. */
 xQueueHandle xOLEDQueue;
 
-int ETHServiceTaskInit(const unsigned long ulPort);
-int ETHServiceTaskFlush(const unsigned long ulPort, const unsigned long flCmd);
-void LWIPServiceTaskInit(void *pvParameters);
+/* The welcome text. */
+const portCHAR * const pcWelcomeMessage = " DebuggingScreen RTOS";
 
-extern int  __HEAP_START;
+/* Variables used to detect the test in the idle hook failing. */
+unsigned portLONG ulIdleError = pdFALSE;
 
-extern void vuGraphicObjectsTestTask(void *pvParameters);
+/*-----------------------------------------------------------*/
+
+/*************************************************************************
+ * Please ensure to read http://www.freertos.org/portLM3Sxxxx_Eclipse.html
+ * which provides information on configuring and running this demo for the
+ * various Luminary Micro EKs.
+ *************************************************************************/
+int main(void) {
+	prvSetupHardware();
+
+	/* Create the uIP task if running on a processor that includes a MAC and
+	 PHY. */
+
+	//xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graTask",
+	//		mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
+	//				- 1, NULL);
+
+	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
+		xTaskCreate(vEthernetTask, (signed portCHAR *) "ethTask",
+				mainBASIC_WEB_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY - 1,
+				NULL);
+	}
+
+	/* Start the Communication Task (vComTask) to interact with the machine */
+	xTaskCreate(vComTask, (signed portCHAR *) "commTask", Com_TASK_STACK_SIZE,
+			NULL, tskIDLE_PRIORITY, NULL);
+
+	/* The suicide tasks must be created last as they need to know how many
+	 tasks were running prior to their creation in order to ascertain whether
+	 or not the correct/expected number of tasks are running at any given time. */
+	//vCreateSuicidalTasks(mainCREATOR_TASK_PRIORITY);
+
+	/* Configure the high frequency interrupt used to measure the interrupt
+	 jitter time. */
+	//vSetupHighFrequencyTimer();
+
+	/* Start the scheduler. */
+	vTaskStartScheduler();
+
+	/* Will only get here if there was insufficient memory to create the idle
+	 task. */
+	for (;;)
+		;
+	return 0;
+}
+/*-----------------------------------------------------------*/
+
+void prvSetupHardware(void) {
+	/* If running on Rev A2 silicon, turn the LDO voltage up to 2.75V.  This is
+	 a workaround to allow the PLL to operate reliably. */
+	if (DEVICE_IS_REVA2) {
+		SysCtlLDOSet(SYSCTL_LDO_2_75V);
+	}
+
+	/* Set the clocking to run from the PLL at 50 MHz */
+	SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN
+			| SYSCTL_XTAL_8MHZ);
+
+	/* 	Enable Port F for Ethernet LEDs
+	 LED0        Bit 3   Output
+	 LED1        Bit 2   Output */
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+	GPIODirModeSet(GPIO_PORTF_BASE, (GPIO_PIN_2 | GPIO_PIN_3), GPIO_DIR_MODE_HW);
+	GPIOPadConfigSet(GPIO_PORTF_BASE, (GPIO_PIN_2 | GPIO_PIN_3),
+			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
+}
+/*-----------------------------------------------------------*/
+
+void vApplicationTickHook(void) {
+}
+
+
+void vApplicationIdleHook(void) {
+	while (1) {
+	}
+}
+
+void vApplicationStackOverflowHook(xTaskHandle *pxTask,
+		signed portCHAR *pcTaskName) {
+	for (;;)
+		;
+}
 
 extern void *_sbrk(int incr)
 {
@@ -88,78 +189,4 @@ extern void *_sbrk(int incr)
     return (void *)prev_heap;
 }
 
-void prvSetupHardware( void )
-{
-    /* If running on Rev A2 silicon, turn the LDO voltage up to 2.75V.  This is
-    a workaround to allow the PLL to operate reliably. */
-    if( DEVICE_IS_REVA2 )
-    {
-        SysCtlLDOSet( SYSCTL_LDO_2_75V );
-    }
-
-	/* Set the clocking to run from the PLL at 50 MHz */
-	SysCtlClockSet( SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_8MHZ );
-
-}
-
-void ethernetThread(void *pvParameters)
-{
-	IP_CONFIG ipconfig;
-
-	ETHServiceTaskInit(0);
-	ETHServiceTaskFlush(0,ETH_FLUSH_RX | ETH_FLUSH_TX);
-
-	ipconfig.IPMode = IPADDR_USE_STATIC;
-	ipconfig.IPAddr=0xC0A80064;
-	ipconfig.NetMask=0xFFFFFF00;
-	ipconfig.GWAddr=0xC0A80001;
-
-	/*
-    dhcp_start();
-    dhcp_renew();
-    dhcp_release();
-    dhcp_stop();
-    dhcp_inform(); */
-
-
-	LWIPServiceTaskInit((void *)&ipconfig);
-
-	for(;;)
-	{
-	}
-}
-
-int main(int argc, char *argv[])
-{
-	char s_ip[30];
-	prvSetupHardware();
-
-	RIT128x96x4Init(1000000);
-	RIT128x96x4StringDraw("FreeRTOS-5.1.1ok  ", 0, 10, 15);
-
-/*	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
-			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY - 1,
-			NULL);
-*/
-
-	/* Start the Communication Task (vComTask) to interact with the machine */
-	xTaskCreate(vComTask, (signed portCHAR *) "comTask",
-			Com_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-
-	xTaskCreate( ethernetThread,"ethernet", 1000, NULL, 3, NULL);
-
-
-	vTaskStartScheduler();
-	for(;;)
-	{
-
-	}
-}
-
-void vApplicationIdleHook(void)
-{
-
-}
-void vApplicationTickHook(void)
-{
-}
+/*-----------------------------------------------------------*/
