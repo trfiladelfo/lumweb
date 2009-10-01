@@ -33,7 +33,7 @@ RTOS_SOURCE_DIR=../Source
 LUMINARY_DRIVER_DIR=../Common/drivers/LuminaryMicro
 LWIP_SOURCE_DIR=../Common/ethernet/lwip-1.3.0
 LWIP_DRIVER_DIR=../Common/ethernet
-WEB_SERVER_DIR=../Common/ethernet/lwip-1.3.0/Apps
+WEB_SERVER_DIR=./Webserver
 COMMOM_INCLUDE=../Common/include
 
 #/*
@@ -80,6 +80,7 @@ SOURCE=	main.c uart0.c uart1.c \
 		./ComTask/comTask.c \
 		./GraphicsLibrary/graphicObjects.c \
 		./GraphicsLibrary/runTestTask.c \
+		$(WEB_SERVER_DIR)/webserver.c \
 		$(LWIP_DRIVER_DIR)/ETHIsr.c \
 		$(LWIP_DRIVER_DIR)/LWIPStack.c \
 		$(RTOS_SOURCE_DIR)/list.c \
