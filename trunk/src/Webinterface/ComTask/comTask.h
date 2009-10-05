@@ -20,11 +20,13 @@
 */
 
 
+
 /** Message for the ComTask queue */
 typedef struct
 {
 	char *command; //e.g. 'get', 'set'
 	char *item; // name of the selected item
+	char *from; // adress to return answer
 } xCOMMessage;
 
 
