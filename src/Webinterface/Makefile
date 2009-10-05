@@ -75,28 +75,27 @@ DEBUG=-g
 OPTIM=-O0
 
 
-CFLAGS=$(DEBUG) -I . -I $(RTOS_SOURCE_DIR)/include -I $(RTOS_SOURCE_DIR)/portable/gcc/ARM_CM3 \
-		-I $(DEMO_INCLUDE_DIR) -D GCC_ARMCM3_LM3S102 -D inline= -mthumb -mcpu=cortex-m3 $(OPTIM) -T$(LDSCRIPT) \
-		-D PACK_STRUCT_END=__attribute\(\(packed\)\) -D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) -D sprintf=usprintf -D snprintf=usnprintf -D printf=uipprintf \
-		-I $(UIP_COMMON_DIR) -I ./webserver -ffunction-sections -fdata-sections -I $(LUMINARY_DRIVER_DIR)
+CFLAGS=$(DEBUG) -I . \
+		-I $(RTOS_SOURCE_DIR)/include \
+		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
+		-I $(DEMO_INCLUDE_DIR) -D GCC_ARMCM3_LM3S102 \
+		-I $(UIP_COMMON_DIR) \
+		-I ./webserver \
+		-I $(LUMINARY_DRIVER_DIR) \
+		-D inline= -mthumb -mcpu=cortex-m3 \
+		$(OPTIM) -T$(LDSCRIPT) \
+		-D PACK_STRUCT_END=__attribute\(\(packed\)\) \
+		-D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) \
+		-D sprintf=usprintf -D snprintf=usnprintf -D printf=uipprintf \
+		-ffunction-sections -fdata-sections 
 
 SOURCE=	main.c \
 		timertest.c \
 		rit128x96x4.c \
-		osram128x64x4.c \
-		formike128x128x16.c \
 		./ComTask/comTask.c \
 		./ParTest/ParTest.c \
 		$(LUMINARY_DRIVER_DIR)/ustdlib.c \
-		$(DEMO_COMMON_DIR)/BlockQ.c \
-		$(DEMO_COMMON_DIR)/blocktim.c \
 		$(DEMO_COMMON_DIR)/death.c \
-		$(DEMO_COMMON_DIR)/integer.c \
-		$(DEMO_COMMON_DIR)/PollQ.c \
-		$(DEMO_COMMON_DIR)/semtest.c \
-		$(DEMO_COMMON_DIR)/GenQTest.c \
-		$(DEMO_COMMON_DIR)/QPeek.c \
-		$(DEMO_COMMON_DIR)/recmutex.c \
 		$(DEMO_COMMON_DIR)/IntQueue.c \
 		./IntQueueTimer.c \
 		./webserver/uIP_Task.c \
@@ -137,7 +136,12 @@ startup.o : startup.c Makefile
 
 clean :
 	touch Makefile
-	rm $(OBJS) $(NAME).bin $(NAME).axf
+	rm  -f $(OBJS)
+	rm  -f *.o
+	rm  -f *.map
+	rm  -f *.bin
+	rm  -f *.axf
+	rm  -f *.elf
 
 flash : all
 	openocd -f ../lm3s_scripts/lm3s_flash_start.cfg -c "flash write_bank 0 ./$(NAME).bin 0" -f ../lm3s_scripts/lm3s_flash_end.cfg 
