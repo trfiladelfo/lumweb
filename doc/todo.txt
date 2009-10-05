@@ -5,8 +5,8 @@ Tasks:													Fertig %:
 		- designen
 		- erstellen										0
 		- parser implementieren							0
-	- Ausgabe
-		
+	
+	- Ausgabe	
 		- Ausgabe auf LCD								0
 			- "Objekte" zum Anzeigen designen			0
 			- Eingabemögichkeit							0
