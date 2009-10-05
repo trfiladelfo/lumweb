@@ -210,9 +210,8 @@ unsigned portLONG ulIdleError = pdFALSE;
 int main(void) {
 	prvSetupHardware();
 
-	/* Create the queue used by the OLED task.  Messages for display on the OLED
-	 are received via this queue. */
-//	xOLEDQueue = xQueueCreate(mainOLED_QUEUE_SIZE, sizeof(xOLEDMessage));
+	/* Create the queue used by the Com task.  Messages are received via this queue. */
+	xCOMQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
 
 	/* Create the uIP task if running on a processor that includes a MAC and
 	 PHY. */
@@ -236,7 +235,7 @@ int main(void) {
 
 	/* Start the Communication Task (vComTask) to interact with the machine */
 	xTaskCreate(vComTask, (signed portCHAR *) "comTask",
-			Com_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+			COM_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
 
 	/* The suicide tasks must be created last as they need to know how many
