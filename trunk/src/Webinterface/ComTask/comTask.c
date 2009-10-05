@@ -1,12 +1,22 @@
+/**
+ * \addtogroup comTask
+ * @{
+ *
+ * \file comTask.c
+ * \author Anziner, Hahn
+ * \brief implements the Communication Task (vComTask) to interact with the machine
+ *
+ *
+*/
+
 /*
- * comTask.c $Rev$ $Author$
+ * $Rev$ $Author$
  * $LastChangedDate$
  *
- * (c) 2009 Anziner, Hahn
- * GPV v3
+ * GPV v3  (c) 2009
  *
- * implements the Communication Task (vComTask) to interact with the machine
 */
+
 
 void vComTask( void *pvParameters )
 {
