@@ -32,21 +32,40 @@
  *
  * $Id: httpd-fs.c,v 1.1 2006/06/07 09:13:08 adam Exp $
  */
+#include <string.h>
+#include <stdlib.h>
 
 #include "httpd.h"
 #include "httpd-fs.h"
 #include "httpd-fsdata.h"
 
+#include "rit128x96x4.h"
+
 #ifndef NULL
 #define NULL 0
 #endif /* NULL */
 
+#define TEST_HTML "<html><head><title>test</title></head><body><h2>Test</h2></body></html>"
 #include "httpd-fsdata.c"
 
 #if HTTPD_FS_STATISTICS
 static u16_t count[HTTPD_FS_NUMFILES];
 #endif /* HTTPD_FS_STATISTICS */
 
+/*
+char *convert_to_hex(char *s){
+	int len = 0, i;
+	char *ret, buf[2];
+
+	len = strlen(s);
+	ret = pvPortMalloc(len+1);
+
+	for(i = 0; i < strlen(s); i++){
+		sprintf(buf, "%X", *(s+i));
+		strcat(ret, buf);
+	}
+	return ret;
+}*/
 /*-----------------------------------------------------------------------------------*/
 static u8_t httpd_fs_strcmp(const char *str1, const char *str2) {
 	u8_t i;
@@ -69,7 +88,12 @@ int httpd_fs_open(const char *name, struct httpd_fs_file *file) {
 #if HTTPD_FS_STATISTICS
 	u16_t i = 0;
 #endif /* HTTPD_FS_STATISTICS */
+	char *out;
+	char draw[20];
 	struct httpd_fsdata_file_noconst *f;
+
+	RIT128x96x4Clear();
+	RIT128x96x4StringDraw(name, 2, 2, 5);
 
 	for (f = (struct httpd_fsdata_file_noconst *) HTTPD_FS_ROOT; f != NULL; f
 			= (struct httpd_fsdata_file_noconst *) f->next) {
@@ -77,9 +101,19 @@ int httpd_fs_open(const char *name, struct httpd_fs_file *file) {
 		if (httpd_fs_strcmp(name, f->name) == 0) {
 			file->data = f->data;
 			file->len = f->len;
+			sprintf(draw, "%d %d", f->len, strlen(f->data));
+			RIT128x96x4Clear();
+			RIT128x96x4StringDraw(draw, 10, 2, 5);
 #if HTTPD_FS_STATISTICS
 			++count[i];
 #endif /* HTTPD_FS_STATISTICS */
+			return 1;
+		}
+
+		if(httpd_fs_strcmp(name, "/test_file.html") == 0){
+			RIT128x96x4StringDraw(out, 10, 2, 5);
+			file->data = TEST_HTML;
+			file->len = strlen(TEST_HTML) + 1; //- strlen("/test_file.html");
 			return 1;
 		}
 #if HTTPD_FS_STATISTICS
