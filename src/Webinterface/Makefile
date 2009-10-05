@@ -95,15 +95,13 @@ SOURCE=	main.c \
 		./ComTask/comTask.c \
 		./ParTest/ParTest.c \
 		$(LUMINARY_DRIVER_DIR)/ustdlib.c \
-		$(DEMO_COMMON_DIR)/death.c \
-		$(DEMO_COMMON_DIR)/IntQueue.c \
-		./IntQueueTimer.c \
 		./webserver/uIP_Task.c \
 		./webserver/emac.c \
 		./webserver/httpd.c \
 		./webserver/httpd-cgi.c \
 		./webserver/httpd-fs.c \
 		./webserver/http-strings.c \
+		./webserver/dhcpc.c \
 		./GraphicsLibary/runTestTask.c \
 		./GraphicsLibary/graphicObjects.c \
 		$(UIP_COMMON_DIR)/uip_arp.c \
@@ -115,6 +113,8 @@ SOURCE=	main.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3/port.c \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c
+		
+#		./IntQueueTimer.c \
 
 LIBS= $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libdriver.a $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libgr.a
 
