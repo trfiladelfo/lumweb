@@ -1071,7 +1071,7 @@ struct uip_udp_conn *uip_udp_new(uip_ipaddr_t *ripaddr, u16_t rport);
 #   if UIP_BYTE_ORDER == UIP_BIG_ENDIAN
 #      define HTONS(n) (n)
 #   else /* UIP_BYTE_ORDER == UIP_BIG_ENDIAN */
-#      define HTONS(n) (u16_t)((((u16_t) (n)) << 8) | (((u16_t) (n)) >> 8))
+#      define HTONS(n) (u16_t)(((((u16_t) (n)) << 8)&0xff00) | ((((u16_t) (n)) >> 8)&0x00ff))
 #   endif /* UIP_BYTE_ORDER == UIP_BIG_ENDIAN */
 #else
 #error "HTONS already defined!"
@@ -1630,7 +1630,6 @@ u16_t uip_tcpchksum(void);
  * to by uip_appdata.
  */
 u16_t uip_udpchksum(void);
-
 
 #endif /* __UIP_H__ */
 
