@@ -1,3 +1,13 @@
+/**
+ * \addtogroup GraphicsLibrary
+ * @{
+ *
+ * \file graphicObjects.c
+ * \author Anziner, Hahn
+ * \brief This Libary is used to draw the Graphic Objects to different Display Types.
+ *
+*/
+
 /*
  * graphicObjects.c
  *

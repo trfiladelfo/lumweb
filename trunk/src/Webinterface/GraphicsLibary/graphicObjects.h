@@ -1,9 +1,12 @@
-/*
- * graphicObjects.h
+/**
+ * \addtogroup GraphicsLibrary
+ * @{
  *
- *  Created on: 23.09.2009
- *      Author: root
- */
+ * \file graphicObjects.h
+ * \author Anziner, Hahn
+ * \brief This Libary is used to draw the Graphic Objects to different Display Types.
+ *
+*/
 
 #ifndef GRAPHICOBJECTS_H_
 #define GRAPHICOBJECTS_H_
