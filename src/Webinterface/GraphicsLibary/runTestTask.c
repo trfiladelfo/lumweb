@@ -1,3 +1,13 @@
+/**
+ * \addtogroup GraphicsLibrary
+ * @{
+ *
+ * \file graphicObjects.c
+ * \author Anziner, Hahn
+ * \brief This File is used to Run the the Graphic Objects Libary.
+ *
+*/
+
 /*
  * graphicObjects.c
  *
