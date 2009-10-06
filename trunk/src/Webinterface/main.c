@@ -35,9 +35,6 @@
 /* Size of the stack allocated to the uIP task. */
 #define mainBASIC_WEB_STACK_SIZE            ( configMINIMAL_STACK_SIZE * 3 )
 
-/* Size of the stack allocated to the OLED task. */
-#define mainGRAPHIC_OBJECTS_STACK_SIZE      ( configMINIMAL_STACK_SIZE * 3 )
-
 /* The OLED task uses the sprintf function so requires a little more stack too. */
 #define mainOLED_TASK_STACK_SIZE			( configMINIMAL_STACK_SIZE + 50 )
 
@@ -114,18 +111,14 @@ int main(void) {
 	 PHY. */
 
 	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
-			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
-					- 1, NULL);
+			GRAPH_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 
-
-	vSendDebugUART("Graphics Started");
 
 
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
 				NULL);
-		vSendDebugUART("Webserver Started");
 	}
 
 
@@ -168,7 +161,7 @@ void prvSetupHardware(void) {
 	GPIOPadConfigSet(GPIO_PORTF_BASE, (GPIO_PIN_2 | GPIO_PIN_3),
 			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
 
-	vParTestInitialise();
+	//vParTestInitialise();
 }
 /*-----------------------------------------------------------*/
 

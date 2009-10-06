@@ -61,6 +61,7 @@ DEMO_COMMON_DIR=../Common/Minimal
 DEMO_INCLUDE_DIR=../Common/include
 UIP_COMMON_DIR=../Common/ethernet/uIP/uip-1.0/uip
 LUMINARY_DRIVER_DIR=../Common/drivers/LuminaryMicro
+FATFS_COMMON_DIR=../Common/fatfs
 
 NAME = Luminary_Webinterface
 
@@ -80,6 +81,8 @@ CFLAGS=$(DEBUG) -I . \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
 		-I $(DEMO_INCLUDE_DIR) -D GCC_ARMCM3_LM3S102 \
 		-I $(UIP_COMMON_DIR) \
+		-I $(FATFS_COMMON_DIR)/src \
+		-I $(FATFS_COMMON_DIR)/port \
 		-I ./webserver \
 		-I $(LUMINARY_DRIVER_DIR) \
 		-D inline= -mthumb -mcpu=cortex-m3 \
@@ -113,9 +116,14 @@ SOURCE=	main.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3/port.c \
-		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c
+		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
+		$(FATFS_COMMON_DIR)/port/fs.c \
+		$(FATFS_COMMON_DIR)/src/ff.c \
+		$(FATFS_COMMON_DIR)/port/mmc-lmi-rtos.c \
+		
 		
 #		./IntQueueTimer.c \
+#		$(FATFS_COMMON_DIR)/port/fs.c \
 
 LIBS= $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libdriver.a $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libgr.a
 

@@ -35,7 +35,7 @@ typedef struct
 xQueueHandle xCOMQueue;
 
 /* ComTask stack size */
-#define COM_STACK_SIZE			( configMINIMAL_STACK_SIZE + 10 )
+#define COM_STACK_SIZE			( configMINIMAL_STACK_SIZE * 3 )
 
 /* The maximum number of message that can be waiting  at any one time. */
 #define COM_QUEUE_SIZE					( 3 )
