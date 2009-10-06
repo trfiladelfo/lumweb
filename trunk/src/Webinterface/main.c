@@ -22,6 +22,8 @@
 #include "grlib.h"
 
 #include "ComTask/comTask.h"   /* include communication task header */
+#include "GraphicsLibary/graphicObjects.h"
+
 
 /*-----------------------------------------------------------*/
 
@@ -94,13 +96,19 @@ unsigned portLONG ulIdleError = pdFALSE;
  *************************************************************************/
 int main(void) {
 	prvSetupHardware();
+	/* Create the queue used by the Com task.  Messages are received via this queue. */
+	xCOMQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
+
+	/* Create the queue used by the Graphics task.  Messages are received via this queue. */
+	xGRAPHQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xGRAPHMessage));
+
 
 	/* Create the uIP task if running on a processor that includes a MAC and
 	 PHY. */
 
-	//xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
-	//		mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
-	//				- 1, NULL);
+	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
+			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
+					- 1, NULL);
 
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
@@ -109,8 +117,8 @@ int main(void) {
 	}
 
 	/* Start the Communication Task (vComTask) to interact with the machine */
-	//xTaskCreate(vComTask, (signed portCHAR *) "comTask", Com_TASK_STACK_SIZE,
-	//		NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vComTask, (signed portCHAR *) "comTask", COM_STACK_SIZE,
+			NULL, tskIDLE_PRIORITY, NULL);
 
 	/* The suicide tasks must be created last as they need to know how many
 	 tasks were running prior to their creation in order to ascertain whether

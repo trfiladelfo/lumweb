@@ -25,16 +25,21 @@
 #include "portmacro.h"
 
 #include "comTask.h"
+#include  "GraphicsLibary/graphicObjects.h"
+
 
 void vComTask( void *pvParameters )
 {
 	xCOMMessage xMessage;
+	xGRAPHMessage xGraph_msg;
+	char msg[] = "Hallo";
 
+	xGraph_msg.msg = msg;
 	for( ;; )
     {
 		/* Wait for a message to arrive */
-		xQueueReceive( xCOMQueue, &xMessage, portMAX_DELAY );
-
+		xQueueReceive( xCOMQueue, &xMessage,  ( portTickType ) 10 );
+		xQueueSend(xGRAPHQueue, &xGraph_msg, ( portTickType ) 0);
 		// send can bus message
     }
 }

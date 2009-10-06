@@ -164,8 +164,8 @@ void vuIP_Task(void *pvParameters) {
 	pucMACArray[4] = ((ulUser1 >> 8) & 0xff);
 	pucMACArray[5] = ((ulUser1 >> 16) & 0xff);
 
-	RIT128x96x4Init(1000000);
-	RIT128x96x4StringDraw("DHCP Test", 0, 0, 0xf);
+//	RIT128x96x4Init(1000000);
+//	RIT128x96x4StringDraw("DHCP Test", 0, 0, 0xf);
 
 	dhcpc_init(pucMACArray, sizeof(pucMACArray));
 	dhcpc_request();
@@ -175,7 +175,7 @@ void vuIP_Task(void *pvParameters) {
 	uip_sethostaddr( xIPAddr );
 	httpd_init();
 	sprintf(buffer, "IP: %03d.%03d.%03d.%03d", (xIPAddr[0] & 0x0F), (xIPAddr[0]  >> 8), (xIPAddr[1] & 0x0F), (xIPAddr[1] >> 8));
-	RIT128x96x4StringDraw(buffer, 10, 10, 0xf);
+//	RIT128x96x4StringDraw(buffer, 10, 10, 0xf);
 
 	while (vInitEMAC() != pdPASS) {
 		vTaskDelay(uipINIT_WAIT);
