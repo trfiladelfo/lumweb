@@ -240,7 +240,16 @@ void goInsertButton(pgoButton btn) {
  */
 void goStartListener(void) {
 	tBoolean pressed = false;
+	xGRAPHMessage xMessage;
+
 	while (1) {
+
+
+		/* Wait for a message to arrive */
+		if(xQueueReceive( xGRAPHQueue, &xMessage, ( portTickType ) 10 )){
+			/* Print received message */
+			RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
+		}
 
 		//GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTE_BASE,
 		//		UP));
