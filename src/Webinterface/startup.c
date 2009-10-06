@@ -49,6 +49,7 @@ extern void vT2InterruptHandler( void );
 extern void vT3InterruptHandler( void );
 extern void vEMAC_ISR(void);
 
+
 //*****************************************************************************
 //
 // Reserve space for the system stack.
@@ -58,6 +59,8 @@ extern void vEMAC_ISR(void);
 #define STACK_SIZE                              120
 #endif
 static unsigned long pulStack[STACK_SIZE];
+
+
 
 //*****************************************************************************
 //
@@ -91,7 +94,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // GPIO Port C
     IntDefaultHandler,                      // GPIO Port D
     IntDefaultHandler,                      // GPIO Port E
-    IntDefaultHandler,                      // UART0 Rx and Tx
+    IntDefaultHandler,                     // UART0 Rx and Tx
     IntDefaultHandler,                      // UART1 Rx and Tx
     IntDefaultHandler,                      // SSI Rx and Tx
     IntDefaultHandler,                      // I2C Master and Slave

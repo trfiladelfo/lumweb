@@ -39,7 +39,7 @@ void vComTask( void *pvParameters )
     {
 		/* Wait for a message to arrive */
 		xQueueReceive( xCOMQueue, &xMessage,  ( portTickType ) 10 );
-		xQueueSend(xGRAPHQueue, &xGraph_msg, ( portTickType ) 0);
+		//xQueueSend(xGRAPHQueue, &xGraph_msg, ( portTickType ) 0);
 		// send can bus message
     }
 }
