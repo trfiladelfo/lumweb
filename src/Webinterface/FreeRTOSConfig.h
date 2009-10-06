@@ -108,4 +108,6 @@ to zero. */
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() ( ulHighFrequencyTimerTicks = 0UL )
 #define portGET_RUN_TIME_COUNTER_VALUE()	ulHighFrequencyTimerTicks
 
+#define TICK_MS(ms)        (((configTICK_RATE_HZ)/1000.0)*ms + 0.9)
+
 #endif /* FREERTOS_CONFIG_H */
