@@ -84,7 +84,7 @@
 #define uipIP_ADDR0		192
 #define uipIP_ADDR1		168
 
-#define uipIP_ADDR2		1
+#define uipIP_ADDR2		10
 #define uipIP_ADDR3		200
 
 
@@ -164,8 +164,6 @@ void vuIP_Task(void *pvParameters) {
 	pucMACArray[4] = ((ulUser1 >> 8) & 0xff);
 	pucMACArray[5] = ((ulUser1 >> 16) & 0xff);
 
-//	RIT128x96x4Init(1000000);
-//	RIT128x96x4StringDraw("DHCP Test", 0, 0, 0xf);
 
 	dhcpc_init(pucMACArray, sizeof(pucMACArray));
 	dhcpc_request();
@@ -174,8 +172,6 @@ void vuIP_Task(void *pvParameters) {
 	uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
 	uip_sethostaddr( xIPAddr );
 	httpd_init();
-	sprintf(buffer, "IP: %03d.%03d.%03d.%03d", (xIPAddr[0] & 0x0F), (xIPAddr[0]  >> 8), (xIPAddr[1] & 0x0F), (xIPAddr[1] >> 8));
-//	RIT128x96x4StringDraw(buffer, 10, 10, 0xf);
 
 	while (vInitEMAC() != pdPASS) {
 		vTaskDelay(uipINIT_WAIT);
@@ -317,9 +313,9 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 		}
 
 		/* Write the message to the LCD. */
-		strcpy(cMessageForDisplay, pcText);
-		xOLEDMessage.pcMessage = cMessageForDisplay;
-		xQueueSend( xOLEDQueue, &xOLEDMessage, portMAX_DELAY );
+		//strcpy(cMessageForDisplay, pcText);
+		//xOLEDMessage.pcMessage = cMessageForDisplay;
+		//xQueueSend( xOLEDQueue, &xOLEDMessage, portMAX_DELAY );
 	}
 }
 

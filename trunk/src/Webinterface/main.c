@@ -6,6 +6,7 @@
 
 /* Standard includes. */
 #include <stdio.h>
+#include <string.h>
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
@@ -22,8 +23,8 @@
 #include "grlib.h"
 
 #include "ComTask/comTask.h"   /* include communication task header */
-#include "GraphicsLibary/graphicObjects.h"
-
+#include "DebugUART/debugUART.h" /* include the Uart debugging task */
+#include "GraphicsLibary/graphicObjects.h" /* include the Graphics Libary */
 
 /*-----------------------------------------------------------*/
 
@@ -78,9 +79,6 @@ extern void vSetupHighFrequencyTimer(void);
 void vApplicationIdleHook(void) __attribute__((naked));
 /*-----------------------------------------------------------*/
 
-/* The queue used to send messages to the OLED task. */
-xQueueHandle xOLEDQueue;
-
 /* The welcome text. */
 const portCHAR * const pcWelcomeMessage = " DebuggingScreen RTOS";
 
@@ -95,12 +93,21 @@ unsigned portLONG ulIdleError = pdFALSE;
  * various Luminary Micro EKs.
  *************************************************************************/
 int main(void) {
+
+	char buffer[20];
+	xGRAPHMessage xMessage;
+
+	vInitDebug();
+
 	prvSetupHardware();
+
 	/* Create the queue used by the Com task.  Messages are received via this queue. */
 	xCOMQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
 
 	/* Create the queue used by the Graphics task.  Messages are received via this queue. */
 	xGRAPHQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xGRAPHMessage));
+
+	vSendDebugUART("Welcome");
 
 
 	/* Create the uIP task if running on a processor that includes a MAC and
@@ -110,27 +117,29 @@ int main(void) {
 			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
 					- 1, NULL);
 
+
+	vSendDebugUART("Graphics Started");
+
+
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
 				NULL);
+		vSendDebugUART("Webserver Started");
 	}
 
+
+
 	/* Start the Communication Task (vComTask) to interact with the machine */
-	xTaskCreate(vComTask, (signed portCHAR *) "comTask", COM_STACK_SIZE,
-			NULL, tskIDLE_PRIORITY, NULL);
 
-	/* The suicide tasks must be created last as they need to know how many
-	 tasks were running prior to their creation in order to ascertain whether
-	 or not the correct/expected number of tasks are running at any given time. */
-	//vCreateSuicidalTasks(mainCREATOR_TASK_PRIORITY);
+	xTaskCreate(vComTask, (signed portCHAR *) "comTask", COM_STACK_SIZE, NULL,
+			tskIDLE_PRIORITY, NULL);
 
-	/* Configure the high frequency interrupt used to measure the interrupt
-	 jitter time. */
-	vSetupHighFrequencyTimer();
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
+
+
 
 	/* Will only get here if there was insufficient memory to create the idle
 	 task. */

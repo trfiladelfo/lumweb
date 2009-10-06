@@ -39,7 +39,6 @@
 #include "httpd-fs.h"
 #include "httpd-fsdata.h"
 
-#include "rit128x96x4.h"
 
 #ifndef NULL
 #define NULL 0
@@ -92,18 +91,12 @@ int httpd_fs_open(const char *name, struct httpd_fs_file *file) {
 	char draw[20];
 	struct httpd_fsdata_file_noconst *f;
 
-	RIT128x96x4Clear();
-	RIT128x96x4StringDraw(name, 2, 2, 5);
-
 	for (f = (struct httpd_fsdata_file_noconst *) HTTPD_FS_ROOT; f != NULL; f
 			= (struct httpd_fsdata_file_noconst *) f->next) {
 
 		if (httpd_fs_strcmp(name, f->name) == 0) {
 			file->data = f->data;
 			file->len = f->len;
-			sprintf(draw, "%d %d", f->len, strlen(f->data));
-			RIT128x96x4Clear();
-			RIT128x96x4StringDraw(draw, 10, 2, 5);
 #if HTTPD_FS_STATISTICS
 			++count[i];
 #endif /* HTTPD_FS_STATISTICS */
@@ -111,7 +104,7 @@ int httpd_fs_open(const char *name, struct httpd_fs_file *file) {
 		}
 
 		if(httpd_fs_strcmp(name, "/test_file.html") == 0){
-			RIT128x96x4StringDraw(out, 10, 2, 5);
+
 			file->data = TEST_HTML;
 			file->len = strlen(TEST_HTML) + 1; //- strlen("/test_file.html");
 			return 1;

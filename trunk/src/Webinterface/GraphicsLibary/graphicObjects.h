@@ -6,7 +6,7 @@
  * \author Anziner, Hahn
  * \brief This Libary is used to draw the Graphic Objects to different Display Types.
  *
-*/
+ */
 
 #ifndef GRAPHICOBJECTS_H_
 #define GRAPHICOBJECTS_H_
@@ -19,15 +19,12 @@
 #include "portmacro.h"
 
 /** Message for the Graph Task queue */
-typedef struct
-{
-	char *msg; //e.g. 'get', 'set'
+typedef struct {
+	unsigned char *msg; //e.g. 'get', 'set'
 } xGRAPHMessage;
-
 
 /* The queue used to send messages to the Graphics task. */
 xQueueHandle xGRAPHQueue;
-
 
 /* Graphics Task stack size */
 #define GRAPH_STACK_SIZE			( configMINIMAL_STACK_SIZE + 10 )
@@ -35,10 +32,11 @@ xQueueHandle xGRAPHQueue;
 /* The maximum number of message that can be waiting  at any one time. */
 #define GRAPH_QUEUE_SIZE					( 3 )
 
-
 static const unsigned char g_pucRIT128x96x4HorizontalInc[] = { 0xA0, 0x52 };
 
+#ifndef NULL
 #define NULL (void *) 0
+#endif
 
 #define UP GPIO_PIN_0
 #define DOWN GPIO_PIN_1

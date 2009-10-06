@@ -6,7 +6,7 @@
  * \author Anziner, Hahn
  * \brief This Libary is used to draw the Graphic Objects to different Display Types.
  *
-*/
+ */
 
 /*
  * graphicObjects.c
@@ -250,15 +250,19 @@ void goInsertButton(pgoButton btn) {
  */
 void goStartListener(void) {
 	tBoolean pressed = false;
+	unsigned char * ucMessageLast;
 	xGRAPHMessage xMessage;
 
 	while (1) {
 
-
 		/* Wait for a message to arrive */
-		if(xQueueReceive( xGRAPHQueue, &xMessage, ( portTickType ) 10 )){
+		if (xQueueReceive( xGRAPHQueue, &xMessage, ( portTickType ) 10 )) {
 			/* Print received message */
-			RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
+			if (ucMessageLast != xMessage.msg) {
+				RIT128x96x4StringDraw(ucMessageLast, 10, 85, 0);
+				RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
+				ucMessageLast = xMessage.msg;
+			}
 		}
 
 		//GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTE_BASE,
@@ -273,25 +277,27 @@ void goStartListener(void) {
 
 			// UP
 			if (!GPIOPinRead(GPIO_PORTE_BASE, UP)) {
+				vSendDebugUART("Up     pressed");
 				pressed = true;
 			}
 			// DOWN
 			if (!GPIOPinRead(GPIO_PORTE_BASE, DOWN)) {
+				vSendDebugUART("Down   pressed");
 				pressed = true;
 			}
 			// LEFT
 			if (!GPIOPinRead(GPIO_PORTE_BASE, LEFT)) {
 				if (buttonSelected != NULL) {
-									goDrawButton(buttonSelected, pucButtonNormal);
-									buttonSelected = goGetPrevButton(buttonSelected);
-									if (buttonSelected == NULL) {
-										buttonSelected = buttonListLast;
-									}
-									if (buttonSelected != NULL) {
-										goDrawButton(buttonSelected, pucButtonSelected);
-									}
-								}
-								pressed = true;
+					goDrawButton(buttonSelected, pucButtonNormal);
+					buttonSelected = goGetPrevButton(buttonSelected);
+					if (buttonSelected == NULL) {
+						buttonSelected = buttonListLast;
+					}
+					if (buttonSelected != NULL) {
+						goDrawButton(buttonSelected, pucButtonSelected);
+					}
+				}
+				vSendDebugUART("Left   pressed");
 				pressed = true;
 			}
 			// RIGHT
@@ -303,6 +309,7 @@ void goStartListener(void) {
 						goDrawButton(buttonSelected, pucButtonSelected);
 					}
 				}
+				vSendDebugUART("Right  pressed");
 				pressed = true;
 			}
 
@@ -310,8 +317,11 @@ void goStartListener(void) {
 			if (!GPIOPinRead(GPIO_PORTF_BASE, SELECT)) {
 
 				goDrawButton(buttonSelected, pucButtonClicked);
+				vSendDebugUART("Select pressed");
 				pressed = true;
 			}
+
+
 
 			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 0);
 		} else {

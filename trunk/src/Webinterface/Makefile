@@ -104,6 +104,7 @@ SOURCE=	main.c \
 		./webserver/dhcpc.c \
 		./GraphicsLibary/runTestTask.c \
 		./GraphicsLibary/graphicObjects.c \
+		./DebugUART/debugUART.c \
 		$(UIP_COMMON_DIR)/uip_arp.c \
 		$(UIP_COMMON_DIR)/psock.c \
 		$(UIP_COMMON_DIR)/timer.c \
