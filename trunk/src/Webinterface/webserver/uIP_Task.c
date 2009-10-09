@@ -154,12 +154,12 @@ void vuIP_Task(void *pvParameters) {
 	dhcpc_init(uip_ethaddr.addr, sizeof(uip_ethaddr.addr));
 	dhcpc_request();
 
-	//uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
-	//uip_sethostaddr( xIPAddr );
+	uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
+	uip_sethostaddr( xIPAddr );
 
 	dhcpc_appcall();
 
-	//httpd_init();
+	httpd_init();
 
 	while (vInitEMAC() != pdPASS) {
 		vTaskDelay(uipINIT_WAIT);
