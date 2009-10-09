@@ -60,9 +60,10 @@ HTTPD_CGI_CALL(net, "net-stats", net_stats);
 HTTPD_CGI_CALL(rtos, "rtos-stats", rtos_stats );
 HTTPD_CGI_CALL(run, "run-time", run_time );
 HTTPD_CGI_CALL(io, "led-io", led_io );
+HTTPD_CGI_CALL(time, "day_hour", time_day );
 
 
-static const struct httpd_cgi_call *calls[] = { &file, &tcp, &net, &rtos, &run, &io, NULL };
+static const struct httpd_cgi_call *calls[] = { &file, &tcp, &net, &rtos, &run, &io, &time, NULL };
 
 /*---------------------------------------------------------------------------*/
 static
@@ -258,10 +259,7 @@ extern void vTaskGetRunTimeStats( signed char *pcWriteBuffer );
 static unsigned short
 generate_runtime_stats(void *arg)
 {
-	lRefreshCount++;
-	sprintf( cCountBuf, "<p><br>Refresh count = %d", lRefreshCount );
-    vTaskGetRunTimeStats( uip_appdata );
-	strcat( uip_appdata, cCountBuf );
+	sprintf( uip_appdata, "%d", 10 );
 
 	return strlen( uip_appdata );
 }
@@ -283,7 +281,26 @@ static PT_THREAD(led_io(struct httpd_state *s, char *ptr))
   PSOCK_GENERATOR_SEND(&s->sout, generate_io_state, NULL);
   PSOCK_END(&s->sout);
 }
+/*---------------------------------------------------------------------------*/
 
+/*-------------- generate time page */
+static unsigned short
+generate_time(void *arg)
+{
+	sprintf( uip_appdata, "\"%d\"", 10);
+
+	return strlen( uip_appdata );
+}
+/*---------------------------------------------------------------------------*/
+
+
+static
+PT_THREAD(time_day(struct httpd_state *s, char *ptr))
+{
+  PSOCK_BEGIN(&s->sout);
+  PSOCK_GENERATOR_SEND(&s->sout, generate_time, NULL);
+  PSOCK_END(&s->sout);
+}
 /** @} */
 
 

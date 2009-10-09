@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<title>Uhrzeiten</title>
+	</head>
+	<body>
+		<pre> %! day_hour </pre>
+		<table>
+			<tr colspan='2'>
+				<th>Tag</th>
+			</tr>
+			<tr>
+				<td>Stunden <input type="text" value=%! day_hour id="day_hour"/></td>
+				<td>Stunden <input type="text" value="0" id="day_minute"/></td>
+			</tr>
+			<tr colspan='2'>
+				<th>Nacht</th>
+			</tr>
+			<tr>
+				<td>Stunden <input type="text" width="12pt" value="0" id="night_hour"/></td>
+				<td>Stunden <input type="text" width="12pt" value="0" id="night_minute"/></td>
+			</tr>
+		</table>
+	</body>
+</html>
