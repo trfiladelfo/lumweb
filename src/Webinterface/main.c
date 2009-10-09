@@ -111,7 +111,7 @@ int main(void) {
 	 PHY. */
 
 	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
-			GRAPH_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
+			GRAPH_STACK_SIZE, NULL, tskIDLE_PRIORITY - 1, NULL);
 
 
 
