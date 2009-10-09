@@ -264,43 +264,43 @@ static void prvSetMACAddress(void) {
 
 void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength) {
-	//char *c, *pcText;
-	//static portCHAR cMessageForDisplay[32];
+	char *c, *pcText;
+	static portCHAR cMessageForDisplay[32];
 
 	/* Process the form input sent by the IO page of the served HTML. */
 
-	//c = strstr(pcInputString, "?");
+	c = strstr(pcInputString, "?");
 
-	//if (c) {
-	//	/* Turn LED's on or off in accordance with the check box status. */
-	//	if (strstr(c, "LED0=1") != NULL) {
-	//		vParTestSetLED(0, 1);
-	//	} else {
-	//		vParTestSetLED(0, 0);
-	//	}
+	if (c) {
+		/* Turn LED's on or off in accordance with the check box status. */
+		if (strstr(c, "LED0=1") != NULL) {
+			vParTestSetLED(0, 1);
+		} else {
+			vParTestSetLED(0, 0);
+		}
 
 	/* Find the start of the text to be displayed on the LCD. */
-	//pcText = strstr(c, "LCD=");
-	//pcText += strlen("LCD=");
+	pcText = strstr(c, "LCD=");
+	pcText += strlen("LCD=");
 
 	/* Terminate the file name for further processing within uIP. */
-	//	*c = 0x00;
+		*c = 0x00;
 
 	/* Terminate the LCD string. */
-	//c = strstr(pcText, " ");
-	//if (c != NULL) {
-	//*c = 0x00;
-	//}
+	c = strstr(pcText, " ");
+	if (c != NULL) {
+	*c = 0x00;
+	}
 
 	/* Add required spaces. */
-	//while ((c = strstr(pcText, "+")) != NULL) {
-	//	*c = ' ';
-	//		}
+	while ((c = strstr(pcText, "+")) != NULL) {
+		*c = ' ';
+			}
 
 	/* Write the message to the LCD. */
-	//strcpy(cMessageForDisplay, pcText);
-	//vSendDebugUART(cMessageForDisplay);
-	//}
+	strcpy(cMessageForDisplay, pcText);
+	vSendDebugUART(cMessageForDisplay);
+	}
 }
 
 void dhcpc_configured(const struct dhcpc_state *s) {
