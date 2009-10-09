@@ -1,16 +1,40 @@
 <html>
 	<head>
 		<title>Uhrzeiten</title>
+		<script type="text/javascript">
+			function increase(id){
+				var element = document.getElementById(id);
+				var n_value = parseInt(element.value) + 1;
+				if(n_value > 24)
+					element.value = 0;
+				else
+					element.value = n_value;
+			}
+			function decrease(id){
+				var element = document.getElementById(id);
+				var n_value = parseInt(element.value) - 1;
+				if(n_value < 0)
+					element.value = 24;
+				else
+					element.value = n_value;
+			}
+		</script>
 	</head>
 	<body>
-		<pre> %! day_hour </pre>
+		<form method="get" action="./times.shtml">
 		<table>
 			<tr colspan='2'>
 				<th>Tag</th>
 			</tr>
 			<tr>
 				<td>Stunden <input type="text" value=%! day_hour id="day_hour"/></td>
-				<td>Stunden <input type="text" value="0" id="day_minute"/></td>
+				<td>Stunden <input type="text" value="0" id="day_minute" /></td>
+			</tr>
+			<tr>
+				<td><input type="button" value="+" onclick="increase('day_hour');"/>
+					<input type="button" value="-" onclick="decrease('day_hour');"/></td>
+				<td><input type="button" value="+" onclick="increase('day_minute');"/>
+				    <input type="button" value="-" onclick="decrease('day_minute');"/></td>				
 			</tr>
 			<tr colspan='2'>
 				<th>Nacht</th>
@@ -19,6 +43,13 @@
 				<td>Stunden <input type="text" width="12pt" value="0" id="night_hour"/></td>
 				<td>Stunden <input type="text" width="12pt" value="0" id="night_minute"/></td>
 			</tr>
+			<tr>
+				<td><input type="button" value="+" onclick="increase('night_hour');"/>
+					<input type="button" value="-" onclick="decrease('night_hour');"/></td>
+				<td><input type="button" value="+" onclick="increase('night_minute');"/>
+				    <input type="button" value="-" onclick="decrease('night_minute');"/></td>				
+			</tr>
 		</table>
+		</form>
 	</body>
 </html>
