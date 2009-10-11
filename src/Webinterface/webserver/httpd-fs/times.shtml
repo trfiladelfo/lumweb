@@ -27,8 +27,8 @@
 				<th>Tag</th>
 			</tr>
 			<tr>
-				<td>Stunden <input type="text" value=%! day_hour id="day_hour"/></td>
-				<td>Stunden <input type="text" value="0" id="day_minute" /></td>
+				<td>Stunden <input type="text" value=%! get [day_hour] id="day_hour"/></td>
+				<td>Stunden <input type="text" value=%! get [day_minute] id="day_minute" /></td>
 			</tr>
 			<tr>
 				<td><input type="button" value="+" onclick="increase('day_hour');"/>
@@ -40,8 +40,8 @@
 				<th>Nacht</th>
 			</tr>
 			<tr>
-				<td>Stunden <input type="text" width="12pt" value="0" id="night_hour"/></td>
-				<td>Stunden <input type="text" width="12pt" value="0" id="night_minute"/></td>
+				<td>Stunden <input type="text" width="12pt" value=%! get [night_hour] id="night_hour"/></td>
+				<td>Stunden <input type="text" width="12pt" value=%! get [night_minute] id="night_minute"/></td>
 			</tr>
 			<tr>
 				<td><input type="button" value="+" onclick="increase('night_hour');"/>

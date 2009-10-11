@@ -127,61 +127,62 @@ next_scriptstate(struct httpd_state *s)
 static
 PT_THREAD(handle_script(struct httpd_state *s))
 {
-  char *ptr;
-  
-  PT_BEGIN(&s->scriptpt);
+	char *ptr;
+
+	PT_BEGIN(&s->scriptpt);
 
 
-  while(s->file.len > 0) {
+	while(s->file.len > 0) {
 
-    /* Check if we should start executing a script. */
-    if(*s->file.data == ISO_percent &&
-       *(s->file.data + 1) == ISO_bang) {
-      s->scriptptr = s->file.data + 3;
-      s->scriptlen = s->file.len - 3;
-      if(*(s->scriptptr - 1) == ISO_colon) {
-	httpd_fs_open(s->scriptptr + 1, &s->file);
-	PT_WAIT_THREAD(&s->scriptpt, send_file(s));
-      } else {
-	PT_WAIT_THREAD(&s->scriptpt,
-		       httpd_cgi(s->scriptptr)(s, s->scriptptr));
-      }
-      next_scriptstate(s);
-      
-      /* The script is over, so we reset the pointers and continue
+		/* Check if we should start executing a script. */
+		if(*s->file.data == ISO_percent &&
+				*(s->file.data + 1) == ISO_bang) {
+			s->scriptptr = s->file.data + 3;
+			s->scriptlen = s->file.len - 3;
+			if(*(s->scriptptr - 1) == ISO_colon) {
+				httpd_fs_open(s->scriptptr + 1, &s->file);
+				PT_WAIT_THREAD(&s->scriptpt, send_file(s));
+			} else {
+				httpd_cgi_get_args(s->scriptptr);
+				PT_WAIT_THREAD(&s->scriptpt,
+						httpd_cgi(s->scriptptr)(s, s->scriptptr));
+			}
+			next_scriptstate(s);
+
+			/* The script is over, so we reset the pointers and continue
 	 sending the rest of the file. */
-      s->file.data = s->scriptptr;
-      s->file.len = s->scriptlen;
-    } else {
-      /* See if we find the start of script marker in the block of HTML
+			s->file.data = s->scriptptr;
+			s->file.len = s->scriptlen;
+		} else {
+			/* See if we find the start of script marker in the block of HTML
 	 to be sent. */
 
-      if(s->file.len > uip_mss()) {
-	s->len = uip_mss();
-      } else {
-	s->len = s->file.len;
-      }
+			if(s->file.len > uip_mss()) {
+				s->len = uip_mss();
+			} else {
+				s->len = s->file.len;
+			}
 
-      if(*s->file.data == ISO_percent) {
-	ptr = strchr(s->file.data + 1, ISO_percent);
-      } else {
-	ptr = strchr(s->file.data, ISO_percent);
-      }
-      if(ptr != NULL &&
-	 ptr != s->file.data) {
-	s->len = (int)(ptr - s->file.data);
-	if(s->len >= uip_mss()) {
-	  s->len = uip_mss();
+			if(*s->file.data == ISO_percent) {
+				ptr = strchr(s->file.data + 1, ISO_percent);
+			} else {
+				ptr = strchr(s->file.data, ISO_percent);
+			}
+			if(ptr != NULL &&
+					ptr != s->file.data) {
+				s->len = (int)(ptr - s->file.data);
+				if(s->len >= uip_mss()) {
+					s->len = uip_mss();
+				}
+			}
+			PT_WAIT_THREAD(&s->scriptpt, send_part_of_file(s));
+			s->file.data += s->len;
+			s->file.len -= s->len;
+
+		}
 	}
-      }
-      PT_WAIT_THREAD(&s->scriptpt, send_part_of_file(s));
-      s->file.data += s->len;
-      s->file.len -= s->len;
-      
-    }
-  }
-  
-  PT_END(&s->scriptpt);
+
+	PT_END(&s->scriptpt);
 }
 /*---------------------------------------------------------------------------*/
 static
