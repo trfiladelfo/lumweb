@@ -24,16 +24,22 @@
 /* HW includes */
 #include "portmacro.h"
 
+/* Include Queue staff */
 #include "comTask.h"
 #include  "GraphicsLibary/graphicObjects.h"
+#include "webserver/httpd-queue.h"
 
 #include "fs.h"
 
 void vComTask(void *pvParameters) {
 	xCOMMessage xMessage;
 	xGRAPHMessage xGraph_msg;
+	xHTTPDMessage xHTTPD_msg;
+
 	FILE_HANDLE mainfile;
-	char msg[30];
+	char *msg;
+
+	msg = pvPortMalloc(30);
 
 	FSInit();
 	mainfile = FSOpen("main.txt\0");
@@ -50,7 +56,24 @@ void vComTask(void *pvParameters) {
 
 	for (;;) {
 		/* Wait for a message to arrive */
-		xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 10 );
-		// send can bus message
+		if(xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 0 ) == pdTRUE){
+			if(xMessage.cmd == GET){
+				if(strcmp(xMessage.item, "day_hour") == 0){
+					sprintf(msg, "\"%d\"", 10);
+				} else if(strcmp(xMessage.item, "day_minute") == 0){
+					sprintf(msg, "\"%d\"", 11);
+				} else if(strcmp(xMessage.item, "night_hour") == 0){
+					sprintf(msg, "\"%d\"", 12);
+				} else if(strcmp(xMessage.item, "night_minute") == 0){
+					sprintf(msg, "\"%d\"", 13);
+				} else
+					sprintf( xHTTPD_msg.msg, "\"%s\"", "ERROR");
+			}
+			if(xMessage.from == HTTPD){
+				xHTTPD_msg.msg = msg;
+				xQueueSend(xHTTPDQueue, &xHTTPD_msg, (portTickType) 0);
+			}
+		}
+			// send can bus message */
 	}
 }
