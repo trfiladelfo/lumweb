@@ -20,14 +20,15 @@
 */
 
 /* Command enummeration */
-enum com_commands {set, get};
+enum com_commands {SET, GET};
 
+enum com_from {HTTPD, GRAPHIC};
 /** Message for the ComTask queue */
 typedef struct
 {
-	enum com_command; //e.g. 'get', 'set'
+	enum com_commands cmd; //e.g. 'get', 'set'
 	char *item; // name of the selected item
-	char *from; // adress to return answer
+	enum com_from from; // adress to return answer
 } xCOMMessage;
 
 

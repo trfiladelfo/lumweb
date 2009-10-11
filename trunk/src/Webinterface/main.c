@@ -25,6 +25,7 @@
 #include "ComTask/comTask.h"   /* include communication task header */
 #include "DebugUART/debugUART.h" /* include the Uart debugging task */
 #include "GraphicsLibary/graphicObjects.h" /* include the Graphics Libary */
+#include "webserver/httpd-queue.h"
 
 /*-----------------------------------------------------------*/
 
@@ -103,6 +104,10 @@ int main(void) {
 
 	/* Create the queue used by the Graphics task.  Messages are received via this queue. */
 	xGRAPHQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xGRAPHMessage));
+
+	/* Create the queue used by the Graphics task.  Messages are received via this queue. */
+	xHTTPDQueue = xQueueCreate(HTTPD_QUEUE_SIZE, sizeof(xHTTPDMessage));
+
 
 	vSendDebugUART("Welcome");
 

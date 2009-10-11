@@ -52,6 +52,8 @@
 #include "httpd-fs.h"
 
 #include  "GraphicsLibary/graphicObjects.h"
+#include "ComTask/comTask.h"
+#include "httpd-queue.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -104,7 +106,6 @@ httpd_cgi2(char *name)
 
 char* httpd_cgi_get_args(char *data){
 	int len = strlen(data), i = 0, q = 0, x;
-	xGRAPHMessage xGraph_msg;
 
 	if(httpd_cgi_args != NULL)
 		vPortFree(httpd_cgi_args);
@@ -121,10 +122,6 @@ char* httpd_cgi_get_args(char *data){
 	}
 
 	httpd_cgi_args[i] = 0;
-
-	xGraph_msg.msg = httpd_cgi_args;
-	xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
-
 
 	return httpd_cgi_args;
 }
@@ -329,20 +326,20 @@ static PT_THREAD(led_io(struct httpd_state *s, char *ptr))
 static unsigned short
 generate_get(void *arg)
 {
+	xHTTPDMessage xMessage;
+	xCOMMessage xCOM_msg;
 
 	if(httpd_cgi_args != NULL){
-		if(strcmp(httpd_cgi_args, "day_hour") == 0){
-			sprintf( uip_appdata, "\"%d\"", 10);
-		} else if(strcmp(httpd_cgi_args, "day_minute") == 0){
-			sprintf( uip_appdata, "\"%d\"", 11);
-		} else if(strcmp(httpd_cgi_args, "night_hour") == 0){
-			sprintf( uip_appdata, "\"%d\"", 12);
-		} else if(strcmp(httpd_cgi_args, "night_minute") == 0){
-			sprintf( uip_appdata, "\"%d\"", 13);
-		} else
-			sprintf( uip_appdata, "\"%s\"", "ERROR");
-		vPortFree(httpd_cgi_args);
+		xCOM_msg.cmd = GET;
+		xCOM_msg.from = HTTPD;
+		xCOM_msg.item = httpd_cgi_args;
+		xQueueSend(xCOMQueue, &xCOM_msg, (portTickType) 0);
 	}
+
+	if((xQueueReceive( xHTTPDQueue, &xMessage, ( portTickType ) 1000 )))
+		sprintf( uip_appdata, "\"%s\"", xMessage.msg);
+
+	vPortFree(httpd_cgi_args);
 
 	return strlen( uip_appdata );
 }

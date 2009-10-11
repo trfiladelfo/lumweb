@@ -81,7 +81,7 @@
 #define uipIP_ADDR1		168
 
 #define uipIP_ADDR2		2
-#define uipIP_ADDR3		200
+#define uipIP_ADDR3		201
 
 /* How long to wait before attempting to connect the MAC again. */
 #define uipINIT_WAIT    100
