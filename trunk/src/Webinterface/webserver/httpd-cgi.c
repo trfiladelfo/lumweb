@@ -51,6 +51,8 @@
 #include "httpd-cgi.h"
 #include "httpd-fs.h"
 
+#include  "GraphicsLibary/graphicObjects.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -60,10 +62,9 @@ HTTPD_CGI_CALL(net, "net-stats", net_stats);
 HTTPD_CGI_CALL(rtos, "rtos-stats", rtos_stats );
 HTTPD_CGI_CALL(run, "run-time", run_time );
 HTTPD_CGI_CALL(io, "led-io", led_io );
-HTTPD_CGI_CALL(time, "day_hour", time_day );
+HTTPD_CGI_CALL(get, "get", get_value );
 
-
-static const struct httpd_cgi_call *calls[] = { &file, &tcp, &net, &rtos, &run, &io, &time, NULL };
+static const struct httpd_cgi_call *calls[] = { &file, &tcp, &net, &rtos, &run, &io, &get, NULL };
 
 /*---------------------------------------------------------------------------*/
 static
@@ -85,6 +86,47 @@ httpd_cgi(char *name)
     }
   }
   return nullfunction;
+}
+/* same as httpd_cgi, but can pass arguments to cgi */
+httpd_cgifunction
+httpd_cgi2(char *name)
+{
+  const struct httpd_cgi_call **f;
+
+  /* Find the matching name in the table, return the function. */
+  for(f = calls; *f != NULL; ++f) {
+    if(strncmp((*f)->name, name, strlen((*f)->name)) == 0) {
+      return (*f)->function;
+    }
+  }
+  return nullfunction;
+}
+
+char* httpd_cgi_get_args(char *data){
+	int len = strlen(data), i = 0, q = 0, x;
+	xGRAPHMessage xGraph_msg;
+
+	if(httpd_cgi_args != NULL)
+		vPortFree(httpd_cgi_args);
+
+	httpd_cgi_args = pvPortMalloc(HTTPD_CGI_ARG_SIZE);
+
+	for(len = strlen(data); i < len && (data[i+1] != '[' && data[i] != ' ' ) ; i++);
+
+	i += 2;
+
+	for(q = 0; q < HTTPD_CGI_ARG_SIZE && data[i] != ']';  q++){
+		httpd_cgi_args[q] = data[i];
+		i++;
+	}
+
+	httpd_cgi_args[i] = 0;
+
+	xGraph_msg.msg = httpd_cgi_args;
+	xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
+
+
+	return httpd_cgi_args;
 }
 /*---------------------------------------------------------------------------*/
 static unsigned short
@@ -285,9 +327,22 @@ static PT_THREAD(led_io(struct httpd_state *s, char *ptr))
 
 /*-------------- generate time page */
 static unsigned short
-generate_time(void *arg)
+generate_get(void *arg)
 {
-	sprintf( uip_appdata, "\"%d\"", 10);
+
+	if(httpd_cgi_args != NULL){
+		if(strcmp(httpd_cgi_args, "day_hour") == 0){
+			sprintf( uip_appdata, "\"%d\"", 10);
+		} else if(strcmp(httpd_cgi_args, "day_minute") == 0){
+			sprintf( uip_appdata, "\"%d\"", 11);
+		} else if(strcmp(httpd_cgi_args, "night_hour") == 0){
+			sprintf( uip_appdata, "\"%d\"", 12);
+		} else if(strcmp(httpd_cgi_args, "night_minute") == 0){
+			sprintf( uip_appdata, "\"%d\"", 13);
+		} else
+			sprintf( uip_appdata, "\"%s\"", "ERROR");
+		vPortFree(httpd_cgi_args);
+	}
 
 	return strlen( uip_appdata );
 }
@@ -295,10 +350,10 @@ generate_time(void *arg)
 
 
 static
-PT_THREAD(time_day(struct httpd_state *s, char *ptr))
+PT_THREAD(get_value(struct httpd_state *s, char *ptr))
 {
   PSOCK_BEGIN(&s->sout);
-  PSOCK_GENERATOR_SEND(&s->sout, generate_time, NULL);
+  PSOCK_GENERATOR_SEND(&s->sout, generate_get, NULL);
   PSOCK_END(&s->sout);
 }
 /** @} */
