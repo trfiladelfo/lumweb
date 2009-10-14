@@ -104,12 +104,6 @@
 #include "sysctl.h"
 #include "gpio.h"
 #include "grlib.h"
-//#include "rit128x96x4.h"
-//#include "osram128x64x4.h"
-//#include "formike128x128x16.h"
-
-//#include "bitmap.h"
-//#include "lcd_message.h"
 
 #include "ComTask/comTask.h"   /* include communication task header */
 
@@ -210,17 +204,14 @@ unsigned portLONG ulIdleError = pdFALSE;
 int main(void) {
 	prvSetupHardware();
 
-	/* Create the queue used by the OLED task.  Messages for display on the OLED
-	 are received via this queue. */
-//	xOLEDQueue = xQueueCreate(mainOLED_QUEUE_SIZE, sizeof(xOLEDMessage));
+
+
+//	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
+//			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY - 1,
+//			NULL);
 
 	/* Create the uIP task if running on a processor that includes a MAC and
 	 PHY. */
-
-	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
-			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY - 1,
-			NULL);
-
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
@@ -237,16 +228,6 @@ int main(void) {
 	/* Start the Communication Task (vComTask) to interact with the machine */
 	xTaskCreate(vComTask, (signed portCHAR *) "comTask",
 			Com_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-
-
-	/* The suicide tasks must be created last as they need to know how many
-	 tasks were running prior to their creation in order to ascertain whether
-	 or not the correct/expected number of tasks are running at any given time. */
-	vCreateSuicidalTasks(mainCREATOR_TASK_PRIORITY);
-
-	/* Configure the high frequency interrupt used to measure the interrupt
-	 jitter time. */
-	vSetupHighFrequencyTimer();
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
