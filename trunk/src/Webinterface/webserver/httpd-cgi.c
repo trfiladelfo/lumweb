@@ -8,6 +8,7 @@
  *         Web server script interface
  * \author
  *         Adam Dunkels <adam@sics.se>
+ *         anziner, hahn (c) 2009
  *
  */
 
@@ -89,21 +90,8 @@ httpd_cgi(char *name)
   }
   return nullfunction;
 }
-/* same as httpd_cgi, but can pass arguments to cgi */
-httpd_cgifunction
-httpd_cgi2(char *name)
-{
-  const struct httpd_cgi_call **f;
 
-  /* Find the matching name in the table, return the function. */
-  for(f = calls; *f != NULL; ++f) {
-    if(strncmp((*f)->name, name, strlen((*f)->name)) == 0) {
-      return (*f)->function;
-    }
-  }
-  return nullfunction;
-}
-
+/** parses the cgi string and searches for arguments ([foo]) */
 char* httpd_cgi_get_args(char *data){
 	int len = strlen(data), i = 0, q = 0, x;
 
@@ -322,7 +310,8 @@ static PT_THREAD(led_io(struct httpd_state *s, char *ptr))
 }
 /*---------------------------------------------------------------------------*/
 
-/*-------------- generate time page */
+/** takes the arguments in httpd_cgi_args, sends a message
+ * to the comTask and replaces the cgi string with the result */
 static unsigned short
 generate_get(void *arg)
 {
