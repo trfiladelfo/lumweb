@@ -91,7 +91,7 @@ httpd_cgi(char *name)
   return nullfunction;
 }
 
-/** parses the cgi string and searches for arguments ([foo]) */
+/** parses the cgi string and searches for arguments (%! bar [foo]) */
 char* httpd_cgi_get_args(char *data){
 	int len = strlen(data), i = 0, q = 0, x;
 
@@ -315,7 +315,7 @@ static PT_THREAD(led_io(struct httpd_state *s, char *ptr))
 static unsigned short
 generate_get(void *arg)
 {
-	xHTTPDMessage xMessage;
+	xHTTPDMessage xHTTPDMessage;
 	xCOMMessage xCOM_msg;
 
 	if(httpd_cgi_args != NULL){
@@ -325,9 +325,14 @@ generate_get(void *arg)
 		xQueueSend(xCOMQueue, &xCOM_msg, (portTickType) 0);
 	}
 
-	if((xQueueReceive( xHTTPDQueue, &xMessage, ( portTickType ) 1000 )))
-		sprintf( uip_appdata, "\"%s\"", xMessage.msg);
-
+	if((xQueueReceive( xHTTPDQueue, &xHTTPDMessage, ( portTickType ) 10000 )) == pdTRUE){
+	//	sprintf( uip_appdata, "\"%s\"", xHTTPDMessage.msg );
+	//	sprintf( uip_appdata, "\"%d\"", 11 );
+		//if(sizeof(uip_appdata) >= sizeof(xHTTPDMessage.msg))
+			strcpy(uip_appdata, xHTTPDMessage.msg);
+	//	else
+	//		strcpy(uip_appdata, "ERROR HTTPD");
+	}
 	vPortFree(httpd_cgi_args);
 
 	return strlen( uip_appdata );

@@ -56,7 +56,7 @@ void vComTask(void *pvParameters) {
 
 	for (;;) {
 		/* Wait for a message to arrive */
-		if(xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 0 ) == pdTRUE){
+		if(xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 1000 ) == pdTRUE){
 			if(xMessage.cmd == GET){
 				if(strcmp(xMessage.item, "day_hour") == 0){
 					sprintf(msg, "\"%d\"", 10);
@@ -67,9 +67,11 @@ void vComTask(void *pvParameters) {
 				} else if(strcmp(xMessage.item, "night_minute") == 0){
 					sprintf(msg, "\"%d\"", 13);
 				} else
-					sprintf( xHTTPD_msg.msg, "\"%s\"", "ERROR");
+					sprintf( xHTTPD_msg.msg, "\"%s: %s\"", "ERROR", xMessage.item);
 			}
 			if(xMessage.from == HTTPD){
+			//	xGraph_msg.msg = msg;
+			//	xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
 				xHTTPD_msg.msg = msg;
 				xQueueSend(xHTTPDQueue, &xHTTPD_msg, (portTickType) 0);
 			}

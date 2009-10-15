@@ -3,7 +3,7 @@
 /** Message for the httpd queue */
 typedef struct
 {
-	char *msg; // message back
+	unsigned char *msg; // message back
 } xHTTPDMessage;
 
 
