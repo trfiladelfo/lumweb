@@ -14,6 +14,7 @@
 /* queue includes. */
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "task.h"
 
 /* HW includes */
 #include "portmacro.h"
@@ -21,10 +22,15 @@
 /** Message for the Graph Task queue */
 typedef struct {
 	char *msg; //e.g. 'get', 'set'
-} xGRAPHMessage;
+} xGraphMessage;
+
+typedef struct {
+	long key;
+} xGraphCommandMessage;
 
 /* The queue used to send messages to the Graphics task. */
-xQueueHandle xGRAPHQueue;
+xQueueHandle xGraphQueue;
+xQueueHandle xGraphCommandQueue;
 
 /* Graphics Task stack size */
 #define GRAPH_STACK_SIZE			( configMINIMAL_STACK_SIZE * 3 )
@@ -43,6 +49,12 @@ static const unsigned char g_pucRIT128x96x4HorizontalInc[] = { 0xA0, 0x52 };
 #define RIGHT GPIO_PIN_3
 #define LEFT GPIO_PIN_2
 #define SELECT GPIO_PIN_1
+
+#define BUTTON_UP     0
+#define BUTTON_DOWN   1
+#define BUTTON_LEFT   2
+#define BUTTON_RIGHT  3
+#define BUTTON_SELECT 4
 
 struct goButton {
 	int height;
@@ -82,7 +94,7 @@ void goDrawButtons(void); // Draws all Buttons
 
 void goDeleteButton(pgoButton btn); // Deletes the Button
 
-void goStartListener(void); // Starts the Listener
+void goStartListener(xTaskHandle handler); // Starts the Listener
 
 void goDrawBorder(int height_, int width_, int left, int top,
 		unsigned const char * type); // Draws a Border for a Object

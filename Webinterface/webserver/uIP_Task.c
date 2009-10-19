@@ -314,11 +314,6 @@ xOLEDMessage xOLEDMessage;
         {
             *c = ' ';
         }
-
-        /* Write the message to the LCD. */
-		strcpy( cMessageForDisplay, pcText );
-		xOLEDMessage.pcMessage = cMessageForDisplay;
-        xQueueSend( xOLEDQueue, &xOLEDMessage, portMAX_DELAY );
     }
 }
 

@@ -29,8 +29,12 @@
 #include "debug.h"
 #include "gpio.h"
 #include "sysctl.h"
+#include "interrupt.h"
+#include "hw_ints.h"
 
 #include "rit128x96x4.h"
+
+xTaskHandle xGraphicTaskHandler = NULL;
 
 void goDrawEmptyButton(int height, int width, int left, int top,
 		unsigned const char * type);
@@ -45,35 +49,34 @@ char isAlreadyInitilized = 0;
  */
 void goInit() {
 	if (!isAlreadyInitilized) {
-		// Configure the GPIO that drives the on-board LED.
+		// Configure UP | DOWN | LEFT | RIGHT
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+		GPIOPadConfigSet(GPIO_PORTE_BASE, (UP | DOWN | RIGHT | LEFT),
+				GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+		GPIODirModeSet(GPIO_PORTE_BASE, (UP | DOWN | RIGHT | LEFT),
+				GPIO_DIR_MODE_IN);
+
+		// Configure SELECT
 		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 		GPIOPadConfigSet(GPIO_PORTF_BASE, SELECT, GPIO_STRENGTH_2MA,
 				GPIO_PIN_TYPE_STD_WPU);
 		GPIODirModeSet(GPIO_PORTF_BASE, SELECT, GPIO_DIR_MODE_IN);
 
-		// Configure UP Button as INPUT
-		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-		GPIOPadConfigSet(GPIO_PORTE_BASE, UP, GPIO_STRENGTH_2MA,
-				GPIO_PIN_TYPE_STD_WPU);
-		GPIODirModeSet(GPIO_PORTE_BASE, UP, GPIO_DIR_MODE_IN);
-		// Configure DOWN Button as INPUT
-		GPIOPadConfigSet(GPIO_PORTE_BASE, DOWN, GPIO_STRENGTH_2MA,
-				GPIO_PIN_TYPE_STD_WPU);
-		GPIODirModeSet(GPIO_PORTE_BASE, DOWN, GPIO_DIR_MODE_IN);
-		// Configure LEFT Button as INPUT
-		GPIOPadConfigSet(GPIO_PORTE_BASE, LEFT, GPIO_STRENGTH_2MA,
-				GPIO_PIN_TYPE_STD_WPU);
-		GPIODirModeSet(GPIO_PORTE_BASE, LEFT, GPIO_DIR_MODE_IN);
-		// Configure RIGHT Button as INPUT
-		GPIOPadConfigSet(GPIO_PORTE_BASE, RIGHT, GPIO_STRENGTH_2MA,
-				GPIO_PIN_TYPE_STD_WPU);
-		GPIODirModeSet(GPIO_PORTE_BASE, RIGHT, GPIO_DIR_MODE_IN);
+		GPIOIntTypeSet(GPIO_PORTE_BASE, (UP | DOWN | RIGHT | LEFT),
+				GPIO_FALLING_EDGE);
+		GPIOPinIntEnable(GPIO_PORTE_BASE, (UP | DOWN | RIGHT | LEFT));
 
-		// Configure the GPIO that drives the on-board LED.
-		GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0);
+		GPIOIntTypeSet(GPIO_PORTE_BASE, SELECT, GPIO_FALLING_EDGE);
+		GPIOPinIntEnable(GPIO_PORTF_BASE, SELECT);
+
+		xGraphCommandQueue = xQueueCreate(5, sizeof(xGraphCommandMessage));
 
 		RIT128x96x4Init(1000000);
 		RIT128x96x4DisplayOn();
+
+		IntEnable(INT_GPIOE);
+		IntEnable(INT_GPIOF);
+		IntMasterEnable();
 
 		isAlreadyInitilized = 1;
 	}
@@ -82,105 +85,27 @@ void goInit() {
 /*
  *
  */
-void goStartListener(void) {
-	char i = 0;
-	tBoolean pressed = false;
-	char * ucMessageLast;
-	xGRAPHMessage xMessage;
+void goStartListener(xTaskHandle handler) {
+
+	char cMessageLast[16];
+
+	xGraphicTaskHandler = handler;
+
+	xGraphCommandMessage xMessage;
+
+	strcpy(cMessageLast, "Kein Befehl\0");
+	RIT128x96x4StringDraw(cMessageLast, 10, 85, 10);
 
 	while (1) {
-		if (i = 255) {
-			goDrawButtons();
-			i = 0;
-		}
-		i++;
-
 		/* Wait for a message to arrive */
-		if (xQueueReceive( xGRAPHQueue, &xMessage, ( portTickType ) 10 )) {
+		while (xQueueReceive( xGraphCommandQueue, &xMessage, 0)) {
 			/* Print received message */
-			if (strcmp((const char *) ucMessageLast,
-					(const char *) xMessage.msg) != 0) {
-				RIT128x96x4StringDraw((const char *) ucMessageLast, 10, 85, 0);
-				RIT128x96x4StringDraw((const char *) xMessage.msg, 10, 85, 10);
-				strcpy(ucMessageLast, xMessage.msg);
-			}
+			RIT128x96x4StringDraw(cMessageLast, 10, 85, 0);
+			snprintf(cMessageLast, 10, "Befehl: %d", xMessage.key);
+			RIT128x96x4StringDraw(cMessageLast, 10, 85, 10);
 		}
+		vTaskSuspend(xGraphicTaskHandler);
 
-		if (buttonSelected == NULL) {
-			buttonSelected = buttonListRoot;
-			goDrawButton(buttonSelected, pucBorderSelected);
-
-		}
-
-		if (!pressed) {
-
-			// UP
-			if (!GPIOPinRead(GPIO_PORTE_BASE, UP)) {
-				pressed = true;
-			}
-			// DOWN
-			if (!GPIOPinRead(GPIO_PORTE_BASE, DOWN)) {
-				pressed = true;
-			}
-			// LEFT
-			if (!GPIOPinRead(GPIO_PORTE_BASE, LEFT)) {
-				if (buttonSelected != NULL) {
-					goDrawButton(buttonSelected, pucBorderNormal);
-					buttonSelected = goGetPrevButton(buttonSelected);
-					if (buttonSelected == NULL) {
-						buttonSelected = buttonListLast;
-					}
-					if (buttonSelected != NULL) {
-						goDrawButton(buttonSelected, pucBorderSelected);
-					}
-				}
-
-				pressed = true;
-			}
-			// RIGHT
-			if (!GPIOPinRead(GPIO_PORTE_BASE, RIGHT)) {
-				if (buttonSelected != NULL) {
-					goDrawButton(buttonSelected, pucBorderNormal);
-					buttonSelected = buttonSelected->next;
-					if (buttonSelected != NULL) {
-						goDrawButton(buttonSelected, pucBorderSelected);
-					}
-				}
-
-				pressed = true;
-			}
-
-			// SELECT
-			if (!GPIOPinRead(GPIO_PORTF_BASE, SELECT)) {
-
-				goDrawButton(buttonSelected, pucBorderClicked);
-
-				if (buttonSelected->selectAction != NULL) {
-					buttonSelected->selectAction();
-				}
-
-				pressed = true;
-			}
-
-			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 0);
-		} else {
-			if (GPIOPinRead(GPIO_PORTE_BASE, UP)) {
-				if (GPIOPinRead(GPIO_PORTE_BASE, DOWN)) {
-					if (GPIOPinRead(GPIO_PORTE_BASE, LEFT)) {
-						if (GPIOPinRead(GPIO_PORTE_BASE, RIGHT)) {
-							if (GPIOPinRead(GPIO_PORTF_BASE, SELECT)) {
-								pressed = false;
-								goDrawButton(buttonSelected, pucBorderSelected);
-								GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 1);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTF_BASE,
-				SELECT));
 	}
 }
 
@@ -230,4 +155,41 @@ void goDrawBorder(int height_, int width_, int left, int top,
 	vPortFree(pucImage);
 	vPortFree(pucImageDraw);
 
+}
+
+void goPortEIntHandler(void) {
+	xGraphCommandMessage xCmdMessage;
+	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+
+	IntDisable(INT_GPIOE);
+
+	long stat = GPIOPinIntStatus(GPIO_PORTE_BASE, true);
+
+	if (stat == UP) {
+		xCmdMessage.key = BUTTON_UP;
+	} else if (stat == DOWN) {
+		xCmdMessage.key = BUTTON_DOWN;
+	} else if (stat == LEFT) {
+		xCmdMessage.key = BUTTON_LEFT;
+	} else if (stat == RIGHT) {
+		xCmdMessage.key = BUTTON_RIGHT;
+	}
+	xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
+	xTaskResumeFromISR(xGraphicTaskHandler);
+	GPIOPinIntClear(GPIO_PORTE_BASE, (UP | DOWN | LEFT | RIGHT));
+	IntEnable(INT_GPIOE);
+}
+
+void goPortFIntHandler(void) {
+	xGraphCommandMessage xCmdMessage;
+	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+
+	IntDisable(INT_GPIOF);
+	if (GPIOPinIntStatus(GPIO_PORTF_BASE, true) == SELECT) {
+		xCmdMessage.key = BUTTON_SELECT;
+	}
+	xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
+	xTaskResumeFromISR(xGraphicTaskHandler);
+	GPIOPinIntClear(GPIO_PORTF_BASE, SELECT);
+	IntEnable(INT_GPIOF);
 }

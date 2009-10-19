@@ -107,7 +107,8 @@ SOURCE=	main.c \
 		./GraphicsLibrary/graphicButton.c \
 		./GraphicsLibrary/graphicObjects.c \
 		./GraphicsLibrary/port/rit128x96x4.c \
-		./SerialComm/serial.c \
+		./SerialComm/uartstdio.c \
+		./Debug/DebugTask.c \
 		$(UIP_COMMON_DIR)/uip_arp.c \
 		$(UIP_COMMON_DIR)/psock.c \
 		$(UIP_COMMON_DIR)/timer.c \
