@@ -46,9 +46,9 @@ extern void xPortSysTickHandler(void);
 extern void vPortSVCHandler(void);
 extern void Timer0IntHandler(void);
 extern void vEMAC_ISR(void);
-//extern void UARTStdioIntHandler(void);
-extern void UARTIntHandler(void);
-
+extern void UARTStdioIntHandler(void);
+extern void goPortEIntHandler(void);
+extern void goPortFIntHandler(void);
 //*****************************************************************************
 //
 // Reserve space for the system stack.
@@ -89,8 +89,8 @@ void (* const g_pfnVectors[])(void) = {
 		IntDefaultHandler, // GPIO Port B
 		IntDefaultHandler, // GPIO Port C
 		IntDefaultHandler, // GPIO Port D
-		IntDefaultHandler, // GPIO Port E
-		UARTIntHandler, // UART0 Rx and Tx
+		goPortEIntHandler, // GPIO Port E
+		UARTStdioIntHandler, // UART0 Rx and Tx
 		IntDefaultHandler, // UART1 Rx and Tx
 		IntDefaultHandler, // SSI Rx and Tx
 		IntDefaultHandler, // I2C Master and Slave
@@ -115,7 +115,7 @@ void (* const g_pfnVectors[])(void) = {
 		IntDefaultHandler, // Analog Comparator 2
 		IntDefaultHandler, // System Control (PLL, OSC, BO)
 		IntDefaultHandler, // FLASH Control
-		IntDefaultHandler, // GPIO Port F
+		goPortFIntHandler, // GPIO Port F
 		IntDefaultHandler, // GPIO Port G
 		IntDefaultHandler, // GPIO Port H
 		IntDefaultHandler, // UART2 Rx and Tx

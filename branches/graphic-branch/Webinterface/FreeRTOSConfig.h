@@ -80,6 +80,7 @@
 #define configCHECK_FOR_STACK_OVERFLOW	2
 #define configUSE_RECURSIVE_MUTEXES		1
 #define configQUEUE_REGISTRY_SIZE		10
+#define configUSE_COUNTING_SEMAPHORES   1
 #define configGENERATE_RUN_TIME_STATS	1
 
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 5 )
@@ -109,5 +110,7 @@ to zero. */
 #define portGET_RUN_TIME_COUNTER_VALUE()	ulHighFrequencyTimerTicks
 
 #define TICK_MS(ms)        (((configTICK_RATE_HZ)/1000.0)*ms + 0.9)
+
+#define SET_SYSCALL_INTERRUPT_PRIORITY(X) (((X) << 5)&0xE0)
 
 #endif /* FREERTOS_CONFIG_H */
