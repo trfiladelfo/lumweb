@@ -1,21 +1,21 @@
 Tasks:													Fertig %:
 	- Kommunikationstask (zur Maschine)					0
 	
-	- Config-file 										0
-		- designen
+	- Config-file 										
+		- designen										0
 		- erstellen										0
 		- parser implementieren							0
 	
 	- Ausgabe	
-		- Ausgabe auf LCD								0
-			- "Objekte" zum Anzeigen designen			0
-			- Eingabemögichkeit							0
+		- Ausgabe auf LCD								
+			- "Objekte" zum Anzeigen designen			10
+			- Eingabemögichkeit							
 				- Touch									0
-				- Tasten								0
+				- Tasten								50
 				
-		- CGI (Dynamische Ausgabe von Werten)			0
+		- CGI (Dynamische Ausgabe von Werten)			30
 		
-		- Templatesystem								0
+		- Templatesystem								
 			- designen									0
 			- erstellen									0
 			- parser implementieren						0
