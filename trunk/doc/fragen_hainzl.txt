@@ -1,0 +1,3 @@
+* Touchinterface
+** Texteingabe?
+** Eingabe von Kommawerten?
