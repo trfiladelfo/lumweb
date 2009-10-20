@@ -85,7 +85,7 @@ void goInit() {
 /*
  *
  */
-void goStartListener(xTaskHandle handler) {
+void goObjectsListener(xTaskHandle handler) {
 
 	char cMessageLast[16];
 
@@ -94,7 +94,16 @@ void goStartListener(xTaskHandle handler) {
 	xGraphCommandMessage xMessage;
 
 	strcpy(cMessageLast, "Kein Befehl\0");
+
 	RIT128x96x4StringDraw(cMessageLast, 10, 85, 10);
+
+	if (buttonSelected == NULL) {
+		buttonSelected = buttonListRoot;
+		buttonSelected->border = pucBorderSelected;
+	}
+
+	goDrawButtons();
+	goDrawTextBoxes();
 
 	while (1) {
 		/* Wait for a message to arrive */
@@ -103,6 +112,28 @@ void goStartListener(xTaskHandle handler) {
 			RIT128x96x4StringDraw(cMessageLast, 10, 85, 0);
 			snprintf(cMessageLast, 10, "Befehl: %d", xMessage.key);
 			RIT128x96x4StringDraw(cMessageLast, 10, 85, 10);
+			if (xMessage.key == BUTTON_SELECT) {
+				buttonSelected->border = pucBorderClicked;
+				goDrawButton(buttonSelected);
+				buttonSelected->selectAction(buttonSelected->pvParam);
+				buttonSelected->border = pucBorderSelected;
+				goDrawButton(buttonSelected);
+
+			} else {
+				if (xMessage.key == BUTTON_LEFT) {
+					buttonSelected->border = pucBorderNormal;
+					buttonSelected = goGetPrevButton(buttonSelected);
+					buttonSelected->border = pucBorderSelected;
+
+				}
+				if (xMessage.key == BUTTON_RIGHT) {
+					buttonSelected->border = pucBorderNormal;
+					buttonSelected = goGetNextButton(buttonSelected);
+					buttonSelected->border = pucBorderSelected;
+				}
+				goDrawButtons();
+			}
+			goDrawTextBoxes();
 		}
 		vTaskSuspend(xGraphicTaskHandler);
 
@@ -123,7 +154,7 @@ void goDrawBorder(int height_, int width_, int left, int top,
 	pucImageDraw = (unsigned char *) pvPortMalloc(height * width / 2);
 
 	for (i = 0; i < width * height; i++) {
-		pucImage[i] = 0xFF;
+		pucImage[i] = 0x00;
 	}
 
 	for (i = 0; i < width; i++) {
@@ -192,4 +223,9 @@ void goPortFIntHandler(void) {
 	xTaskResumeFromISR(xGraphicTaskHandler);
 	GPIOPinIntClear(GPIO_PORTF_BASE, SELECT);
 	IntEnable(INT_GPIOF);
+}
+
+void goDisplaySleep(void) {
+	RIT128x96x4Clear();
+	vTaskSuspend(xGraphicTaskHandler);
 }
