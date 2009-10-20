@@ -259,18 +259,10 @@ PT_THREAD(rtos_stats(struct httpd_state *s, char *ptr))
 /*---------------------------------------------------------------------------*/
 
 char *pcStatus;
-extern unsigned long uxParTestGetLED( unsigned long uxLED );
 
 static unsigned short generate_io_state( void *arg )
 {
-	if( uxParTestGetLED( 0 ) )
-	{
-		pcStatus = "checked";
-	}
-	else
-	{
-		pcStatus = "";
-	}
+    pcStatus = "";
 
 	sprintf( uip_appdata,
 		"<input type=\"checkbox\" name=\"LED0\" value=\"1\" %s>LED"\

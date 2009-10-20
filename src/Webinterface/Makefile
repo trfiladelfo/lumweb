@@ -96,7 +96,6 @@ SOURCE=	main.c \
 		timertest.c \
 		rit128x96x4.c \
 		./ComTask/comTask.c \
-		./ParTest/ParTest.c \
 		$(LUMINARY_DRIVER_DIR)/ustdlib.c \
 		./webserver/uIP_Task.c \
 		./webserver/emac.c \
@@ -104,7 +103,6 @@ SOURCE=	main.c \
 		./webserver/httpd-cgi.c \
 		./webserver/httpd-fs.c \
 		./webserver/http-strings.c \
-		./webserver/dhcpc.c \
 		./GraphicsLibary/runTestTask.c \
 		./GraphicsLibary/graphicObjects.c \
 		./DebugUART/debugUART.c \

@@ -790,7 +790,6 @@ void uip_process(u8_t flag) {
 			uip_sappdata = uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
 			uip_len = uip_slen = 0;
 			uip_flags = UIP_POLL;
-			UIP_UDP_APPCALL();
 			goto udp_send;
 		} else {
 			goto drop;
@@ -1102,7 +1101,6 @@ void uip_process(u8_t flag) {
 	uip_flags = UIP_NEWDATA;
 	uip_sappdata = uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPUDPH_LEN];
 	uip_slen = 0;
-	UIP_UDP_APPCALL();
 	udp_send:
 	if(uip_slen == 0) {
 		goto drop;
