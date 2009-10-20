@@ -82,7 +82,7 @@ struct httpd_cgi_call {
 static PT_THREAD(function(struct httpd_state *, char *)); \
 static const struct httpd_cgi_call name = {str, function}
 
-char *httpd_cgi_args;
+char httpd_cgi_args[HTTPD_CGI_ARG_SIZE];
 
 
 void httpd_cgi_init(void);

@@ -95,11 +95,11 @@ httpd_cgi(char *name)
 char* httpd_cgi_get_args(char *data){
 	int len = strlen(data), i = 0, q = 0, x;
 
-	if(httpd_cgi_args != NULL)
+/*	if(httpd_cgi_args != NULL)
 		vPortFree(httpd_cgi_args);
 
 	httpd_cgi_args = pvPortMalloc(HTTPD_CGI_ARG_SIZE);
-
+*/
 	for(len = strlen(data); i < len && (data[i+1] != '[' && data[i] != ' ' ) ; i++);
 
 	i += 2;
@@ -109,7 +109,7 @@ char* httpd_cgi_get_args(char *data){
 		i++;
 	}
 
-	httpd_cgi_args[i] = 0;
+	httpd_cgi_args[q] = 0;
 
 	return httpd_cgi_args;
 }
@@ -325,7 +325,7 @@ generate_get(void *arg)
 	//	else
 	//		strcpy(uip_appdata, "ERROR HTTPD");
 	}
-	vPortFree(httpd_cgi_args);
+//	vPortFree(httpd_cgi_args);
 
 	return strlen( uip_appdata );
 }
