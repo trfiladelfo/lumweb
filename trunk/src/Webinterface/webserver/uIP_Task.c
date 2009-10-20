@@ -260,15 +260,44 @@ static void prvSetMACAddress(void) {
 
 void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength) {
-	char *c, *pcText;
-	static portCHAR cMessageForDisplay[32];
+	char c = 0, param[20], arg[20], msg[40];
+	int i, x;
+	xGRAPHMessage xGraph_msg;
 
-	/* Process the form input sent by the IO page of the served HTML. */
+	xGraph_msg.msg = msg;
 
-	c = strstr(pcInputString, "?");
 
-	if (c) {
-		;
+
+	/* Process the form input sent by forms of the served HTML. */
+
+	for(i = 0; i < xInputLength && c == 0; i++){
+		if(pcInputString[i] == '?')
+			c = 1;
 	}
+
+	if (c == 1) {
+			for(x = 0; i < xInputLength && pcInputString[i] != '=' ; i++){
+				arg[x] = pcInputString[i];
+				x++;
+			}
+
+			arg[x] = 0;
+		/*	for(x = 0; i < xInputLength && pcInputString[i] != '&' ; i++){
+				param[x] = pcInputString[i];
+				x++;
+			}
+			param[x] = 0; */
+			sprintf(xGraph_msg.msg, "GET: %s =", arg);
+
+	//		vPortFree(arg);
+	//		vPortFree(param);
+		//	vPortFree(xGraph_msg.msg);
+		;
+	}else{
+		xGraph_msg.msg = "NO GET";
+	}
+	xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
+
+
 }
 
