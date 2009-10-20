@@ -74,16 +74,16 @@ int main(void) {
 	/* Create the uIP task if running on a processor that includes a MAC and
 	 PHY. */
 	//vDebugTaskSend("UIP...");
-//	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
-//		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
-//				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
-//				NULL);
-//	}
+	//	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
+	//		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
+	//				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
+	//				NULL);
+	//	}
 
 	//vDebugTaskSend("Initialisiere ComTask ...\n\r");
 	/* Start the Communication Task (vComTask) to interact with the machine */
-//	xTaskCreate(vComTask, (signed portCHAR *) "comTask", Com_TASK_STACK_SIZE,
-//			NULL, tskIDLE_PRIORITY, NULL);
+	//	xTaskCreate(vComTask, (signed portCHAR *) "comTask", Com_TASK_STACK_SIZE,
+	//			NULL, tskIDLE_PRIORITY, NULL);
 
 	/* Will only get here if there was insufficient memory to create the idle
 	 task. */
@@ -114,11 +114,9 @@ void prvSetupHardware(void) {
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
-
 	GPIODirModeSet(GPIO_PORTF_BASE, (GPIO_PIN_2 | GPIO_PIN_3), GPIO_DIR_MODE_HW);
 	GPIOPadConfigSet(GPIO_PORTF_BASE, (GPIO_PIN_2 | GPIO_PIN_3),
 			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-
 
 	//
 

@@ -105,6 +105,7 @@ SOURCE=	main.c \
 		./webserver/http-strings.c \
 		./GraphicsLibrary/runGraphics.c \
 		./GraphicsLibrary/graphicButton.c \
+		./GraphicsLibrary/graphicTextBox.c \
 		./GraphicsLibrary/graphicObjects.c \
 		./GraphicsLibrary/port/rit128x96x4.c \
 		./SerialComm/uartstdio.c \

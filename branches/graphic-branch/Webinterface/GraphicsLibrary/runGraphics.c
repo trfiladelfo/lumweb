@@ -7,41 +7,40 @@
 #include "GraphicsLibrary/graphicObjects.h"
 #include "GraphicsLibrary/runGraphics.h"
 
-// Testroutine
-void vActionButton1(void) {
-
-}
-// Testroutine
-void vActionButton2(void) {
-
-}
-// Testroutine
-void vActionButton3(void) {
-
-}
-// Testroutine
-void vActionButton4(void) {
-
-}
-
 void vGraphicObjectsTask(void *pvParameters) {
-	//pgoButton b;
-	//pgoButton b1;
+	pgoButton b;
+	pgoButton b1;
+	pgoButton b2;
+	pgoButton b3;
 
-	//pgoButton b2;
-	//pgoButton b3;
+	pgoTextBox t;
+	pgoTextBox t1;
+
+	int dt = 10;
+	int dt1 = 50;
 
 	goInit();
 
-	//b = goNewButton(10, 10, 10, 10, goButtonUp, vActionButton1);
-	//b2 = goNewButton(10, 10, 24, 10, goButtonDown, vActionButton3);
+	t = goNewTextBox(7, 40, 11, &dt);
+	t1 = goNewTextBox(7, 40, 31, &dt1);
 
-	//b1 = goNewButton(10, 10, 30, 10, goButtonUp, vActionButton2);
-	//b3 = goNewButton(10, 10, 30, 30, goButtonDown, vActionButton4);
+	b = goNewButton(10, 10, 10, 10, goButtonUp, pucBorderNormal,
+			vTextBoxIncrement, t);
+	b1 = goNewButton(10, 10, 24, 10, goButtonDown, pucBorderNormal,
+			vTextBoxDecrement, t);
 
-	goStartListener(xGraphicTaskHandler);
+	b2 = goNewButton(10, 10, 10, 30, goButtonUp, pucBorderNormal,
+			vTextBoxIncrement, t1);
+	b3 = goNewButton(10, 10, 24, 30, goButtonDown, pucBorderNormal,
+			vTextBoxDecrement, t1);
+
+	goObjectsListener(xGraphicTaskHandler);
 
 	while (1) {
 		// ENDLESS LOOP!
 	}
+}
+
+void vScreenSaver(void) {
+	goDisplaySleep();
 }
