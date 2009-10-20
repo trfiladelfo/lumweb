@@ -34,7 +34,7 @@
 #define mainCHECK_DELAY						( ( portTickType ) 5000 / portTICK_RATE_MS )
 
 /* Size of the stack allocated to the uIP task. */
-#define mainBASIC_WEB_STACK_SIZE            ( configMINIMAL_STACK_SIZE * 3 )
+#define mainBASIC_WEB_STACK_SIZE            ( configMINIMAL_STACK_SIZE * 5 )
 
 /* The OLED task uses the sprintf function so requires a little more stack too. */
 #define mainOLED_TASK_STACK_SIZE			( configMINIMAL_STACK_SIZE + 50 )
