@@ -70,18 +70,19 @@
 #include "lmi_flash.h"
 #include "sysctl.h"
 
-/* Demo includes. */
-#include "emac.h"
-#include "partest.h"
 
+/* Include Queue staff */
+#include "ComTask/comTask.h"
+#include "GraphicsLibary/graphicObjects.h"
+#include "webserver/httpd-queue.h"
 /*-----------------------------------------------------------*/
 
 /* IP address configuration. */
 #define uipIP_ADDR0		192
 #define uipIP_ADDR1		168
 
-#define uipIP_ADDR2		2
-#define uipIP_ADDR3		201
+#define uipIP_ADDR2		7
+#define uipIP_ADDR3		63
 
 /* How long to wait before attempting to connect the MAC again. */
 #define uipINIT_WAIT    100
@@ -149,15 +150,10 @@ void vuIP_Task(void *pvParameters) {
 	uip_init();
 	uip_arp_init();
 
-	//prvSetMACAddress();
-
-	dhcpc_init(uip_ethaddr.addr, sizeof(uip_ethaddr.addr));
-	dhcpc_request();
+	prvSetMACAddress();
 
 	uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
 	uip_sethostaddr( xIPAddr );
-
-	dhcpc_appcall();
 
 	httpd_init();
 
@@ -272,47 +268,7 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 	c = strstr(pcInputString, "?");
 
 	if (c) {
-		/* Turn LED's on or off in accordance with the check box status. */
-		if (strstr(c, "LED0=1") != NULL) {
-			vParTestSetLED(0, 1);
-		} else {
-			vParTestSetLED(0, 0);
-		}
-
-	/* Find the start of the text to be displayed on the LCD. */
-	pcText = strstr(c, "LCD=");
-	pcText += strlen("LCD=");
-
-	/* Terminate the file name for further processing within uIP. */
-		*c = 0x00;
-
-	/* Terminate the LCD string. */
-	c = strstr(pcText, " ");
-	if (c != NULL) {
-	*c = 0x00;
-	}
-
-	/* Add required spaces. */
-	while ((c = strstr(pcText, "+")) != NULL) {
-		*c = ' ';
-			}
-
-	/* Write the message to the LCD. */
-	strcpy(cMessageForDisplay, pcText);
-	vSendDebugUART(cMessageForDisplay);
-	}
-}
-
-void dhcpc_configured(const struct dhcpc_state *s) {
-	unsigned char buffer[30];
-	if (!s->ipaddr[0] && !s->ipaddr[1]) {
-		vSendDebugUART("NO IP");
-	} else {
-		vSendDebugUART("GOT IP");
-		uip_sethostaddr (s->ipaddr);
-		uip_setnetmask (s->netmask);
-		uip_setdraddr (s->default_router);
-		httpd_init();
+		;
 	}
 }
 
