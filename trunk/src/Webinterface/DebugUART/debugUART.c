@@ -18,6 +18,7 @@
 
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "task.h"
 #include "GraphicsLibrary/graphicObjects.h"
 #include "GraphicsLibrary/runGraphics.h"
 
@@ -25,53 +26,13 @@ int init = 0;
 
 //*****************************************************************************
 //
-// Initializes URAT0
-//
-//*****************************************************************************
-void vInitDebug(void) {
-	if (init == 0) {
-		//
-		// Enable the peripherals.
-		//
-		//SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-		//SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-
-		//
-		// Enable processor interrupts.
-		//
-		//IntMasterEnable();
-
-		//
-		// Set GPIO A0 and A1 as UART pins.
-		//
-		//GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-
-		//
-		// Configure the UART for 115,200, 8-N-1 operation.
-		//
-		//UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
-		//		(UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE
-		//				| UART_CONFIG_PAR_NONE));
-
-		//
-		// Enable the UART interrupt.
-		//
-		//IntEnable(INT_UART0);
-		//UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
-		init = 1;
-	}
-}
-
-//*****************************************************************************
-//
 // Send a string to the UART.
 //
 //*****************************************************************************
-void vSendDebugUART(unsigned char *pucBuffer) {
+void vSendDebugUART(unsigned char *pucBuffer)
+{
 	xGraphMessage xMessage;
-
 	xMessage.msg = pucBuffer;
-
 	xQueueSend(xGraphQueue, &xMessage, (portTickType) 0);
-	vTaskResume(xGraphicTaskHandler);
+	xTaskResumeFromISR(xGraphicTaskHandler);
 }

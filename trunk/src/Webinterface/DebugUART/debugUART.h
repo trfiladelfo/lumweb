@@ -4,14 +4,15 @@
  *  Created on: 06.10.2009
  *      Author: root
  */
+#include "hw_types.h"
 
 #ifndef DEBUGUART_H_
 #define DEBUGUART_H_
 
 /*
- * Initializes the UART
+ * Starts the DebugTask
  */
-void vInitDebug(void);
+void vDebugTask(void* pvParameters);
 /*
  * Send a Message to the UART
  */
