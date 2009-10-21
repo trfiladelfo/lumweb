@@ -73,7 +73,7 @@
 
 /* Include Queue staff */
 #include "ComTask/comTask.h"
-#include "GraphicsLibrary/graphicObjects.h"
+#include "GraphicsLibary/graphicObjects.h"
 #include "webserver/httpd-queue.h"
 /*-----------------------------------------------------------*/
 
@@ -260,8 +260,14 @@ static void prvSetMACAddress(void) {
 
 void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength) {
-	char c = 0, param[20], arg[20], msg[40];
+	char c = 0, param[20], arg[20], msg[40], q = 1, z = 1;
 	int i, x;
+	xGRAPHMessage xGraph_msg;
+
+	xGraph_msg.msg = msg;
+
+
+
 	/* Process the form input sent by forms of the served HTML. */
 
 	for(i = 0; i < xInputLength && c == 0; i++){
@@ -270,27 +276,32 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 	}
 
 	if (c == 1) {
+		while(q == 1){
 			for(x = 0; i < xInputLength && pcInputString[i] != '=' ; i++){
 				arg[x] = pcInputString[i];
 				x++;
 			}
-
+			i++;
 			arg[x] = 0;
-		/*	for(x = 0; i < xInputLength && pcInputString[i] != '&' ; i++){
+			for(x = 0; i < xInputLength && pcInputString[i] != '&' ; i++){
 				param[x] = pcInputString[i];
 				x++;
-			}
-			param[x] = 0; */
-			sprintf(msg, "GET: %s =", arg);
 
-	//		vPortFree(arg);
-	//		vPortFree(param);
-		//	vPortFree(xGraph_msg.msg);
-		;
+			}
+			param[x] = 0;
+
+			i = i + 1;
+			if(i >= xInputLength){ // end of get string
+				q = 0;
+			}
+			z++;
+		}
+		sprintf(xGraph_msg.msg, "%s = %s", arg, param);
+		xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
 	}else{
-		strcpy(msg, "NO GET");
+		xGraph_msg.msg = "NO GET";
 	}
-	vSendDebugUART(msg);
+	xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
 
 
 }
