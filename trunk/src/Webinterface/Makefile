@@ -94,7 +94,6 @@ CFLAGS=$(DEBUG) -I . \
 
 SOURCE=	main.c \
 		timertest.c \
-		rit128x96x4.c \
 		./ComTask/comTask.c \
 		$(LUMINARY_DRIVER_DIR)/ustdlib.c \
 		./webserver/uIP_Task.c \
@@ -103,8 +102,11 @@ SOURCE=	main.c \
 		./webserver/httpd-cgi.c \
 		./webserver/httpd-fs.c \
 		./webserver/http-strings.c \
-		./GraphicsLibary/runTestTask.c \
-		./GraphicsLibary/graphicObjects.c \
+		./GraphicsLibrary/runGraphics.c \
+		./GraphicsLibrary/graphicButton.c \
+		./GraphicsLibrary/graphicTextBox.c \
+		./GraphicsLibrary/graphicObjects.c \
+		./GraphicsLibrary/port/rit128x96x4.c \
 		./DebugUART/debugUART.c \
 		$(UIP_COMMON_DIR)/uip_arp.c \
 		$(UIP_COMMON_DIR)/psock.c \
@@ -122,6 +124,7 @@ SOURCE=	main.c \
 		
 #		./IntQueueTimer.c \
 #		$(FATFS_COMMON_DIR)/port/fs.c \
+#		./ParTest/ParTest.c \
 
 LIBS= $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libdriver.a $(LUMINARY_DRIVER_DIR)/arm-none-eabi-gcc/libgr.a
 
@@ -155,3 +158,6 @@ flash : all
 
 doc : 
 	doxygen ../../doc/code/DoxyFile
+	
+cleanflash : clean flash
+	

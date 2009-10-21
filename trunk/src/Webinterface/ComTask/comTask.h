@@ -1,6 +1,8 @@
 #ifndef COMTASK_H
 #define COMTASK_H
 
+#include "queue.h"
+
 /**
  * \addtogroup comTask
  * @{

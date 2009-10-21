@@ -52,7 +52,6 @@
 #include "httpd-cgi.h"
 #include "httpd-fs.h"
 
-#include  "GraphicsLibary/graphicObjects.h"
 #include "ComTask/comTask.h"
 #include "httpd-queue.h"
 
