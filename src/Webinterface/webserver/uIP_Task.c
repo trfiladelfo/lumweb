@@ -73,7 +73,7 @@
 
 /* Include Queue staff */
 #include "ComTask/comTask.h"
-#include "GraphicsLibary/graphicObjects.h"
+#include "GraphicsLibrary/graphicObjects.h"
 #include "webserver/httpd-queue.h"
 /*-----------------------------------------------------------*/
 
@@ -262,12 +262,6 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength) {
 	char c = 0, param[20], arg[20], msg[40];
 	int i, x;
-	xGRAPHMessage xGraph_msg;
-
-	xGraph_msg.msg = msg;
-
-
-
 	/* Process the form input sent by forms of the served HTML. */
 
 	for(i = 0; i < xInputLength && c == 0; i++){
@@ -287,16 +281,16 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 				x++;
 			}
 			param[x] = 0; */
-			sprintf(xGraph_msg.msg, "GET: %s =", arg);
+			sprintf(msg, "GET: %s =", arg);
 
 	//		vPortFree(arg);
 	//		vPortFree(param);
 		//	vPortFree(xGraph_msg.msg);
 		;
 	}else{
-		xGraph_msg.msg = "NO GET";
+		strcpy(msg, "NO GET");
 	}
-	xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
+	vSendDebugUART(msg);
 
 
 }

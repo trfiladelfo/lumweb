@@ -24,7 +24,8 @@
 
 #include "ComTask/comTask.h"   /* include communication task header */
 #include "DebugUART/debugUART.h" /* include the Uart debugging task */
-#include "GraphicsLibary/graphicObjects.h" /* include the Graphics Libary */
+#include "GraphicsLibrary/graphicObjects.h"
+#include "GraphicsLibrary/runGraphics.h" /* include the Graphics Libary */
 #include "webserver/httpd-queue.h"
 
 /*-----------------------------------------------------------*/
@@ -36,8 +37,9 @@
 /* Size of the stack allocated to the uIP task. */
 #define mainBASIC_WEB_STACK_SIZE            ( configMINIMAL_STACK_SIZE * 5 )
 
-/* The OLED task uses the sprintf function so requires a little more stack too. */
-#define mainOLED_TASK_STACK_SIZE			( configMINIMAL_STACK_SIZE + 50 )
+/* Size of the stack allocated to the OLED task. */
+#define mainGRAPHIC_OBJECTS_STACK_SIZE      ( configMINIMAL_STACK_SIZE * 3 )
+
 
 /* Task priorities. */
 
@@ -53,11 +55,6 @@
  * this task.
  */
 extern void vuIP_Task(void *pvParameters);
-
-/*
- * The task that handles the graphicObjects on the LCD/OLED Screen
- */
-extern void vuGraphicObjectsTestTask(void *pvParameters);
 
 /*
  * Configure the hardware for the demo.
@@ -93,9 +90,6 @@ unsigned portLONG ulIdleError = pdFALSE;
 int main(void) {
 
 	char buffer[20];
-	xGRAPHMessage xMessage;
-
-	vInitDebug();
 
 	prvSetupHardware();
 
@@ -103,23 +97,23 @@ int main(void) {
 	xCOMQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
 
 	/* Create the queue used by the Graphics task.  Messages are received via this queue. */
-	xGRAPHQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xGRAPHMessage));
-
-	/* Create the queue used by the Graphics task.  Messages are received via this queue. */
 	xHTTPDQueue = xQueueCreate(HTTPD_QUEUE_SIZE, sizeof(xHTTPDMessage));
 
+	xGraphQueue = xQueueCreate(5, sizeof(xGraphMessage));
+
+
+
+	xTaskCreate(vGraphicObjectsTask, (signed portCHAR *) "graphicObjects",
+				mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
+						- 1, &xGraphicTaskHandler);
+
+	vInitDebug();
 
 	vSendDebugUART("Welcome");
 
 
 	/* Create the uIP task if running on a processor that includes a MAC and
 	 PHY. */
-
-	xTaskCreate(vuGraphicObjectsTestTask, (signed portCHAR *) "graphicObjects",
-			GRAPH_STACK_SIZE, NULL, tskIDLE_PRIORITY - 1, NULL);
-
-
-
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
@@ -158,15 +152,25 @@ void prvSetupHardware(void) {
 	SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN
 			| SYSCTL_XTAL_8MHZ);
 
-	/* 	Enable Port F for Ethernet LEDs
-	 LED0        Bit 3   Output
-	 LED1        Bit 2   Output */
+	//
+	// Enable the peripherals
+	//
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
 	GPIODirModeSet(GPIO_PORTF_BASE, (GPIO_PIN_2 | GPIO_PIN_3), GPIO_DIR_MODE_HW);
 	GPIOPadConfigSet(GPIO_PORTF_BASE, (GPIO_PIN_2 | GPIO_PIN_3),
 			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
 
-	//vParTestInitialise();
+	//
+	// Enable Interrupts
+	//
+	IntMasterEnable();
+
+	//
+	// Set GPIO A0 and A1 as UART.
+	//
+	GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 }
 /*-----------------------------------------------------------*/
 
