@@ -75,7 +75,6 @@ void goInit()
 		xGraphCommandQueue = xQueueCreate(5, sizeof(xGraphCommandMessage));
 
 		RIT128x96x4Init(1000000);
-		RIT128x96x4DisplayOn();
 
 		IntEnable(INT_GPIOE);
 		IntEnable(INT_GPIOF);
@@ -90,16 +89,10 @@ void goInit()
  */
 void goObjectsListener(xTaskHandle handler)
 {
-
-	char cMessageLast[16];
+	xGraphCommandMessage xCommMessage;
+	xGraphMessage xMessage;
 
 	xGraphicTaskHandler = handler;
-
-	xGraphCommandMessage xMessage;
-
-	strcpy(cMessageLast, "Kein Befehl\0");
-
-	RIT128x96x4StringDraw(cMessageLast, 10, 85, 10);
 
 	if (buttonSelected == NULL)
 	{
@@ -110,43 +103,50 @@ void goObjectsListener(xTaskHandle handler)
 	goDrawButtons();
 	goDrawTextBoxes();
 
+	vTaskSuspend(xGraphicTaskHandler);
+
 	while (1)
 	{
 		/* Wait for a message to arrive */
-		while (xQueueReceive( xGraphCommandQueue, &xMessage, 0))
+		while (xQueueReceive( xGraphCommandQueue, &xCommMessage, 0))
 		{
 			/* Print received message */
-			RIT128x96x4StringDraw(cMessageLast, 10, 85, 0);
-			snprintf(cMessageLast, 10, "Befehl: %d", xMessage.key);
-			RIT128x96x4StringDraw(cMessageLast, 10, 85, 10);
-			if (xMessage.key == BUTTON_SELECT)
+			//RIT128x96x4StringDraw(cMessageLast, 10, 85, 0);
+			//snprintf(cMessageLast, 10, "Befehl: %d", xCommMessage.key);
+			//RIT128x96x4StringDraw(cMessageLast, 10, 85, 10);
+			if (xCommMessage.key == BUTTON_SELECT)
 			{
-				//buttonSelected->border = pucBorderClicked;
-				//goDrawButton(buttonSelected);
 				buttonSelected->selectAction(buttonSelected->pvParam);
-				//buttonSelected->border = pucBorderSelected;
-				goDrawButton(buttonSelected);
-
+				vSendDebugUART("Select Pressed");
 			}
 			else
 			{
-				if (xMessage.key == BUTTON_LEFT)
+				if (xCommMessage.key == BUTTON_LEFT)
 				{
 					buttonSelected->border = pucBorderNormal;
+					goDrawButton(buttonSelected);
 					buttonSelected = goGetPrevButton(buttonSelected);
 					buttonSelected->border = pucBorderSelected;
+					goDrawButton(buttonSelected);
 
 				}
-				if (xMessage.key == BUTTON_RIGHT)
+				if (xCommMessage.key == BUTTON_RIGHT)
 				{
 					buttonSelected->border = pucBorderNormal;
+					goDrawButton(buttonSelected);
 					buttonSelected = goGetNextButton(buttonSelected);
 					buttonSelected->border = pucBorderSelected;
+					goDrawButton(buttonSelected);
 				}
-				goDrawButtons();
+				vSendDebugUART("Arrow Pressed");
 			}
-			goDrawTextBoxes();
 		}
+
+		while (xQueueReceive( xGraphQueue, &xMessage, 0))
+		{
+			RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
+		}
+
 		vTaskSuspend(xGraphicTaskHandler);
 
 	}

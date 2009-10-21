@@ -40,7 +40,6 @@
 /* Size of the stack allocated to the OLED task. */
 #define mainGRAPHIC_OBJECTS_STACK_SIZE      ( configMINIMAL_STACK_SIZE * 3 )
 
-
 /* Task priorities. */
 
 #define mainCHECK_TASK_PRIORITY				( tskIDLE_PRIORITY + 3 )
@@ -87,7 +86,8 @@ unsigned portLONG ulIdleError = pdFALSE;
  * which provides information on configuring and running this demo for the
  * various Luminary Micro EKs.
  *************************************************************************/
-int main(void) {
+int main(void)
+{
 
 	char buffer[20];
 
@@ -101,37 +101,29 @@ int main(void) {
 
 	xGraphQueue = xQueueCreate(5, sizeof(xGraphMessage));
 
-
-
 	xTaskCreate(vGraphicObjectsTask, (signed portCHAR *) "graphicObjects",
-				mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
-						- 1, &xGraphicTaskHandler);
-
-	vInitDebug();
-
-	vSendDebugUART("Welcome");
-
+			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
+					- 1, &xGraphicTaskHandler);
 
 	/* Create the uIP task if running on a processor that includes a MAC and
 	 PHY. */
-	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
+	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH))
+	{
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
 				NULL);
 	}
 
-
+	vSendDebugUART("Welcome");
 
 	/* Start the Communication Task (vComTask) to interact with the machine */
 
 	xTaskCreate(vComTask, (signed portCHAR *) "comTask", COM_STACK_SIZE, NULL,
 			tskIDLE_PRIORITY, NULL);
 
-
 	/* Start the scheduler. */
+
 	vTaskStartScheduler();
-
-
 
 	/* Will only get here if there was insufficient memory to create the idle
 	 task. */
@@ -141,10 +133,12 @@ int main(void) {
 }
 /*-----------------------------------------------------------*/
 
-void prvSetupHardware(void) {
+void prvSetupHardware(void)
+{
 	/* If running on Rev A2 silicon, turn the LDO voltage up to 2.75V.  This is
 	 a workaround to allow the PLL to operate reliably. */
-	if (DEVICE_IS_REVA2) {
+	if (DEVICE_IS_REVA2)
+	{
 		SysCtlLDOSet(SYSCTL_LDO_2_75V);
 	}
 
@@ -174,11 +168,13 @@ void prvSetupHardware(void) {
 }
 /*-----------------------------------------------------------*/
 
-void vApplicationTickHook(void) {
+void vApplicationTickHook(void)
+{
 }
 
 void vApplicationStackOverflowHook(xTaskHandle *pxTask,
-		signed portCHAR *pcTaskName) {
+		signed portCHAR *pcTaskName)
+{
 	for (;;)
 		;
 }

@@ -16,8 +16,8 @@ void vGraphicObjectsTask(void *pvParameters) {
 	pgoTextBox t;
 	pgoTextBox t1;
 
-	int dt = 10;
-	int dt1 = 50;
+	unsigned int dt = 10;
+	unsigned int dt1 = 50;
 
 	goInit();
 

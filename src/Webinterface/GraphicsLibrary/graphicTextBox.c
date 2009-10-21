@@ -111,9 +111,11 @@ void goInsertTextBox(pgoTextBox txt) {
 void vTextBoxIncrement(void* pvParam) {
 	pgoTextBox txt = (pgoTextBox) pvParam;
 	*(txt->value) += 1;
+	goDrawTextBox(txt);
 }
 // Testroutine
 void vTextBoxDecrement(void* pvParam) {
 	pgoTextBox txt = (pgoTextBox) pvParam;
 	*(txt->value) -= 1;
+	goDrawTextBox(txt);
 }
