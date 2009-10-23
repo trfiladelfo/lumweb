@@ -317,14 +317,9 @@ generate_get(void *arg)
 	}
 
 	if((xQueueReceive( xHTTPDQueue, &xHTTPDMessage, ( portTickType ) 10000 )) == pdTRUE){
-	//	sprintf( uip_appdata, "\"%s\"", xHTTPDMessage.msg );
-	//	sprintf( uip_appdata, "\"%d\"", 11 );
-		//if(sizeof(uip_appdata) >= sizeof(xHTTPDMessage.msg))
-			strcpy(uip_appdata, xHTTPDMessage.msg);
-	//	else
-	//		strcpy(uip_appdata, "ERROR HTTPD");
+		strcpy(uip_appdata, xHTTPDMessage.msg);
+
 	}
-//	vPortFree(httpd_cgi_args);
 
 	return strlen( uip_appdata );
 }
