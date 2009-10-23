@@ -92,7 +92,14 @@ void goObjectsListener(xTaskHandle handler)
 	xGraphCommandMessage xCommMessage;
 	xGraphMessage xMessage;
 
+	portTickType delay;
+
+	delay = xTaskGetTickCount();
+	while (delay + 1000 > xTaskGetTickCount());
+
 	xGraphicTaskHandler = handler;
+
+
 
 	if (buttonSelected == NULL)
 	{
@@ -103,6 +110,7 @@ void goObjectsListener(xTaskHandle handler)
 	goDrawButtons();
 	goDrawTextBoxes();
 
+	RIT128x96x4StringDraw("", 0, 100, 0x0);
 	vTaskSuspend(xGraphicTaskHandler);
 
 	while (1)
