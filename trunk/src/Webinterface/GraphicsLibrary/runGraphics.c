@@ -21,17 +21,17 @@ void vGraphicObjectsTask(void *pvParameters) {
 
 	goInit();
 
-	t = goNewTextBox(7, 40, 11, &dt);
-	t1 = goNewTextBox(7, 40, 31, &dt1);
+	t = goNewTextBox(7, 10, 10, &dt);
+	t1 = goNewTextBox(7, 10, 40, &dt1);
 
-	b = goNewButton(10, 10, 10, 10, goButtonUp, pucBorderNormal,
+	b = goNewButton(10, 10, 10, 24, goButtonUp, pucBorderNormal,
 			vTextBoxIncrement, t);
-	b1 = goNewButton(10, 10, 24, 10, goButtonDown, pucBorderNormal,
+	b1 = goNewButton(10, 10, 24, 24, goButtonDown, pucBorderNormal,
 			vTextBoxDecrement, t);
 
-	b2 = goNewButton(10, 10, 10, 30, goButtonUp, pucBorderNormal,
+	b2 = goNewButton(10, 10, 10, 54, goButtonUp, pucBorderNormal,
 			vTextBoxIncrement, t1);
-	b3 = goNewButton(10, 10, 24, 30, goButtonDown, pucBorderNormal,
+	b3 = goNewButton(10, 10, 24, 54, goButtonDown, pucBorderNormal,
 			vTextBoxDecrement, t1);
 
 	goObjectsListener(xGraphicTaskHandler);

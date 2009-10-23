@@ -157,7 +157,7 @@ void vTextBoxDecrement(void* pvParam);
 // Graphic Definitions
 //
 
-static const unsigned char pucBorderNormal[] = { 0x06, 0x0C, 0x06, 0x0C };
+static const unsigned char pucBorderNormal[] = { 0x00, 0x00, 0x00, 0x00 };
 static const unsigned char pucBorderSelected[] = { 0x06, 0x06, 0x0C, 0x0C };
 static const unsigned char pucBorderClicked[] = { 0x0C, 0x0C, 0x06, 0x06 };
 static const unsigned char pucBorderDeactivated[] = { 0x0F, 0x0F, 0x0F, 0x0F };
