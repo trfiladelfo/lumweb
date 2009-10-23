@@ -73,7 +73,7 @@
 
 /* Include Queue staff */
 #include "ComTask/comTask.h"
-#include "GraphicsLibary/graphicObjects.h"
+#include "GraphicsLibrary/graphicObjects.h"
 #include "webserver/httpd-queue.h"
 /*-----------------------------------------------------------*/
 
@@ -81,8 +81,8 @@
 #define uipIP_ADDR0		192
 #define uipIP_ADDR1		168
 
-#define uipIP_ADDR2		7
-#define uipIP_ADDR3		63
+#define uipIP_ADDR2		2
+#define uipIP_ADDR3		201
 
 /* How long to wait before attempting to connect the MAC again. */
 #define uipINIT_WAIT    100
@@ -262,7 +262,7 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength) {
 	char c = 0, param[20], arg[20], msg[40], q = 1, z = 1;
 	int i, x;
-	xGRAPHMessage xGraph_msg;
+	xGraphMessage xGraph_msg;
 
 	xGraph_msg.msg = msg;
 
@@ -297,11 +297,11 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 			z++;
 		}
 		sprintf(xGraph_msg.msg, "%s = %s", arg, param);
-		xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
+		xQueueSend(xGraphQueue, &xGraph_msg, (portTickType) 0);
 	}else{
 		xGraph_msg.msg = "NO GET";
 	}
-	xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
+	xQueueSend(xGraphQueue, &xGraph_msg, (portTickType) 0);
 
 
 }
