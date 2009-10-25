@@ -317,6 +317,7 @@ generate_get(void *arg)
 	}
 
 	if((xQueueReceive( xHTTPDQueue, &xHTTPDMessage, ( portTickType ) 10000 )) == pdTRUE){
+
 		strcpy(uip_appdata, xHTTPDMessage.msg);
 
 	}

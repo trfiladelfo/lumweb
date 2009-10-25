@@ -260,12 +260,13 @@ static void prvSetMACAddress(void) {
 
 void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength) {
-	char c = 0, param[20], arg[20], msg[40], q = 1, z = 1;
+	char c = 0, param[20], arg[20], q = 1, z = 1;
 	int i, x;
-	xGraphMessage xGraph_msg;
+	xCOMMessage xCom_msg;
 
-	xGraph_msg.msg = msg;
-
+	/* initialise xcommessage */
+	xCom_msg.cmd = SET;
+	xCom_msg.from = HTTPD;
 
 
 	/* Process the form input sent by forms of the served HTML. */
@@ -277,12 +278,15 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 
 	if (c == 1) {
 		while(q == 1){
+			/* get argument string */
 			for(x = 0; i < xInputLength && pcInputString[i] != '=' ; i++){
 				arg[x] = pcInputString[i];
 				x++;
 			}
 			i++;
 			arg[x] = 0;
+
+			/* get parameter value */
 			for(x = 0; i < xInputLength && pcInputString[i] != '&' ; i++){
 				param[x] = pcInputString[i];
 				x++;
@@ -290,19 +294,22 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 			}
 			param[x] = 0;
 
+			// checks end of GET input string
 			i = i + 1;
-			if(i >= xInputLength){ // end of get string
+			if(i >= xInputLength){
 				q = 0;
 			}
+
+			/* send input to com task */
+			xCom_msg.item = arg;
+			xCom_msg.value = param;
+		//	sprintf(xCom_msg.item, "%%s", arg);
+		//	sprintf(xCom_msg.value, "%%s", param);
+			xQueueSend(xCOMQueue, &xCom_msg, (portTickType) 0);
+
 			z++;
 		}
-		sprintf(xGraph_msg.msg, "%s = %s", arg, param);
-		xQueueSend(xGraphQueue, &xGraph_msg, (portTickType) 0);
-	}else{
-		xGraph_msg.msg = "NO GET";
+
 	}
-	xQueueSend(xGraphQueue, &xGraph_msg, (portTickType) 0);
-
-
 }
 
