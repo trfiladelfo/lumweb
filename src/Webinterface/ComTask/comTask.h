@@ -30,6 +30,7 @@ typedef struct
 {
 	enum com_commands cmd; //e.g. 'get', 'set'
 	char *item; // name of the selected item
+	char *value; // value if set
 	enum com_from from; // adress to return answer
 } xCOMMessage;
 
