@@ -1,5 +1,9 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
+	    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>Uhrzeiten</title>
 		<script type="text/javascript">
 			function increase(id){
@@ -23,41 +27,34 @@
 	<body>
 		<form method="get" action="/times.shtml">
 		<table>
-			<tr colspan='2'>
-				<th>Tag</th>
+			<tr>
+				<th colspan='2'>Tag</th>
 			</tr>
 			<tr>
-				<td>Stunden<input type="text" name="day_hour" value=%! get [day_hour]
-				 id="day_hour"></td>
-				<td>Minuten<input type="text" name="day_minute" value=%! get [day_minute] 
-				id="day_minute"></td>
+				<td>
+					Stunden %! get [day_hour]
+				 </td>
+				<td>
+					Minuten %! get [day_minute]
+				</td>
+			</tr>
+
+			<tr>
+				<th colspan='2'>Nacht</th>
 			</tr>
 			<tr>
-				<td><input type="button" value="+" onclick="increase('day_hour');">
-					<input type="button" value="-" onclick="decrease('day_hour');"></td>
-				<td><input type="button" value="+" onclick="increase('day_minute');">
-				    <input type="button" value="-" onclick="decrease('day_minute');"></td>				
+				<td>
+					Stunden %! get [night_hour] 
+				</td>
+				<td>
+					Minuten %! get [night_minute] 
+				</td>
 			</tr>
-			<tr colspan='2'>
-				<th>Nacht</th>
-			</tr>
+
 			<tr>
-				<td>Stunden <input type="text" name="night_hour" width="12pt" value=%! get [night_hour] 
-				id="night_hour"></td>
-				<td>Minuten<input type="text" name="night_minute" width="12pt" value=%! get [night_minute] 
-				id="night_minute"></td>
-			</tr>
-			<tr>
-				<td><input type="button" value="+" onclick="increase('night_hour');">
-					<input type="button" value="-" onclick="decrease('night_hour');"></td>
-				<td><input type="button" value="+" onclick="increase('night_minute');">
-				    <input type="button" value="-" onclick="decrease('night_minute');"></td>				
-			</tr>
-			<tr>
-			  <td  colspan="2"><input type="submit" value="Update IO"> </td>
+			  <td  colspan="2"><input type="submit" value="OK" /> </td>
 			</tr>
 		</table>
-		
 		</form>
 	</body>
 </html>

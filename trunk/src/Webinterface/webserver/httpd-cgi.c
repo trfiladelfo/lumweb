@@ -302,7 +302,7 @@ static PT_THREAD(led_io(struct httpd_state *s, char *ptr))
 /*---------------------------------------------------------------------------*/
 
 /** takes the arguments in httpd_cgi_args, sends a message
- * to the comTask and replaces the cgi string with the result */
+ * to the comTask and generets an input tag with inc and dec button as html */
 static unsigned short
 generate_get(void *arg)
 {
@@ -317,9 +317,10 @@ generate_get(void *arg)
 	}
 
 	if((xQueueReceive( xHTTPDQueue, &xHTTPDMessage, ( portTickType ) 10000 )) == pdTRUE){
-
-		strcpy(uip_appdata, xHTTPDMessage.msg);
-
+		sprintf(uip_appdata, "<input type='text' name='%s' value=%s id='%s' />"
+							 "<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
+							 "<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />"
+				, httpd_cgi_args, xHTTPDMessage.msg, httpd_cgi_args, httpd_cgi_args, httpd_cgi_args);
 	}
 
 	return strlen( uip_appdata );
