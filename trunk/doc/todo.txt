@@ -19,3 +19,7 @@ Tasks:													Fertig %:
 			- designen									0
 			- erstellen									0
 			- parser implementieren						0
+			
+			
+Flash Schreiben/Lesen (lmi_flash.h)
+Lesen der Konfig files via MicroSD und LAN!!
