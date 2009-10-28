@@ -6,6 +6,7 @@
  */
 
 #include "graphicObjects.h"
+#include "graphicButton.h"
 
 #include "rit128x96x4.h"
 
@@ -20,7 +21,7 @@
  */
 pgoButton goNewButton(int height, int width, int left, int top,
 		const char unsigned *value, const unsigned char *border,
-		void(*selectAction)(void*), void* pvParam) {
+		void(*selectAction)(void*)) {
 
 	// Allocate RAM for the Button
 	//struct goButton *btn = (struct goButton *) pvPortMalloc(sizeof (goButton));
@@ -32,7 +33,6 @@ pgoButton goNewButton(int height, int width, int left, int top,
 	btn->top = top;
 	btn->value = value;
 	btn->border = border;
-	btn->pvParam = pvParam;
 	btn->selectAction = selectAction;
 
 	goInsertButton(btn);

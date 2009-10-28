@@ -5,6 +5,8 @@
  */
 
 #include "GraphicsLibrary/graphicObjects.h"
+#include "GraphicsLibrary/graphicTextbox.h"
+#include "GraphicsLibrary/graphicButton.h"
 #include "GraphicsLibrary/runGraphics.h"
 
 void vGraphicObjectsTask(void *pvParameters) {
@@ -16,23 +18,18 @@ void vGraphicObjectsTask(void *pvParameters) {
 	pgoTextBox t;
 	pgoTextBox t1;
 
-	unsigned int dt = 10;
-	unsigned int dt1 = 50;
+	unsigned char* dt = {"day_hour"};
+	unsigned char* dt1 = {"day_minute"};
 
 	goInit();
 
-	t = goNewTextBox(7, 10, 10, &dt);
-	t1 = goNewTextBox(7, 10, 40, &dt1);
+	t = goNewTextBox(7, 50, 10, dt);
+	t1 = goNewTextBox(7, 50, 24, dt1);
 
-	b = goNewButton(10, 10, 10, 24, goButtonUp, pucBorderNormal,
-			vTextBoxIncrement, t);
-	b1 = goNewButton(10, 10, 24, 24, goButtonDown, pucBorderNormal,
-			vTextBoxDecrement, t);
-
-	b2 = goNewButton(10, 10, 10, 54, goButtonUp, pucBorderNormal,
-			vTextBoxIncrement, t1);
-	b3 = goNewButton(10, 10, 24, 54, goButtonDown, pucBorderNormal,
-			vTextBoxDecrement, t1);
+	b = goNewButton(10, 10, 114, 10, goButtonUp, pucBorderNormal,
+			vTextBoxIncrement);
+	b1 = goNewButton(10, 10, 114, 24, goButtonDown, pucBorderNormal,
+			vTextBoxDecrement);
 
 	goObjectsListener(xGraphicTaskHandler);
 
