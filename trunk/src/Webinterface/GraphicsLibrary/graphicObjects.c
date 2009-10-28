@@ -24,13 +24,16 @@
 #include <string.h>
 
 #include "graphicObjects.h"
+#include "graphicTextbox.h"
+#include "graphicButton.h"
+
 #include "hw_memmap.h"
 #include "hw_types.h"
-#include "debug.h"
+#include "hw_ints.h"
+
 #include "gpio.h"
 #include "sysctl.h"
 #include "interrupt.h"
-#include "hw_ints.h"
 
 #include "rit128x96x4.h"
 
@@ -73,6 +76,7 @@ void goInit()
 		GPIOPinIntEnable(GPIO_PORTF_BASE, SELECT);
 
 		xGraphCommandQueue = xQueueCreate(5, sizeof(xGraphCommandMessage));
+		xGraphCommunicationQueue = xQueueCreate(5, sizeof(xGraphCommunication));
 
 		RIT128x96x4Init(1000000);
 
@@ -95,11 +99,10 @@ void goObjectsListener(xTaskHandle handler)
 	portTickType delay;
 
 	delay = xTaskGetTickCount();
-	while (delay + 1000 > xTaskGetTickCount());
+	while (delay + 1000 > xTaskGetTickCount())
+		;
 
-	xGraphicTaskHandler = handler;
-
-
+	xGraphicObjectsTaskHandler = handler;
 
 	if (buttonSelected == NULL)
 	{
@@ -107,46 +110,57 @@ void goObjectsListener(xTaskHandle handler)
 		buttonSelected->border = pucBorderSelected;
 	}
 
+	if (textBoxListSelected == NULL)
+	{
+		textBoxListSelected = textBoxListRoot;
+		goDrawTextBoxes();
+	}
+
 	goDrawButtons();
 	goDrawTextBoxes();
 
 	RIT128x96x4StringDraw("", 0, 100, 0x0);
-	vTaskSuspend(xGraphicTaskHandler);
+	vTaskSuspend(xGraphicObjectsTaskHandler);
 
 	while (1)
 	{
 		/* Wait for a message to arrive */
 		while (xQueueReceive( xGraphCommandQueue, &xCommMessage, 0))
 		{
-			/* Print received message */
-			//RIT128x96x4StringDraw(cMessageLast, 10, 85, 0);
-			//snprintf(cMessageLast, 10, "Befehl: %d", xCommMessage.key);
-			//RIT128x96x4StringDraw(cMessageLast, 10, 85, 10);
 			if (xCommMessage.key == BUTTON_SELECT)
 			{
-				buttonSelected->selectAction(buttonSelected->pvParam);
-				vSendDebugUART("Select Pressed");
+				vTextBoxSetValues();
 			}
 			else
 			{
 				if (xCommMessage.key == BUTTON_LEFT)
 				{
-					buttonSelected->border = pucBorderNormal;
-					goDrawButton(buttonSelected);
-					buttonSelected = goGetPrevButton(buttonSelected);
-					buttonSelected->border = pucBorderSelected;
-					goDrawButton(buttonSelected);
-
+					textBoxListSelected = goGetPrevTextBox(textBoxListSelected);
+					goDrawTextBoxes();
 				}
-				if (xCommMessage.key == BUTTON_RIGHT)
+				else if (xCommMessage.key == BUTTON_RIGHT)
 				{
-					buttonSelected->border = pucBorderNormal;
-					goDrawButton(buttonSelected);
-					buttonSelected = goGetNextButton(buttonSelected);
-					buttonSelected->border = pucBorderSelected;
-					goDrawButton(buttonSelected);
+					textBoxListSelected = goGetNextTextBox(textBoxListSelected);
+					goDrawTextBoxes();
 				}
-				vSendDebugUART("Arrow Pressed");
+				else if (xCommMessage.key == BUTTON_UP)
+				{
+					vTextBoxIncrement(NULL);
+					//buttonSelected->border = pucBorderNormal;
+					//goDrawButton(buttonSelected);
+					//buttonSelected = goGetPrevButton(buttonSelected);
+					//buttonSelected->border = pucBorderSelected;
+					//goDrawButton(buttonSelected);
+				}
+				else if (xCommMessage.key == BUTTON_DOWN)
+				{
+					vTextBoxDecrement(NULL);
+					//buttonSelected->border = pucBorderNormal;
+					//goDrawButton(buttonSelected);
+					//buttonSelected = goGetNextButton(buttonSelected);
+					//buttonSelected->border = pucBorderSelected;
+					//goDrawButton(buttonSelected);
+				}
 			}
 		}
 
@@ -155,7 +169,7 @@ void goObjectsListener(xTaskHandle handler)
 			RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
 		}
 
-		vTaskSuspend(xGraphicTaskHandler);
+		vTaskSuspend(xGraphicObjectsTaskHandler);
 
 	}
 }
@@ -222,7 +236,7 @@ void goPortEIntHandler(void)
 
 	IntMasterDisable();
 
-	if (xTaskGetTickCount() > xTicksLast + 350)
+	if (xTaskGetTickCount() > xTicksLast + 200)
 	{
 
 		xTicksLast = xTaskGetTickCount();
@@ -246,7 +260,7 @@ void goPortEIntHandler(void)
 			xCmdMessage.key = BUTTON_RIGHT;
 		}
 		xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
-		xTaskResumeFromISR(xGraphicTaskHandler);
+		xTaskResumeFromISR(xGraphicObjectsTaskHandler);
 
 	}
 	GPIOPinIntClear(GPIO_PORTE_BASE, (UP | DOWN | LEFT | RIGHT));
@@ -269,7 +283,7 @@ void goPortFIntHandler(void)
 		{
 			xCmdMessage.key = BUTTON_SELECT;
 			xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
-			xTaskResumeFromISR(xGraphicTaskHandler);
+			xTaskResumeFromISR(xGraphicObjectsTaskHandler);
 		}
 	}
 

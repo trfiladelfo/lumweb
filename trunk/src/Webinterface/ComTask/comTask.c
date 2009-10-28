@@ -26,72 +26,105 @@
 
 /* Include Queue staff */
 #include "comTask.h"
-#include  "GraphicsLibrary/graphicObjects.h"
+#include "GraphicsLibrary/graphicObjects.h"
 #include "webserver/httpd-queue.h"
-
 #include "fs.h"
 
-void vComTask(void *pvParameters) {
+void vComTask(void *pvParameters)
+{
 	xCOMMessage xMessage;
-	xGraphMessage xGraph_msg;
+	xGraphCommunication xGraph_msg;
 	xHTTPDMessage xHTTPD_msg;
 
-	int day_hour = 14, day_minute = 0, night_hour = 22,
-			night_minute = 1;
+	int value;
 
-	FILE_HANDLE mainfile;
-	char *msg;
+	int day_hour = 10;
+	int day_minute = 30;
+	int night_hour = 23;
+	int night_minute = 15;
 
-	msg = pvPortMalloc(30);
+	//FILE_HANDLE mainfile;
+	char msg[30];
 
-	FSInit();
-	mainfile = FSOpen("main.txt\0");
-	if (mainfile != NULL) {
-		FSRead(mainfile, msg, 30);
+	//FSInit();
+	//mainfile = FSOpen("main.txt\0");
+	//if (mainfile != NULL) {
+	//	FSRead(mainfile, msg, 30);
 
-		xGraph_msg.msg = msg;
-
-	} else {
-		xGraph_msg.msg = "READ ERROR!";
-	}
+	//xGraph_msg.msg = msg;
+	//} else {
+	//	xGraph_msg.msg = "READ ERROR!";
+	//}
 
 	//xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
 
-	for (;;) {
+	for (;;)
+	{
 		/* Wait for a message to arrive */
 		if (xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 1000 )
-				== pdTRUE) {
-
-			if (xMessage.cmd == GET) {
-				if (strcmp(xMessage.item, "day_hour") == 0) {
+				== pdTRUE)
+		{
+			if (xMessage.cmd == GET)
+			{
+				if (strcmp(xMessage.item, "day_hour") == 0)
+				{
 					sprintf(msg, "\"%d\"", day_hour);
-				} else if (strcmp(xMessage.item, "day_minute") == 0) {
+					value = day_hour;
+				}
+				else if (strcmp(xMessage.item, "day_minute") == 0)
+				{
 					sprintf(msg, "\"%d\"", day_minute);
-				} else if (strcmp(xMessage.item, "night_hour") == 0) {
-					sprintf(msg, "\"%d\"", night_hour);
-				} else if (strcmp(xMessage.item, "night_minute") == 0) {
+					value = day_minute;
+				}
+				else if (strcmp(xMessage.item, "night_hour") == 0)
+				{
+					sprintf(msg, "\"%d\"",night_hour);
+					value = night_hour;
+				}
+				else if (strcmp(xMessage.item, "night_minute") == 0)
+				{
 					sprintf(msg, "\"%d\"", night_minute);
-				} else
-					sprintf(msg, "\"%s: %s\"", "ERROR",
-							xMessage.item);
+					value = night_minute;
+				}
+				else
+				{
+					sprintf(msg, "\"%s: %s\"", "ERROR", xMessage.item);
+				}
 
-				if (xMessage.from == HTTPD) {
+				// Antwort senden
+				if (xMessage.from == HTTPD)
+				{
 					xHTTPD_msg.msg = msg;
 					xQueueSend(xHTTPDQueue, &xHTTPD_msg, (portTickType) 0);
 				}
-				if (xMessage.from == GRAPHIC) {
-					//xHTTPD_msg.msg = msg;
-					//xQueueSend(xGraphCommTaskQueue, &xGraph_msg, (portTickType) 0);
-				}
-			} else if(xMessage.cmd == SET){
-				xGraph_msg.msg = "SET";
-				xQueueSend(xGraphQueue, &xGraph_msg, (portTickType) 0);
-				if(xMessage.item == "day_hour"){
-					day_hour = atoi(xMessage.value);
+				else if (xMessage.from == GRAPHIC)
+				{
+					xGraph_msg.value = value;
+					xQueueSend(xGraphCommunicationQueue, &xGraph_msg, (portTickType) 0);
+					vTaskResume(xGraphicObjectsTaskHandler);
 				}
 			}
-
+			else if (xMessage.cmd == SET)
+			{
+				if (strcmp(xMessage.item, "day_hour") == 0)
+				{
+					day_hour = (int) (xMessage.value);
+				}
+				else if (strcmp(xMessage.item, "day_minute") == 0)
+				{
+					day_minute = (int) (xMessage.value);
+				}
+				else if (strcmp(xMessage.item, "night_hour") == 0)
+				{
+					night_hour = (int) (xMessage.value);
+				}
+				else if (strcmp(xMessage.item, "night_minute") == 0)
+				{
+					night_minute = (int) (xMessage.value);
+				}
+			}
 		}
+
 		// send can bus message */
 	}
 }

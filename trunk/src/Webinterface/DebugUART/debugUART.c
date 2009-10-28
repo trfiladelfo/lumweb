@@ -34,5 +34,5 @@ void vSendDebugUART(unsigned char *pucBuffer)
 	xGraphMessage xMessage;
 	xMessage.msg = pucBuffer;
 	xQueueSend(xGraphQueue, &xMessage, (portTickType) 0);
-	xTaskResumeFromISR(xGraphicTaskHandler);
+	vTaskResume(xGraphicTaskHandler);
 }
