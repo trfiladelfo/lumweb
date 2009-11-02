@@ -9,11 +9,12 @@
 #define GRAPHICTEXTBOX_H_
 
 #include "graphicObjects.h"
+#include "hw_types.h"
 
 static const unsigned char pucTextboxNormal[] =
-{ 0x0A, 0x0A, 0x0A, 0x0A };
+{ 0x4, 0x4, 0x4, 0x4 };
 static const unsigned char pucTextboxSelected[] =
-{ 0x0F, 0x0A, 0x0F, 0x0A };
+{ 0x0F, 0xA, 0xF, 0xA };
 
 struct goTextBox
 {
@@ -62,5 +63,7 @@ void vTextBoxIncrement(void* pvParam);
 void vTextBoxDecrement(void* pvParam);
 
 void vTextBoxSetValues(void);
+
+void vTextBoxGetValues(void);
 
 #endif /* GRAPHICTEXTBOX_H_ */
