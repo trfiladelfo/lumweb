@@ -20,6 +20,7 @@
 /* queue includes. */
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "task.h"
 
 /* HW includes */
 #include "portmacro.h"
@@ -78,7 +79,7 @@ void vComTask(void *pvParameters)
 				}
 				else if (strcmp(xMessage.item, "night_hour") == 0)
 				{
-					sprintf(msg, "\"%d\"",night_hour);
+					sprintf(msg, "\"%d\"", night_hour);
 					value = night_hour;
 				}
 				else if (strcmp(xMessage.item, "night_minute") == 0)

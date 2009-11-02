@@ -40,6 +40,8 @@
 xTaskHandle xGraphicTaskHandler = NULL;
 portTickType xTicksLast = 0;
 
+int top = 0;
+
 void goDrawEmptyButton(int height, int width, int left, int top,
 		unsigned const char * type);
 
@@ -133,33 +135,29 @@ void goObjectsListener(xTaskHandle handler)
 			}
 			else
 			{
-				if (xCommMessage.key == BUTTON_LEFT)
+				if (xCommMessage.key == BUTTON_UP)
 				{
 					textBoxListSelected = goGetPrevTextBox(textBoxListSelected);
 					goDrawTextBoxes();
 				}
-				else if (xCommMessage.key == BUTTON_RIGHT)
+				else if (xCommMessage.key == BUTTON_DOWN)
 				{
 					textBoxListSelected = goGetNextTextBox(textBoxListSelected);
 					goDrawTextBoxes();
 				}
-				else if (xCommMessage.key == BUTTON_UP)
+				else if (xCommMessage.key == BUTTON_RIGHT)
 				{
 					vTextBoxIncrement(NULL);
-					//buttonSelected->border = pucBorderNormal;
-					//goDrawButton(buttonSelected);
-					//buttonSelected = goGetPrevButton(buttonSelected);
-					//buttonSelected->border = pucBorderSelected;
-					//goDrawButton(buttonSelected);
 				}
-				else if (xCommMessage.key == BUTTON_DOWN)
+				else if (xCommMessage.key == BUTTON_LEFT)
 				{
 					vTextBoxDecrement(NULL);
-					//buttonSelected->border = pucBorderNormal;
-					//goDrawButton(buttonSelected);
-					//buttonSelected = goGetNextButton(buttonSelected);
-					//buttonSelected->border = pucBorderSelected;
-					//goDrawButton(buttonSelected);
+				}
+				else if (xCommMessage.key == RELOAD)
+				{
+					vTextBoxGetValues();
+					goDrawTextBoxes();
+					vSendDebugUART("Neue Daten auf dem Server");
 				}
 			}
 		}

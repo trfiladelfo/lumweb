@@ -103,6 +103,7 @@ SOURCE=	main.c \
 		./webserver/httpd-fs.c \
 		./webserver/http-strings.c \
 		./GraphicsLibrary/runGraphics.c \
+		./GraphicsLibrary/renderGraphics.c \
 		./GraphicsLibrary/graphicButton.c \
 		./GraphicsLibrary/graphicTextBox.c \
 		./GraphicsLibrary/graphicObjects.c \

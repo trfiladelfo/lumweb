@@ -60,14 +60,27 @@ static const unsigned char g_pucRIT128x96x4HorizontalInc[] =
 #define LEFT GPIO_PIN_2
 #define SELECT GPIO_PIN_1
 
-#define BUTTON_UP     0
-#define BUTTON_DOWN   1
-#define BUTTON_LEFT   2
-#define BUTTON_RIGHT  3
-#define BUTTON_SELECT 4
+#define BUTTON_UP     	0
+#define BUTTON_DOWN   	1
+#define BUTTON_LEFT   	2
+#define BUTTON_RIGHT  	3
+#define BUTTON_SELECT 	4
+
+#define RELOAD			5
 
 #define CHAR_WIDTH	5
 #define CHAR_HEIGHT 7
+
+#define VISIBLE_TOP 	0
+#define VISIBLE_LEFT 	0
+#define VISIBLE_WIDTH	108
+#define VISIBLE_HEIGHT	86
+
+#define OBJECT_HEIGHT	(CHAR_HEIGHT + 2)
+
+#define ROW_HEIGHT (OBJECT_HEIGHT + 4)
+
+#define LINE_HEIGHT (ROW_HEIGHT + 2)
 
 //
 // Graphic Definitions
