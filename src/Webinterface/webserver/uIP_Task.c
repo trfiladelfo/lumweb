@@ -261,12 +261,14 @@ static void prvSetMACAddress(void) {
 void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength) {
 	char c = 0, param[20], arg[20], q = 1, z = 1;
-	int i, x;
+	int i, x, value;
 	xCOMMessage xCom_msg;
 
 	/* initialise xcommessage */
 	xCom_msg.cmd = SET;
-	xCom_msg.from = HTTPD;
+	xCom_msg.from = xHTTPDQueue;
+	xCom_msg.taskToResume = NULL;
+	xCom_msg.dataSouce = DATA;
 
 
 	/* Process the form input sent by forms of the served HTML. */
@@ -302,9 +304,9 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 
 			/* send input to com task */
 			xCom_msg.item = arg;
-			xCom_msg.value = param;
-		//	sprintf(xCom_msg.item, "%%s", arg);
-		//	sprintf(xCom_msg.value, "%%s", param);
+			value = atoi(param);
+			xCom_msg.value = &value;
+
 			xQueueSend(xCOMQueue, &xCom_msg, (portTickType) 0);
 
 			z++;

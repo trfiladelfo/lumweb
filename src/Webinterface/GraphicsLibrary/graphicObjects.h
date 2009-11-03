@@ -71,6 +71,9 @@ static const unsigned char g_pucRIT128x96x4HorizontalInc[] =
 #define CHAR_WIDTH	5
 #define CHAR_HEIGHT 7
 
+#define DISPLAY_WIDTH   128
+#define DISPLAY_HEIGHT	96
+
 #define VISIBLE_TOP 	0
 #define VISIBLE_LEFT 	0
 #define VISIBLE_WIDTH	108
