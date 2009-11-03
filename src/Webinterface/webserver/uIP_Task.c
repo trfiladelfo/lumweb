@@ -70,7 +70,6 @@
 #include "lmi_flash.h"
 #include "sysctl.h"
 
-
 /* Include Queue staff */
 #include "ComTask/comTask.h"
 #include "GraphicsLibrary/graphicObjects.h"
@@ -118,16 +117,19 @@ extern xSemaphoreHandle xEMACSemaphore;
 
 /*-----------------------------------------------------------*/
 
-void clock_init(void) {
+void clock_init(void)
+{
 	/* This is done when the scheduler starts. */
 }
 /*-----------------------------------------------------------*/
 
-clock_time_t clock_time(void) {
+clock_time_t clock_time(void)
+{
 	return xTaskGetTickCount();
 }
 
-void vuIP_Task(void *pvParameters) {
+void vuIP_Task(void *pvParameters)
+{
 	unsigned char buffer[100];
 	unsigned portLONG ulUser0, ulUser1;
 	unsigned char pucMACArray[8];
@@ -157,59 +159,75 @@ void vuIP_Task(void *pvParameters) {
 
 	httpd_init();
 
-	while (vInitEMAC() != pdPASS) {
+	while (vInitEMAC() != pdPASS)
+	{
 		vTaskDelay(uipINIT_WAIT);
 	}
 
-	for (;;) {
+	for (;;)
+	{
 		/* Is there received data ready to be processed? */
 		uip_len = uiGetEMACRxData(uip_buf);
 
-		if (uip_len > 0) {
+		if (uip_len > 0)
+		{
 			/* Standard uIP loop taken from the uIP manual. */
 
-			if (xHeader->type == htons( UIP_ETHTYPE_IP )) {
+			if (xHeader->type == htons( UIP_ETHTYPE_IP ))
+			{
 				uip_arp_ipin();
 				uip_input();
 
 				/* If the above function invocation resulted in data that
 				 should be sent out on the network, the global variable
 				 uip_len is set to a value > 0. */
-				if (uip_len > 0) {
+				if (uip_len > 0)
+				{
 					uip_arp_out();
 					prvENET_Send();
 				}
-			} else if (xHeader->type == htons( UIP_ETHTYPE_ARP )) {
+			}
+			else if (xHeader->type == htons( UIP_ETHTYPE_ARP ))
+			{
 				uip_arp_arpin();
 
 				/* If the above function invocation resulted in data that
 				 should be sent out on the network, the global variable
 				 uip_len is set to a value > 0. */
-				if (uip_len > 0) {
+				if (uip_len > 0)
+				{
 					prvENET_Send();
 				}
 			}
-		} else {
-			if (timer_expired(&periodic_timer)) {
+		}
+		else
+		{
+			if (timer_expired(&periodic_timer))
+			{
 				timer_reset(&periodic_timer);
-				for (i = 0; i < UIP_CONNS; i++) {
+				for (i = 0; i < UIP_CONNS; i++)
+				{
 					uip_periodic( i );
 
 					/* If the above function invocation resulted in data that
 					 should be sent out on the network, the global variable
 					 uip_len is set to a value > 0. */
-					if (uip_len > 0) {
+					if (uip_len > 0)
+					{
 						uip_arp_out();
 						prvENET_Send();
 					}
 				}
 
 				/* Call the ARP timer function every 10 seconds. */
-				if (timer_expired(&arp_timer)) {
+				if (timer_expired(&arp_timer))
+				{
 					timer_reset(&arp_timer);
 					uip_arp_timer();
 				}
-			} else {
+			}
+			else
+			{
 				/* We did not receive a packet, and there was no periodic
 				 processing to perform.  Block for a fixed period.  If a packet
 				 is received during this period we will be woken by the ISR
@@ -221,14 +239,16 @@ void vuIP_Task(void *pvParameters) {
 }
 /*-----------------------------------------------------------*/
 
-static void prvENET_Send(void) {
+static void prvENET_Send(void)
+{
 	vInitialiseSend();
 	vIncrementTxLength(uip_len);
 	vSendBufferToMAC();
 }
 /*-----------------------------------------------------------*/
 
-static void prvSetMACAddress(void) {
+static void prvSetMACAddress(void)
+{
 	unsigned portLONG ulUser0, ulUser1;
 	unsigned char pucMACArray[8];
 	struct uip_eth_addr xAddr;
@@ -259,7 +279,8 @@ static void prvSetMACAddress(void) {
 /*-----------------------------------------------------------*/
 
 void vApplicationProcessFormInput(portCHAR *pcInputString,
-		portBASE_TYPE xInputLength) {
+		portBASE_TYPE xInputLength)
+{
 	char c = 0, param[20], arg[20], q = 1, z = 1;
 	int i, x, value;
 	xCOMMessage xCom_msg;
@@ -270,18 +291,21 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 	xCom_msg.taskToResume = NULL;
 	xCom_msg.dataSouce = DATA;
 
-
 	/* Process the form input sent by forms of the served HTML. */
 
-	for(i = 0; i < xInputLength && c == 0; i++){
-		if(pcInputString[i] == '?')
+	for (i = 0; i < xInputLength && c == 0; i++)
+	{
+		if (pcInputString[i] == '?')
 			c = 1;
 	}
 
-	if (c == 1) {
-		while(q == 1){
+	if (c == 1)
+	{
+		while (q == 1)
+		{
 			/* get argument string */
-			for(x = 0; i < xInputLength && pcInputString[i] != '=' ; i++){
+			for (x = 0; i < xInputLength && pcInputString[i] != '='; i++)
+			{
 				arg[x] = pcInputString[i];
 				x++;
 			}
@@ -289,7 +313,8 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 			arg[x] = 0;
 
 			/* get parameter value */
-			for(x = 0; i < xInputLength && pcInputString[i] != '&' ; i++){
+			for (x = 0; i < xInputLength && pcInputString[i] != '&'; i++)
+			{
 				param[x] = pcInputString[i];
 				x++;
 
@@ -298,14 +323,14 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 
 			// checks end of GET input string
 			i = i + 1;
-			if(i >= xInputLength){
+			if (i >= xInputLength)
+			{
 				q = 0;
 			}
 
 			/* send input to com task */
 			xCom_msg.item = arg;
-			value = atoi(param);
-			xCom_msg.value = &value;
+			xCom_msg.value = atoi(param);
 
 			xQueueSend(xCOMQueue, &xCom_msg, (portTickType) 0);
 

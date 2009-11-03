@@ -303,7 +303,6 @@ static PT_THREAD(led_io(struct httpd_state *s, char *ptr))
 static unsigned short generate_get(void *arg)
 {
 	int value;
-	char buffer[10]; // TODO for Debugging
 	if (httpd_cgi_args != NULL)
 	{
 		xCOM_msg.cmd = GET;
@@ -324,8 +323,6 @@ static unsigned short generate_get(void *arg)
 						"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
 					httpd_cgi_args, value, httpd_cgi_args, httpd_cgi_args,
 					httpd_cgi_args);
-			snprintf(buffer, 10, "Rx: %d", value);
-			vSendDebugUART(buffer);
 		}
 	}
 

@@ -237,7 +237,10 @@ int iTextBoxGetValue(char *nameOfValue)
 			return xMessage.value;
 		}
 	}
-	return -999;
+	else
+	{
+		return -999;
+	}
 }
 
 /*
@@ -251,7 +254,9 @@ void vTextBoxSetValues(void)
 		xMessage.item = akt->commTaskLink;
 		xMessage.value = akt->value;
 		xMessage.cmd = SET;
-		xMessage.from = NULL;
+		xMessage.dataSouce = DATA;
+		xMessage.from = xGraphQueue;
+		xMessage.taskToResume = xGraphicObjectsTaskHandler;
 
 		xQueueSend(xCOMQueue, &xMessage, (portTickType) 0);
 

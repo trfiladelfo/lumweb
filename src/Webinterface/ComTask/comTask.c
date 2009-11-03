@@ -46,7 +46,7 @@ void vComTask(void *pvParameters)
 	for (;;)
 	{
 		/* Wait for a message to arrive */
-		if (xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 1000 )
+		if (xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 100 )
 				== pdTRUE && xMessage.dataSouce == DATA)
 		{
 			xMessage.errorDesc = NULL;
@@ -80,28 +80,30 @@ void vComTask(void *pvParameters)
 				{
 					vTaskResume(xMessage.taskToResume);
 				}
-				//vSendDebugUART("Daten gesendet");
+				vSendDebugUART("Daten gesendet");
 
 			}
 			else if (xMessage.cmd == SET)
 			{
+				vSendDebugUART("Daten gespeichert");
 				if (strcmp(xMessage.item, "day_hour") == 0)
 				{
-					day_hour = (int) (xMessage.value);
+					day_hour = xMessage.value;
 				}
 				else if (strcmp(xMessage.item, "day_minute") == 0)
 				{
-					day_minute = (int) (xMessage.value);
+					day_minute = xMessage.value;
 				}
 				else if (strcmp(xMessage.item, "night_hour") == 0)
 				{
-					night_hour = (int) (xMessage.value);
+					night_hour = xMessage.value;
 				}
 				else if (strcmp(xMessage.item, "night_minute") == 0)
 				{
-					night_minute = (int) (xMessage.value);
+					night_minute = xMessage.value;
+				} else {
+					vSendDebugUART("Variable nicht gespeichert");
 				}
-				vSendDebugUART("Daten gespeichert");
 			}
 		}
 
