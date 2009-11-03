@@ -31,79 +31,57 @@
 #include "webserver/httpd-queue.h"
 #include "fs.h"
 
+/* TODO only testvalues */
+int day_hour = 10;
+int day_minute = 30;
+int night_hour = 23;
+int night_minute = 15;
+
+xCOMMessage xMessage;
+
 void vComTask(void *pvParameters)
 {
-	xCOMMessage xMessage;
-	xGraphCommunication xGraph_msg;
-	xHTTPDMessage xHTTPD_msg;
-
-	int value;
-
-	int day_hour = 10;
-	int day_minute = 30;
-	int night_hour = 23;
-	int night_minute = 15;
-
-	//FILE_HANDLE mainfile;
-	char msg[30];
-
-	//FSInit();
-	//mainfile = FSOpen("main.txt\0");
-	//if (mainfile != NULL) {
-	//	FSRead(mainfile, msg, 30);
-
-	//xGraph_msg.msg = msg;
-	//} else {
-	//	xGraph_msg.msg = "READ ERROR!";
-	//}
-
-	//xQueueSend(xGRAPHQueue, &xGraph_msg, (portTickType) 0);
+	char buffer[10];
 
 	for (;;)
 	{
 		/* Wait for a message to arrive */
 		if (xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 1000 )
-				== pdTRUE)
+				== pdTRUE && xMessage.dataSouce == DATA)
 		{
+			xMessage.errorDesc = NULL;
+			xMessage.value = -999;
+
 			if (xMessage.cmd == GET)
 			{
 				if (strcmp(xMessage.item, "day_hour") == 0)
 				{
-					sprintf(msg, "\"%d\"", day_hour);
-					value = day_hour;
+					xMessage.value = day_hour;
 				}
 				else if (strcmp(xMessage.item, "day_minute") == 0)
 				{
-					sprintf(msg, "\"%d\"", day_minute);
-					value = day_minute;
+					xMessage.value = day_minute;
 				}
 				else if (strcmp(xMessage.item, "night_hour") == 0)
 				{
-					sprintf(msg, "\"%d\"", night_hour);
-					value = night_hour;
+					xMessage.value = night_hour;
 				}
 				else if (strcmp(xMessage.item, "night_minute") == 0)
 				{
-					sprintf(msg, "\"%d\"", night_minute);
-					value = night_minute;
+					xMessage.value = night_minute;
 				}
 				else
 				{
-					sprintf(msg, "\"%s: %s\"", "ERROR", xMessage.item);
+					sprintf(xMessage.errorDesc, "\"ERROR: %s\"", xMessage.item);
 				}
 
-				// Antwort senden
-				if (xMessage.from == HTTPD)
+				xQueueSend(xMessage.from, &xMessage, (portTickType) 0);
+				if (xMessage.taskToResume != NULL)
 				{
-					xHTTPD_msg.msg = msg;
-					xQueueSend(xHTTPDQueue, &xHTTPD_msg, (portTickType) 0);
+					vTaskResume(xMessage.taskToResume);
 				}
-				else if (xMessage.from == GRAPHIC)
-				{
-					xGraph_msg.value = value;
-					xQueueSend(xGraphCommunicationQueue, &xGraph_msg, (portTickType) 0);
-					vTaskResume(xGraphicObjectsTaskHandler);
-				}
+				//vSendDebugUART("Daten gesendet");
+
 			}
 			else if (xMessage.cmd == SET)
 			{
@@ -123,6 +101,7 @@ void vComTask(void *pvParameters)
 				{
 					night_minute = (int) (xMessage.value);
 				}
+				vSendDebugUART("Daten gespeichert");
 			}
 		}
 

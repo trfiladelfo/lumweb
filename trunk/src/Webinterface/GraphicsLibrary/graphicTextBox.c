@@ -16,10 +16,13 @@
 
 tBoolean overflowTop, overflowBottom;
 tBoolean offsetChanged = false;
+
+xCOMMessage xMessage;
+
 /**
- * Draws a simple BextBox with Labelimage
+ * Draws a simple TextBox with Labelimage
  *
- * returns a structure from the BextBox
+ * returns a structure from the TextBox
  */
 pgoTextBox goNewTextBox(int size, int left, int top, char *commTaskLink)
 {
@@ -49,14 +52,13 @@ pgoTextBox goNewTextBox(int size, int left, int top, char *commTaskLink)
 }
 
 /*
- * Draws a TextBox to the Screen
+ * Draws one TextBox to the Screen
  */
 void goDrawTextBox(pgoTextBox txt)
 {
 	unsigned char buffer[32];
 	unsigned int height, width;
 	const unsigned char *border = pucTextboxNormal;
-
 
 	if (textBoxListSelected->top + offset < 0)
 	{
@@ -106,6 +108,9 @@ void goDrawTextBox(pgoTextBox txt)
 	}
 }
 
+/**
+ * Draw all Textboxes to the Screen
+ */
 void goDrawTextBoxes(void)
 {
 	pgoTextBox akt = textBoxListRoot;
@@ -134,7 +139,7 @@ void goDeleteTextBox(pgoTextBox txt)
 }
 
 /*
- * Returns the next TextBox, null if there isn't one
+ * Returns the next TextBox, null if there isn't one, rootTextBox if it is after the last
  */
 pgoTextBox goGetNextTextBox(pgoTextBox txt)
 {
@@ -146,7 +151,7 @@ pgoTextBox goGetNextTextBox(pgoTextBox txt)
 }
 
 /*
- * Returns the Last TextBox, null if List ist empty
+ * Returns the Last TextBox, null if List is empty
  */
 pgoTextBox goGetLastTextBox(void)
 {
@@ -154,7 +159,7 @@ pgoTextBox goGetLastTextBox(void)
 }
 
 /*
- * Returns the TextBox before, null if empty or first
+ * Returns the TextBox before, null if empty, last if it is befor the first
  */
 pgoTextBox goGetPrevTextBox(pgoTextBox txt)
 {
@@ -211,25 +216,28 @@ void vTextBoxDecrement(void* pvParam)
 /*
  * Function to Load the Value form the Communication Task
  */
-int iTextBoxGetValue(char *value)
+int iTextBoxGetValue(char *nameOfValue)
 {
-	xCOMMessage xMessage;
-	xGraphCommunication xGraphicMessage;
-
-	xMessage.item = value;
+	xMessage.item = nameOfValue;
 	xMessage.cmd = GET;
-	xMessage.from = GRAPHIC;
+	xMessage.from = xGraphCommunicationQueue;
+	xMessage.dataSouce = DATA;
+	xMessage.taskToResume = xGraphicObjectsTaskHandler;
 
 	xQueueSend(xCOMQueue, &xMessage, (portTickType) 0);
 
-	//vTaskSuspend(xGraphicObjectsTaskHandler);
-
-	if (xQueueReceive(xGraphCommunicationQueue, &xGraphicMessage, (portTickType) 100))
+	if (xQueueReceive(xMessage.from, &xMessage, (portTickType) 100))
 	{
-		// TODO auch auf request überprüfen
-		return xGraphicMessage.value;
+		if (xMessage.errorDesc != NULL)
+		{
+			vSendDebugUART(xMessage.errorDesc);
+		}
+		else
+		{
+			return xMessage.value;
+		}
 	}
-	return 0;
+	return -999;
 }
 
 /*
@@ -237,14 +245,13 @@ int iTextBoxGetValue(char *value)
  */
 void vTextBoxSetValues(void)
 {
-	xCOMMessage xMessage;
 	pgoTextBox akt = textBoxListRoot;
 	while (akt != NULL)
 	{
 		xMessage.item = akt->commTaskLink;
 		xMessage.value = akt->value;
 		xMessage.cmd = SET;
-		xMessage.from = GRAPHIC;
+		xMessage.from = NULL;
 
 		xQueueSend(xCOMQueue, &xMessage, (portTickType) 0);
 
@@ -257,22 +264,10 @@ void vTextBoxSetValues(void)
  */
 void vTextBoxGetValues(void)
 {
-	xCOMMessage xMessage;
 	xGraphCommunication xGraphicMessage;
 	pgoTextBox akt = textBoxListRoot;
 	while (akt != NULL)
 	{
-		xMessage.item = akt->commTaskLink;
-		xMessage.cmd = GET;
-		xMessage.from = GRAPHIC;
-
-		xQueueSend(xCOMQueue, &xMessage, (portTickType) 0);
-
-		//vTaskSuspend(xGraphicObjectsTaskHandler);
-
-		if (xQueueReceive(xGraphCommunicationQueue, &xGraphicMessage, (portTickType) 100))
-		{
-			akt->value = xGraphicMessage.value;
-		}
+		akt->value = iTextBoxGetValue(akt->commTaskLink);
 	}
 }

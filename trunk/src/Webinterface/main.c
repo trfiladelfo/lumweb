@@ -114,8 +114,6 @@ int main(void)
 				NULL);
 	}
 
-	vSendDebugUART("Welcome");
-
 	/* Start the Communication Task (vComTask) to interact with the machine */
 
 	xTaskCreate(vComTask, (signed portCHAR *) "comTask", COM_STACK_SIZE, NULL,

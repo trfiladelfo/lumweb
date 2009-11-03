@@ -37,6 +37,8 @@
 
 #include "rit128x96x4.h"
 
+#include "startScreenImage.h"
+
 xTaskHandle xGraphicTaskHandler = NULL;
 portTickType xTicksLast = 0;
 
@@ -100,10 +102,19 @@ void goObjectsListener(xTaskHandle handler)
 
 	portTickType delay;
 
+	char *messageOld = NULL;
+
+	RIT128x96x4Clear();
+	RIT128x96x4ImageDraw(g_pucStartScreenImage, (DISPLAY_WIDTH
+			- g_uiStartScreenImageWidth) / 2, (DISPLAY_HEIGHT
+			- g_uiStartScreenImageHeight) / 2, g_uiStartScreenImageWidth,
+			g_uiStartScreenImageHeight);
+
 	delay = xTaskGetTickCount();
 	while (delay + 1000 > xTaskGetTickCount())
 		;
 
+	RIT128x96x4Clear();
 	xGraphicObjectsTaskHandler = handler;
 
 	if (buttonSelected == NULL)
@@ -164,7 +175,11 @@ void goObjectsListener(xTaskHandle handler)
 
 		while (xQueueReceive( xGraphQueue, &xMessage, 0))
 		{
+			if (messageOld != NULL) {
+				RIT128x96x4StringDraw(messageOld, 10, 85, 0);
+			}
 			RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
+			messageOld = xMessage.msg;
 		}
 
 		vTaskSuspend(xGraphicObjectsTaskHandler);
