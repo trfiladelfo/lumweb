@@ -102,8 +102,6 @@ void goObjectsListener(xTaskHandle handler)
 
 	portTickType delay;
 
-	char *messageOld = NULL;
-
 	RIT128x96x4Clear();
 	RIT128x96x4ImageDraw(g_pucStartScreenImage, (DISPLAY_WIDTH
 			- g_uiStartScreenImageWidth) / 2, (DISPLAY_HEIGHT
@@ -168,18 +166,15 @@ void goObjectsListener(xTaskHandle handler)
 				{
 					vTextBoxGetValues();
 					goDrawTextBoxes();
-					vSendDebugUART("Neue Daten auf dem Server");
 				}
 			}
 		}
 
 		while (xQueueReceive( xGraphQueue, &xMessage, 0))
 		{
-			if (messageOld != NULL) {
-				RIT128x96x4StringDraw(messageOld, 10, 85, 0);
-			}
+
+			RIT128x96x4StringDraw("                       ", 10, 85, 0);
 			RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
-			messageOld = xMessage.msg;
 		}
 
 		vTaskSuspend(xGraphicObjectsTaskHandler);

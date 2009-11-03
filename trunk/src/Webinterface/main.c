@@ -93,13 +93,10 @@ int main(void)
 
 	prvSetupHardware();
 
-	/* Create the queue used by the Com task.  Messages are received via this queue. */
+	/* The main Communication between COMM-, GRAPH and HTTPD Task */
 	xCOMQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
-
-	/* Create the queue used by the Graphics task.  Messages are received via this queue. */
-	xHTTPDQueue = xQueueCreate(HTTPD_QUEUE_SIZE, sizeof(xHTTPDMessage));
-
-	xGraphQueue = xQueueCreate(5, sizeof(xGraphMessage));
+	xHTTPDQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
+	xGraphQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
 
 	xTaskCreate(vGraphicObjectsTask, (signed portCHAR *) "graphicObjects",
 			mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY
