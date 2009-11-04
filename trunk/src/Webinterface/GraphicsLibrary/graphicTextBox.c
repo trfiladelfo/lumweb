@@ -262,6 +262,7 @@ void vTextBoxSetValues(void)
 
 		akt = akt->next;
 	}
+	vTextBoxGetValues();
 }
 
 /*

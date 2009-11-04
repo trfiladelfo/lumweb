@@ -279,6 +279,7 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 			value =  atoi(param);
 			xCom_msg.value = value;
 
+
 			xQueueSend(xCOMQueue, &xCom_msg, (portTickType) 0);
 
 			z++;

@@ -321,8 +321,8 @@ static unsigned short generate_get(void *arg)
 			sprintf(
 					uip_appdata,
 					"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
-						"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
-						"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
+					"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
+					"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
 					httpd_cgi_args, value, httpd_cgi_args, httpd_cgi_args,
 					httpd_cgi_args);
 		}
