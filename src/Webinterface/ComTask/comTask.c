@@ -50,10 +50,11 @@ void vComTask(void *pvParameters)
 				== pdTRUE && xMessage.dataSouce == DATA)
 		{
 			xMessage.errorDesc = NULL;
-			xMessage.value = -999;
 
 			if (xMessage.cmd == GET)
 			{
+				xMessage.value = -999;
+
 				if (strcmp(xMessage.item, "day_hour") == 0)
 				{
 					xMessage.value = day_hour;
@@ -85,6 +86,8 @@ void vComTask(void *pvParameters)
 			}
 			else if (xMessage.cmd == SET)
 			{
+				sprintf(buffer, "%d", xMessage.value);
+				vSendDebug(buffer);
 				//vSendDebugUART("Daten gespeichert");
 				if (strcmp(xMessage.item, "day_hour") == 0)
 				{
