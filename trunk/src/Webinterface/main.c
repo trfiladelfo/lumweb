@@ -28,7 +28,7 @@
 #include "GraphicsLibrary/runGraphics.h" /* include the Graphics Libary */
 #include "webserver/httpd-queue.h"
 #include "UipBasic/uipBasics.h"
-
+#include "webserver/httpTask.h"
 /*-----------------------------------------------------------*/
 
 /* The time between cycles of the 'check' functionality (defined within the
@@ -108,7 +108,7 @@ int main(void)
 
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
-				NULL);
+				&xHttpTaskHandler);
 	}
 
 	/* Start the Communication Task (vComTask) to interact with the machine */

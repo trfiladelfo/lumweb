@@ -77,22 +77,17 @@ void vComTask(void *pvParameters)
 				}
 
 				xQueueSend(xMessage.from, &xMessage, (portTickType) 0);
-				if (xMessage.taskToResume != NULL)
-				{
-					vTaskResume(xMessage.taskToResume);
-				}
+
 				//vSendDebugUART("Daten gesendet");
 
 			}
 			else if (xMessage.cmd == SET)
 			{
-				sprintf(buffer, "%d", xMessage.value);
+				sprintf(buffer, "%s=%d",xMessage.item, xMessage.value);
 				vSendDebug(buffer);
 				//vSendDebugUART("Daten gespeichert");
 				if (strcmp(xMessage.item, "day_hour") == 0)
 				{
-					sprintf(buffer, "%d", xMessage.value);
-					vSendDebug(buffer);
 					day_hour = xMessage.value;
 				}
 				else if (strcmp(xMessage.item, "day_minute") == 0)
@@ -110,6 +105,15 @@ void vComTask(void *pvParameters)
 					sprintf(buffer, "FAIL: %s", xMessage.item);
 					vSendDebug(buffer);
 				}
+
+				if(xMessage.freeItem == pdTRUE){
+					vPortFree(xMessage.item);
+				}
+			}
+
+			if (xMessage.taskToResume != NULL)
+			{
+				vTaskResume(xMessage.taskToResume);
 			}
 		}
 
