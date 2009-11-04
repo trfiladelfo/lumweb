@@ -66,22 +66,16 @@
 #include "clock-arch.h"
 #include "hw_ethernet.h"
 #include "ethernet.h"
-#include "hw_memmap.h"
-#include "lmi_flash.h"
-#include "sysctl.h"
 
 /* Include Queue staff */
 #include "ComTask/comTask.h"
 #include "GraphicsLibrary/graphicObjects.h"
 #include "webserver/httpd-queue.h"
+#include "UipBasic/uipBasics.h"
 /*-----------------------------------------------------------*/
-
-/* IP address configuration. */
-#define uipIP_ADDR0		192
-#define uipIP_ADDR1		168
-
-#define uipIP_ADDR2		2
-#define uipIP_ADDR3		201
+//
+// IP vergabe jetzt in der main.c
+//
 
 /* How long to wait before attempting to connect the MAC again. */
 #define uipINIT_WAIT    100
@@ -93,7 +87,8 @@
 #define uipTOTAL_FRAME_HEADER_SIZE	54
 
 /*-----------------------------------------------------------*/
-
+// Global Variable for the Value to Set
+int value;
 /*
  * Send the uIP buffer to the MAC.
  */
@@ -130,32 +125,12 @@ clock_time_t clock_time(void)
 
 void vuIP_Task(void *pvParameters)
 {
-	unsigned char buffer[100];
-	unsigned portLONG ulUser0, ulUser1;
-	unsigned char pucMACArray[8];
+
 	portBASE_TYPE i;
-	uip_ipaddr_t xIPAddr;
-	struct timer periodic_timer, arp_timer;
+
 	extern void ( vEMAC_ISR)(void);
 
-	/* Enable/Reset the Ethernet Controller */
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_ETH);
-	SysCtlPeripheralReset(SYSCTL_PERIPH_ETH);
-
-	/* Create the semaphore used by the ISR to wake this task. */
-	vSemaphoreCreateBinary( xEMACSemaphore );
-
-	/* Initialise the uIP stack. */
-	timer_set(&periodic_timer, configTICK_RATE_HZ / 2);
-	timer_set(&arp_timer, configTICK_RATE_HZ * 10);
-
-	uip_init();
-	uip_arp_init();
-
-	prvSetMACAddress();
-
-	uip_ipaddr( xIPAddr, uipIP_ADDR0, uipIP_ADDR1, uipIP_ADDR2, uipIP_ADDR3 );
-	uip_sethostaddr( xIPAddr );
+	vInitUip();
 
 	httpd_init();
 
@@ -245,36 +220,7 @@ static void prvENET_Send(void)
 	vIncrementTxLength(uip_len);
 	vSendBufferToMAC();
 }
-/*-----------------------------------------------------------*/
 
-static void prvSetMACAddress(void)
-{
-	unsigned portLONG ulUser0, ulUser1;
-	unsigned char pucMACArray[8];
-	struct uip_eth_addr xAddr;
-
-	/* Get the device MAC address from flash */
-	FlashUserGet(&ulUser0, &ulUser1);
-
-	/* Convert the MAC address from flash into sequence of bytes. */
-	pucMACArray[0] = ((ulUser0 >> 0) & 0xff);
-	pucMACArray[1] = ((ulUser0 >> 8) & 0xff);
-	pucMACArray[2] = ((ulUser0 >> 16) & 0xff);
-	pucMACArray[3] = ((ulUser1 >> 0) & 0xff);
-	pucMACArray[4] = ((ulUser1 >> 8) & 0xff);
-	pucMACArray[5] = ((ulUser1 >> 16) & 0xff);
-
-	/* Program the MAC address. */
-	EthernetMACAddrSet(ETH_BASE, pucMACArray);
-
-	xAddr.addr[0] = pucMACArray[0];
-	xAddr.addr[1] = pucMACArray[1];
-	xAddr.addr[2] = pucMACArray[2];
-	xAddr.addr[3] = pucMACArray[3];
-	xAddr.addr[4] = pucMACArray[4];
-	xAddr.addr[5] = pucMACArray[5];
-	uip_setethaddr( xAddr );
-}
 
 /*-----------------------------------------------------------*/
 
@@ -282,7 +228,7 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength)
 {
 	char c = 0, param[20], arg[20], q = 1, z = 1;
-	int i, x, value;
+	int i, x;
 	xCOMMessage xCom_msg;
 
 	/* initialise xcommessage */
@@ -330,7 +276,8 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 
 			/* send input to com task */
 			xCom_msg.item = arg;
-			xCom_msg.value = atoi(param);
+			value =  atoi(param);
+			xCom_msg.value = value;
 
 			xQueueSend(xCOMQueue, &xCom_msg, (portTickType) 0);
 

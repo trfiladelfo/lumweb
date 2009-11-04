@@ -57,9 +57,6 @@
 
 #include <stdint.h>
 
-
-
-
 /**
  * 8 bit datatype
  *

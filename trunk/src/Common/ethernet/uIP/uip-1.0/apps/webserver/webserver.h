@@ -38,12 +38,5 @@
 #include "httpd.h"
 
 typedef struct httpd_state uip_tcp_appstate_t;
-/* UIP_APPCALL: the name of the application function. This function
-   must return void and take no arguments (i.e., C type "void
-   appfunc(void)"). */
-#ifndef UIP_APPCALL
-#define UIP_APPCALL     httpd_appcall
-#endif
-
 
 #endif /* __WEBSERVER_H__ */

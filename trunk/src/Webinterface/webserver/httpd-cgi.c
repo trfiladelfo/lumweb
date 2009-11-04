@@ -303,12 +303,14 @@ static PT_THREAD(led_io(struct httpd_state *s, char *ptr))
 static unsigned short generate_get(void *arg)
 {
 	int value;
+
 	if (httpd_cgi_args != NULL)
 	{
 		xCOM_msg.cmd = GET;
 		xCOM_msg.dataSouce = DATA;
 		xCOM_msg.taskToResume = NULL;
 		xCOM_msg.from = xHTTPDQueue;
+
 		xCOM_msg.item = httpd_cgi_args;
 		xQueueSend(xCOMQueue, &xCOM_msg, (portTickType) 0);
 
