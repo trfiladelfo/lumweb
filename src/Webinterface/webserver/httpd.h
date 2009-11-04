@@ -42,7 +42,7 @@ struct httpd_state {
   unsigned char timer;
   struct psock sin, sout;
   struct pt outputpt, scriptpt;
-  char inputbuf[50];
+  char inputbuf[255];
   char filename[20];
   char state;
   struct httpd_fs_file file;

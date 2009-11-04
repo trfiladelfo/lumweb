@@ -71,7 +71,12 @@
 #include "ComTask/comTask.h"
 #include "GraphicsLibrary/graphicObjects.h"
 #include "webserver/httpd-queue.h"
+
 #include "UipBasic/uipBasics.h"
+#include "webserver/httpTask.h"
+
+/* DEBUG STUFF */
+#include "DebugTask/debugTask.h"
 /*-----------------------------------------------------------*/
 //
 // IP vergabe jetzt in der main.c
@@ -227,15 +232,20 @@ static void prvENET_Send(void)
 void vApplicationProcessFormInput(portCHAR *pcInputString,
 		portBASE_TYPE xInputLength)
 {
-	char c = 0, param[20], arg[20], q = 1, z = 1;
+	char c = 0, param[20], *arg, *buf, q = 1, z = 1;
 	int i, x;
 	xCOMMessage xCom_msg;
 
 	/* initialise xcommessage */
 	xCom_msg.cmd = SET;
 	xCom_msg.from = xHTTPDQueue;
-	xCom_msg.taskToResume = NULL;
+	xCom_msg.taskToResume = xHttpTaskHandler;
 	xCom_msg.dataSouce = DATA;
+
+
+	arg = pvPortMalloc(30);
+	buf = pvPortMalloc(30);
+
 
 	/* Process the form input sent by forms of the served HTML. */
 
@@ -263,13 +273,12 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 			{
 				param[x] = pcInputString[i];
 				x++;
-
 			}
 			param[x] = 0;
 
+			i++;
 			// checks end of GET input string
-			i = i + 1;
-			if (i >= xInputLength)
+			if (i > xInputLength)
 			{
 				q = 0;
 			}
@@ -279,9 +288,10 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 			value =  atoi(param);
 			xCom_msg.value = value;
 
+			xCom_msg.freeItem = true;
 
 			xQueueSend(xCOMQueue, &xCom_msg, (portTickType) 0);
-
+			vTaskSuspend(xHttpTaskHandler);
 			z++;
 		}
 
