@@ -84,6 +84,7 @@ CFLAGS=$(DEBUG) -I . \
 		-I $(FATFS_COMMON_DIR)/src \
 		-I $(FATFS_COMMON_DIR)/port \
 		-I ./webserver \
+		-I ./UipBasic \
 		-I $(LUMINARY_DRIVER_DIR) \
 		-D inline= -mthumb -mcpu=cortex-m3 \
 		$(OPTIM) -T$(LDSCRIPT) \
@@ -96,19 +97,20 @@ SOURCE=	main.c \
 		timertest.c \
 		./ComTask/comTask.c \
 		$(LUMINARY_DRIVER_DIR)/ustdlib.c \
-		./webserver/uIP_Task.c \
-		./webserver/emac.c \
+		./webserver/httpTask.c \
 		./webserver/httpd.c \
 		./webserver/httpd-cgi.c \
 		./webserver/httpd-fs.c \
 		./webserver/http-strings.c \
+		./UipBasic/uipBasics.c \
+		./UipBasic/emac.c \
 		./GraphicsLibrary/runGraphics.c \
 		./GraphicsLibrary/renderGraphics.c \
 		./GraphicsLibrary/graphicButton.c \
 		./GraphicsLibrary/graphicTextBox.c \
 		./GraphicsLibrary/graphicObjects.c \
 		./GraphicsLibrary/port/rit128x96x4.c \
-		./DebugUART/debugUART.c \
+		./DebugTask/debugTask.c \
 		$(UIP_COMMON_DIR)/uip_arp.c \
 		$(UIP_COMMON_DIR)/psock.c \
 		$(UIP_COMMON_DIR)/timer.c \

@@ -41,7 +41,7 @@ xCOMMessage xMessage;
 
 void vComTask(void *pvParameters)
 {
-	char buffer[10];
+	char buffer[100];
 
 	for (;;)
 	{
@@ -80,14 +80,16 @@ void vComTask(void *pvParameters)
 				{
 					vTaskResume(xMessage.taskToResume);
 				}
-				vSendDebugUART("Daten gesendet");
+				//vSendDebugUART("Daten gesendet");
 
 			}
 			else if (xMessage.cmd == SET)
 			{
-				vSendDebugUART("Daten gespeichert");
+				//vSendDebugUART("Daten gespeichert");
 				if (strcmp(xMessage.item, "day_hour") == 0)
 				{
+					sprintf(buffer, "%d", xMessage.value);
+					vSendDebug(buffer);
 					day_hour = xMessage.value;
 				}
 				else if (strcmp(xMessage.item, "day_minute") == 0)
@@ -102,7 +104,8 @@ void vComTask(void *pvParameters)
 				{
 					night_minute = xMessage.value;
 				} else {
-					vSendDebugUART("Variable nicht gespeichert");
+					sprintf(buffer, "FAIL: %s", xMessage.item);
+					vSendDebug(buffer);
 				}
 			}
 		}

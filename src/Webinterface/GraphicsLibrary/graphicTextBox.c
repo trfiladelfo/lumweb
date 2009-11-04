@@ -11,7 +11,7 @@
 #include "renderGraphics.h"
 #include "rit128x96x4.h"
 
-#include "DebugUART/debugUART.h"
+#include "DebugTask/debugTask.h" /* include the debugging task */
 #include "ComTask/comTask.h"
 
 tBoolean overflowTop, overflowBottom;
@@ -230,7 +230,7 @@ int iTextBoxGetValue(char *nameOfValue)
 	{
 		if (xMessage.errorDesc != NULL)
 		{
-			vSendDebugUART(xMessage.errorDesc);
+			vSendDebug(xMessage.errorDesc);
 		}
 		else
 		{

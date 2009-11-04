@@ -23,10 +23,11 @@
 #include "grlib.h"
 
 #include "ComTask/comTask.h"   /* include communication task header */
-#include "DebugUART/debugUART.h" /* include the Uart debugging task */
+#include "DebugTask/debugTask.h" /* include the debugging task */
 #include "GraphicsLibrary/graphicObjects.h"
 #include "GraphicsLibrary/runGraphics.h" /* include the Graphics Libary */
 #include "webserver/httpd-queue.h"
+#include "UipBasic/uipBasics.h"
 
 /*-----------------------------------------------------------*/
 
@@ -73,9 +74,6 @@ extern void vSetupHighFrequencyTimer(void);
 void vApplicationIdleHook(void) __attribute__((naked));
 /*-----------------------------------------------------------*/
 
-/* The welcome text. */
-const portCHAR * const pcWelcomeMessage = " DebuggingScreen RTOS";
-
 /* Variables used to detect the test in the idle hook failing. */
 unsigned portLONG ulIdleError = pdFALSE;
 
@@ -106,6 +104,8 @@ int main(void)
 	 PHY. */
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH))
 	{
+		vInitUipWithIp(192, 168, 2, 201);
+
 		xTaskCreate(vuIP_Task, (signed portCHAR *) "uIP",
 				mainBASIC_WEB_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1,
 				NULL);
