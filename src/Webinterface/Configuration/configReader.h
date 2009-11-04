@@ -10,8 +10,6 @@
 #ifndef CONFIGREADER_H_
 #define CONFIGREADER_H_
 
-xQueueHandle xCONFQueue;
-
 int readConfigFile(char *fileName);
 
 #endif /* CONFIGREADER_H_ */
