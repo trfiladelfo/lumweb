@@ -12,4 +12,6 @@
 
 xQueueHandle xCONFQueue;
 
+int readConfigFile(char *fileName);
+
 #endif /* CONFIGREADER_H_ */
