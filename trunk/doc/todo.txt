@@ -23,3 +23,6 @@ Tasks:													Fertig %:
 			
 Flash Schreiben/Lesen (lmi_flash.h)
 Lesen der Konfig files via MicroSD und LAN!!
+
+
+HTTPD mit CGI multiuser testen (achtung task suspend!)
