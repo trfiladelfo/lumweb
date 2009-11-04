@@ -104,6 +104,7 @@ SOURCE=	main.c \
 		./webserver/http-strings.c \
 		./UipBasic/uipBasics.c \
 		./UipBasic/emac.c \
+		./Configuration/configReader.c \
 		./GraphicsLibrary/runGraphics.c \
 		./GraphicsLibrary/renderGraphics.c \
 		./GraphicsLibrary/graphicButton.c \
