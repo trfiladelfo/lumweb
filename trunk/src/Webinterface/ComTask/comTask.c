@@ -83,9 +83,7 @@ void vComTask(void *pvParameters)
 			}
 			else if (xMessage.cmd == SET)
 			{
-				sprintf(buffer, "%s=%d",xMessage.item, xMessage.value);
-				vSendDebug(buffer);
-				//vSendDebugUART("Daten gespeichert");
+				vSendDebug("Daten gespeichert");
 				if (strcmp(xMessage.item, "day_hour") == 0)
 				{
 					day_hour = xMessage.value;
