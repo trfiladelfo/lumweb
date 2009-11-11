@@ -18,7 +18,7 @@
 
 #include "GraphicsLibrary/graphicObjects.h"
 
-int init = 0;
+int initStatus = 0;
 
 //*****************************************************************************
 //
@@ -74,10 +74,10 @@ void vInitDebugTask(int port)
 
 void vInitDebug(void)
 {
-	if (!init)
+	if (!initStatus)
 	{
 		xDebugQueue = xQueueCreate(5, sizeof(xDebugTaskMessage));
-		init = 1;
+		initStatus = 1;
 	}
 }
 
@@ -95,31 +95,31 @@ void vInitDebug(void)
  * (e.g. when a new connection is established, new data arrives, sent
  * data is acknowledged, data needs to be retransmitted, etc.).
  */
-void debug_appcall(void)
-{
-	/*
-	 * The uip_conn structure has a field called "appstate" that holds
-	 * the application state of the connection. We make a pointer to
-	 * this to access it easier.
-	 */
-	//struct debug_state *s = &(uip_conn->appstate);
+//void debug_appcall(void)
+//{
+/*
+ * The uip_conn structure has a field called "appstate" that holds
+ * the application state of the connection. We make a pointer to
+ * this to access it easier.
+ */
+//struct debug_state *s = &(uip_conn->appstate);
 
-	/*
-	 * If a new connection was just established, we should initialize
-	 * the protosocket in our applications' state structure.
-	 */
-	/*if (uip_connected())
-	{
-		PSOCK_INIT(&s->p, s->inputbuffer, sizeof(s->inputbuffer));
-	}*/
+/*
+ * If a new connection was just established, we should initialize
+ * the protosocket in our applications' state structure.
+ */
+/*if (uip_connected())
+ {
+ PSOCK_INIT(&s->p, s->inputbuffer, sizeof(s->inputbuffer));
+ }*/
 
-	/*
-	 * Finally, we run the protosocket function that actually handles
-	 * the communication. We pass it a pointer to the application state
-	 * of the current connection.
-	 */
-	//handle_connection(s);
-}
+/*
+ * Finally, we run the protosocket function that actually handles
+ * the communication. We pass it a pointer to the application state
+ * of the current connection.
+ */
+//handle_connection(s);
+//}
 /*---------------------------------------------------------------------------*/
 /*
  * This is the protosocket function that handles the communication. A
@@ -127,16 +127,16 @@ void debug_appcall(void)
  * explicitly return - all return statements are hidden in the PSOCK
  * macros.
  */
-static int handle_debug_connection(struct debug_state *s)
-{
-	/*PSOCK_BEGIN(&s->p);
+//static int handle_debug_connection(struct debug_state *s)
+//{
+/*PSOCK_BEGIN(&s->p);
 
-		PSOCK_SEND_STR(&s->p, "Hello. What is your name?\n");
-		PSOCK_READTO(&s->p, '\n');
-		strncpy(s->name, s->inputbuffer, sizeof(s->name));
-		PSOCK_SEND_STR(&s->p, "Hello ");
-		PSOCK_SEND_STR(&s->p, s->name);
-		PSOCK_CLOSE(&s->p);
+ PSOCK_SEND_STR(&s->p, "Hello. What is your name?\n");
+ PSOCK_READTO(&s->p, '\n');
+ strncpy(s->name, s->inputbuffer, sizeof(s->name));
+ PSOCK_SEND_STR(&s->p, "Hello ");
+ PSOCK_SEND_STR(&s->p, s->name);
+ PSOCK_CLOSE(&s->p);
 
-		PSOCK_END(&s->p);*/
-	}
+ PSOCK_END(&s->p);*/
+//}
