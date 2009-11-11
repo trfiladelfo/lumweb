@@ -49,7 +49,7 @@
  licensing and training services.
  */
 /* Standard includes. */
-#include <string.h>
+//#include <string.h>
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
@@ -70,7 +70,6 @@
 /* Include Queue staff */
 #include "ComTask/comTask.h"
 #include "GraphicsLibrary/graphicObjects.h"
-#include "webserver/httpd-queue.h"
 
 #include "UipBasic/uipBasics.h"
 #include "webserver/httpTask.h"
@@ -128,7 +127,7 @@ clock_time_t clock_time(void)
 	return xTaskGetTickCount();
 }
 
-void vuIP_Task(void *pvParameters)
+void vHttpdTask(void *pvParameters)
 {
 
 	portBASE_TYPE i;
@@ -241,6 +240,7 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 	xCom_msg.from = xHTTPDQueue;
 	xCom_msg.taskToResume = xHttpTaskHandler;
 	xCom_msg.dataSouce = DATA;
+	xCom_msg.freeItem = pdTRUE;
 
 
 	arg = pvPortMalloc(30);
@@ -287,8 +287,6 @@ void vApplicationProcessFormInput(portCHAR *pcInputString,
 			xCom_msg.item = arg;
 			value =  atoi(param);
 			xCom_msg.value = value;
-
-			xCom_msg.freeItem = true;
 
 			xQueueSend(xCOMQueue, &xCom_msg, (portTickType) 0);
 			vTaskSuspend(xHttpTaskHandler);

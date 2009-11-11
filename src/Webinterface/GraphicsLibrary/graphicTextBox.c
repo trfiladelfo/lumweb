@@ -24,8 +24,7 @@ xCOMMessage xMessage;
  *
  * returns a structure from the TextBox
  */
-pgoTextBox goNewTextBox(int size, int left, int top, char *commTaskLink)
-{
+pgoTextBox goNewTextBox(int size, int left, int top, char *commTaskLink) {
 	// Allocate RAM for the TextBox
 	pgoTextBox txt = (pgoTextBox) pvPortMalloc(sizeof(struct goTextBox));
 
@@ -42,8 +41,7 @@ pgoTextBox goNewTextBox(int size, int left, int top, char *commTaskLink)
 	goInsertTextBox(txt);
 
 	// If no Box is Selected (= if it is the first) set the Box activated
-	if (textBoxListSelected == NULL)
-	{
+	if (textBoxListSelected == NULL) {
 		textBoxListSelected = txt;
 	}
 
@@ -54,46 +52,34 @@ pgoTextBox goNewTextBox(int size, int left, int top, char *commTaskLink)
 /*
  * Draws one TextBox to the Screen
  */
-void goDrawTextBox(pgoTextBox txt)
-{
+void goDrawTextBox(pgoTextBox txt) {
 	unsigned char buffer[32];
 	unsigned int height, width;
 	const unsigned char *border = pucTextboxNormal;
 
-	if (textBoxListSelected->top + offset < 0)
-	{
+	if (textBoxListSelected->top + offset < 0) {
 		offset += LINE_HEIGHT;
 		offsetChanged = true;
-	}
-	else if (textBoxListSelected->top + offset > (VISIBLE_HEIGHT
-			- OBJECT_HEIGHT))
-	{
+	} else if (textBoxListSelected->top + offset > (VISIBLE_HEIGHT
+			- OBJECT_HEIGHT)) {
 		offset -= LINE_HEIGHT;
 		offsetChanged = true;
 	}
 
-	if (textBoxListSelected == textBoxListRoot)
-	{
+	if (textBoxListSelected == textBoxListRoot) {
 		offset = 0;
 	}
 
-	if (txt->top + offset < 0)
-	{
+	if (txt->top + offset < 0) {
 		overflowTop = true;
-	}
-	else if (txt->top + offset > (VISIBLE_HEIGHT - OBJECT_HEIGHT))
-	{
+	} else if (txt->top + offset > (VISIBLE_HEIGHT - OBJECT_HEIGHT)) {
 		overflowBottom = true;
-	}
-	else
-	{
-		if (textBoxListSelected == txt)
-		{
+	} else {
+		if (textBoxListSelected == txt) {
 			border = pucTextboxSelected;
 		}
 
-		if (offsetChanged == true)
-		{
+		if (offsetChanged == true) {
 			RIT128x96x4StringDraw("             ", txt->left, txt->top + 1
 					+ offset, 0xF);
 		}
@@ -111,16 +97,14 @@ void goDrawTextBox(pgoTextBox txt)
 /**
  * Draw all Textboxes to the Screen
  */
-void goDrawTextBoxes(void)
-{
+void goDrawTextBoxes(void) {
 	pgoTextBox akt = textBoxListRoot;
 
 	overflowTop = false;
 	overflowBottom = false;
 	offsetChanged = false;
 
-	while (akt != NULL)
-	{
+	while (akt != NULL) {
 
 		goDrawTextBox(akt);
 		akt = akt->next;
@@ -130,8 +114,7 @@ void goDrawTextBoxes(void)
 /*
  * Frees the allocated Memory
  */
-void goDeleteTextBox(pgoTextBox txt)
-{
+void goDeleteTextBox(pgoTextBox txt) {
 	pgoTextBox toDelete;
 	toDelete = txt;
 	txt = txt->next;
@@ -141,10 +124,8 @@ void goDeleteTextBox(pgoTextBox txt)
 /*
  * Returns the next TextBox, null if there isn't one, rootTextBox if it is after the last
  */
-pgoTextBox goGetNextTextBox(pgoTextBox txt)
-{
-	if (txt->next == NULL)
-	{
+pgoTextBox goGetNextTextBox(pgoTextBox txt) {
+	if (txt->next == NULL) {
 		return textBoxListRoot;
 	}
 	return txt->next;
@@ -153,19 +134,16 @@ pgoTextBox goGetNextTextBox(pgoTextBox txt)
 /*
  * Returns the Last TextBox, null if List is empty
  */
-pgoTextBox goGetLastTextBox(void)
-{
+pgoTextBox goGetLastTextBox(void) {
 	return textBoxListLast;
 }
 
 /*
  * Returns the TextBox before, null if empty, last if it is befor the first
  */
-pgoTextBox goGetPrevTextBox(pgoTextBox txt)
-{
+pgoTextBox goGetPrevTextBox(pgoTextBox txt) {
 	pgoTextBox akt = textBoxListRoot;
-	while (akt->next != NULL && akt->next != txt)
-	{
+	while (akt->next != NULL && akt->next != txt) {
 		akt = akt->next;
 	}
 	return akt;
@@ -174,22 +152,17 @@ pgoTextBox goGetPrevTextBox(pgoTextBox txt)
 /*
  * Returns the First TextBox, null if empty
  */
-pgoTextBox goGetFirstTextBox(void)
-{
+pgoTextBox goGetFirstTextBox(void) {
 	return textBoxListRoot;
 }
 
 /*
  * Inserts the TextBox into the List
  */
-void goInsertTextBox(pgoTextBox txt)
-{
-	if (textBoxListRoot == NULL)
-	{
+void goInsertTextBox(pgoTextBox txt) {
+	if (textBoxListRoot == NULL) {
 		textBoxListRoot = txt;
-	}
-	else
-	{
+	} else {
 		textBoxListLast->next = txt;
 	}
 	textBoxListLast = txt;
@@ -198,8 +171,7 @@ void goInsertTextBox(pgoTextBox txt)
 /*
  * Increments the Textbox Value
  */
-void vTextBoxIncrement(void* pvParam)
-{
+void vTextBoxIncrement(void* pvParam) {
 	(textBoxListSelected->value) += 1;
 	goDrawTextBox(textBoxListSelected);
 }
@@ -207,8 +179,7 @@ void vTextBoxIncrement(void* pvParam)
 /*
  * Decrements the Textbox Value
  */
-void vTextBoxDecrement(void* pvParam)
-{
+void vTextBoxDecrement(void* pvParam) {
 	(textBoxListSelected->value) -= 1;
 	goDrawTextBox(textBoxListSelected);
 }
@@ -216,29 +187,23 @@ void vTextBoxDecrement(void* pvParam)
 /*
  * Function to Load the Value form the Communication Task
  */
-int iTextBoxGetValue(char *nameOfValue)
-{
+int iTextBoxGetValue(char *nameOfValue) {
 	xMessage.item = nameOfValue;
 	xMessage.cmd = GET;
 	xMessage.from = xGraphCommunicationQueue;
 	xMessage.dataSouce = DATA;
+	xMessage.freeItem = pdFALSE;
 	xMessage.taskToResume = xGraphicObjectsTaskHandler;
 
 	xQueueSend(xCOMQueue, &xMessage, (portTickType) 0);
 
-	if (xQueueReceive(xMessage.from, &xMessage, (portTickType) 100))
-	{
-		if (xMessage.errorDesc != NULL)
-		{
+	if (xQueueReceive(xMessage.from, &xMessage, (portTickType) 100)) {
+		if (xMessage.errorDesc != NULL) {
 			vSendDebug(xMessage.errorDesc);
-		}
-		else
-		{
+		} else {
 			return xMessage.value;
 		}
-	}
-	else
-	{
+	} else {
 		return -999;
 	}
 }
@@ -246,19 +211,20 @@ int iTextBoxGetValue(char *nameOfValue)
 /*
  * Writes the Value to the Communication Task
  */
-void vTextBoxSetValues(void)
-{
+void vTextBoxSetValues(void) {
 	pgoTextBox akt = textBoxListRoot;
-	while (akt != NULL)
-	{
+	while (akt != NULL) {
 		xMessage.item = akt->commTaskLink;
 		xMessage.value = akt->value;
 		xMessage.cmd = SET;
 		xMessage.dataSouce = DATA;
+		xMessage.freeItem = pdFALSE;
 		xMessage.from = xGraphQueue;
-		xMessage.taskToResume = xGraphicObjectsTaskHandler;
+		xMessage.taskToResume = NULL;
 
 		xQueueSend(xCOMQueue, &xMessage, (portTickType) 0);
+
+		//vTaskSuspend(xGraphicObjectsTaskHandler);
 
 		akt = akt->next;
 	}
@@ -267,12 +233,10 @@ void vTextBoxSetValues(void)
 /*
  * This Function refreshes all the Values from the Textboxes
  */
-void vTextBoxGetValues(void)
-{
+void vTextBoxGetValues(void) {
 	xGraphCommunication xGraphicMessage;
 	pgoTextBox akt = textBoxListRoot;
-	while (akt != NULL)
-	{
+	while (akt != NULL) {
 		akt->value = iTextBoxGetValue(akt->commTaskLink);
 	}
 }

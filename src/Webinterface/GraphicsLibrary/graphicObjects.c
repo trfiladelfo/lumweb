@@ -21,7 +21,7 @@
  * It should also be able to make a touch Interface.
  */
 
-#include <string.h>
+//#include <string.h>
 
 #include "graphicObjects.h"
 #include "graphicTextbox.h"
@@ -55,10 +55,8 @@ char isAlreadyInitilized = 0;
 /**
  * Initializes the Display to Draw the Buttons
  */
-void goInit()
-{
-	if (!isAlreadyInitilized)
-	{
+void goInit() {
+	if (!isAlreadyInitilized) {
 		// Configure UP | DOWN | LEFT | RIGHT
 		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
 		GPIOPadConfigSet(GPIO_PORTE_BASE, (UP | DOWN | RIGHT | LEFT),
@@ -95,8 +93,7 @@ void goInit()
 /*
  *
  */
-void goObjectsListener(xTaskHandle handler)
-{
+void goObjectsListener(xTaskHandle handler) {
 	xGraphCommandMessage xCommMessage;
 	xGraphMessage xMessage;
 
@@ -115,14 +112,12 @@ void goObjectsListener(xTaskHandle handler)
 	RIT128x96x4Clear();
 	xGraphicObjectsTaskHandler = handler;
 
-	if (buttonSelected == NULL)
-	{
+	if (buttonSelected == NULL) {
 		buttonSelected = buttonListRoot;
 		buttonSelected->border = pucBorderSelected;
 	}
 
-	if (textBoxListSelected == NULL)
-	{
+	if (textBoxListSelected == NULL) {
 		textBoxListSelected = textBoxListRoot;
 		goDrawTextBoxes();
 	}
@@ -133,45 +128,30 @@ void goObjectsListener(xTaskHandle handler)
 	RIT128x96x4StringDraw("", 0, 100, 0x0);
 	vTaskSuspend(xGraphicObjectsTaskHandler);
 
-	while (1)
-	{
+	while (1) {
 		/* Wait for a message to arrive */
-		while (xQueueReceive( xGraphCommandQueue, &xCommMessage, 0))
-		{
-			if (xCommMessage.key == BUTTON_SELECT)
-			{
+		while (xQueueReceive( xGraphCommandQueue, &xCommMessage, 0)) {
+			if (xCommMessage.key == BUTTON_SELECT) {
 				vTextBoxSetValues();
-			}
-			else
-			{
-				if (xCommMessage.key == BUTTON_UP)
-				{
+			} else {
+				if (xCommMessage.key == BUTTON_UP) {
 					textBoxListSelected = goGetPrevTextBox(textBoxListSelected);
 					goDrawTextBoxes();
-				}
-				else if (xCommMessage.key == BUTTON_DOWN)
-				{
+				} else if (xCommMessage.key == BUTTON_DOWN) {
 					textBoxListSelected = goGetNextTextBox(textBoxListSelected);
 					goDrawTextBoxes();
-				}
-				else if (xCommMessage.key == BUTTON_RIGHT)
-				{
+				} else if (xCommMessage.key == BUTTON_RIGHT) {
 					vTextBoxIncrement(NULL);
-				}
-				else if (xCommMessage.key == BUTTON_LEFT)
-				{
+				} else if (xCommMessage.key == BUTTON_LEFT) {
 					vTextBoxDecrement(NULL);
-				}
-				else if (xCommMessage.key == RELOAD)
-				{
+				} else if (xCommMessage.key == RELOAD) {
 					vTextBoxGetValues();
 					goDrawTextBoxes();
 				}
 			}
 		}
 
-		while (xQueueReceive( xGraphQueue, &xMessage, 0))
-		{
+		while (xQueueReceive( xGraphQueue, &xMessage, 0)) {
 
 			RIT128x96x4StringDraw("                       ", 10, 85, 0);
 			RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
@@ -183,8 +163,7 @@ void goObjectsListener(xTaskHandle handler)
 }
 
 void goDrawBorder(int height_, int width_, int left, int top,
-		unsigned const char * type)
-{
+		unsigned const char * type) {
 
 	unsigned char * pucImage;
 	unsigned char * pucImageDraw;
@@ -196,37 +175,31 @@ void goDrawBorder(int height_, int width_, int left, int top,
 	pucImage = (unsigned char *) pvPortMalloc(height * width);
 	pucImageDraw = (unsigned char *) pvPortMalloc(height * width / 2);
 
-	for (i = 0; i < width * height; i++)
-	{
+	for (i = 0; i < width * height; i++) {
 		pucImage[i] = 0x00;
 	}
 
-	for (i = 0; i < width; i++)
-	{
+	for (i = 0; i < width; i++) {
 		pucImage[i] = type[0];
 		pucImage[(width * (height - 1)) + i] = type[0];
 	}
 
-	for (i = 1; i < height - 1; i++)
-	{
+	for (i = 1; i < height - 1; i++) {
 		pucImage[i * width] = type[1];
 		pucImage[i * width + width - 1] = type[1];
 	}
 
-	for (i = 1; i < width - 1; i++)
-	{
+	for (i = 1; i < width - 1; i++) {
 		pucImage[width + i] = type[2];
 		pucImage[(width * (height - 2)) + i] = type[2];
 	}
 
-	for (i = 2; i < height - 2; i++)
-	{
+	for (i = 2; i < height - 2; i++) {
 		pucImage[i * width + 1] = type[3];
 		pucImage[i * width + width - 2] = type[3];
 	}
 
-	for (i = 0; i < width * height / 2; i++)
-	{
+	for (i = 0; i < width * height / 2; i++) {
 		pucImageDraw[i] = (pucImage[2 * i] << 4) | (pucImage[2 * i + 1] & 0x0F);
 	}
 
@@ -237,70 +210,56 @@ void goDrawBorder(int height_, int width_, int left, int top,
 
 }
 
-void goPortEIntHandler(void)
-{
+void goPortEIntHandler(void) {
 	xGraphCommandMessage xCmdMessage;
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
-	IntMasterDisable();
-
-	if (xTaskGetTickCount() > xTicksLast + 200)
-	{
+	if (xTaskGetTickCount() > xTicksLast + 200) {
 
 		xTicksLast = xTaskGetTickCount();
 
 		long stat = GPIOPinIntStatus(GPIO_PORTE_BASE, true);
 
-		if (stat == UP)
-		{
+		if (stat == UP) {
 			xCmdMessage.key = BUTTON_UP;
-		}
-		else if (stat == DOWN)
-		{
+		} else if (stat == DOWN) {
 			xCmdMessage.key = BUTTON_DOWN;
-		}
-		else if (stat == LEFT)
-		{
+		} else if (stat == LEFT) {
 			xCmdMessage.key = BUTTON_LEFT;
-		}
-		else if (stat == RIGHT)
-		{
+		} else if (stat == RIGHT) {
 			xCmdMessage.key = BUTTON_RIGHT;
 		}
-		xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
-		xTaskResumeFromISR(xGraphicObjectsTaskHandler);
 
+		if (stat == UP || stat == DOWN || stat == LEFT || stat == RIGHT) {
+			xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
+			xTaskResumeFromISR(xGraphicObjectsTaskHandler);
+		}
+
+		GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0));
 	}
 	GPIOPinIntClear(GPIO_PORTE_BASE, (UP | DOWN | LEFT | RIGHT));
-	IntMasterEnable();
 }
 
-void goPortFIntHandler(void)
-{
+void goPortFIntHandler(void) {
 	xGraphCommandMessage xCmdMessage;
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
-	IntMasterDisable();
-
-	if (xTaskGetTickCount() > xTicksLast + 200)
-	{
+	if (xTaskGetTickCount() > xTicksLast + 200) {
 
 		xTicksLast = xTaskGetTickCount();
 
-		if (GPIOPinIntStatus(GPIO_PORTF_BASE, true) == SELECT)
-		{
+		if (GPIOPinIntStatus(GPIO_PORTF_BASE, true) == SELECT) {
 			xCmdMessage.key = BUTTON_SELECT;
 			xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
 			xTaskResumeFromISR(xGraphicObjectsTaskHandler);
+			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0));
 		}
 	}
 
 	GPIOPinIntClear(GPIO_PORTF_BASE, SELECT);
-	IntMasterEnable();
 }
 
-void goDisplaySleep(void)
-{
+void goDisplaySleep(void) {
 	RIT128x96x4Clear();
 	vTaskSuspend(xGraphicTaskHandler);
 }

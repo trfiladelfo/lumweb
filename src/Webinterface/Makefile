@@ -49,18 +49,9 @@
 #	licensing and training services.
 #*/
 
-
-#/************************************************************************* 
-# * Please ensure to read http://www.freertos.org/portLM3Sxxxx_Eclipse.html
-# * which provides information on configuring and running this demo for the
-# * various Luminary Micro EKs.
-# *************************************************************************/
-
-RTOS_SOURCE_DIR=../Source
-DEMO_COMMON_DIR=../Common/Minimal
-DEMO_INCLUDE_DIR=../Common/include
-UIP_COMMON_DIR=../Common/ethernet/uIP/uip-1.0/uip
 LUMINARY_DRIVER_DIR=../Common/drivers/LuminaryMicro
+RTOS_SOURCE_DIR=../Source
+UIP_COMMON_DIR=../Common/ethernet/uIP/uip-1.0/uip
 FATFS_COMMON_DIR=../Common/fatfs
 
 NAME = Luminary_Webinterface
@@ -79,7 +70,7 @@ OPTIM=-O0
 CFLAGS=$(DEBUG) -I . \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
-		-I $(DEMO_INCLUDE_DIR) -D GCC_ARMCM3_LM3S102 \
+		-D GCC_ARMCM3_LM3S102 \
 		-I $(UIP_COMMON_DIR) \
 		-I $(FATFS_COMMON_DIR)/src \
 		-I $(FATFS_COMMON_DIR)/port \

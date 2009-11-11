@@ -4,7 +4,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-#include "hw_types.h";
+#include "hw_types.h"
 
 /**
  * \addtogroup comTask

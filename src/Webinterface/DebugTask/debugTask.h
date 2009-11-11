@@ -33,6 +33,9 @@ xQueueHandle xDebugQueue;
   char inputbuffer[10];
   char name[40];
 };*/
+
+void vInitDebug(void);
+
 /*
  * Starts the DebugTask
  */

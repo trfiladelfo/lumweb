@@ -28,7 +28,7 @@
 /* Include Queue staff */
 #include "comTask.h"
 #include "GraphicsLibrary/graphicObjects.h"
-#include "webserver/httpd-queue.h"
+#include "webserver/httpTask.h"
 #include "fs.h"
 
 /* TODO only testvalues */

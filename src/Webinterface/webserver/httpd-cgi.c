@@ -53,7 +53,6 @@
 #include "httpd-fs.h"
 
 #include "ComTask/comTask.h"
-#include "webserver/httpd-queue.h"
 #include "webserver/httpTask.h"
 
 #include <stdio.h>
@@ -312,6 +311,7 @@ static unsigned short generate_get(void *arg)
 		xCOM_msg.taskToResume = NULL;
 		xCOM_msg.from = xHTTPDQueue;
 		xCOM_msg.taskToResume = xHttpTaskHandler;
+		xCOM_msg.freeItem = pdFALSE;
 
 		xCOM_msg.item = httpd_cgi_args;
 		xQueueSend(xCOMQueue, &xCOM_msg, (portTickType) 0);

@@ -19,6 +19,9 @@
 /* HW includes */
 #include "portmacro.h"
 
+/* Size of the stack allocated to the OLED task. */
+#define mainGRAPHIC_OBJECTS_STACK_SIZE      ( configMINIMAL_STACK_SIZE * 3 )
+
 xTaskHandle xGraphicObjectsTaskHandler;
 
 /** Message for the Graph Task queue */
