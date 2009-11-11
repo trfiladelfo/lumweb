@@ -12,6 +12,8 @@
 #include "configReader.h"
 
 
+#define HTTPD_FS "httpd-fs"
+
 int readConfigFile(char *fileName){
 	FILE_HANDLE mainfile;
 
@@ -19,9 +21,32 @@ int readConfigFile(char *fileName){
 	mainfile = FSOpen("main.txt\0");
 	if (mainfile != NULL) {
 	//	FSRead(mainfile, msg, 30);
-;
+		;
 
 	} else {
 		;
 	}
 }
+
+char* getHtml(char *url){
+	FILE_HANDLE htmlFile;
+	char *path;
+
+	path = pvPortMalloc(strlen(url)+strlen(HTTPD_FS)+1);
+
+	strcat(path, HTTPD_FS);
+	strcat(path, url);
+
+	FSInit();
+	if (FSCreate("testFile") == NULL)
+		return "fehler mit fatfs";
+
+	htmlFile = FSOpen(path);
+	if (htmlFile != NULL){
+		return "WUHUHU";
+	}else
+		return path;
+
+//	vPortFree(path);
+}
+

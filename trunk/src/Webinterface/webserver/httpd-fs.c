@@ -39,6 +39,7 @@
 #include "httpd-fs.h"
 #include "httpd-fsdata.h"
 
+#include "Configuration/configReader.h"
 
 #ifndef NULL
 #define NULL 0
@@ -87,11 +88,17 @@ int httpd_fs_open(const char *name, struct httpd_fs_file *file) {
 #if HTTPD_FS_STATISTICS
 	u16_t i = 0;
 #endif /* HTTPD_FS_STATISTICS */
-	char *out;
+	char *out, *htmlStr;
 	char draw[20];
 	struct httpd_fsdata_file_noconst *f;
 
-	for (f = (struct httpd_fsdata_file_noconst *) HTTPD_FS_ROOT; f != NULL; f
+	if((htmlStr = getHtml(name)) != NULL){
+		file->data = htmlStr;
+		file->len = strlen(htmlStr) + 1; //- strlen("/test_file.html");
+		return 1;
+	}
+
+/*	for (f = (struct httpd_fsdata_file_noconst *) HTTPD_FS_ROOT; f != NULL; f
 			= (struct httpd_fsdata_file_noconst *) f->next) {
 
 		if (httpd_fs_strcmp(name, f->name) == 0) {
@@ -99,21 +106,20 @@ int httpd_fs_open(const char *name, struct httpd_fs_file *file) {
 			file->len = f->len;
 #if HTTPD_FS_STATISTICS
 			++count[i];
-#endif /* HTTPD_FS_STATISTICS */
+#endif // HTTPD_FS_STATISTICS
 			return 1;
 		}
 
 		if(httpd_fs_strcmp(name, "/test_file.html") == 0){
-
 			file->data = TEST_HTML;
 			file->len = strlen(TEST_HTML) + 1; //- strlen("/test_file.html");
 			return 1;
 		}
 #if HTTPD_FS_STATISTICS
 		++i;
-#endif /* HTTPD_FS_STATISTICS */
+#endif // HTTPD_FS_STATISTICS
 
-	}
+	} */
 	return 0;
 }
 /*-----------------------------------------------------------------------------------*/
