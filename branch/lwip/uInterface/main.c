@@ -1,11 +1,93 @@
 /*
- * The Main Routine to start FreeRTOS with all Tasks
- *
- * @author anzinger, hahn
+ FreeRTOS.org V5.1.1 - Copyright (C) 2003-2008 Richard Barry.
+
+ This file is part of the FreeRTOS.org distribution.
+
+ FreeRTOS.org is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ FreeRTOS.org is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with FreeRTOS.org; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+ A special exception to the GPL can be applied should you wish to distribute
+ a combined work that includes FreeRTOS.org, without being obliged to provide
+ the source code for any proprietary components.  See the licensing section
+ of http://www.FreeRTOS.org for full details of how and when the exception
+ can be applied.
+
+ ***************************************************************************
+ ***************************************************************************
+ *                                                                         *
+ * SAVE TIME AND MONEY!  We can port FreeRTOS.org to your own hardware,    *
+ * and even write all or part of your application on your behalf.          *
+ * See http://www.OpenRTOS.com for details of the services we provide to   *
+ * expedite your project.                                                  *
+ *                                                                         *
+ ***************************************************************************
+ ***************************************************************************
+
+ Please ensure to read the configuration and relevant port sections of the
+ online documentation.
+
+ http://www.FreeRTOS.org - Documentation, latest information, license and
+ contact details.
+
+ http://www.SafeRTOS.com - A version that is certified for use in safety
+ critical systems.
+
+ http://www.OpenRTOS.com - Commercial support, development, porting,
+ licensing and training services.
  */
+
+/*
+ * Creates all the demo application tasks, then starts the scheduler.  The WEB
+ * documentation provides more details of the standard demo application tasks.
+ * In addition to the standard demo tasks, the following tasks and tests are
+ * defined and/or created within this file:
+ *
+ * "Fast Interrupt Test" - A high frequency periodic interrupt is generated
+ * using a free running timer to demonstrate the use of the
+ * configKERNEL_INTERRUPT_PRIORITY configuration constant.  The interrupt
+ * service routine measures the number of processor clocks that occur between
+ * each interrupt - and in so doing measures the jitter in the interrupt timing.
+ * The maximum measured jitter time is latched in the ulMaxJitter variable, and
+ * displayed on the OLED display by the 'OLED' task as described below.  The
+ * fast interrupt is configured and handled in the timertest.c source file.
+ *
+ * "OLED" task - the OLED task is a 'gatekeeper' task.  It is the only task that
+ * is permitted to access the display directly.  Other tasks wishing to write a
+ * message to the OLED send the message on a queue to the OLED task instead of
+ * accessing the OLED themselves.  The OLED task just blocks on the queue waiting
+ * for messages - waking and displaying the messages as they arrive.
+ *
+ * "Check" hook -  This only executes every five seconds from the tick hook.
+ * Its main function is to check that all the standard demo tasks are still
+ * operational.  Should any unexpected behaviour within a demo task be discovered
+ * the tick hook will write an error to the OLED (via the OLED task).  If all the
+ * demo tasks are executing with their expected behaviour then the check task
+ * writes PASS to the OLED (again via the OLED task), as described above.
+ *
+ * "uIP" task -  This is the task that handles the uIP stack.  All TCP/IP
+ * processing is performed in this task.
+ */
+
+/*************************************************************************
+ * Please ensure to read http://www.freertos.org/portlm3sx965.html
+ * which provides information on configuring and running this demo for the
+ * various Luminary Micro EKs.
+ *************************************************************************/
 
 /* Standard includes. */
 #include <stdio.h>
+#include <time.h>
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
@@ -17,40 +99,79 @@
 #include "hw_memmap.h"
 #include "hw_types.h"
 #include "hw_sysctl.h"
+#include "hw_nvic.h"
 #include "sysctl.h"
 #include "gpio.h"
 #include "grlib.h"
+#include "rit128x96x4.h"
 
-/** LWIP Includes */
+/* Demo app includes. */
+#include "ethernet/ETHIsr.h"
+#include "ethernet/LWIPStack.h"
+#include "uart/uartstdio.h"
+#include "ethernet/cgi/io.h"
+
 #include "lwip/opt.h"
 #include "lwip/udp.h"
 #include "lwip/mem.h"
 #include "lwip/stats.h"
 
-/* uInterface includes. */
-#include "ethernet/ETHIsr.h"
-#include "ethernet/LWIPStack.h"
-#include "uart/uartstdio.h"
-#include "httpd/io.h"
-
-extern int __HEAP_START;
-
-//#include "comTask/comTask.h"   /* include communication task header */
-//#include "debugTask/debugTask.h" /* include the debugging task */
-//#include "graphicsLibrary/graphicObjects.h"
-//#include "graphicsLibrary/runGraphics.h" /* include the Graphics Libary */
+#define printf UARTprintf
 
 /*-----------------------------------------------------------*/
 
 /* The time between cycles of the 'check' functionality (defined within the
  tick hook. */
-//#define mainCHECK_DELAY						( ( portTickType ) 5000 / portTICK_RATE_MS )
+#define mainCHECK_DELAY						( ( portTickType ) 5000 / portTICK_RATE_MS )
 
+/* Size of the stack allocated to the uIP task. */
+#define mainBASIC_WEB_STACK_SIZE            ( configMINIMAL_STACK_SIZE * 3 )
+
+/* The OLED task uses the sprintf function so requires a little more stack too. */
+#define mainOLED_TASK_STACK_SIZE			( configMINIMAL_STACK_SIZE + 50 )
+
+/* Task priorities. */
+#define mainQUEUE_POLL_PRIORITY				( tskIDLE_PRIORITY + 2 )
+#define mainCHECK_TASK_PRIORITY				( tskIDLE_PRIORITY + 3 )
+#define mainSEM_TEST_PRIORITY				( tskIDLE_PRIORITY + 1 )
+#define mainBLOCK_Q_PRIORITY				( tskIDLE_PRIORITY + 2 )
+#define mainCREATOR_TASK_PRIORITY           ( tskIDLE_PRIORITY + 3 )
+#define mainINTEGER_TASK_PRIORITY           ( tskIDLE_PRIORITY )
+#define mainGEN_QUEUE_TASK_PRIORITY			( tskIDLE_PRIORITY )
+
+/* Constants used when writing strings to the display. */
+#define mainCHARACTER_HEIGHT				( 9 )
+#define mainMAX_ROWS_128					( mainCHARACTER_HEIGHT * 14 )
+#define mainMAX_ROWS_96						( mainCHARACTER_HEIGHT * 10 )
+#define mainMAX_ROWS_64						( mainCHARACTER_HEIGHT * 7 )
+#define mainFULL_SCALE						( 15 )
+#define ulSSI_FREQUENCY						( 3500000UL )
+
+/*-----------------------------------------------------------*/
 
 /*
- * Task priorities.
+ * The task that handles the lwIP stack.  All TCP/IP processing is performed in
+ * this task.
  */
-#define mainCHECK_TASK_PRIORITY				( tskIDLE_PRIORITY + 3 )
+extern void vuIP_Task(void *pvParameters);
+
+/*
+ * The display is written two by more than one task so is controlled by a
+ * 'gatekeeper' task.  This is the only task that is actually permitted to
+ * access the display directly.  Other tasks wanting to display a message send
+ * the message to the gatekeeper.
+ */
+static void vOLEDTask(void *pvParameters);
+
+/*
+ * The task that handles the SD Card
+ */
+extern void vSDcardTask(void *pvParameters);
+
+/*
+ * The task that handles the Real Time Clock
+ */
+static void vRealTimeClockTask(void * pvParameters);
 
 /*
  * Configure the hardware for the demo.
@@ -58,62 +179,57 @@ extern int __HEAP_START;
 static void prvSetupHardware(void);
 
 /*
- * The idle hook is used to run a test of the scheduler context switch
- * mechanism.
+ * Hook functions that can get called by the kernel.
  */
-void vApplicationIdleHook(void) __attribute__((naked));
+void vApplicationStackOverflowHook(xTaskHandle *pxTask,
+		signed portCHAR *pcTaskName);
+void vApplicationTickHook(void);
+
 /*-----------------------------------------------------------*/
 
-/* Variables used to detect the test in the idle hook failing. */
-unsigned portLONG ulIdleError = pdFALSE;
+/* The queue used to send messages to the OLED task. */
+xQueueHandle xOLEDQueue;
+
+/* t holds the actual time. */
+time_t t;
+
+/* The welcome text. */
+const portCHAR * const pcWelcomeMessage = "   www.FreeRTOS.org";
 
 /*-----------------------------------------------------------*/
 
 /*************************************************************************
- * Please ensure to read http://www.freertos.org/portLM3Sxxxx_Eclipse.html
+ * Please ensure to read http://www.freertos.org/portlm3sx965.html
  * which provides information on configuring and running this demo for the
  * various Luminary Micro EKs.
  *************************************************************************/
-
-#define mainBASIC_WEB_STACK_SIZE            ( configMINIMAL_STACK_SIZE * 3 )
-/* t holds the actual time. */
-time_t t;
-
 int main(void) {
-
 	IP_CONFIG * ipcfg;
-	/* Setup the Hardware */
+
 	prvSetupHardware();
 
-	/* The main Communication between COMM-, GRAPH and HTTPD Task */
-	//xCOMQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
-	//xHTTPDQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
-	//xGraphQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xCOMMessage));
+	UARTprintf("\n\n\nStarte Programm ...\n");
+	UARTprintf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
 
-	/* Task for the Interface on the Local Display */
-	//xTaskCreate(vGraphicObjectsTask, (signed portCHAR *) "graphic",
-	//		mainGRAPHIC_OBJECTS_STACK_SIZE + 50, NULL, mainCHECK_TASK_PRIORITY, &xGraphicObjectsTaskHandler);
-
-	/* Create the uIP task if running on a processor that includes a MAC and
-	 PHY. */
+	/* Create the lwIP task if running on a processor that includes a MAC and	PHY. */
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
+		UARTprintf("Initialisiere IP ...\n");
 		ipcfg = pvPortMalloc(sizeof(IP_CONFIG));
 		ipcfg->IPMode = IPADDR_USE_DHCP;
-		xTaskCreate( LWIPServiceTaskInit, ( signed portCHAR * ) "lwi", mainBASIC_WEB_STACK_SIZE * 5, ipcfg, 3, NULL );
-		//xTaskCreate(vHttpdTask, (signed portCHAR *) "httpd", HTTPD_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, &xHttpTaskHandler);
+		//ipcfg->IPMode = IPADDR_USE_STATIC;
+		//ipcfg->IPAddr = 0xC0A814C8; //192.168.20.200
+		//ipcfg->NetMask = 0xffffff00;
+		//ipcfg->GWAddr = 0xC0A81401;
+		UARTprintf("Starte LWIP ...\n");
+		xTaskCreate( LWIPServiceTaskInit, ( signed portCHAR * ) "lwi", (configMINIMAL_STACK_SIZE * 5 ), ipcfg, ( configMAX_PRIORITIES - 2), NULL );
 	}
-
-	/* Start the Communication Task (vComTask) to interact with the machine */
-	//xTaskCreate(vComTask, (signed portCHAR *) "comTask", COM_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
 
 	/* Will only get here if there was insufficient memory to create the idle
 	 task. */
-	for (;;)
-		;
-
+	return 0;
 }
 /*-----------------------------------------------------------*/
 
@@ -127,34 +243,14 @@ void prvSetupHardware(void) {
 	/* Set the clocking to run from the PLL at 50 MHz */
 	SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN
 			| SYSCTL_XTAL_8MHZ);
-
-	//
-	// Enable the peripherals
-	//
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-
-	GPIODirModeSet(GPIO_PORTF_BASE, (GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3),
-			GPIO_DIR_MODE_HW);
-	GPIOPadConfigSet(GPIO_PORTF_BASE, (GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3),
-			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-
-	//
-	// Enable Interrupts
-	//
-	IntMasterEnable();
-
-	//
-	// Set GPIO A0 and A1 as UART.
-	//
-	//GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+	io_init();
+	UARTStdioInit(0);
+	ETHServiceTaskInit(0);
 }
 /*-----------------------------------------------------------*/
 
 void vApplicationTickHook(void) {
-	// Function that is called every Schedule Circle
 }
-/*-----------------------------------------------------------*/
 
 /*-----------------------------------------------------------*/
 void vRealTimeClockTask(void * pvParameters) {
@@ -166,7 +262,6 @@ void vRealTimeClockTask(void * pvParameters) {
 		// Wait for the next cycle.
 		vTaskDelayUntil(&xLastWakeTime, 1000 / portTICK_RATE_MS);
 		t++;
-		// printf("Time: %s", ctime(&t));
 	}
 }
 
@@ -188,31 +283,26 @@ void vApplicationStackOverflowHook(xTaskHandle *pxTask,
 	(void) pxTask;
 	(void) pcTaskName;
 
-	printf("ApplicationStackOverflowHook in %s\n", pcTaskName);
 	for (;;)
 		;
 }
 
 /*-----------------------------------------------------------*/
 void LWIPDebug(const char *pcString, ...) {
-	printf(pcString);
 }
 
 /*-----------------------------------------------------------*/
 void __error__(char *pcFilename, unsigned long ulLine) {
-	printf("Error in %s Line %d\n", pcFilename, ulLine);
 }
 
 /*-----------------------------------------------------------*/
 void NmiSRDebug(void) {
-	printf("NmiSR");
 	while (1)
 		;
 }
 
 /*-----------------------------------------------------------*/
 void IntDefaultHandlerDebug(void) {
-	printf("IntDefaultHandler");
 	while (1)
 		;
 }
@@ -257,25 +347,22 @@ void hard_fault_handler_c(unsigned int * hardfault_args) {
 
 	while (1)
 		; // terminate
-
 }
 
-caddr_t _sbrk ( int incr )
-{
-  //static unsigned char *heap = NULL;
-  //unsigned char *prev_heap;
+extern int __HEAP_START;
 
-  //if (heap == NULL) {
-  //  heap = (unsigned char *)&__HEAP_START;
-  //}
-  //prev_heap = heap;
-  /* check removed to show basic approach */
+caddr_t _sbrk(int incr) {
+	static unsigned char *heap = NULL;
+	unsigned char *prev_heap;
 
-  //heap += incr;
+	if (heap == NULL) {
+		heap = (unsigned char *) &__HEAP_START;
+	}
+	prev_heap = heap;
+	/* check removed to show basic approach */
 
-  //return (caddr_t) prev_heap;
-	usprintf()
-	return 0;
+	heap += incr;
+
+	return (caddr_t) prev_heap;
 }
-
 
