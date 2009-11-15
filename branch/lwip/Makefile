@@ -51,6 +51,7 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 SOURCE=	$(SOURCE_DIR)/main.c \
 		$(SOURCE_DIR)/setup.c \
 		$(SOURCE_DIR)/timer.c \
+		$(SOURCE_DIR)/realtime.c \
 		$(GRAPHIC_DIR)/port/rit128x96x4.c \
 		$(ETHERNET_DIR)/cgi/io.c \
 		$(ETHERNET_DIR)/cgi/cgifuncs.c \

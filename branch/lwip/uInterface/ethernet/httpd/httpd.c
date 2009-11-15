@@ -334,6 +334,8 @@ extract_uri_parameters(struct http_state *hs, char *params)
   char *equals;
   int loop;
 
+  printf("request: %s", params);
+
   /* If we have no parameters at all, return immediately. */
   if(!params || (params[0] == '\0')) {
       return(0);

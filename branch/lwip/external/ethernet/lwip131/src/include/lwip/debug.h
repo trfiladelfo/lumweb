@@ -77,7 +77,7 @@
 /** print debug message only if debug message type is enabled...
  *  AND is of correct type AND is at least LWIP_DBG_LEVEL
  */
-#define LWIP_DEBUGF(debug, message) do { \
+/*#define LWIP_DEBUGF(debug, message) do { \
                                if ( \
                                    ((debug) & LWIP_DBG_ON) && \
                                    ((debug) & LWIP_DBG_TYPES_ON) && \
@@ -87,9 +87,11 @@
                                    while(1); \
                                  } \
                                } \
-                             } while(0)
-
+                             } while(0) */
+#define LWIP_DEBUGF(debug, message) do { printf(message) } while (0)
 #else  /* LWIP_DEBUG */
+
+
 #define LWIP_DEBUGF(debug, message) 
 #endif /* LWIP_DEBUG */
 

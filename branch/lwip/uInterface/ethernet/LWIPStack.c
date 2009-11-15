@@ -39,8 +39,8 @@
 #include "lwip/sntp.h"
 #include "netif/etharp.h"
 #include "lwip/autoip.h"
-#include "lwip/sntp.h"
 #include "lwip/dns.h"
+#include "lwip/icmp.h"
 
 //*****************************************************************************
 //
@@ -598,12 +598,14 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	/* Initialize HTTP, DNS, SNTP */
 	UARTprintf("HTTPD Starten ...\n");
 	httpd_init();
-	UARTprintf("SNTP Starten ...\n");
-	sntp_init();
+	//UARTprintf("SNTP Starten ...\n");
+	//sntp_init();
 	UARTprintf("DNS Starten ...\n");
 	dns_init();
 	UARTprintf("NETBIOS Starten ...\n");
 	netbios_init();
+
+	UARTprintf("Dienste gestartet ...\n");
 	// Nothing else to do.  No point hanging around.
 	while (1) {
 		vTaskDelay(500 / portTICK_RATE_MS);
@@ -620,6 +622,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			}
 		} else {
 			if (netif_is_up(&lwip_netif)) {
+				UARTprintf("Deaktiviere Netzwerkinterface ...  ");
 				netif_set_down(&lwip_netif);
 			}
 		}

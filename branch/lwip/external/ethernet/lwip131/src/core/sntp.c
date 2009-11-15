@@ -104,130 +104,126 @@ xTaskHandle sntpTaskHandle;
 /**
  * SNTP processing
  */
-static void
-sntp_process( time_t t)
-{
+static void sntp_process(time_t t) {
 
-  /* change system time and/or the update the RTC clock */
-  SNTP_SYSTEM_TIME(t);
+	/* change system time and/or the update the RTC clock */
+	SNTP_SYSTEM_TIME(t);
 
-  /* display local time from GMT time */
-  LWIP_DEBUGF( SNTP_DEBUG, ("sntp_process: %s\n", ctime(&t)));
+	/* display local time from GMT time */
+	printf("sntp_process: %s\n", ctime(&t));
 }
 
 /**
  * SNTP request
  */
-static void
-sntp_request()
-{
-  int                sock;
-  struct sockaddr_in local;
-  struct sockaddr_in to;
-  int                tolen;
-  int                size;
-  int                timeout;
-  u8_t               sntp_request [SNTP_MAX_DATA_LEN];
-  u8_t               sntp_response[SNTP_MAX_DATA_LEN];
-  u32_t              sntp_server_address;
-  u32_t              timestamp;
-  time_t             t;
-  
-  /* initialize SNTP server address */
-//pf  sntp_server_address = SNTP_SERVER_ADDRESS;
-  sntp_server_address = SNTPaddr.addr;
+static void sntp_request() {
+	int sock;
+	struct sockaddr_in local;
+	struct sockaddr_in to;
+	int tolen;
+	int size;
+	int timeout;
+	u8_t sntp_request[SNTP_MAX_DATA_LEN];
+	u8_t sntp_response[SNTP_MAX_DATA_LEN];
+	u32_t sntp_server_address;
+	u32_t timestamp;
+	time_t t;
 
-  /* if we got a valid SNTP server address... */
-  if (sntp_server_address!=0) {
-    /* create new socket */
-    sock = socket( AF_INET, SOCK_DGRAM, 0);
-    if (sock>=0) {
-      /* prepare local address */
-      memset(&local, 0, sizeof(local));
-      local.sin_family      = AF_INET;
-      local.sin_port        = htons(INADDR_ANY);
-      local.sin_addr.s_addr = htonl(INADDR_ANY);
+	/* initialize SNTP server address */
+	//pf  sntp_server_address = SNTP_SERVER_ADDRESS;
+	sntp_server_address = SNTPaddr.addr;
 
-      /* bind to local address */
-      if (bind( sock, (struct sockaddr *)&local, sizeof(local))==0) {
-        /* set recv timeout */
-        timeout = SNTP_RECV_TIMEOUT;
-        setsockopt( sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
+	/* if we got a valid SNTP server address... */
+	if (sntp_server_address != 0) {
+		/* create new socket */
+		sock = socket( AF_INET, SOCK_DGRAM, 0);
+		if (sock >= 0) {
+			/* prepare local address */
+			memset(&local, 0, sizeof(local));
+			local.sin_family = AF_INET;
+			local.sin_port = htons(INADDR_ANY);
+			local.sin_addr.s_addr = htonl(INADDR_ANY);
 
-        /* prepare SNTP request */
-        memset( sntp_request, 0, sizeof(sntp_request));
-        sntp_request[0] = SNTP_LI_NO_WARNING | SNTP_VERSION | SNTP_MODE_CLIENT;
+			/* bind to local address */
+			if (bind( sock, (struct sockaddr *)&local, sizeof(local)) == 0) {
+				/* set recv timeout */
+				timeout = SNTP_RECV_TIMEOUT;
+				setsockopt( sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
 
-        /* prepare SNTP server address */
-        memset(&to, 0, sizeof(to));
-        to.sin_family      = AF_INET;
-        to.sin_port        = htons(SNTP_PORT);
-        to.sin_addr.s_addr = sntp_server_address;
-    
-        /* send SNTP request to server */
-        if (sendto( sock, sntp_request, sizeof(sntp_request), 0, (struct sockaddr *)&to, sizeof(to))>=0) {
-          /* receive SNTP server response */
-          tolen = sizeof(to);
-          size  = recvfrom( sock, sntp_response, sizeof(sntp_response), 0, (struct sockaddr *)&to, (socklen_t *)&tolen);
+				/* prepare SNTP request */
+				memset(sntp_request, 0, sizeof(sntp_request));
+				sntp_request[0] = SNTP_LI_NO_WARNING | SNTP_VERSION
+						| SNTP_MODE_CLIENT;
 
-          /* if the response size is good */
-          if (size == SNTP_MAX_DATA_LEN) {
-            /* if this is a SNTP response... */
-            if (((sntp_response[0] & SNTP_MODE_MASK) == SNTP_MODE_SERVER) || ((sntp_response[0] & SNTP_MODE_MASK) == SNTP_MODE_BROADCAST)) {
-              /* extract GMT time from response */
-              SMEMCPY( &timestamp, (sntp_response+SNTP_RCV_TIME_OFS), sizeof(timestamp));
-              t = (ntohl(timestamp) - DIFF_SEC_1900_1970);
+				/* prepare SNTP server address */
+				memset(&to, 0, sizeof(to));
+				to.sin_family = AF_INET;
+				to.sin_port = htons(SNTP_PORT);
+				to.sin_addr.s_addr = sntp_server_address;
 
-              /* do time processing */
-              sntp_process(t);
+				/* send SNTP request to server */
+				if (sendto( sock, sntp_request, sizeof(sntp_request), 0, (struct sockaddr *)&to, sizeof(to))
+						>= 0) {
+					/* receive SNTP server response */
+					tolen = sizeof(to);
+					size
+							= recvfrom( sock, sntp_response, sizeof(sntp_response), 0, (struct sockaddr *)&to, (socklen_t *)&tolen);
 
-            } else {
-              LWIP_DEBUGF( SNTP_DEBUG, ("sntp_request: not response frame code\n"));
-            }
-          } else {
-            //pf LWIP_DEBUGF( SNTP_DEBUG, ("sntp_request: not recvfrom==%i\n", errno));
-            LWIP_DEBUGF( SNTP_DEBUG, ("sntp_request: not recvfrom==\n"));
-          }
-        } else {
-          //pf LWIP_DEBUGF( SNTP_DEBUG, ("sntp_request: not sendto==%i\n", errno));
-          LWIP_DEBUGF( SNTP_DEBUG, ("sntp_request: not sendto==\n"));
-        }
-      }
-      /* close the socket */
-      closesocket(sock);
-    }
-  }
+					/* if the response size is good */
+					if (size == SNTP_MAX_DATA_LEN) {
+						/* if this is a SNTP response... */
+						if (((sntp_response[0] & SNTP_MODE_MASK)
+								== SNTP_MODE_SERVER) || ((sntp_response[0]
+								& SNTP_MODE_MASK) == SNTP_MODE_BROADCAST)) {
+							/* extract GMT time from response */
+							SMEMCPY( &timestamp, (sntp_response+SNTP_RCV_TIME_OFS), sizeof(timestamp));
+							t = (ntohl(timestamp) - DIFF_SEC_1900_1970);
+
+							/* do time processing */
+							sntp_process(t);
+
+						} else {
+							printf("sntp_request: not response frame code\n");
+						}
+					} else {
+						//pf LWIP_DEBUGF( SNTP_DEBUG, ("sntp_request: not recvfrom==%i\n", errno));
+						printf("sntp_request: not recvfrom==\n");
+					}
+				} else {
+					//pf LWIP_DEBUGF( SNTP_DEBUG, ("sntp_request: not sendto==%i\n", errno));
+					printf("sntp_request: not sendto==\n");
+				}
+			}
+			/* close the socket */
+			closesocket(sock);
+		}
+	}
 }
 
-static void
-sntp_server_found(const char *name, struct ip_addr *ipaddr, void *arg)
-{
+static void sntp_server_found(const char *name, struct ip_addr *ipaddr,
+		void *arg) {
 	SNTPaddr.addr = ipaddr->addr;
-  LWIP_DEBUGF( SNTP_DEBUG, ("sntp_server %s: ", SNTP_SERVER_NAME));
-  ip_addr_debug_print(SNTP_DEBUG, ipaddr);
-  LWIP_DEBUGF( SNTP_DEBUG, ("\n"));
-  vTaskResume( sntpTaskHandle );
+	printf("sntp_server %s: \n", SNTP_SERVER_NAME);
+	ip_addr_debug_print(SNTP_DEBUG, ipaddr);
+	vTaskResume(sntpTaskHandle);
 }
 
 /**
  * SNTP thread
  */
-static void
-sntp_thread(void *arg)
-{
-  LWIP_UNUSED_ARG(arg);
-  while(1) {
-    dns_gethostbyname(SNTP_SERVER_NAME, &SNTPaddr, sntp_server_found, NULL);
-    vTaskSuspend( NULL );
-    sntp_request();
-    sys_msleep(SNTP_UPDATE_DELAY);
-  }
+static void sntp_thread(void *arg) {
+	LWIP_UNUSED_ARG(arg);
+	while (1) {
+		dns_gethostbyname(SNTP_SERVER_NAME, &SNTPaddr, sntp_server_found, NULL);
+		vTaskSuspend(NULL);
+		sntp_request();
+		sys_msleep(SNTP_UPDATE_DELAY);
+	}
 }
 
-void
-sntp_init(void)
-{ 
-  sntpTaskHandle = sys_thread_new("sntp", sntp_thread, NULL, DEFAULT_THREAD_STACKSIZE + 80, DEFAULT_THREAD_PRIO);
+void sntp_init(void) {
+	sntpTaskHandle = sys_thread_new("sntp", sntp_thread, NULL,
+			DEFAULT_THREAD_STACKSIZE + 80, DEFAULT_THREAD_PRIO);
 }
 
 #endif /* LWIP_SOCKET */

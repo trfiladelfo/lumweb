@@ -10,5 +10,12 @@
 #ifndef PROJECTCONFIG_H_
 #define PROJECTCONFIG_H_
 
+#include <stdio.h>
+#include <time.h>
+
+time_t t; // Holds the actual Time
+
+#define USE_DHCP 			1
+
 
 #endif /* PROJECTCONFIG_H_ */
