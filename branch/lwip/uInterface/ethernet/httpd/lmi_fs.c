@@ -35,6 +35,7 @@
 #include "fs.h"
 #include "../cgi/io.h"
 #include "fatfs/ff.h"
+#include "uart/uartstdio.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -73,28 +74,36 @@ fs_open(char *name)
     struct fs_file *ptFile = NULL;
     FRESULT fResult;
     FIL *file;
-    char *path;
+    char *path, *buf;
+    int i;
 
     printf("%s \n", name);
 
     fResult = f_open(file, name+1, FA_READ);
+
+  //  ptFile->data = pvPortMalloc(100);
+ //   memset(ptFile->data, '\0', 100);
+
     ptFile = mem_malloc(sizeof(struct fs_file));
 
 	if(fResult == FR_OK){
 	    ptFile->data = "gelesen";
 	    ptFile->index = 0;
-	    ptFile->len = strlen(ptFile->data);
-	}else
-	{
-		    ptFile->data = "404";
-		    ptFile->index = 0;
-		    ptFile->len = strlen(ptFile->data);
+	    ptFile->len = sizeof(ptFile->data);
+	    printf("ok: %s \n", ptFile->data);
+	}else{
+			ptFile->data = "404";
 
+	//	    strcpy(ptFile->data, "404");
+		    ptFile->index = 0;
+		    ptFile->len = sizeof(ptFile->data);
+		    printf("NOK: %s \n", ptFile->data);
 	}
 	return ptFile;
     /*    struct fs_file *tmpFile = NULL;
     UINT usBytesRead;
 
+  //  UARTprintf("fs_open: %s", name);
     //
     // Allocate memory for the file system structure.
     //
