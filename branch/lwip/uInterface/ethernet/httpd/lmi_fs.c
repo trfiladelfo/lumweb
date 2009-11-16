@@ -71,7 +71,28 @@ fs_open(char *name)
 {
     const struct fsdata_file *ptTree;
     struct fs_file *ptFile = NULL;
-    struct fs_file *tmpFile = NULL;
+    FRESULT fResult;
+    FIL *file;
+    char *path;
+
+    printf("%s \n", name);
+
+    fResult = f_open(file, name+1, FA_READ);
+    ptFile = mem_malloc(sizeof(struct fs_file));
+
+	if(fResult == FR_OK){
+	    ptFile->data = "gelesen";
+	    ptFile->index = 0;
+	    ptFile->len = strlen(ptFile->data);
+	}else
+	{
+		    ptFile->data = "404";
+		    ptFile->index = 0;
+		    ptFile->len = strlen(ptFile->data);
+
+	}
+	return ptFile;
+    /*    struct fs_file *tmpFile = NULL;
     UINT usBytesRead;
 
     //
@@ -120,10 +141,11 @@ fs_open(char *name)
 		    //
 		    // Fill in statistics.
 		    //
+		*/
 #if LWIP_STATS /* don't build if not configured for use in lwipopts.h */
-        ptFile->len += http_stats_display(ptFile->data + ptFile->len, TEMP_FILE_SIZE - ptFile->len);
+    //    ptFile->len += http_stats_display(ptFile->data + ptFile->len, TEMP_FILE_SIZE - ptFile->len);
 #endif /* LWIP_STATS */
-				tmpFile = fs_open("/IPstats.tail");
+/*				tmpFile = fs_open("/IPstats.tail");
 		    if(NULL == tmpFile)
 		    {
             mem_free(ptFile);
@@ -358,6 +380,7 @@ fs_open(char *name)
     // Return the file system pointer.
     //
     return(ptFile);
+	*/
 }
 
 //*****************************************************************************
