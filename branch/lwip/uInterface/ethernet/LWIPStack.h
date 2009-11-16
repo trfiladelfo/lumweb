@@ -1,6 +1,9 @@
 #ifndef LWIPSTACK_H_
 #define LWIPSTACK_H_
 
+#include "lwip/netif.h"
+#include "lwip/ip_addr.h"
+
 #define netifINTERFACE_TASK_STACK_SIZE		( 400 )
 //pf #define netifINTERFACE_TASK_STACK_SIZE		( 350 )
 #define netifINTERFACE_TASK_PRIORITY			( configMAX_PRIORITIES)
@@ -38,6 +41,9 @@ typedef struct
 //
 //*****************************************************************************
 extern void LWIPServiceTaskInit(void *pvParameters);
+void printnetif (struct netif *aktNetif);
+void printip (struct ip_addr *addr);
+
 #if CORTEX_DEBUG
 void stellarisif_debug_print(struct pbuf *p);
 #else

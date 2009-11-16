@@ -63,6 +63,8 @@
 #include "ETHIsr.h"
 #include "LWIPStack.h"
 
+#include "projectConfig.h"
+
 // Sanity Check:  This interface driver will NOT work if the following defines are incorrect.
 #if (PBUF_LINK_HLEN != 16)
 #warning "PBUF_LINK_HLEN must be 16 for this interface driver!"
@@ -164,8 +166,7 @@ static struct pbuf * low_level_input(struct netif *netif) {
 	if ((HWREG(ETH_BASE + MAC_O_NP) & MAC_NP_NPR_M) == 0) {
 		int err = ETHServiceTaskLastError(0);
 		if ((ETH_ERROR & err) && (ETH_OVERFLOW & err)) {
-			LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_input: Ethernet overflow\n"));
-			LINK_STATS_INC(link.drop);
+			LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_input: Ethernet overflow\n"));LINK_STATS_INC(link.drop);
 		}
 		return (NULL);
 	}
@@ -229,8 +230,7 @@ static struct pbuf * low_level_input(struct netif *netif) {
 		}
 
 		// Adjust the link statistics
-		LINK_STATS_INC(link.memerr);
-		LINK_STATS_INC(link.drop);
+		LINK_STATS_INC(link.memerr);LINK_STATS_INC(link.drop);
 	}
 
 	return (p);
@@ -357,8 +357,7 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
 	if (0 == ETHServiceTaskLinkStatus(0)) {
 		// ~ bitwise negation, all bit except NETIF_FLAG_LINK_UP set to 1 and AND with current flag
 		netif->flags &= ~NETIF_FLAG_LINK_UP;
-		LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_transmit: link is down\n"));
-		LINK_STATS_INC(link.err);
+		LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_transmit: link is down\n"));LINK_STATS_INC(link.err);
 		return (ERR_IF);
 	} else {
 		netif->flags |= NETIF_FLAG_LINK_UP;
@@ -563,11 +562,11 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	// Start DHCP, if enabled.
 #if LWIP_DHCP
 	if (ipCfg->IPMode == IPADDR_USE_DHCP) {
-		UARTprintf ("Starte DHCP Client ...     ");
+		UARTprintf("Starte DHCP Client ...     ");
 		if (dhcp_start(&lwip_netif) == ERR_OK) {
-			UARTprintf ("[ok]\n");
+			UARTprintf("[ok]\n");
 		} else {
-			UARTprintf ("[fail]\n");
+			UARTprintf("[fail]\n");
 		}
 	}
 #endif
@@ -595,6 +594,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 		 }*/
 	}
 
+	printnetif(&lwip_netif);
+
 	/* Initialize HTTP, DNS, SNTP */
 	UARTprintf("HTTPD Starten ...\n");
 	httpd_init();
@@ -615,7 +616,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 				netif_set_up(&lwip_netif);
 				UARTprintf("DHCP Adresse anfordern ...  ");
 				if (dhcp_renew(&lwip_netif) == ERR_OK) {
-					UARTprintf("[ok]\n");;
+					UARTprintf("[ok]\n");
+					printnetif(&lwip_netif);
 				} else {
 					UARTprintf("[fail]\n");
 				}
@@ -626,6 +628,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 				netif_set_down(&lwip_netif);
 			}
 		}
+
 	}
 	//	vTaskDelete( NULL);
 }
@@ -861,3 +864,20 @@ stellarisif_debug_print(struct pbuf *p)
 	LWIP_DEBUGF(CORTEX_DEBUG, ("Packet Type:0x%04"U16_F" \n", ethhdr->type));
 }
 #endif /* CORTEX_DEBUG */
+
+void printaddr(struct ip_addr addr) {
+	printf("%d.%d.%d.%d", ((addr.addr) & 0xFF), ((addr.addr >> 8) & 0xFF),
+			((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF));
+}
+
+void printnetif(struct netif *netif) {
+	//struct dhcp *dhcp = netif->dhcp;
+	printf("Adresskonfiguration:\n\tIP Adresse: ");
+	printaddr(netif->ip_addr);
+	printf("\n\tSubnet    : ");
+	printaddr(netif->netmask);
+	printf("\n\tGateway   : ");
+	printaddr(netif->gw);
+	printf("\n");
+}
+
