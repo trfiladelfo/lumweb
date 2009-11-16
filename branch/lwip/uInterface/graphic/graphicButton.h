@@ -31,10 +31,6 @@ pgoButton buttonListRoot;
 pgoButton buttonListLast;
 pgoButton buttonSelected;
 
-void goInit(void); // Initializes the GraphicLibary
-
-void goObjectsListener(xTaskHandle handler); // Starts the Listener
-
 void goDrawBorder(int height_, int width_, int left, int top,
 		unsigned const char * type); // Draws a Border for a Object
 

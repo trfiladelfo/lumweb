@@ -624,7 +624,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			}
 		} else {
 			if (netif_is_up(&lwip_netif)) {
-				UARTprintf("Deaktiviere Netzwerkinterface ...  ");
+				UARTprintf("Deaktiviere Netzwerkinterface ...\n");
 				netif_set_down(&lwip_netif);
 			}
 		}

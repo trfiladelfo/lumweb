@@ -19,20 +19,11 @@
 /* HW includes */
 #include "portmacro.h"
 
-/* Size of the stack allocated to the OLED task. */
-#define mainGRAPHIC_OBJECTS_STACK_SIZE      ( configMINIMAL_STACK_SIZE * 3 )
-
-xTaskHandle xGraphicObjectsTaskHandler;
-
 /** Message for the Graph Task queue */
 typedef struct
 {
 	char *msg;
 } xGraphMessage;
-
-typedef struct {
-	int value;
-} xGraphCommunication;
 
 typedef struct
 {
@@ -43,12 +34,6 @@ typedef struct
 xQueueHandle xGraphQueue;
 xQueueHandle xGraphCommandQueue;
 xQueueHandle xGraphCommunicationQueue;
-
-/* Graphics Task stack size */
-#define GRAPH_STACK_SIZE			( configMINIMAL_STACK_SIZE * 3 )
-
-/* The maximum number of message that can be waiting  at any one time. */
-#define GRAPH_QUEUE_SIZE					( 3 )
 
 static const unsigned char g_pucRIT128x96x4HorizontalInc[] =
 { 0xA0, 0x52 };
@@ -114,5 +99,8 @@ static const unsigned char goButtonDown[] =
 		0xFF, 0xF0, 0xFF, 0x0F, 0xFF, 0xFF, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0xFF,
 		0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 		0xFF };
+
+void goInit(void); // Initializes the GraphicLibary
+void goObjectsListener(void); // Starts the Listener
 
 #endif /* GRAPHICOBJECTS_H_ */

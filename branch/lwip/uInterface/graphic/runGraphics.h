@@ -8,8 +8,6 @@
 #ifndef RUNGRAPHICS_H_
 #define RUNGRAPHICS_H_
 
-xTaskHandle xGraphicTaskHandler;
-
 void vGraphicObjectsTask(void *pvParameters);
 
 #endif /* RUNGRAPHICS_H_ */

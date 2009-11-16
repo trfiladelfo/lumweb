@@ -4,18 +4,19 @@
  * @version 1.0/14-10-09
  */
 
-#include "GraphicsLibrary/graphicObjects.h"
-#include "GraphicsLibrary/graphicTextbox.h"
-#include "GraphicsLibrary/graphicButton.h"
-#include "GraphicsLibrary/runGraphics.h"
-#include "GraphicsLibrary/renderGraphics.h"
+#include "graphicObjects.h"
+#include "graphicTextBox.h"
+#include "graphicButton.h"
+#include "runGraphics.h"
+#include "renderGraphics.h"
 
 #include "string.h"
 
 void vGraphicObjectsTask(void *pvParameters)
 {
-
 	char **todo;
+
+	printf("Starte Graphic...\n");
 
 	// XXX nur ein Test, soll nachher aus Config geladen werden
 	todo = pvPortMalloc(4 * sizeof (char*));
@@ -38,7 +39,9 @@ void vGraphicObjectsTask(void *pvParameters)
 
 	render((char**) todo, 4);
 
-	goObjectsListener(xGraphicTaskHandler);
+	goObjectsListener();
+
+
 
 	while (1)
 	{

@@ -16,7 +16,7 @@
 #define LWIP_USE_DHCP		1
 xTaskHandle xLwipTaskHandle;
 
-#define GRAPH_STACK_SIZE	512
+#define GRAPH_STACK_SIZE	4096
 #define GRAPH_TASK_NAME		"graphics"
 #define GRAPH_TASK_PRIORITY  (configMAX_PRIORITIES - 2)
 xTaskHandle xGraphTaskHandle;

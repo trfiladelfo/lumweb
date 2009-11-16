@@ -53,6 +53,12 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(SOURCE_DIR)/timer.c \
 		$(SOURCE_DIR)/realtime.c \
 		$(GRAPHIC_DIR)/port/rit128x96x4.c \
+		$(GRAPHIC_DIR)/graphicButton.c \
+		$(GRAPHIC_DIR)/graphicObjects.c \
+		$(GRAPHIC_DIR)/graphicTextBox.c \
+		$(GRAPHIC_DIR)/renderGraphics.c \
+		$(GRAPHIC_DIR)/runGraphics.c \
+		$(COMM_DIR)/comTask.c \
 		$(ETHERNET_DIR)/cgi/io.c \
 		$(ETHERNET_DIR)/cgi/cgifuncs.c \
 		$(ETHERNET_DIR)/httpd/httpd.c \

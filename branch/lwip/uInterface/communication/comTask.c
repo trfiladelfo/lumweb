@@ -16,6 +16,7 @@
  * GPV v3  (c) 2009
  *
  */
+#include <stdio.h>
 
 /* queue includes. */
 #include "FreeRTOS.h"
@@ -27,9 +28,9 @@
 
 /* Include Queue staff */
 #include "comTask.h"
-#include "GraphicsLibrary/graphicObjects.h"
-#include "webserver/httpTask.h"
-#include "fs.h"
+#include "../taskConfig.h"
+#include "../queueConfig.h"
+#include "../uart/uartstdio.h"
 
 /* TODO only testvalues */
 int day_hour = 10;
@@ -37,82 +38,60 @@ int day_minute = 30;
 int night_hour = 23;
 int night_minute = 15;
 
-xCOMMessage xMessage;
+xComMessage xMessage;
 
-void vComTask(void *pvParameters)
-{
+void vComTask(void *pvParameters) {
 	char buffer[100];
 
-	for (;;)
-	{
+	for (;;) {
 		/* Wait for a message to arrive */
-		if (xQueueReceive( xCOMQueue, &xMessage, ( portTickType ) 100 )
-				== pdTRUE && xMessage.dataSouce == DATA)
-		{
+		if (xQueueReceive( xComQueue, &xMessage, ( portTickType ) 100 )
+				== pdTRUE && xMessage.dataSouce == DATA) {
 			xMessage.errorDesc = NULL;
 
-			if (xMessage.cmd == GET)
-			{
+			if (xMessage.cmd == GET) {
 				xMessage.value = -999;
 
-				if (strcmp(xMessage.item, "day_hour") == 0)
-				{
+				if (strcmp(xMessage.item, "day_hour") == 0) {
 					xMessage.value = day_hour;
-				}
-				else if (strcmp(xMessage.item, "day_minute") == 0)
-				{
+				} else if (strcmp(xMessage.item, "day_minute") == 0) {
 					xMessage.value = day_minute;
-				}
-				else if (strcmp(xMessage.item, "night_hour") == 0)
-				{
+				} else if (strcmp(xMessage.item, "night_hour") == 0) {
 					xMessage.value = night_hour;
-				}
-				else if (strcmp(xMessage.item, "night_minute") == 0)
-				{
+				} else if (strcmp(xMessage.item, "night_minute") == 0) {
 					xMessage.value = night_minute;
-				}
-				else
-				{
+				} else {
 					sprintf(xMessage.errorDesc, "\"ERROR: %s\"", xMessage.item);
 				}
 
+				printf("COMTASK: Sende wert zurueck (%s, %d)\n", xMessage.item,
+						xMessage.value);
 				xQueueSend(xMessage.from, &xMessage, (portTickType) 0);
+				vTaskResume(xMessage.taskToResume);
 
-				//vSendDebugUART("Daten gesendet");
+			} else if (xMessage.cmd == SET) {
 
-			}
-			else if (xMessage.cmd == SET)
-			{
-				vSendDebug("Daten gespeichert");
-				if (strcmp(xMessage.item, "day_hour") == 0)
-				{
+				if (strcmp(xMessage.item, "day_hour") == 0) {
 					day_hour = xMessage.value;
-				}
-				else if (strcmp(xMessage.item, "day_minute") == 0)
-				{
+				} else if (strcmp(xMessage.item, "day_minute") == 0) {
 					day_minute = xMessage.value;
-				}
-				else if (strcmp(xMessage.item, "night_hour") == 0)
-				{
+				} else if (strcmp(xMessage.item, "night_hour") == 0) {
 					night_hour = xMessage.value;
-				}
-				else if (strcmp(xMessage.item, "night_minute") == 0)
-				{
+				} else if (strcmp(xMessage.item, "night_minute") == 0) {
 					night_minute = xMessage.value;
 				} else {
 					sprintf(buffer, "FAIL: %s", xMessage.item);
-					vSendDebug(buffer);
+					printf("COMTASK: %s\n", buffer);
 				}
+					printf("COMTASK: Daten gespeichert (%s = %d)\n", xMessage.item,
+							xMessage.value);
 
-				if(xMessage.freeItem == pdTRUE){
+				if (xMessage.freeItem == pdTRUE) {
 					vPortFree(xMessage.item);
 				}
-			}
-
-			if (xMessage.taskToResume != NULL)
-			{
 				vTaskResume(xMessage.taskToResume);
 			}
+
 		}
 
 		// send can bus message */

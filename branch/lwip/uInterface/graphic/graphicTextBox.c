@@ -5,19 +5,20 @@
  *      Author: anzinger
  */
 
-#include "string.h"
+#include <string.h>
 #include "graphicObjects.h"
-#include "graphicTextbox.h"
+#include "graphicTextBox.h"
 #include "renderGraphics.h"
 #include "rit128x96x4.h"
 
-#include "DebugTask/debugTask.h" /* include the debugging task */
-#include "ComTask/comTask.h"
+#include "communication/comTask.h"
+#include "../queueConfig.h"
+#include "../taskConfig.h"
 
 tBoolean overflowTop, overflowBottom;
 tBoolean offsetChanged = false;
 
-xCOMMessage xMessage;
+xComMessage xMessage;
 
 /**
  * Draws a simple TextBox with Labelimage
@@ -35,9 +36,11 @@ pgoTextBox goNewTextBox(int size, int left, int top, char *commTaskLink) {
 	txt->commTaskLink = commTaskLink;
 
 	// get the Value for the Box
+	printf("TEXTBOX: hole wert fuer Textbox (%s)\n", commTaskLink);
 	txt->value = iTextBoxGetValue(commTaskLink);
 
 	// insert the Box into the Display Queue
+	printf("TEXTBOX: Fuege Textbox ein\n");
 	goInsertTextBox(txt);
 
 	// If no Box is Selected (= if it is the first) set the Box activated
@@ -53,8 +56,9 @@ pgoTextBox goNewTextBox(int size, int left, int top, char *commTaskLink) {
  * Draws one TextBox to the Screen
  */
 void goDrawTextBox(pgoTextBox txt) {
-	unsigned char buffer[32];
+	unsigned char buffer[16];
 	unsigned int height, width;
+	char color = 0x0A;
 	const unsigned char *border = pucTextboxNormal;
 
 	if (textBoxListSelected->top + offset < 0) {
@@ -77,20 +81,23 @@ void goDrawTextBox(pgoTextBox txt) {
 	} else {
 		if (textBoxListSelected == txt) {
 			border = pucTextboxSelected;
+			color = 0x0F;
 		}
 
 		if (offsetChanged == true) {
 			RIT128x96x4StringDraw("             ", txt->left, txt->top + 1
-					+ offset, 0xF);
+					+ offset, 0x0);
 		}
 		RIT128x96x4StringDraw(txt->commTaskLink, txt->left, txt->top + 1
 				+ offset, 0xF);
-		goDrawBorder(OBJECT_HEIGHT, ((txt->size * (CHAR_WIDTH + 1)) + 2),
-				txt->left + 75, txt->top + offset, border);
+		//goDrawBorder(OBJECT_HEIGHT, ((txt->size * (CHAR_WIDTH + 1)) + 2),
+		//		txt->left + 75, txt->top + offset, border);
 
 		sprintf(buffer, "%d", txt->value);
+		RIT128x96x4StringDraw("          ", txt->left + 77, txt->top + 1
+				+ offset, 0x0);
 		RIT128x96x4StringDraw(buffer, txt->left + 77, txt->top + 1 + offset,
-				0xF);
+				color);
 	}
 }
 
@@ -190,20 +197,23 @@ void vTextBoxDecrement(void* pvParam) {
 int iTextBoxGetValue(char *nameOfValue) {
 	xMessage.item = nameOfValue;
 	xMessage.cmd = GET;
-	xMessage.from = xGraphCommunicationQueue;
+	xMessage.from = xGraphQueue;
 	xMessage.dataSouce = DATA;
 	xMessage.freeItem = pdFALSE;
-	xMessage.taskToResume = xGraphicObjectsTaskHandler;
+	xMessage.taskToResume = xGraphTaskHandle;
 
-	xQueueSend(xCOMQueue, &xMessage, (portTickType) 0);
+	xQueueSend(xComQueue, &xMessage, (portTickType) 0);
+
+	vTaskSuspend(xMessage.taskToResume);
 
 	if (xQueueReceive(xMessage.from, &xMessage, (portTickType) 100)) {
 		if (xMessage.errorDesc != NULL) {
-			vSendDebug(xMessage.errorDesc);
+			printf("TEXTBOX: %s", xMessage.errorDesc);
 		} else {
 			return xMessage.value;
 		}
 	} else {
+		printf("TEXTBOX: %s - use default wert\n", xMessage.item);
 		return -999;
 	}
 }
@@ -220,11 +230,12 @@ void vTextBoxSetValues(void) {
 		xMessage.dataSouce = DATA;
 		xMessage.freeItem = pdFALSE;
 		xMessage.from = xGraphQueue;
-		xMessage.taskToResume = NULL;
+		xMessage.taskToResume = xGraphTaskHandle;
 
-		xQueueSend(xCOMQueue, &xMessage, (portTickType) 0);
+		printf("TEXTBOX: Speichere Wert (%s = %d)\n", xMessage.item, xMessage.value);
+		xQueueSend(xComQueue, &xMessage, (portTickType) 0);
 
-		//vTaskSuspend(xGraphicObjectsTaskHandler);
+		vTaskSuspend(xGraphTaskHandle);
 
 		akt = akt->next;
 	}
@@ -234,7 +245,6 @@ void vTextBoxSetValues(void) {
  * This Function refreshes all the Values from the Textboxes
  */
 void vTextBoxGetValues(void) {
-	xGraphCommunication xGraphicMessage;
 	pgoTextBox akt = textBoxListRoot;
 	while (akt != NULL) {
 		akt->value = iTextBoxGetValue(akt->commTaskLink);

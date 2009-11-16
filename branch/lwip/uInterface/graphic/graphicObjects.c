@@ -9,10 +9,6 @@
  */
 
 /*
- * graphicObjects.c
- *
- *  Created on: 23.09.2009
- *      Author: anzinger
  *
  * This Libary is used to draw the Graphic Objects to different Display Types.
  *
@@ -24,8 +20,11 @@
 //#include <string.h>
 
 #include "graphicObjects.h"
-#include "graphicTextbox.h"
+#include "graphicTextBox.h"
 #include "graphicButton.h"
+
+#include "../taskConfig.h"
+#include "../queueConfig.h"
 
 #include "hw_memmap.h"
 #include "hw_types.h"
@@ -39,7 +38,6 @@
 
 #include "startScreenImage.h"
 
-xTaskHandle xGraphicTaskHandler = NULL;
 portTickType xTicksLast = 0;
 
 int top = 0;
@@ -57,6 +55,7 @@ char isAlreadyInitilized = 0;
  */
 void goInit() {
 	if (!isAlreadyInitilized) {
+		printf("Initialisiere Graphic...\n");
 		// Configure UP | DOWN | LEFT | RIGHT
 		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
 		GPIOPadConfigSet(GPIO_PORTE_BASE, (UP | DOWN | RIGHT | LEFT),
@@ -77,8 +76,8 @@ void goInit() {
 		GPIOIntTypeSet(GPIO_PORTE_BASE, SELECT, GPIO_FALLING_EDGE);
 		GPIOPinIntEnable(GPIO_PORTF_BASE, SELECT);
 
-		xGraphCommandQueue = xQueueCreate(5, sizeof(xGraphCommandMessage));
-		xGraphCommunicationQueue = xQueueCreate(5, sizeof(xGraphCommunication));
+		xGraphCommandQueue = xQueueCreate(GRAPH_COMMAND_QUEUE_SIZE,
+				sizeof(xGraphCommandMessage));
 
 		RIT128x96x4Init(1000000);
 
@@ -93,11 +92,13 @@ void goInit() {
 /*
  *
  */
-void goObjectsListener(xTaskHandle handler) {
+void goObjectsListener(void) {
 	xGraphCommandMessage xCommMessage;
 	xGraphMessage xMessage;
 
 	portTickType delay;
+
+	printf("Starte Graphic Listener...\n");
 
 	RIT128x96x4Clear();
 	RIT128x96x4ImageDraw(g_pucStartScreenImage, (DISPLAY_WIDTH
@@ -108,9 +109,7 @@ void goObjectsListener(xTaskHandle handler) {
 	delay = xTaskGetTickCount();
 	while (delay + 1000 > xTaskGetTickCount())
 		;
-
 	RIT128x96x4Clear();
-	xGraphicObjectsTaskHandler = handler;
 
 	if (buttonSelected == NULL) {
 		buttonSelected = buttonListRoot;
@@ -126,7 +125,7 @@ void goObjectsListener(xTaskHandle handler) {
 	goDrawTextBoxes();
 
 	RIT128x96x4StringDraw("", 0, 100, 0x0);
-	vTaskSuspend(xGraphicObjectsTaskHandler);
+	vTaskSuspend(xGraphTaskHandle);
 
 	while (1) {
 		/* Wait for a message to arrive */
@@ -157,7 +156,7 @@ void goObjectsListener(xTaskHandle handler) {
 			RIT128x96x4StringDraw(xMessage.msg, 10, 85, 10);
 		}
 
-		vTaskSuspend(xGraphicObjectsTaskHandler);
+		vTaskSuspend(xGraphTaskHandle);
 
 	}
 }
@@ -232,10 +231,11 @@ void goPortEIntHandler(void) {
 
 		if (stat == UP || stat == DOWN || stat == LEFT || stat == RIGHT) {
 			xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
-			xTaskResumeFromISR(xGraphicObjectsTaskHandler);
+			xTaskResumeFromISR(xGraphTaskHandle);
 		}
 
-		GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0));
+		GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTF_BASE,
+				GPIO_PIN_0));
 	}
 	GPIOPinIntClear(GPIO_PORTE_BASE, (UP | DOWN | LEFT | RIGHT));
 }
@@ -251,8 +251,9 @@ void goPortFIntHandler(void) {
 		if (GPIOPinIntStatus(GPIO_PORTF_BASE, true) == SELECT) {
 			xCmdMessage.key = BUTTON_SELECT;
 			xQueueSendFromISR(xGraphCommandQueue, &xCmdMessage, &xHigherPriorityTaskWoken);
-			xTaskResumeFromISR(xGraphicObjectsTaskHandler);
-			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0));
+			xTaskResumeFromISR(xGraphTaskHandle);
+			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, !GPIOPinRead(
+					GPIO_PORTF_BASE, GPIO_PIN_0));
 		}
 	}
 
@@ -261,5 +262,5 @@ void goPortFIntHandler(void) {
 
 void goDisplaySleep(void) {
 	RIT128x96x4Clear();
-	vTaskSuspend(xGraphicTaskHandler);
+	vTaskSuspend(xGraphTaskHandle);
 }

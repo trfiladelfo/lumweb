@@ -27,6 +27,7 @@
 #include "realtime.h"
 #include "communication/comTask.h"
 #include "ethernet/LWIPStack.h"
+#include "graphic/runGraphics.h"
 
 /* Globals */
 extern int __HEAP_START; // used for _sbrk defined in standalone.ld
@@ -51,21 +52,23 @@ int main(void) {
 	// Tasks
 	xTaskCreate( vSDcardTask, SDCARD_TASK_NAME, SDCARD_STACK_SIZE, NULL, SDCARD_TASK_PRIORITY, &xSdCardTaskHandle );
 	xTaskCreate( vRealTimeClockTask, TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
+	xTaskCreate( vGraphicObjectsTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
+	xTaskCreate( vComTask, COM_TASK_NAME, COM_STACK_SIZE,  NULL, COM_TASK_PRIORITY, &xComTaskHandle);
 
 	/* Create the lwIP task if running on a processor that includes a MAC and	PHY. */
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		UARTprintf("Initialisiere IP ");
 		ipcfg = pvPortMalloc(sizeof(IP_CONFIG));
-		#if (LWIP_USE_DHCP == 1)
+		/*
 			UARTprintf("mit DHCP\n");
 			ipcfg->IPMode = IPADDR_USE_DHCP;
-		#elif
-			UARTprintf("statisch mit 192.168.20.200\n");
+		*/
+			UARTprintf("statisch\n");
 			ipcfg->IPMode = IPADDR_USE_STATIC;
-			ipcfg->IPAddr = 0xC0A814C8; //192.168.20.200
-			ipcfg->NetMask = 0xffffff00;
-			ipcfg->GWAddr = 0xC0A81401;
-		#endif
+			ipcfg->IPAddr = 0xC0A80078; //192.168.0.120
+			ipcfg->NetMask = 0xfffff800; //255.255.248.0
+			ipcfg->GWAddr = 0xC0A807F5; // 192.168.7.245
+
 		UARTprintf("Starte LWIP ...\n");
 		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, ipcfg, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
 	}
@@ -87,6 +90,7 @@ void vApplicationTickHook(void) {
 void vApplicationStackOverflowHook(xTaskHandle *pxTask,
 		signed portCHAR *pcTaskName) {
 	// Function that is called if there is any StackOverflow
+	printf("Stack Overflow %s", pcTaskName);
 	for (;;)
 		;
 }
