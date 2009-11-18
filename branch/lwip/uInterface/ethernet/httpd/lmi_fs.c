@@ -55,6 +55,7 @@
 
 #define  TEMP_FILE_SIZE		0x4000
 #define  TEMP_FILE				1
+#define	 TEST_HTML			"<html><body><h1>test</h1></body></html>"
 
 extern int http_stats_display(char * pcBuf, int iBufLen);
 extern int Cmd_ls(char * buffer, int BufferSize, char * NewPath);
@@ -74,32 +75,33 @@ fs_open(char *name)
     struct fs_file *ptFile = NULL;
     FRESULT fResult;
     FIL *file;
-    char *path, *buf;
-    int i;
+    char *path;
 
     printf("%s \n", name);
 
     fResult = f_open(file, name+1, FA_READ);
 
-  //  ptFile->data = pvPortMalloc(100);
- //   memset(ptFile->data, '\0', 100);
+    printf("f_open ok \n");
 
     ptFile = mem_malloc(sizeof(struct fs_file));
+    ptFile->data = mem_malloc(strlen(TEST_HTML)+1);
+
+    printf("Mallocs ok \n");
 
 	if(fResult == FR_OK){
-	    ptFile->data = "gelesen";
+	    ptFile->len = strlen(TEST_HTML)+1;
+		MEMCPY(ptFile->data, TEST_HTML, ptFile->len);
 	    ptFile->index = 0;
-	    ptFile->len = sizeof(ptFile->data);
-	    printf("ok: %s \n", ptFile->data);
-	}else{
-			ptFile->data = "404";
 
-	//	    strcpy(ptFile->data, "404");
+	}else
+	{
+		    ptFile->data = "404";
 		    ptFile->index = 0;
-		    ptFile->len = sizeof(ptFile->data);
-		    printf("NOK: %s \n", ptFile->data);
+		    ptFile->len = strlen(ptFile->data);
+
 	}
 	return ptFile;
+
     /*    struct fs_file *tmpFile = NULL;
     UINT usBytesRead;
 
@@ -145,7 +147,7 @@ fs_open(char *name)
 		    //
 				ptFile->len = tmpFile->len;
 				ptFile->index = 0;
-		    memcpy(ptFile->data, tmpFile->data, tmpFile->len);
+				memcpy(ptFile->data, tmpFile->data, tmpFile->len);
 				fs_close(tmpFile);
 		    //
 		    // Fill in statistics.
@@ -193,7 +195,7 @@ fs_open(char *name)
 		    ptFile->data = mem_malloc( TEMP_FILE_SIZE );
 		    if(NULL == ptFile->data)
 		    {
-            mem_free(ptFile);
+				mem_free(ptFile);
 		        return(NULL);
 		    }
 				memset(ptFile->data, '\0', TEMP_FILE_SIZE);
@@ -201,12 +203,12 @@ fs_open(char *name)
 				tmpFile = fs_open("/RTOSstats.head");
 		    if(NULL == tmpFile)
 		    {
-            mem_free(ptFile);
+				mem_free(ptFile);
 		        return(NULL);
 		    }
 		    if(tmpFile->len > TEMP_FILE_SIZE)
 		    {
-            mem_free(ptFile);
+				mem_free(ptFile);
 		        return(NULL);
 		    }
 		    //
@@ -214,7 +216,7 @@ fs_open(char *name)
 		    //
 				ptFile->len = tmpFile->len;
 				ptFile->index = 0;
-		    memcpy(ptFile->data, tmpFile->data, tmpFile->len);
+				memcpy(ptFile->data, tmpFile->data, tmpFile->len);
 				fs_close(tmpFile);
 		    //
 		    // Fill in statistics.
