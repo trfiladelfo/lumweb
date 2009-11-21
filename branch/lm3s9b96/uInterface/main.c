@@ -63,14 +63,14 @@ int main(void) {
 		printf("Initialisiere IP ");
 	    ipcfg = pvPortMalloc(sizeof(IP_CONFIG));
 
-		printf("mit DHCP\n");
-		ipcfg->IPMode = IPADDR_USE_DHCP;
+		/*printf("mit DHCP\n");
+		ipcfg->IPMode = IPADDR_USE_DHCP;*/
 
-		/*printf("statisch\n");
+		printf("statisch\n");
 		ipcfg->IPMode = IPADDR_USE_STATIC;
 		ipcfg->IPAddr = 0xC0A80079; //192.168.0.121
 		ipcfg->NetMask = 0xfffff800;
-		ipcfg->GWAddr = 0xC0A807F5; */
+		ipcfg->GWAddr = 0xC0A807F5;
 		printf("Starte LWIP ...\n");
 		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, ipcfg, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
 	}

@@ -61,7 +61,7 @@ extern void xPortPendSVHandler(void);
 extern void xPortSysTickHandler(void);
 extern void vPortSVCHandler(void);
 extern void Timer0IntHandler(void);
-void ETH0IntHandler(void);
+extern void ETH0IntHandler(void);
 
 //*****************************************************************************
 //
