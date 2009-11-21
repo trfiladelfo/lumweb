@@ -57,6 +57,12 @@ extern int main(void);
 //*****************************************************************************
 static unsigned long pulStack[256];
 
+extern void xPortPendSVHandler(void);
+extern void xPortSysTickHandler(void);
+extern void vPortSVCHandler(void);
+extern void Timer0IntHandler(void);
+void ETH0IntHandler(void);
+
 //*****************************************************************************
 //
 // The vector table.  Note that the proper constructs must be placed on this to
@@ -78,11 +84,11 @@ void (* const g_pfnVectors[])(void) =
     0,                                      // Reserved
     0,                                      // Reserved
     0,                                      // Reserved
-    IntDefaultHandler,                      // SVCall handler
+    vPortSVCHandler,                      // SVCall handler
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
-    IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
+    xPortPendSVHandler,                      // The PendSV handler
+    xPortSysTickHandler,                      // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
     IntDefaultHandler,                      // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
@@ -102,7 +108,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // ADC Sequence 2
     TouchScreenIntHandler,                  // ADC Sequence 3
     IntDefaultHandler,                      // Watchdog timer
-    IntDefaultHandler,                      // Timer 0 subtimer A
+    Timer0IntHandler,                      // Timer 0 subtimer A
     IntDefaultHandler,                      // Timer 0 subtimer B
     IntDefaultHandler,                      // Timer 1 subtimer A
     IntDefaultHandler,                      // Timer 1 subtimer B
@@ -125,7 +131,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // CAN0
     IntDefaultHandler,                      // CAN1
     IntDefaultHandler,                      // CAN2
-    IntDefaultHandler,                      // Ethernet
+    ETH0IntHandler,                      // Ethernet
     IntDefaultHandler,                      // Hibernate
     IntDefaultHandler,                      // USB0
     IntDefaultHandler,                      // PWM Generator 3

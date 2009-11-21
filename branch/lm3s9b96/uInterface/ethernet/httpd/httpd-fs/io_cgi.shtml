@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>I/O Control Demo</title>
+    <script type="text/javascript">
+    <!--
+    function SetFormDefaults()
+    {
+      document.iocontrol.LEDOn.checked = ls;
+    }
+    //-->
+    </script>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body onload="SetFormDefaults()">
+  <!--#FormVars-->
+  <ul class="navbar">
+    <li><a href="/index.html">Home page</a>
+    <li><a href="/family.html">About the Stellaris Family</a>
+    <li><a href="/Logging.html/">Logging</a>
+    <li><a href="/RTOSstats.html">RTOS Statistics</a>
+    <li><a href="/IPstats.html">IP Statistics</a>
+  </ul>
+  <h1 align="center">I/O Control Demo</h1>
+  <h2 align="center"><!--#DateTime--> UTC</h2>
+  <hr size="2" width="100%">
+  <table class="outer">
+    This demonstration shows a method of performing control and status reporting. We use Server Side Include tags to
+    replace text in the page as it is being server from the Stellaris board and standard HTML forms to send data to a CGI handler running on the
+    board. &nbsp;This example does cause the page to be reloaded whenever
+    form data is submitted but it &nbsp;involves less complex HTML to perform the task.
+  </table>
+  <p>
+  <form method="get" action="iocontrol.cgi" name="iocontrol">
+  <table class="listing" align="center" summary="I/O Control">
+    <thead>
+      <tr>
+        <th>Control</th>
+        <th>Current</th>
+        <th>New</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="3"><input name="Update" value="Update Settings" type="submit"></td>
+      </tr>
+    </tfoot>
+    <tbody>
+        <tr>
+          <td>LED State</td>
+          <td><!--#LEDtxt--></td>
+          <td><input name="LEDOn" value="1" type="checkbox"></td>
+        </tr>
+    </tbody>
+  </table>
+  </form>
+  <address>September 2009 by Herbert Jachs.</address>
+  </body>
+</html>
