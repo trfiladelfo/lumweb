@@ -26,7 +26,6 @@
 /* Project Includes */
 #include "realtime.h"
 #include "communication/comTask.h"
-#include "ethernet/LWIPStack.h"
 #if (BOARD == lm3s9b96)
 	#include "graphic/graphicTask.h"
 #endif
@@ -34,10 +33,11 @@
 /* Globals */
 extern int _pvHeapStart; // used for _sbrk defined in standalone.ld
 
+extern LWIPServiceTaskInit();
 /*-------- MAIN ---------------------------------------------*/
 int main(void) {
 	/* Variables */
-	IP_CONFIG * ipcfg;
+//	IP_CONFIG * ipcfg;
 
 	// Setup the Hardware
 	prvSetupHardware();
@@ -52,33 +52,20 @@ int main(void) {
 	xGraphQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xComMessage));
 
 	// Tasks
-	printf("Starte SDCard Task\n");
-	xTaskCreate( vSDcardTask, SDCARD_TASK_NAME, SDCARD_STACK_SIZE, NULL, SDCARD_TASK_PRIORITY, &xSdCardTaskHandle );
 	printf("Starte Realtimeclock Task\n");
 	xTaskCreate( vRealTimeClockTask, TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
 
-#if (BOARD == lm3s9b96)
+/*#if (BOARD == lm3s9b96)
 	printf("Starte Graphic Task\n");
 	xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
-#endif
+#endif */
 	printf("Starte Communication Task\n");
 	xTaskCreate( vComTask, COM_TASK_NAME, COM_STACK_SIZE, NULL, COM_TASK_PRIORITY, &xComTaskHandle);
 
 	/*Create the lwIP task if running on a processor that includes a MAC and	PHY. */
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
-		printf("Initialisiere IP ");
-	    ipcfg = pvPortMalloc(sizeof(IP_CONFIG));
-
-		/*printf("mit DHCP\n");
-		ipcfg->IPMode = IPADDR_USE_DHCP;*/
-
-		printf("statisch\n");
-		ipcfg->IPMode = IPADDR_USE_STATIC;
-		ipcfg->IPAddr = 0xC0A80079; //192.168.0.121
-		ipcfg->NetMask = 0xfffff800;
-		ipcfg->GWAddr = 0xC0A807F5;
 		printf("Starte LWIP ...\n");
-		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, ipcfg, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
+		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
 	}
 
 	/* Start the scheduler. */

@@ -11,7 +11,7 @@ LUMINARY_DRIVER_LIB=$(EXTERNAL)/$(BOARD)/driverlib
 LUMINARY_DRIVER_INC=$(EXTERNAL)/$(BOARD)/inc
 GRAPHICLIB=$(EXTERNAL)/$(BOARD)/grlib
 RTOS_SOURCE_DIR=$(EXTERNAL)/freeRTOS/Source
-LWIP_COMMON_DIR=$(EXTERNAL)/ethernet/lwip131
+LWIP_COMMON_DIR=$(EXTERNAL)/ethernet/lwip-1.3.0
 FATFS_COMMON_DIR=$(EXTERNAL)/fatfs
 
 
@@ -40,6 +40,7 @@ OPTIM=-O0
 CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		-I $(EXTERNAL) \
 		-I $(EXTERNAL)/$(BOARD) \
+		-I ./ \
 		-D GCC_ARMCM3_LM3S102 \
 		-I $(LUMINARY_DRIVER_DIR) \
 		-I $(LUMINARY_DRIVER_LIB) \
@@ -47,7 +48,7 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		-I $(SOURCE_DIR)/ethernet \
 		-I $(LWIP_COMMON_DIR)/src/include \
 		-I $(LWIP_COMMON_DIR)/src/include/ipv4 \
-		-I $(LWIP_COMMON_DIR)/port/LM3S \
+		-I $(LWIP_COMMON_DIR)/ports/stellaris/include \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
 		-D inline= -mthumb -mcpu=cortex-m3 \
@@ -70,47 +71,17 @@ SOURCE= $(SOURCE_DIR)/main.c \
 		$(RTOS_SOURCE_DIR)/tasks.c \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3/port.c \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
-		$(FATFS_COMMON_DIR)/ff.c \
-		$(FATFS_COMMON_DIR)/mmc-ek-lm3s8962.c \
-		$(FATFS_COMMON_DIR)/SDcard.c \
 		$(LUMINARY_DRIVER_LIB)/ustdlib.c \
-		$(LWIP_COMMON_DIR)/src/core/dhcp.c \
-		$(LWIP_COMMON_DIR)/src/core/dns.c \
-		$(LWIP_COMMON_DIR)/port/sys_arch.c \
-		$(LWIP_COMMON_DIR)/src/core/stats.c \
-		$(LWIP_COMMON_DIR)/src/core/netif.c \
-		$(LWIP_COMMON_DIR)/src/core/pbuf.c \
-		$(LWIP_COMMON_DIR)/src/core/ipv4/ip_frag.c \
-		$(LWIP_COMMON_DIR)/src/core/ipv4/autoip.c \
-		$(LWIP_COMMON_DIR)/src/core/ipv4/icmp.c \
-		$(LWIP_COMMON_DIR)/src/core/ipv4/igmp.c \
-		$(LWIP_COMMON_DIR)/src/core/ipv4/inet.c \
-		$(LWIP_COMMON_DIR)/src/core/ipv4/inet_chksum.c \
-		$(LWIP_COMMON_DIR)/src/core/ipv4/ip.c \
-		$(LWIP_COMMON_DIR)/src/core/ipv4/ip_addr.c \
-		$(LWIP_COMMON_DIR)/src/core/udp.c \
-		$(LWIP_COMMON_DIR)/src/core/sntp.c \
-		$(LWIP_COMMON_DIR)/src/core/tcp_out.c \
-		$(LWIP_COMMON_DIR)/src/core/tcp_in.c \
-		$(LWIP_COMMON_DIR)/src/core/tcp.c \
-		$(LWIP_COMMON_DIR)/src/core/init.c \
-		$(LWIP_COMMON_DIR)/src/core/mem.c \
-		$(LWIP_COMMON_DIR)/src/core/raw.c \
-		$(LWIP_COMMON_DIR)/src/core/memp.c \
-		$(LWIP_COMMON_DIR)/src/core/sys.c \
-		$(LWIP_COMMON_DIR)/src/api/tcpip.c \
-		$(LWIP_COMMON_DIR)/src/api/api_msg.c \
-		$(LWIP_COMMON_DIR)/src/api/sockets.c \
-		$(LWIP_COMMON_DIR)/src/api/netbuf.c \
-		$(LWIP_COMMON_DIR)/src/api/api_lib.c \
-		$(LWIP_COMMON_DIR)/src/netif/etharp.c \
-		$(ETHERNET_DIR)/cgi/io.c \
-		$(ETHERNET_DIR)/cgi/cgifuncs.c \
+		$(ETHERNET_DIR)/lwiplib.c \
+		$(ETHERNET_DIR)/enet_lwip.c\
+		$(ETHERNET_DIR)/lmi_fs.c\
 		$(ETHERNET_DIR)/httpd/httpd.c \
-		$(ETHERNET_DIR)/httpd/lmi_fs.c \
-		$(ETHERNET_DIR)/httpd/netbios.c \
-		$(ETHERNET_DIR)/LWIPStack.c \
-		$(ETHERNET_DIR)/ETHIsr.c
+		$(FATFS_COMMON_DIR)/src/ff.c \
+
+#		$(FATFS_COMMON_DIR)/mmc-ek-lm3s8962.c \
+		$(FATFS_COMMON_DIR)/SDcard.c 
+		
+
 
 LIBS = $(LUMINARY_DRIVER_LIB)/gcc/libdriver.a	
 
@@ -120,9 +91,11 @@ SOURCE += \
 		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(LUMINARY_DRIVER_DIR)/touch.c \
 		$(LUMINARY_DRIVER_DIR)/tlv320aic23b.c \
+		$(FATFS_COMMON_DIR)/port/mmc-dk-lm3s9b96.c \
 		$(LUMINARY_DRIVER_DIR)/kitronix320x240x16_ssd2119_8bit.c \
 		$(GRAPHIC_DIR)/graphicTask.c \
 		$(GRAPHIC_DIR)/settings/setip.c
+
 		
 LIBS += $(GRAPHICLIB)/gcc/libgr.a
 
@@ -130,7 +103,8 @@ endif
 
 ifeq (${BOARD}, lm3s8962)
 SOURCE += \
-		$(GRAPHIC_DIR)/port/rit128x96x4.c
+		$(GRAPHIC_DIR)/port/rit128x96x4.c \
+		$(FATFS_COMMON_DIR)/port/mmc-ek-lm3s8962.c 
 endif
 
 

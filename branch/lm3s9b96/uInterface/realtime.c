@@ -9,7 +9,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "realtime.h"
-#include "lwip/sntp.h"
 
 time_t systemtime;
 /*

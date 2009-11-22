@@ -31,7 +31,9 @@ void prvSetupHardware(void)
     GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 	UARTStdioInit(0);
 
-	ETHServiceTaskInit(0);
+
+
+//	ETHServiceTaskInit(0);
 
 	IntMasterEnable();
 }

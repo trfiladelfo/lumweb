@@ -85,20 +85,12 @@
 #include "fs.h"
 
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-#if (HTTP_DEBUG == LWIP_DBG_ON)
-#define INCLUDE_HTTPD_DEBUG INCLUDE_HTTPD_DEBUG
-#else
-#undef INCLUDE_HTTPD_DEBUG
-#endif
-
 #ifdef INCLUDE_HTTPD_DEBUG
-#include "hw_types.h"
-#include <stdio.h>
-// #include "../../../../utils/uartstdio.h"
-#define DEBUG_PRINT printf
+#include "inc/hw_types.h"
+#include "utils/uartstdio.h"
+#define DEBUG_PRINT UARTprintf
 #else
 #define DEBUG_PRINT while(0)((int (*)(char *, ...))0)
 #endif
@@ -128,7 +120,6 @@ const default_filename g_psDefaultFilenames[] = {
 #define NUM_DEFAULT_FILENAMES (sizeof(g_psDefaultFilenames) /                 \
                                sizeof(default_filename))
 
-
 #ifdef DYNAMIC_HTTP_HEADERS
 /* The number of individual strings that comprise the headers sent before each
  * requested file.
@@ -138,7 +129,7 @@ const default_filename g_psDefaultFilenames[] = {
 
 #ifdef INCLUDE_HTTPD_SSI
 const char *g_pcSSIExtensions[] = {
-  ".shtml", ".shtm", ".ssi"
+  ".shtml", ".shtm", ".ssi", ".xml"
 };
 
 #define NUM_SHTML_EXTENSIONS (sizeof(g_pcSSIExtensions) / sizeof(const char *))
@@ -225,11 +216,13 @@ const char *g_psHTTPHeaderStrings[] =
  "Content-type: image/png\r\n\r\n",
  "Content-type: image/jpeg\r\n\r\n",
  "Content-type: image/bmp\r\n\r\n",
+ "Content-type: image/x-icon\r\n\r\n",
  "Content-type: application/octet-stream\r\n\r\n",
  "Content-type: application/x-javascript\r\n\r\n",
  "Content-type: audio/x-pn-realaudio\r\n\r\n",
  "Content-type: text/css\r\n\r\n",
  "Content-type: application/x-shockwave-flash\r\n\r\n",
+ "Content-type: text/xml\r\n\r\n",
  "Content-type: text/plain\r\n\r\n",
  "HTTP/1.0 200 OK\r\n",
  "HTTP/1.0 404 File not found\r\n",
@@ -241,19 +234,21 @@ const char *g_psHTTPHeaderStrings[] =
 #define HTTP_HDR_HTML           0
 #define HTTP_HDR_SSI            1
 #define HTTP_HDR_GIF            2
-#define HTTP_HDR_JPG            3
-#define HTTP_HDR_PNG            4
+#define HTTP_HDR_PNG            3
+#define HTTP_HDR_JPG            4
 #define HTTP_HDR_BMP            5
-#define HTTP_HDR_APP            6
-#define HTTP_HDR_JS             7
-#define HTTP_HDR_RA             8
-#define HTTP_HDR_CSS            9
-#define HTTP_HDR_SWF            10
-#define HTTP_HDR_DEFAULT_TYPE   11
-#define HTTP_HDR_OK             12
-#define HTTP_HDR_NOT_FOUND      13
-#define HTTP_HDR_SERVER         14
-#define DEFAULT_404_HTML        15
+#define HTTP_HDR_ICO            6
+#define HTTP_HDR_APP            7
+#define HTTP_HDR_JS             8
+#define HTTP_HDR_RA             9
+#define HTTP_HDR_CSS            10
+#define HTTP_HDR_SWF            11
+#define HTTP_HDR_XML            12
+#define HTTP_HDR_DEFAULT_TYPE   13
+#define HTTP_HDR_OK             14
+#define HTTP_HDR_NOT_FOUND      15
+#define HTTP_HDR_SERVER         16
+#define DEFAULT_404_HTML        17
 
 tHTTPHeader g_psHTTPHeaders[] =
 {
@@ -266,12 +261,14 @@ tHTTPHeader g_psHTTPHeaders[] =
  { "png",  HTTP_HDR_PNG},
  { "jpg",  HTTP_HDR_JPG},
  { "bmp",  HTTP_HDR_BMP},
+ { "ico",  HTTP_HDR_ICO},
  { "class",HTTP_HDR_APP},
  { "cls",  HTTP_HDR_APP},
  { "js",   HTTP_HDR_JS},
  { "ram",  HTTP_HDR_RA},
  { "css",  HTTP_HDR_CSS},
- { "swf",  HTTP_HDR_SWF}
+ { "swf",  HTTP_HDR_SWF},
+ { "xml",  HTTP_HDR_XML}
 };
 
 #define NUM_HTTP_HEADERS (sizeof(g_psHTTPHeaders) / sizeof(tHTTPHeader))
@@ -310,15 +307,17 @@ close_conn(struct tcp_pcb *pcb, struct http_state *hs)
   tcp_arg(pcb, NULL);
   tcp_sent(pcb, NULL);
   tcp_recv(pcb, NULL);
-  if(hs->handle) {
-    fs_close(hs->handle);
-    hs->handle = NULL;
+  if(hs) {
+    if(hs->handle) {
+      fs_close(hs->handle);
+      hs->handle = NULL;
+    }
+    if(hs->buf)
+    {
+      mem_free(hs->buf);
+    }
+    mem_free(hs);
   }
-  if(hs->buf)
-  {
-    mem_free(hs->buf);
-  }
-  mem_free(hs);
   err = tcp_close(pcb);
   if(err != ERR_OK)
   {
@@ -333,8 +332,6 @@ extract_uri_parameters(struct http_state *hs, char *params)
   char *pair;
   char *equals;
   int loop;
-
-  printf("request: %s", params);
 
   /* If we have no parameters at all, return immediately. */
   if(!params || (params[0] == '\0')) {
@@ -416,7 +413,7 @@ get_tag_insert(struct http_state *hs)
    * we don't have a handler for. Merely echo back the tags with an error
    * marker.
    */
-  snprintf(hs->tag_insert, MAX_TAG_INSERT_LEN + 1,
+  usnprintf(hs->tag_insert, MAX_TAG_INSERT_LEN + 1,
             "<b>***UNKNOWN TAG %s***</b>", hs->tag_name);
   hs->tag_insert_len = strlen(hs->tag_insert);
 }
@@ -441,7 +438,6 @@ get_http_headers(struct http_state *pState, char *pszURI)
     // Ensure that we initialize the loop counter.
     //
     iLoop = 0;
-
 
     //
     //
@@ -473,7 +469,7 @@ get_http_headers(struct http_state *pState, char *pszURI)
         // indicative of a 404 server error whereas all other files require
         // the 200 OK header.
         //
-        if(ustrstr(pszURI, "404") || pszURI == NULL)
+        if(strstr(pszURI, "404"))
         {
             pState->hdrs[0] = g_psHTTPHeaderStrings[HTTP_HDR_NOT_FOUND];
         }
@@ -575,9 +571,14 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
 #ifdef DYNAMIC_HTTP_HEADERS
   u16_t hdrlen, sendlen;
 
+  /* If we were passed a NULL state structure pointer, ignore the call. */
+  if(!hs) {
+      return;
+  }
+
   /* Assume no error until we find otherwise */
   err = ERR_OK;
-	
+
   /* Do we have any more header data to send for this file? */
   if(hs->hdr_index < NUM_FILE_HDR_STRINGS)
   {
@@ -591,7 +592,8 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
           hdrlen = strlen(hs->hdrs[hs->hdr_index]);
 
           /* How much of this can we send? */
-          sendlen = (len < (hdrlen - hs->hdr_pos)) ? len : (hdrlen - hs->hdr_pos);
+          sendlen = (len < (hdrlen - hs->hdr_pos)) ?
+                          len : (hdrlen - hs->hdr_pos);
 
           /* Send this amount of data or as much as we can given memory
            * constraints. */
@@ -601,7 +603,11 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
             if (err == ERR_MEM) {
               sendlen /= 2;
             }
-          } while ((err == ERR_MEM) && (sendlen > 1));
+            else if (err == ERR_OK) {
+              /* Remember that we added some more data to be transmitted. */
+              data_to_send = true;
+            }
+          } while ((err == ERR_MEM) && sendlen);
 
           /* Fix up the header position for the next time round. */
           hs->hdr_pos += sendlen;
@@ -613,10 +619,6 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
               hs->hdr_index++;
               hs->hdr_pos = 0;
           }
-      }
-
-      if (err == ERR_OK) {
-        data_to_send = true;
       }
 
       /* If we get here and there are still header bytes to send, we send
@@ -719,7 +721,7 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
       }
 
       do {
-        DEBUG_PRINT("Sending %d bytes at %d\n", len, __LINE__);
+        DEBUG_PRINT("Sending %d bytes\n", len);
 
         /* If the data is being read from a buffer in RAM, we need to copy it
          * into the PCB. If it's in flash, however, we can avoid the copy since
@@ -765,7 +767,7 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
         }
 
         do {
-          DEBUG_PRINT("Sending %d bytes at %d\n", len, __LINE__);
+          DEBUG_PRINT("Sending %d bytes\n", len);
           err = tcp_write(pcb, hs->file, len, 0);
           if (err == ERR_MEM) {
             len /= 2;
@@ -955,7 +957,7 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
                 }
 
                 do {
-                  DEBUG_PRINT("Sending %d bytes at %d\n", len, __LINE__);
+                  DEBUG_PRINT("Sending %d bytes\n", len);
                   err = tcp_write(pcb, hs->file, len, 0);
                   if (err == ERR_MEM) {
                     len /= 2;
@@ -998,7 +1000,7 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
             }
 
             do {
-              DEBUG_PRINT("Sending %d bytes at %d\n", len, __LINE__);
+              DEBUG_PRINT("Sending %d bytes\n", len);
               err = tcp_write(pcb, hs->file, len, 0);
               if (err == ERR_MEM) {
                 len /= 2;
@@ -1020,7 +1022,7 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
               }
 
               do {
-                DEBUG_PRINT("Sending %d bytes at %d\n", len, __LINE__);
+                DEBUG_PRINT("Sending %d bytes\n", len);
                 /*
                  * Note that we set the copy flag here since we only have a
                  * single tag insert buffer per connection. If we don't do
@@ -1070,7 +1072,7 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
       }
 
       do {
-        DEBUG_PRINT("Sending %d bytes at %d\n", len, __LINE__);
+        DEBUG_PRINT("Sending %d bytes\n", len);
         err = tcp_write(pcb, hs->file, len, 0);
         if (err == ERR_MEM) {
           len /= 2;
@@ -1105,8 +1107,9 @@ http_poll(void *arg, struct tcp_pcb *pcb)
 
   DEBUG_PRINT("http_poll 0x%08x\n", pcb);
 
-
-  if (hs == NULL) {
+  /*  printf("Polll\n");*/
+  if ((hs == NULL) && (pcb->state == ESTABLISHED)) {
+    /*    printf("Null, close\n");*/
     tcp_abort(pcb);
     return ERR_ABRT;
   } else {
@@ -1119,7 +1122,7 @@ http_poll(void *arg, struct tcp_pcb *pcb)
     /* If this connection has a file open, try to send some more data. If
      * it has not yet received a GET request, don't do this since it will
      * cause the connection to close immediately. */
-    if(hs->handle) {
+    if(hs && (hs->handle)) {
       send_data(pcb, hs);
     }
   }
@@ -1136,6 +1139,10 @@ http_sent(void *arg, struct tcp_pcb *pcb, u16_t len)
 
   LWIP_UNUSED_ARG(len);
 
+  if(!arg) {
+    return ERR_OK;
+  }
+
   hs = arg;
 
   hs->retries = 0;
@@ -1143,7 +1150,7 @@ http_sent(void *arg, struct tcp_pcb *pcb, u16_t len)
   /* Temporarily disable send notifications */
   tcp_sent(pcb, NULL);
 
-	send_data(pcb, hs);
+  send_data(pcb, hs);
 
   /* Reenable notifications. */
   tcp_sent(pcb, http_sent);
@@ -1193,7 +1200,7 @@ http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
 
   hs = arg;
 
-  if (err == ERR_OK && p != NULL) {
+  if ((err == ERR_OK) && (p != NULL) && hs) {
 
     /* Inform TCP that we have taken the data. */
     tcp_recved(pcb, p->tot_len);
@@ -1314,7 +1321,7 @@ http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
              */
             hs->tag_check = false;
             for(loop = 0; loop < NUM_SHTML_EXTENSIONS; loop++) {
-              if(strstr(uri, g_pcSSIExtensions[loop])) {
+              if(ustrstr(uri, g_pcSSIExtensions[loop])) {
                 hs->tag_check = true;
                 break;
               }
@@ -1365,7 +1372,7 @@ http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
     }
   }
 
-  if (err == ERR_OK && p == NULL) {
+  if ((err == ERR_OK) && (p == NULL)) {
     close_conn(pcb, hs);
   }
   return ERR_OK;

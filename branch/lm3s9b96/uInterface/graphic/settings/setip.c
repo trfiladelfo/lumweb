@@ -15,7 +15,6 @@
 #include "graphic/settings/settings.h"
 #include "kitronix320x240x16_ssd2119_8bit.h"
 #include "lwip/ip_addr.h"
-#include "ethernet/LWIPStack.h"
 
 // IP Parsen ((addr.addr) & 0xFF), ((addr.addr >> 8) & 0xFF), ((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF)
 // IP Setzten netif_set_ipaddr(struct netif *netif, struct ip_addr *ipaddr)
