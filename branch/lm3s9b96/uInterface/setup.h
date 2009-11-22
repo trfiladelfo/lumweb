@@ -10,6 +10,16 @@
 
 #include "lwip/ip_addr.h"
 
+//*****************************************************************************
+//
+// Interrupt priority definitions.  The top 3 bits of these values are
+// significant with lower values indicating higher priority interrupts.
+//
+//*****************************************************************************
+
+#define SYSTICK_INT_PRIORITY    0x80
+#define ETHERNET_INT_PRIORITY   0xC0
+
 void prvSetupHardware(void);
 
 void

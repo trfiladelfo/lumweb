@@ -54,27 +54,18 @@ tCanvasWidget
 
 void vGraphicTask(void* pvParameters) {
 
-	printf("Starte Graphic Task\n");
+	printf("Initialize Graphic ...\n");
 	tCanvasWidget widget = CanvasStruct(0, 0, g_psPushButtons,
 			&g_sKitronix320x240x16_SSD2119, 0, 24, 320, 166, CANVAS_STYLE_FILL,
 			ClrBlack, 0, 0, 0, 0, 0, 0);
 	tRectangle sRect;
-	//
-	// Initialize the display driver.
-	//
-	Kitronix320x240x16_SSD2119Init();
+
 
 	//
 	// Initialize the graphics context.
 	//
+	printf("Initialize Graphic Context ...\n");
 	GrContextInit(&g_sContext, &g_sKitronix320x240x16_SSD2119);
-
-    //
-    // Initialize the touch screen driver and have it route its messages to the
-    // widget tree.
-    //
-    TouchScreenInit();
-    TouchScreenCallbackSet(WidgetPointerMessage);
 
 	//
 	// Fill the top 24 rows of the screen with blue to create the banner.
@@ -99,7 +90,7 @@ void vGraphicTask(void* pvParameters) {
 	GrStringDrawCentered(&g_sContext, "Luminary Touchinterface", -1,
 			GrContextDpyWidthGet(&g_sContext) / 2, 15, 0);
 
-	printf("Zeichne WIDGET\n");
+	printf("Drawing ROOT Widget ...\n");
 	WidgetAdd(WIDGET_ROOT, (tWidget *) (&g_psPanels));
 
 	//
@@ -110,32 +101,13 @@ void vGraphicTask(void* pvParameters) {
 	//
 	// Loop forever handling widget messages.
 	//
+	printf("Waiting for Touch Interrups ...\n");
 	while (1) {
 		//
 		// Process any messages in the widget message queue.
 		//
 		WidgetMessageQueueProcess();
+		vTaskDelay(1);
 	}
-}
-
-//*****************************************************************************
-//
-// Display an lwIP type IP Address.
-//
-//*****************************************************************************
-void DisplayIPAddress(struct ip_addr addr, unsigned long ulCol,
-		unsigned long ulRow) {
-	char pucBuf[16];
-
-	//
-	// Convert the IP Address into a string.
-	//
-	sprintf(pucBuf, "%d.%d.%d.%d", ((addr.addr) & 0xFF), ((addr.addr >> 8)
-			& 0xFF), ((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF));
-	//
-	// Display the string.
-	//
-	GrContextFontSet(&g_sContext, &g_sFontCmss18b);
-	GrStringDraw(&g_sContext, pucBuf, -1, ulCol, ulRow, true);
 }
 

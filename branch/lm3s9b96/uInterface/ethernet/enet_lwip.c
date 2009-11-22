@@ -24,6 +24,7 @@
 // This is part of revision 4905 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
+#include <stdlib.h>
 
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
@@ -37,7 +38,6 @@
 #include "driverlib/systick.h"
 #include "ethernet/lwiplib.h"
 #include "uart/uartstdio.h"
-#include <stdlib.h>
 #include "grlib/grlib.h"
 #include "ethernet/httpd/httpd.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
@@ -74,14 +74,7 @@
 #define SYSTICKUS               (1000000 / SYSTICKHZ)
 #define SYSTICKNS               (1000000000 / SYSTICKHZ)
 
-//*****************************************************************************
-//
-// Interrupt priority definitions.  The top 3 bits of these values are
-// significant with lower values indicating higher priority interrupts.
-//
-//*****************************************************************************
-#define SYSTICK_INT_PRIORITY    0x80
-#define ETHERNET_INT_PRIORITY   0xC0
+
 
 //*****************************************************************************
 //
@@ -127,88 +120,6 @@ __error__(char *pcFilename, unsigned long ulLine)
 //
 //*****************************************************************************
 void lwIPHostTimerHandler(void) {
-	static unsigned long ulLastIPAddress = 0;
-	static long lStarPos = 0;
-	static tBoolean bIncrementing = true;
-	unsigned long ulIPAddress;
-	tRectangle sRect;
-
-	ulIPAddress = lwIPLocalIPAddrGet();
-
-	//
-	// If IP Address has not yet been assigned, update the display accordingly
-	//
-	if (ulIPAddress == 0) {
-		//
-		// Update status bar on the display.  First remove the previous
-		// asterisk.
-		//
-		GrStringDrawCentered(&g_sContext, "  ", 2, lStarPos + STATUS_X,
-				STATUS_Y, true);
-
-		//
-		// Are we currently moving the asterisk right or left?
-		//
-		if (bIncrementing) {
-			//
-			// Moving right.
-			//
-			lStarPos += ANIM_STEP_SIZE;
-			if (lStarPos >= MAX_STATUS_X) {
-				//
-				// We've reached the right boundary so reverse direction.
-				//
-				lStarPos = MAX_STATUS_X;
-				bIncrementing = false;
-			}
-		} else {
-			//
-			// Moving left.
-			//
-			lStarPos -= ANIM_STEP_SIZE;
-			if (lStarPos < 0) {
-				//
-				// We've reached the left boundary so reverse direction.
-				//
-				lStarPos = 0;
-				bIncrementing = true;
-			}
-		}
-
-		//
-		// Draw the asterisk at the new position.
-		//
-		GrStringDrawCentered(&g_sContext, "*", 2, lStarPos + STATUS_X,
-				STATUS_Y, true);
-	}
-
-	//
-	// Check if IP address has changed, and display if it has.
-	//
-	else if (ulLastIPAddress != ulIPAddress) {
-		ulLastIPAddress = ulIPAddress;
-
-		//
-		// Clear the status area.
-		//
-		sRect.sXMin = STATUS_X - 10;
-		sRect.sYMin = STATUS_Y - 30;
-		sRect.sXMax = MAX_STATUS_X + 10;
-		sRect.sYMax = STATUS_Y + 10;
-		GrContextForegroundSet(&g_sContext, ClrBlack);
-		GrRectFill(&g_sContext, &sRect);
-
-		GrContextForegroundSet(&g_sContext, ClrWhite);
-		GrContextFontSet(&g_sContext, &g_sFontCmss18b);
-		GrStringDraw(&g_sContext, "IP Address:", -1, 60, STATUS_Y - 20, false);
-		GrStringDraw(&g_sContext, "Subnet Mask:", -1, 60, STATUS_Y, false);
-		GrStringDraw(&g_sContext, "Gateway:", -1, 60, STATUS_Y + 20, false);
-		DisplayIPAddress(ulIPAddress, 170, STATUS_Y - 20);
-		ulIPAddress = lwIPLocalNetMaskGet();
-		DisplayIPAddress(ulIPAddress, 170, STATUS_Y);
-		ulIPAddress = lwIPLocalGWAddrGet();
-		DisplayIPAddress(ulIPAddress, 170, STATUS_Y + 20);
-	}
 }
 
 //*****************************************************************************
@@ -216,7 +127,7 @@ void lwIPHostTimerHandler(void) {
 // The interrupt handler for the SysTick interrupt.
 //
 //*****************************************************************************
-void SysTickIntHandler(void) {
+/*void SysTickIntHandler(void) {
 	//
 	// Call the lwIP timer handler.
 	//
@@ -226,41 +137,18 @@ void SysTickIntHandler(void) {
 	// Run the file system tick handler.
 	//
 	fs_tick(SYSTICKMS);
-}
+}*/
 
 //*****************************************************************************
 //
 // This example demonstrates the use of the Ethernet Controller.
 //
 //*****************************************************************************
-
-void LWIPServiceTaskInit(void) {
+void vLWIPServiceTaskInit(void* pvParameters) {
 	unsigned long ulUser0, ulUser1;
 	unsigned char pucMACArray[8];
 
-	UARTprintf("set ip \n");
-
-	//
-	// Enable and Reset the Ethernet Controller.
-	//
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_ETH);
-	SysCtlPeripheralReset(SYSCTL_PERIPH_ETH);
-
-	//
-	// Enable the peripherals
-	//
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-
-	GPIODirModeSet(GPIO_PORTF_BASE, (GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3),
-			GPIO_DIR_MODE_HW);
-	GPIOPadConfigSet(GPIO_PORTF_BASE, (GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3),
-			GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-
-	//
-	// Initialize the file system.
-	//
-	fs_init();
+	printf("Setup LWIP ...\n");
 
 	//
 	// Configure the hardware MAC address for Ethernet Controller filtering of
@@ -272,21 +160,7 @@ void LWIPServiceTaskInit(void) {
 	//
 	FlashUserGet(&ulUser0, &ulUser1);
 	if ((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff)) {
-		//
-		// We should never get here.  This is an error if the MAC address has
-		// not been programmed into the device.  Exit the program.
-		//
-		/*    GrStringDrawCentered(&g_sContext, "MAC Address", -1,
-		 GrContextDpyWidthGet(&g_sContext) / 2,
-		 GrContextDpyHeightGet(&g_sContext) / 2, false);
-		 GrStringDrawCentered(&g_sContext, "Not Programmed!", -1,
-		 GrContextDpyWidthGet(&g_sContext) / 2,
-		 (GrContextDpyHeightGet(&g_sContext) / 2) + 20,
-		 false);
-		 while(1)
-		 {
-		 } */
-		// TODO
+		printf("No MAC-Address programmed\n");
 	}
 
 	//
@@ -301,6 +175,8 @@ void LWIPServiceTaskInit(void) {
 	pucMACArray[4] = ((ulUser1 >> 8) & 0xff);
 	pucMACArray[5] = ((ulUser1 >> 16) & 0xff);
 
+	printf("Set MAC to %02X:%02X:%02X:%02X:%02X:%02X\n", pucMACArray[0], pucMACArray[1], pucMACArray[2], pucMACArray[3], pucMACArray[4], pucMACArray[5]);
+
 	//
 	// Initialze the lwIP library, using DHCP.
 	//
@@ -309,28 +185,20 @@ void LWIPServiceTaskInit(void) {
 
 	// IP Statisch setzen, 192.168.2.201
 	lwIPInit(pucMACArray, 0xC0A802C9, 0xfffff800, 0xC0A807F5, IPADDR_USE_STATIC);
-	UARTprintf("static ip: 192.168.2.201 \n");
+	printf("static ip: 192.168.2.201 \n");
 
 	//
 	// Initialize the sample httpd server.
 	//
+	printf("Initialize HTTPD\n");
 	httpd_init();
-
-	//
-	// Set the interrupt priorities.  We set the SysTick interrupt to a higher
-	// priority than the Ethernet interrupt to ensure that the file system
-	// tick is processed if SysTick occurs while the Ethernet handler is being
-	// processed.  This is very likely since all the TCP/IP and HTTP work is
-	// done in the context of the Ethernet interrupt.
-	//
-	IntPriorityGroupingSet(4);
-	IntPrioritySet(INT_ETH, ETHERNET_INT_PRIORITY);
-	IntPrioritySet(FAULT_SYSTICK, SYSTICK_INT_PRIORITY);
 
 	//
 	// Loop forever.  All the work is done in interrupt handlers.
 	//
+	printf("Waiting for Packets\n");
 	while (1) {
+		vTaskDelay(1);
 	}
 }
 

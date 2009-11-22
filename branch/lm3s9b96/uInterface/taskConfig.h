@@ -14,6 +14,7 @@
 #define LWIP_TASK_NAME		"lwip"
 #define LWIP_TASK_PRIORITY  (configMAX_PRIORITIES - 2)
 #define LWIP_USE_DHCP		1
+extern void vLWIPServiceTaskInit(void* pvParameters);
 xTaskHandle xLwipTaskHandle;
 
 #define GRAPH_STACK_SIZE	4096
@@ -25,12 +26,6 @@ xTaskHandle xGraphTaskHandle;
 #define COM_TASK_NAME		"com"
 #define COM_TASK_PRIORITY  (configMAX_PRIORITIES - 2)
 xTaskHandle xComTaskHandle;
-
-#define SDCARD_STACK_SIZE		128
-#define SDCARD_TASK_NAME		"sdcard"
-#define SDCARD_TASK_PRIORITY  	0
-extern void vSDcardTask( void *pvParameters );
-xTaskHandle xSdCardTaskHandle;
 
 #define TIME_STACK_SIZE		128
 #define TIME_TASK_NAME		"clock"

@@ -26,9 +26,7 @@
 /* Project Includes */
 #include "realtime.h"
 #include "communication/comTask.h"
-#if (BOARD == lm3s9b96)
-	#include "graphic/graphicTask.h"
-#endif
+#include "graphic/graphicTask.h"
 
 /* Globals */
 extern int _pvHeapStart; // used for _sbrk defined in standalone.ld
@@ -37,35 +35,41 @@ extern LWIPServiceTaskInit();
 /*-------- MAIN ---------------------------------------------*/
 int main(void) {
 	/* Variables */
-//	IP_CONFIG * ipcfg;
+	//	IP_CONFIG * ipcfg;
 
 	// Setup the Hardware
 	prvSetupHardware();
 
-	printf("\n\n\nStarte Programm ...\n");
-	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
+	printf(
+			"\n\n\nUniversal Interface by Anzinger Martin and Hahn Florian (c) 2009/10\n\n");
+
+	printf("Starting Firmware ...\n");
 
 	// Queue Definition
 	/* The main Communication between COMM-, GRAPH and HTTPD Task */
+	printf("Initialize Queues ...\n\txComQueue\n");
 	xComQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xComMessage));
+	printf("\txHttpdQueue\n");
 	xHttpdQueue = xQueueCreate(HTTPD_QUEUE_SIZE, sizeof(xComMessage));
+	printf("\txGraphQueue\n");
 	xGraphQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xComMessage));
 
 	// Tasks
-	printf("Starte Realtimeclock Task\n");
+	printf("Starting RealTimeClock ... ");
 	xTaskCreate( vRealTimeClockTask, TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
-
-/*#if (BOARD == lm3s9b96)
-	printf("Starte Graphic Task\n");
-	xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
-#endif */
-	printf("Starte Communication Task\n");
+	printf("ok\n");
+	printf("Starting Communication Task ... ");
 	xTaskCreate( vComTask, COM_TASK_NAME, COM_STACK_SIZE, NULL, COM_TASK_PRIORITY, &xComTaskHandle);
+	printf("ok\n");
+	printf("Starting Graphic Task ... ");
+	xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
+	printf("ok\n");
 
 	/*Create the lwIP task if running on a processor that includes a MAC and	PHY. */
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
-		printf("Starte LWIP ...\n");
-		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
+		printf("Network Interface Available\nStarting LWIP and HTTPD... ");
+		xTaskCreate(vLWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
+		printf("ok\n");
 	}
 
 	/* Start the scheduler. */
@@ -81,6 +85,15 @@ int main(void) {
 /*-------------EXTERN ROTS ROUTINES--------------------------*/
 void vApplicationTickHook(void) {
 	// Function that is called every Schedule Circle
+
+	// Call the lwIP timer handler.
+	//
+	lwIPTimer(xTaskGetTickCount());
+
+	//
+	// Run the file system tick handler.
+	//
+	fs_tick(xTaskGetTickCount());
 }
 
 void vApplicationStackOverflowHook(xTaskHandle *pxTask,
