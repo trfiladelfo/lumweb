@@ -16,7 +16,7 @@
 #include "kitronix320x240x16_ssd2119_8bit.h"
 #include "lwip/ip_addr.h"
 
-// IP Parsen ((addr.addr) & 0xFF), ((addr.addr >> 8) & 0xFF), ((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF)
+/*// IP Parsen ((addr.addr) & 0xFF), ((addr.addr >> 8) & 0xFF), ((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF)
 // IP Setzten netif_set_ipaddr(struct netif *netif, struct ip_addr *ipaddr)
 long ip[4];
 void updateIp1(tWidget *widget, long lValue);
@@ -62,10 +62,10 @@ CanvasStruct(0, 0, &g_sIntroduction,
 		&g_sKitronix320x240x16_SSD2119, 0, 30, 320, 166, CANVAS_STYLE_FILL,
 		ClrBlack, 0, 0, 0, 0, 0, 0)
 
-};
+}; */
 
 void setIP(tWidget *pWidget) {
-
+/*
 	//
 	// Remove the current panel.
 	//
@@ -79,13 +79,13 @@ void setIP(tWidget *pWidget) {
 	//
 	// Issue the initial paint request to the widgets.
 	//
-	WidgetPaint(WIDGET_ROOT);
+	WidgetPaint(WIDGET_ROOT);*/
 	printf("Setze IP aufgerufen\n");
 
 }
 
 void setGW(tWidget *pWidget) {
-	//
+/*	//
 	// Remove the current panel.
 	//
 	WidgetRemove(pWidget);
@@ -98,12 +98,12 @@ void setGW(tWidget *pWidget) {
 	//
 	// Issue the initial paint request to the widgets.
 	//
-	WidgetPaint(WIDGET_ROOT);
+	WidgetPaint(WIDGET_ROOT); */
 	printf("Setze GW aufgerufen\n");
 }
 
 void setNETMASK(tWidget *pWidget) {
-	//
+/*	//
 	// Remove the current panel.
 	//
 	WidgetRemove(pWidget);
@@ -116,10 +116,10 @@ void setNETMASK(tWidget *pWidget) {
 	//
 	// Issue the initial paint request to the widgets.
 	//
-	WidgetPaint(WIDGET_ROOT);
+	WidgetPaint(WIDGET_ROOT); */
 	printf("Setze NETMASK aufgerufen\n");
 }
-
+/*
 void SetIPAddress(void* target(void)) {
 	target();
 }
@@ -146,4 +146,4 @@ void updateIP(long lValue, int pos) {
 		SliderTextSet(&g_psSliders[pos], pcSliderText);
 		WidgetPaint((tWidget *) &g_psSliders[pos]);
 	}
-}
+} */
