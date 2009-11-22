@@ -27,6 +27,9 @@
 #include "realtime.h"
 #include "communication/comTask.h"
 #include "ethernet/LWIPStack.h"
+#if (BOARD == lm3s9b96)
+	#include "graphic/graphicTask.h"
+#endif
 
 /* Globals */
 extern int _pvHeapStart; // used for _sbrk defined in standalone.ld
@@ -53,8 +56,11 @@ int main(void) {
 	xTaskCreate( vSDcardTask, SDCARD_TASK_NAME, SDCARD_STACK_SIZE, NULL, SDCARD_TASK_PRIORITY, &xSdCardTaskHandle );
 	printf("Starte Realtimeclock Task\n");
 	xTaskCreate( vRealTimeClockTask, TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
-	//printf("Starte Graphic Task\n");
-	//xTaskCreate( vGraphicObjectsTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
+
+#if (BOARD == lm3s9b96)
+	printf("Starte Graphic Task\n");
+	xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
+#endif
 	printf("Starte Communication Task\n");
 	xTaskCreate( vComTask, COM_TASK_NAME, COM_STACK_SIZE, NULL, COM_TASK_PRIORITY, &xComTaskHandle);
 

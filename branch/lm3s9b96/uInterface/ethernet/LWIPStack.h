@@ -43,6 +43,7 @@ typedef struct
 extern void LWIPServiceTaskInit(void *pvParameters);
 void printnetif (struct netif *aktNetif);
 void printip (struct ip_addr *addr);
+struct netif getNetifConfiguration (void);
 
 #if CORTEX_DEBUG
 void stellarisif_debug_print(struct pbuf *p);

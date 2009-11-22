@@ -120,10 +120,11 @@ SOURCE += \
 		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(LUMINARY_DRIVER_DIR)/touch.c \
 		$(LUMINARY_DRIVER_DIR)/tlv320aic23b.c \
-		$(LUMINARY_DRIVER_DIR)/kitronix320x240x16_ssd2119_8bit.c
+		$(LUMINARY_DRIVER_DIR)/kitronix320x240x16_ssd2119_8bit.c \
+		$(GRAPHIC_DIR)/graphicTask.c \
+		$(GRAPHIC_DIR)/settings/setip.c
 		
 LIBS += $(GRAPHICLIB)/gcc/libgr.a
-
 
 endif
 

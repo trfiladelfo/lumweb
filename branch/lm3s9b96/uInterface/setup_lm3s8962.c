@@ -34,27 +34,3 @@ void prvSetupHardware(void)
 
 	IntMasterEnable();
 }
-
-//*****************************************************************************
-//
-// Display an lwIP type IP Address.
-//
-//*****************************************************************************
-void
-DisplayIPAddress(struct ip_addr addr, unsigned long ulCol,
-                 unsigned long ulRow)
-{
-    char pucBuf[16];
-
-    //
-    // Convert the IP Address into a string.
-    //
-    sprintf(pucBuf, "%d.%d.%d.%d", ((addr.addr) & 0xFF), ((addr.addr >> 8) & 0xFF),
-        			((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF));
-    //
-    // Display the string.
-    //
-    RIT128x96x4Init(1000000);
-    RIT128x96x4StringDraw(pucBuf, 10, 10, 0xf);
-}
-

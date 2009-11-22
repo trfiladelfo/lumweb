@@ -877,11 +877,14 @@ void printnetif(struct netif *netif) {
 	//struct dhcp *dhcp = netif->dhcp;
 	printf("Adresskonfiguration:\n\tIP Adresse: ");
 	printaddr(netif->ip_addr);
-	DisplayIPAddress(netif->ip_addr, 170, 100);
 	printf("\n\tSubnet    : ");
 	printaddr(netif->netmask);
 	printf("\n\tGateway   : ");
 	printaddr(netif->gw);
 	printf("\n");
+}
+
+struct netif getNetifConfiguration (void) {
+	return lwip_netif;
 }
 
