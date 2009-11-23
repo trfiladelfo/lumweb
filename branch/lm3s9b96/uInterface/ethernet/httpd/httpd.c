@@ -95,6 +95,11 @@
 #define DEBUG_PRINT while(0)((int (*)(char *, ...))0)
 #endif
 
+#include "uart/uartstdio.h"
+
+
+#define DEBUG_PRINT UARTprintf
+
 #ifndef true
 #define true ((u8_t)1)
 #endif
@@ -128,6 +133,7 @@ const default_filename g_psDefaultFilenames[] = {
 #endif
 
 #ifdef INCLUDE_HTTPD_SSI
+#include "ethernet/httpd/cgi/io.h"
 const char *g_pcSSIExtensions[] = {
   ".shtml", ".shtm", ".ssi", ".xml"
 };
@@ -193,6 +199,7 @@ const char * const g_pcTagLeadOut = "-->";
 /* CGI handler information */
 const tCGI *g_pCGIs = NULL;
 int g_iNumCGIs = 0;
+#include "ethernet/httpd/cgi/io.h"
 #endif /* INCLUDE_HTTPD_CGI */
 
 #ifdef DYNAMIC_HTTP_HEADERS
@@ -396,11 +403,13 @@ get_tag_insert(struct http_state *hs)
 {
   int loop;
 
+  UARTprintf("SSI: %s \n", hs->tag_name);
   if(g_pfnSSIHandler && g_ppcTags && g_iNumTags) {
 
     /* Find this tag in the list we have been provided. */
     for(loop = 0; loop < g_iNumTags; loop++)
     {
+    	UARTprintf("loop: %s \n", g_ppcTags[loop]);
       if(strcmp(hs->tag_name, g_ppcTags[loop]) == 0) {
         hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
                                              MAX_TAG_INSERT_LEN);
@@ -1321,7 +1330,7 @@ http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
              */
             hs->tag_check = false;
             for(loop = 0; loop < NUM_SHTML_EXTENSIONS; loop++) {
-              if(ustrstr(uri, g_pcSSIExtensions[loop])) {
+              if(strstr(uri, g_pcSSIExtensions[loop])) {
                 hs->tag_check = true;
                 break;
               }
@@ -1434,6 +1443,14 @@ httpd_init(void)
   tcp_bind(pcb, IP_ADDR_ANY, 80);
   pcb = tcp_listen(pcb);
   tcp_accept(pcb, http_accept);
+
+  /* init ssi and/or cgi */
+#ifdef INCLUDE_HTTPD_CGI
+  io_init();
+#endif
+#ifdef INCLUDE_HTTPD_SSI
+  io_init();
+#endif
 }
 
 #ifdef INCLUDE_HTTPD_SSI
