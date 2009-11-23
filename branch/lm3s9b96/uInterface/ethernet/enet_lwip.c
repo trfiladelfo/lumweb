@@ -74,8 +74,6 @@
 #define SYSTICKUS               (1000000 / SYSTICKHZ)
 #define SYSTICKNS               (1000000000 / SYSTICKHZ)
 
-
-
 //*****************************************************************************
 //
 // Position and movement granularity for the status indicator shown while
@@ -128,16 +126,16 @@ void lwIPHostTimerHandler(void) {
 //
 //*****************************************************************************
 /*void SysTickIntHandler(void) {
-	//
-	// Call the lwIP timer handler.
-	//
-	lwIPTimer(SYSTICKMS);
+ //
+ // Call the lwIP timer handler.
+ //
+ lwIPTimer(SYSTICKMS);
 
-	//
-	// Run the file system tick handler.
-	//
-	fs_tick(SYSTICKMS);
-}*/
+ //
+ // Run the file system tick handler.
+ //
+ fs_tick(SYSTICKMS);
+ }*/
 
 //*****************************************************************************
 //
@@ -161,6 +159,8 @@ void vLWIPServiceTaskInit(void* pvParameters) {
 	FlashUserGet(&ulUser0, &ulUser1);
 	if ((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff)) {
 		printf("No MAC-Address programmed\n");
+		//FlashUserSet(0x00001a1b, 0x001c1e1f);
+		//FlashUserGet(&ulUser0, &ulUser1);
 	}
 
 	//
@@ -175,7 +175,9 @@ void vLWIPServiceTaskInit(void* pvParameters) {
 	pucMACArray[4] = ((ulUser1 >> 8) & 0xff);
 	pucMACArray[5] = ((ulUser1 >> 16) & 0xff);
 
-	printf("Set MAC to %02X:%02X:%02X:%02X:%02X:%02X\n", pucMACArray[0], pucMACArray[1], pucMACArray[2], pucMACArray[3], pucMACArray[4], pucMACArray[5]);
+	printf("Set MAC to %02X:%02X:%02X:%02X:%02X:%02X\n", pucMACArray[0],
+			pucMACArray[1], pucMACArray[2], pucMACArray[3], pucMACArray[4],
+			pucMACArray[5]);
 
 	//
 	// Initialze the lwIP library, using DHCP.

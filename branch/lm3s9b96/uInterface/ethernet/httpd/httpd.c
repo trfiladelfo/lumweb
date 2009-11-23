@@ -88,17 +88,13 @@
 #include <stdlib.h>
 
 #ifdef INCLUDE_HTTPD_DEBUG
-#include "inc/hw_types.h"
-#include "utils/uartstdio.h"
-#define DEBUG_PRINT UARTprintf
+#define DEBUG_PRINT printf
 #else
 #define DEBUG_PRINT while(0)((int (*)(char *, ...))0)
 #endif
 
 #include "uart/uartstdio.h"
 
-
-#define DEBUG_PRINT UARTprintf
 
 #ifndef true
 #define true ((u8_t)1)
