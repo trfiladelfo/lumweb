@@ -126,6 +126,8 @@ static const tCGI g_psConfigCGIURIs[] =
 //*****************************************************************************
 #define SSI_INDEX_DATEANDTIME  0
 #define SSI_INDEX_NUMBERINPUTFIELD     1
+#define SSI_INDEX_SUBMITINPUTFIELD     2
+
 
 //*****************************************************************************
 //
@@ -139,7 +141,9 @@ static const tCGI g_psConfigCGIURIs[] =
 static const char *g_pcConfigSSITags[] =
 {
     "DateTime",      // SSI_INDEX_DATEANDTIME
-    "NumberInputField"      // SSI_INDEX_NUMBERINPUTFIELD
+    "NumberInputField",      // SSI_INDEX_NUMBERINPUTFIELD
+    "SubmitInputField"      // SSI_INDEX_SUBMITINPUTFIELD
+
 };
 
 //*****************************************************************************
@@ -269,8 +273,12 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
             get_dateandtime(pcInsert, iInsertLen);
             break;
 
-        case SSI_INDEX_GETINPUT:
-        	io_get_input(pcInsert, iInsertLen);
+        case SSI_INDEX_NUMBERINPUTFIELD:
+        	io_get_number_input_field(pcInsert, iInsertLen);
+            break;
+
+        case SSI_INDEX_SUBMITINPUTFIELD:
+        	io_get_submit_input_field(pcInsert, iInsertLen);
             break;
 
         default:
@@ -288,7 +296,7 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
 
 //*****************************************************************************
 //
-// creates input field and buttons
+// creates number input field  and buttons
 //
 //*****************************************************************************
 void
@@ -322,5 +330,19 @@ io_get_number_input_field(char * pcBuf, int iBufLen)
 					httpd_cgi_args);
 		}
 	}
+}
+
+//*****************************************************************************
+//
+// creates number input field  and buttons
+//
+//*****************************************************************************
+void
+io_get_submit_input_field(char * pcBuf, int iBufLen)
+{
+	char *arg = "Submit";
+
+	snprintf(pcBuf, iBufLen,
+			"<input type=\"submit\" name=\"%s\" value=\"%s"" />", arg, arg);
 }
 
