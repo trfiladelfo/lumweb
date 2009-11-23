@@ -76,6 +76,8 @@ SOURCE= $(SOURCE_DIR)/main.c \
 		$(ETHERNET_DIR)/enet_lwip.c\
 		$(ETHERNET_DIR)/lmi_fs.c\
 		$(ETHERNET_DIR)/httpd/httpd.c \
+		$(ETHERNET_DIR)/httpd/cgi/cgifuncs.c \
+		$(ETHERNET_DIR)/httpd/cgi/io.c \
 		$(FATFS_COMMON_DIR)/src/ff.c \
 
 #		$(FATFS_COMMON_DIR)/mmc-ek-lm3s8962.c \
