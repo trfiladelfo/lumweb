@@ -34,9 +34,7 @@ extern "C"
 #endif
 
 void io_init(void);
-void io_set_led(tBoolean bOn);
-void io_get_ledstate(char * pcBuf, int iBufLen);
-int io_is_led_on(void);
+void io_get_number_input_field(char * pcBuf, int iBufLen);
 
 #ifdef __cplusplus
 }

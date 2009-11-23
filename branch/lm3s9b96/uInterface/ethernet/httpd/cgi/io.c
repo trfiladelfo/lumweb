@@ -44,6 +44,15 @@
 #include "../httpd.h"
 #include "cgifuncs.h"
 
+#include "communication/comTask.h"
+#include "queueConfig.h"
+#include "taskConfig.h"
+
+
+// Message for the Comm-Task
+xComMessage xCOM_msg;
+
+
 #ifdef INCLUDE_HTTPD_CGI
 //*****************************************************************************
 //
@@ -116,8 +125,7 @@ static const tCGI g_psConfigCGIURIs[] =
 //
 //*****************************************************************************
 #define SSI_INDEX_DATEANDTIME  0
-#define SSI_INDEX_LEDSTATE     1
-#define SSI_INDEX_FORMVARS     2
+#define SSI_INDEX_NUMBERINPUTFIELD     1
 
 //*****************************************************************************
 //
@@ -131,8 +139,7 @@ static const tCGI g_psConfigCGIURIs[] =
 static const char *g_pcConfigSSITags[] =
 {
     "DateTime",      // SSI_INDEX_DATEANDTIME
-    "LEDtxt",        // SSI_INDEX_LEDSTATE
-    "FormVars"      // SSI_INDEX_FORMVARS
+    "NumberInputField"      // SSI_INDEX_NUMBERINPUTFIELD
 };
 
 //*****************************************************************************
@@ -148,6 +155,7 @@ static const char *g_pcConfigSSITags[] =
 #define JAVASCRIPT_FOOTER                                                     \
     "//--></script>\n"
 #endif
+
 
 //*****************************************************************************
 //
@@ -198,7 +206,7 @@ io_init(void)
 static char *
 ControlCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
 {
-    long lLEDState;
+ /*   long lLEDState;
 
     //
     // Get each of the expected parameters.
@@ -210,7 +218,7 @@ ControlCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
     // so go ahead and make the changes.
     //
     io_set_led((lLEDState == -1) ? false : true);
-
+*/
     //
     // Send back the default response page.
     //
@@ -221,7 +229,7 @@ static char *
 TestCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
 {
     long lLEDState;
-
+/*
     
     // Get each of the expected parameters.
     lLEDState = FindCGIParameter("LEDOn", pcParam, iNumParams);
@@ -234,7 +242,7 @@ TestCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
 	  	  {io_set_led(true);
 		   return("/ledistein.html");  // Send back the response page.
 		  }
-
+*/
 }
 #endif
 
@@ -261,16 +269,8 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
             get_dateandtime(pcInsert, iInsertLen);
             break;
 
-        case SSI_INDEX_LEDSTATE:
-            io_get_ledstate(pcInsert, iInsertLen);
-            break;
-
-        case SSI_INDEX_FORMVARS:
-            snprintf(pcInsert, iInsertLen,
-                      "%sls=%d;\n%s",
-                      JAVASCRIPT_HEADER,
-                      io_is_led_on(),
-                      JAVASCRIPT_FOOTER);
+        case SSI_INDEX_GETINPUT:
+        	io_get_input(pcInsert, iInsertLen);
             break;
 
         default:
@@ -285,59 +285,42 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
 }
 #endif
 
+
 //*****************************************************************************
 //
-// Set the status LED on or off.
+// creates input field and buttons
 //
 //*****************************************************************************
 void
-io_set_led(tBoolean bOn)
+io_get_number_input_field(char * pcBuf, int iBufLen)
 {
-    //
-    // Turn the LED on or off as requested.
-    //
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, bOn ? GPIO_PIN_0 : 0);
+	int value;
+	char *httpd_cgi_args = "day_hour";
+	if (1 == 1)
+	{
+		xCOM_msg.cmd = GET;
+		xCOM_msg.dataSouce = DATA;
+		xCOM_msg.taskToResume = NULL;
+		xCOM_msg.from = xHttpdQueue;
+		xCOM_msg.taskToResume = xLwipTaskHandle;
+		xCOM_msg.freeItem = pdFALSE;
+
+		xCOM_msg.item = httpd_cgi_args;
+		xQueueSend(xComQueue, &xCOM_msg, (portTickType) 0);
+		vTaskSuspend(xLwipTaskHandle);
+
+		if ((xQueueReceive(xCOM_msg.from, &xCOM_msg, ( portTickType ) 100 ))
+				== pdTRUE)
+		{
+			value = xCOM_msg.value;
+			snprintf(
+					pcBuf, iBufLen,
+					"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
+					"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
+					"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
+					httpd_cgi_args, value, httpd_cgi_args, httpd_cgi_args,
+					httpd_cgi_args);
+		}
+	}
 }
 
-//*****************************************************************************
-//
-// Return LED state
-//
-//*****************************************************************************
-void
-io_get_ledstate(char * pcBuf, int iBufLen)
-{
-    //
-    // Get the state of the LED
-    //
-    if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0))
-    {
-        snprintf(pcBuf, iBufLen, "ON");
-    }
-    else
-    {
-        snprintf(pcBuf, iBufLen, "OFF");
-    }
-
-}
-
-//*****************************************************************************
-//
-// Return LED state as an integer, 1 on, 0 off.
-//
-//*****************************************************************************
-int
-io_is_led_on(void)
-{
-    //
-    // Get the state of the LED
-    //
-    if(GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_0))
-    {
-        return(1);
-    }
-    else
-    {
-        return(0);
-    }
-}
