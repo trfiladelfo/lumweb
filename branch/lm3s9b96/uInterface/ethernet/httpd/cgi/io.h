@@ -35,7 +35,7 @@ extern "C"
 
 void io_init(void);
 void io_get_number_input_field(char * pcBuf, int iBufLen);
-void io_get_submit_input_field(char * pcBuf, int iBufLen);
+void io_get_submit_input_button(char * pcBuf, int iBufLen);
 #ifdef __cplusplus
 }
 #endif

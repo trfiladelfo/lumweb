@@ -93,7 +93,6 @@ void vComTask(void *pvParameters) {
 			}
 
 		}
-
 		// send can bus message */
 	}
 }

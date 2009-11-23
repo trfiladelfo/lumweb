@@ -278,7 +278,7 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
             break;
 
         case SSI_INDEX_SUBMITINPUTFIELD:
-        	io_get_submit_input_field(pcInsert, iInsertLen);
+        	io_get_submit_input_button(pcInsert, iInsertLen);
             break;
 
         default:
@@ -296,24 +296,23 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
 
 //*****************************************************************************
 //
-// creates number input field  and buttons
+// creates number input field  and +/- buttons
 //
 //*****************************************************************************
 void
 io_get_number_input_field(char * pcBuf, int iBufLen)
 {
 	int value;
-	char *httpd_cgi_args = "day_hour";
+	char *arg = "day_hour";
 	if (1 == 1)
 	{
 		xCOM_msg.cmd = GET;
 		xCOM_msg.dataSouce = DATA;
-		xCOM_msg.taskToResume = NULL;
 		xCOM_msg.from = xHttpdQueue;
 		xCOM_msg.taskToResume = xLwipTaskHandle;
 		xCOM_msg.freeItem = pdFALSE;
 
-		xCOM_msg.item = httpd_cgi_args;
+		xCOM_msg.item = arg;
 		xQueueSend(xComQueue, &xCOM_msg, (portTickType) 0);
 		vTaskSuspend(xLwipTaskHandle);
 
@@ -326,19 +325,19 @@ io_get_number_input_field(char * pcBuf, int iBufLen)
 					"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
 					"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
 					"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
-					httpd_cgi_args, value, httpd_cgi_args, httpd_cgi_args,
-					httpd_cgi_args);
+					arg, value, arg, arg,
+					arg);
 		}
 	}
 }
 
 //*****************************************************************************
 //
-// creates number input field  and buttons
+// creates submit input button
 //
 //*****************************************************************************
 void
-io_get_submit_input_field(char * pcBuf, int iBufLen)
+io_get_submit_input_button(char * pcBuf, int iBufLen)
 {
 	char *arg = "Submit";
 
