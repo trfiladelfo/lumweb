@@ -46,7 +46,10 @@ void vComTask(void *pvParameters) {
 	for (;;) {
 		/* Wait for a message to arrive */
 		if (xQueueReceive( xComQueue, &xMessage, ( portTickType ) 100 )
-				== pdTRUE && xMessage.dataSouce == DATA) {
+				== pdTRUE) {
+
+			printf("ComTask: Got Item from Queue \n");
+
 			xMessage.errorDesc = NULL;
 
 			if (xMessage.cmd == GET) {
