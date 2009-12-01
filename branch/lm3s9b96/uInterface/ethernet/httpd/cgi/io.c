@@ -59,11 +59,10 @@ xComMessage xCom_msg;
 //! Prototypes for the various CGI handler functions.
 //
 //*****************************************************************************
-static char *ControlCGIHandler(int iIndex, int iNumParams, char *pcParam[],
+static char *SetCGIHandler(int iIndex, int iNumParams, char *pcParam[],
                               char *pcValue[]);
 
-static char *TestCGIHandler(int iIndex, int iNumParams, char *pcParam[],
-                              char *pcValue[]);
+
 
 #endif
 
@@ -97,8 +96,7 @@ extern void get_dateandtime(char * pcBuf, int iBufLen);
 //*****************************************************************************
 static const tCGI g_psConfigCGIURIs[] =
 {
-    { "/iocontrol.cgi", ControlCGIHandler },      // CGI_INDEX_CONTROL
-	{ "/test.cgi", TestCGIHandler },      		  // CGI_INDEX_CONTROL
+    { "/set.cgi", SetCGIHandler },      // CGI_INDEX_CONTROL
 };
 
 //*****************************************************************************
@@ -115,7 +113,7 @@ static const tCGI g_psConfigCGIURIs[] =
 //! to load in response to it being called.
 //
 //*****************************************************************************
-#define DEFAULT_CGI_RESPONSE    "/io_cgi.shtml"
+
 #endif
 
 #ifdef INCLUDE_HTTPD_SSI
@@ -168,22 +166,7 @@ static const char *g_pcConfigSSITags[] =
 //
 //*****************************************************************************
 void
-io_init(void)
-{    
-    //
-    // Enable GPIO bank F to allow control of the LED.
-    //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-
-    //
-    // Configure Port F0 for as an output for the status LED.
-    //
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE,GPIO_PIN_0);
-
-    //
-    // Initialize LED to OFF (0)
-    //
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 1);
+io_init(void){
 
 #ifdef INCLUDE_HTTPD_SSI
 		//
@@ -204,50 +187,22 @@ io_init(void)
 #ifdef INCLUDE_HTTPD_CGI
 //*****************************************************************************
 //
-// This CGI handler is called whenever the web browser requests iocontrol.cgi.
+// This CGI handler is called whenever the web browser requests set.cgi.
+// This CGI parses the GET Parameters and sets the values
 //
 //*****************************************************************************
 static char *
-ControlCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
-{
- /*   long lLEDState;
+SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]){
+	printf("SetCGIHandler: %d Params\n", iNumParams);
 
-    //
-    // Get each of the expected parameters.
-    //
-    lLEDState = FindCGIParameter("LEDOn", pcParam, iNumParams);
-
-    //
-    // We got all the parameters and the values were within the expected ranges
-    // so go ahead and make the changes.
-    //
-    io_set_led((lLEDState == -1) ? false : true);
-*/
-    //
-    // Send back the default response page.
-    //
-    return(DEFAULT_CGI_RESPONSE);
+	if(iNumParams > 0){ //test if set was success full
+	    return "/set_ok.htm";
+	}else{
+		return "/set_nok.htm";
+	}
 }
 
-static char *
-TestCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
-{
-    long lLEDState;
-/*
-    
-    // Get each of the expected parameters.
-    lLEDState = FindCGIParameter("LEDOn", pcParam, iNumParams);
 
-	if 	(lLEDState == -1)  // "LEDOn" nicht gefunden
-	      {io_set_led(false);
-		   return("/ledistaus.html"); // Send back the response page.
-		  }
-	else	 			// "LEDOn" gefunden
-	  	  {io_set_led(true);
-		   return("/ledistein.html");  // Send back the response page.
-		  }
-*/
-}
 #endif
 
 #ifdef INCLUDE_HTTPD_SSI
@@ -262,8 +217,7 @@ TestCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
 //
 //*****************************************************************************
 static int
-SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
-{
+SSIHandler(int iIndex, char *pcInsert, int iInsertLen){
     //
     // Which SSI tag have we been passed?
     //
@@ -300,11 +254,20 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
 //
 //*****************************************************************************
 void
-io_get_number_input_field(char * pcBuf, int iBufLen)
-{
+io_get_number_input_field(char * pcBuf, int iBufLen){
 	int value = 1;
 	char *arg = "day_hour";
-	if (1){
+	snprintf(
+			pcBuf, iBufLen,
+			"<!-- NumberInputField %s %d -->"
+			"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
+			"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
+			"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
+			arg, value, arg, value, arg, arg,
+			arg);
+
+
+/*	if (1){
 		printf("io_get_number_input_field: getting values \n");
 		xCom_msg.cmd = GET;
 		xCom_msg.dataSouce = DATA;
@@ -313,7 +276,9 @@ io_get_number_input_field(char * pcBuf, int iBufLen)
 		xCom_msg.freeItem = pdFALSE;
 
 		xCom_msg.item = arg;
-		xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+
+
+	xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 		printf("io_get_number_input_field: sending req to com task \n");
 
 		vTaskSuspend(xLwipTaskHandle);
@@ -324,7 +289,7 @@ io_get_number_input_field(char * pcBuf, int iBufLen)
 				== pdTRUE){
 			printf("io_get_number_input_field: got values \n");
 
-			//value = xCom_msg.value;
+			value = xCom_msg.value;
 			snprintf(
 					pcBuf, iBufLen,
 					"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
@@ -332,12 +297,12 @@ io_get_number_input_field(char * pcBuf, int iBufLen)
 					"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
 					arg, value, arg, arg,
 					arg);
-		}
-	}else {
-		printf("io_get_number_input_field: error \n");
+		}else {
+			printf("io_get_number_input_field: error \n");
 
-		snprintf(pcBuf, iBufLen, "ERROR: NO DATA");
-	}
+			snprintf(pcBuf, iBufLen, "ERROR: NO DATA");
+		}
+	}*/
 }
 
 //*****************************************************************************
@@ -346,11 +311,12 @@ io_get_number_input_field(char * pcBuf, int iBufLen)
 //
 //*****************************************************************************
 void
-io_get_submit_input_button(char * pcBuf, int iBufLen)
-{
+io_get_submit_input_button(char * pcBuf, int iBufLen){
 	char *arg = "Submit";
 
 	snprintf(pcBuf, iBufLen,
-			"<input type=\"submit\" name=\"%s\" value=\"%s"" />", arg, arg);
+			"<!-- SubmitInputField %s -->"
+			"<input type=\"submit\" name=\"%s\" value=\"%s"" />",
+			arg, arg, arg);
 }
 

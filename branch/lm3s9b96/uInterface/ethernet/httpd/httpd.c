@@ -399,13 +399,11 @@ get_tag_insert(struct http_state *hs)
 {
   int loop;
 
-  UARTprintf("SSI: %s \n", hs->tag_name);
   if(g_pfnSSIHandler && g_ppcTags && g_iNumTags) {
 
     /* Find this tag in the list we have been provided. */
     for(loop = 0; loop < g_iNumTags; loop++)
     {
-    	UARTprintf("loop: %s \n", g_ppcTags[loop]);
       if(strcmp(hs->tag_name, g_ppcTags[loop]) == 0) {
         hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
                                              MAX_TAG_INSERT_LEN);

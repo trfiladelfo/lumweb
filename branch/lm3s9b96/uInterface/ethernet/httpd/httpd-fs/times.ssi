@@ -9,8 +9,41 @@
   </head>
   <body>
 
-  <form method="get" action="iocontrol.cgi" name="iocontrol">
-  		<!--#NumberInputField-->
+  <form method="get" action="set.cgi" name="times">
+  		<table>
+  			<tr>
+  		</table>
+  		<table>
+			<tr>
+				<th colspan='2'>Tag</th>
+			</tr>
+			<tr>
+				<td>
+					Stunden   <!--#NumberInputField-->
+
+				 </td>
+				<td>
+					Minuten   <!--#NumberInputField-->
+
+				</td>
+			</tr>
+
+			<tr>
+				<th colspan='2'>Nacht</th>
+			</tr>
+			<tr>
+				<td>
+					Stunden <!--#NumberInputField--> 
+				</td>
+				<td>
+					Minuten <!--#NumberInputField-->
+				</td>
+			</tr>
+
+			<tr>
+			  <td  colspan="2"><!--#SubmitInputField--> </td>
+			</tr>
+		</table>
   </form>
   </body>
 </html>
