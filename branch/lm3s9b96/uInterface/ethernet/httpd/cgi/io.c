@@ -50,7 +50,7 @@
 
 
 // Message for the Comm-Task
-xComMessage xCOM_msg;
+xComMessage xCom_msg;
 
 
 #ifdef INCLUDE_HTTPD_CGI
@@ -302,24 +302,29 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen)
 void
 io_get_number_input_field(char * pcBuf, int iBufLen)
 {
-	int value;
+	int value = 1;
 	char *arg = "day_hour";
-	if (1 == 1)
-	{
-		xCOM_msg.cmd = GET;
-		xCOM_msg.dataSouce = DATA;
-		xCOM_msg.from = xHttpdQueue;
-		xCOM_msg.taskToResume = xLwipTaskHandle;
-		xCOM_msg.freeItem = pdFALSE;
+	if (1){
+		printf("io_get_number_input_field: getting values \n");
+		xCom_msg.cmd = GET;
+		xCom_msg.dataSouce = DATA;
+		xCom_msg.from = xHttpdQueue;
+		xCom_msg.taskToResume = xLwipTaskHandle;
+		xCom_msg.freeItem = pdFALSE;
 
-		xCOM_msg.item = arg;
-		xQueueSend(xComQueue, &xCOM_msg, (portTickType) 0);
+		xCom_msg.item = arg;
+		xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+		printf("io_get_number_input_field: sending req to com task \n");
+
 		vTaskSuspend(xLwipTaskHandle);
+		printf("io_get_number_input_field: suspend lwipTask \n");
 
-		if ((xQueueReceive(xCOM_msg.from, &xCOM_msg, ( portTickType ) 100 ))
-				== pdTRUE)
-		{
-			value = xCOM_msg.value;
+
+		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
+				== pdTRUE){
+			printf("io_get_number_input_field: got values \n");
+
+			//value = xCom_msg.value;
 			snprintf(
 					pcBuf, iBufLen,
 					"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
@@ -328,6 +333,10 @@ io_get_number_input_field(char * pcBuf, int iBufLen)
 					arg, value, arg, arg,
 					arg);
 		}
+	}else {
+		printf("io_get_number_input_field: error \n");
+
+		snprintf(pcBuf, iBufLen, "ERROR: NO DATA");
 	}
 }
 
