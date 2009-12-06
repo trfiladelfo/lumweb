@@ -62,7 +62,7 @@
  * 1. No tag may contain '-' or whitespace characters within the tag name.
  * 2. Whitespace is allowed between the tag leadin "<!--#" and the start of
  *    the tag name and between the tag name and the leadout string "-->".
- * 3. The maximum tag name length is MAX_TAG_NAME_LEN, currently 8 characters.
+ * 3. The maximum tag name length is MAX_TAG_NAME_LEN
  *
  * Notes on CGI usage
  * ------------------
@@ -104,6 +104,9 @@
 #define false ((u8_t)0)
 #endif
 
+#define INCLUDE_HTTPD_SSI_PARAMS
+
+
 typedef struct
 {
     const char *name;
@@ -140,6 +143,9 @@ enum tag_check_state {
     TAG_NONE,       /* Not processing an SSI tag */
     TAG_LEADIN,     /* Tag lead in "<!--#" being processed */
     TAG_FOUND,      /* Tag name being read, looking for lead-out start */
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
+    TAG_PARAM,    /* process parameters */
+#endif
     TAG_LEADOUT,    /* Tag lead out "-->" being processed */
     TAG_SENDING     /* Sending tag replacement string */
 };
@@ -568,6 +574,10 @@ get_http_headers(struct http_state *pState, char *pszURI)
 static void
 send_data(struct tcp_pcb *pcb, struct http_state *hs)
 {
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
+  char param_name[30];
+  int i = 0;
+#endif
   err_t err;
   u16_t len;
   u8_t data_to_send = false;
@@ -857,27 +867,41 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
 
           /* Remove leading whitespace between the tag leading and the first
            * tag name character.
-           */
-          if((hs->tag_index == 0) && ((*hs->parsed == ' ') ||
-             (*hs->parsed == '\t') || (*hs->parsed == '\n') ||
-             (*hs->parsed == '\r')))
-          {
+		   */
+  //        if((hs->tag_index == 0) && ((*hs->parsed == ' ') ||
+  //           (*hs->parsed == '\t') || (*hs->parsed == '\n') ||
+  //           (*hs->parsed == '\r')))
+  //       {
               /* Move on to the next character in the buffer */
+  //            hs->parse_left--;
+  //            hs->parsed++;
+  //            break;
+  //        }
+
+          /* ignore whitespaces, looking param characters */
+          if((*hs->parsed == ' ') || (*hs->parsed == '\t') ||
+             (*hs->parsed == '\n')  || (*hs->parsed == '\r')){
+
               hs->parse_left--;
               hs->parsed++;
+
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
+              if(*(hs->parsed+1) !=  g_pcTagLeadOut[0] && *(hs->parsed+1) != ' ' )
+                hs->tag_state = TAG_PARAM;
+#endif
               break;
+
           }
 
           /* Have we found the end of the tag name? This is signalled by
-           * us finding the first leadout character or whitespace */
-          if((*hs->parsed == g_pcTagLeadOut[0]) ||
-             (*hs->parsed == ' ') || (*hs->parsed == '\t') ||
-             (*hs->parsed == '\n')  || (*hs->parsed == '\r')) {
+           * us finding the first leadout character */
+          if((*hs->parsed == g_pcTagLeadOut[0])) {
 
             if(hs->tag_index == 0) {
               /* We read a zero length tag so ignore it. */
               hs->tag_state = TAG_NONE;
             } else {
+
               /* We read a non-empty tag so go ahead and look for the
                * leadout string.
                */
@@ -906,7 +930,53 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
 
           break;
 
-        /*
+          /* we are looking for parameters */
+
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
+        case TAG_PARAM:
+            /* Move on to the next character in the buffer */
+            /* Have we found the end of the tag name? This is signalled by
+             * us finding the first leadout character */
+            /* Have we found the end of the tag name? This is signalled by
+             * us finding the first leadout character */
+            if((*hs->parsed == g_pcTagLeadOut[0])) {
+
+              if(hs->tag_index == 0) {
+                /* We read a zero length tag so ignore it. */
+                hs->tag_state = TAG_NONE;
+              } else {
+
+            	 param_name[i] = '\0';
+
+            	 printf("SSI param: %s", param_name);
+
+                /* We read a non-empty tag so go ahead and look for the
+                 * leadout string.
+                 */
+                hs->tag_state = TAG_LEADOUT;
+                hs->tag_name_len = hs->tag_index;
+                hs->tag_name[hs->tag_index] = '\0';
+                if(*hs->parsed == g_pcTagLeadOut[0]) {
+                  hs->tag_index = 1;
+                } else {
+                  hs->tag_index = 0;
+                }
+              }
+            }else {
+            	if(*hs->parsed != '0'){
+            		param_name[i] = *hs->parsed;
+            		i++;
+            	}
+            }
+
+            /* Move on to the next character in the buffer */
+            hs->parse_left--;
+            hs->parsed++;
+
+            break;
+
+#endif
+         /*
          * We are looking for the end of the lead-out marker.
          */
         case TAG_LEADOUT:
