@@ -48,6 +48,7 @@
 #include "queueConfig.h"
 #include "taskConfig.h"
 
+#define INCLUDE_HTTPD_SSI_PARAMS
 
 // Message for the Comm-Task
 xComMessage xCom_msg;
@@ -73,7 +74,12 @@ static char *SetCGIHandler(int iIndex, int iNumParams, char *pcParam[],
 //! application's web-based configuration screens.
 //
 //*****************************************************************************
-static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen);
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
+static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen, pSSIParam *params );
+#else
+static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen );
+#endif
+
 #endif
 
 extern void get_dateandtime(char * pcBuf, int iBufLen);
@@ -216,8 +222,15 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]){
 // max size of array: MAX_TAG_INSERT_LEN
 //
 //*****************************************************************************
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
 static int
-SSIHandler(int iIndex, char *pcInsert, int iInsertLen){
+SSIHandler(int iIndex, char *pcInsert, int iInsertLen, pSSIParam *params )
+#else
+static int
+SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
+#endif
+{
+
     //
     // Which SSI tag have we been passed?
     //
@@ -228,11 +241,11 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen){
             break;
 
         case SSI_INDEX_NUMBERINPUTFIELD:
-        	io_get_number_input_field(pcInsert, iInsertLen);
+        	io_get_number_input_field(pcInsert, iInsertLen, params);
             break;
 
         case SSI_INDEX_SUBMITINPUTFIELD:
-        	io_get_submit_input_button(pcInsert, iInsertLen);
+        	io_get_submit_input_button(pcInsert, iInsertLen, params);
             break;
 
         default:
@@ -254,7 +267,7 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen){
 //
 //*****************************************************************************
 void
-io_get_number_input_field(char * pcBuf, int iBufLen){
+io_get_number_input_field(char * pcBuf, int iBufLen,  pSSIParam *params){
 	int value = 1;
 	char *arg = "day_hour";
 	snprintf(
@@ -311,7 +324,7 @@ io_get_number_input_field(char * pcBuf, int iBufLen){
 //
 //*****************************************************************************
 void
-io_get_submit_input_button(char * pcBuf, int iBufLen){
+io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params){
 	char *arg = "Submit";
 
 	snprintf(pcBuf, iBufLen,
@@ -320,3 +333,28 @@ io_get_submit_input_button(char * pcBuf, int iBufLen){
 			arg, arg, arg);
 }
 
+int SSIParamAdd(pSSIParam* root, char* name , char* value){
+	int rc = 0;
+	pSSIParam nParam, tmp = *(root);
+
+	nParam = pvPortMalloc(sizeof(SSIParam));
+
+	nParam->name = pvPortMalloc(strlen(name) + 1);
+	nParam->value = pvPortMalloc(strlen(value) + 1);
+
+	if(nParam != NULL && nParam->name != NULL && nParam->value != NULL){
+
+		strcpy(nParam->name, "TEST");
+		strcpy(nParam->value, "TEST");
+
+		if(*(root) == NULL){
+			*(root) = nParam;
+		}
+		else{
+			while(tmp->next != NULL)
+				tmp = tmp->next;
+			tmp->next = nParam;
+		}
+		printf("SSIParamAdd: added element '%s' \n", nParam->name);
+	}
+}

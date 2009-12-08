@@ -33,12 +33,22 @@ extern "C"
 {
 #endif
 
+typedef struct SSIParam {
+	char *name;
+	char *value;
+	struct SSIParam* next;
+} SSIParam;
+
+typedef SSIParam * pSSIParam;
+
 void io_init(void);
-void io_get_number_input_field(char * pcBuf, int iBufLen);
-void io_get_submit_input_button(char * pcBuf, int iBufLen);
+void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
+void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params);
 #ifdef __cplusplus
 }
 #endif
 
+
+int SSIParamAdd(pSSIParam* root, char* name , char* value);
 
 #endif // __IO_H__

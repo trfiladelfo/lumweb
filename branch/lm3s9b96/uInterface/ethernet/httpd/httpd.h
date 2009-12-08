@@ -11,7 +11,7 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
+ *    derived from this software without specific priorW written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -34,6 +34,8 @@
 
 #ifndef __HTTPD_H__
 #define __HTTPD_H__
+
+#include "ethernet/httpd/cgi/io.h"
 
 void httpd_init(void);
 
@@ -110,7 +112,13 @@ void http_set_cgi_handlers(const tCGI *pCGIs, int iNumHandlers);
  * recognized, for example).
  *
  */
+#define INCLUDE_HTTPD_SSI_PARAMS
+
+#ifdef  INCLUDE_HTTPD_SSI_PARAMS
+typedef int (*tSSIHandler)(int iIndex, char *pcInsert, int iInsertLen, pSSIParam* params);
+#else
 typedef int (*tSSIHandler)(int iIndex, char *pcInsert, int iInsertLen);
+#endif
 
 void http_set_ssi_handler(tSSIHandler pfnSSIHandler,
                           const char **ppcTags, int iNumTags);

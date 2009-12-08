@@ -104,7 +104,6 @@
 #define false ((u8_t)0)
 #endif
 
-#define INCLUDE_HTTPD_SSI_PARAMS
 
 
 typedef struct
@@ -171,6 +170,9 @@ struct http_state {
   char tag_name[MAX_TAG_NAME_LEN + 1]; /* Last tag name extracted */
   char tag_insert[MAX_TAG_INSERT_LEN + 1]; /* Insert string for tag_name */
   enum tag_check_state tag_state; /* State of the tag processor */
+#endif
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
+  pSSIParam ssi_params;
 #endif
 #ifdef INCLUDE_HTTPD_CGI
   char *params[MAX_CGI_PARAMETERS]; /* Params extracted from the request URI */
@@ -411,8 +413,14 @@ get_tag_insert(struct http_state *hs)
     for(loop = 0; loop < g_iNumTags; loop++)
     {
       if(strcmp(hs->tag_name, g_ppcTags[loop]) == 0) {
-        hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
+          hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
+                                             MAX_TAG_INSERT_LEN, &(hs->ssi_params));
+#else
+          hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
                                              MAX_TAG_INSERT_LEN);
+#endif
+
         return;
       }
     }
@@ -577,6 +585,7 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
   char param_name[30];
   int i = 0;
+  hs->ssi_params = NULL;
 #endif
   err_t err;
   u16_t len;
@@ -948,7 +957,9 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
 
             	 param_name[i] = '\0';
 
-            	 printf("SSI param: %s", param_name);
+            	 printf("SSI param: %s\n", param_name);
+
+            	 SSIParamAdd(&(hs->ssi_params), param_name, "");
 
                 /* We read a non-empty tag so go ahead and look for the
                  * leadout string.

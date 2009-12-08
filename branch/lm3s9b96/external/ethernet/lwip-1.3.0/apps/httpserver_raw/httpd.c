@@ -395,6 +395,7 @@ static void
 get_tag_insert(struct http_state *hs)
 {
   int loop;
+  UARTprintf("SSI: %s", hs->tag_name\n));
 
   if(g_pfnSSIHandler && g_ppcTags && g_iNumTags) {
 
