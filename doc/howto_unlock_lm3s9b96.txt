@@ -1,0 +1,7 @@
+1.) LM-Flash starten (build > 800)
+2.) Board auswählen
+3.) Moglichkeiten in Other-Utils zum Entsperren probieren
+4.) Flash-Utilities -> Entire-Flash -> Erase-Flash
+5.) Stromversorgung kappen und wiederherstellen
+6.) Schritt 4 Wiederholen
+7.) board mit neuer Software Flashen
