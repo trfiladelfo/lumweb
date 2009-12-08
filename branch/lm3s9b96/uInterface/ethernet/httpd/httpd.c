@@ -959,8 +959,10 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
 
             	 printf("SSI param: %s\n", param_name);
 
-            	 SSIParamAdd(&(hs->ssi_params), param_name);
-
+            	 if(strlen(param_name) > 0){
+                	 printf("Add SSI param : %s\n", param_name);
+            		 SSIParamAdd(&(hs->ssi_params), param_name);
+            	 }
                 /* We read a non-empty tag so go ahead and look for the
                  * leadout string.
                  */
@@ -974,9 +976,17 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
                 }
               }
             }else {
-            	if(*hs->parsed != '0'){
-            		param_name[i] = *hs->parsed;
-            		i++;
+            	if(*hs->parsed != 0){
+					if(isspace(*hs->parsed)){
+						printf("Add from space SSI param : %s\n", param_name);
+		            	param_name[i] = '\0';
+						SSIParamAdd(&(hs->ssi_params), param_name);
+						param_name[0] = 0;
+						i = 0;
+					}else{
+						param_name[i] = *hs->parsed;
+						i++;
+					}
             	}
             }
 
