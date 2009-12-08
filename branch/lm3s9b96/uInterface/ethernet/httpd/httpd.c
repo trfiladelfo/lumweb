@@ -959,7 +959,7 @@ send_data(struct tcp_pcb *pcb, struct http_state *hs)
 
             	 printf("SSI param: %s\n", param_name);
 
-            	 SSIParamAdd(&(hs->ssi_params), param_name, "");
+            	 SSIParamAdd(&(hs->ssi_params), param_name);
 
                 /* We read a non-empty tag so go ahead and look for the
                  * leadout string.

@@ -261,6 +261,57 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 #endif
 
 
+char* strtrimr(char *pszStr)
+{
+      int   i, j;                               /* Local counters */
+
+      /*-------------------------------------------------*/
+
+      j = i = strlen(pszStr) - 1; /* Calculate the length of the string */
+
+      while (isspace(pszStr[i]) && (i >= 0))
+
+            /* WHILE string ends with a blank */
+            /*1994-01-08/Bac Even if all chars are blanks (= 0) */
+
+            pszStr[ i-- ] = '\0';               /*- Replace blank with '\0' */
+
+      return pszStr;                            /* Return no of replacements */
+}
+
+
+char*  strtriml(char *pszStr)
+{
+      int   i = 0, j;                                 /* Local counters */
+
+      /*-------------------------------------------------*/
+
+      j = strlen(pszStr) - 1; /* Calculate the length of the string */
+
+      while (isspace(pszStr[i]) && (i <= j))
+
+            /* WHILE string starts with a blank */
+
+            i++;                          /*- Count no of leading blanks */
+
+      if (0 < i)                          /* IF leading blanks are found */
+            strcpy(pszStr, &pszStr[i]);   /*- Shift string to the left */
+
+      return pszStr;                          /* Return no of replacements */
+}
+
+
+char* strtrim(char *pszStr)
+{
+      char *ret;
+
+      /*-------------------------------------------------*/
+
+      ret  = strtrimr(pszStr);               /* Remove trailing blanks */
+      ret= strtriml(ret);               /* Remove leading blanks */
+
+      return ret;
+}
 //*****************************************************************************
 //
 // creates number input field  and +/- buttons
@@ -269,15 +320,21 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 void
 io_get_number_input_field(char * pcBuf, int iBufLen,  pSSIParam *params){
 	int value = 1;
-	char *arg = "day_hour";
+	pSSIParam p = NULL;
+	char *id = "INVALID";
+
+	p = SSIParamGet(*(params), "id");
+	if(p != NULL)
+		id = p->value;
+
 	snprintf(
 			pcBuf, iBufLen,
 			"<!-- NumberInputField %s %d -->"
 			"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
 			"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
 			"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
-			arg, value, arg, value, arg, arg,
-			arg);
+			id, value, id, value, id, id,
+			id);
 
 
 /*	if (1){
@@ -333,8 +390,11 @@ io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params){
 			arg, arg, arg);
 }
 
-int SSIParamAdd(pSSIParam* root, char* name , char* value){
+int SSIParamAdd(pSSIParam* root, char* nameValue){
 	int rc = 0;
+	char *value, *name;
+
+
 	pSSIParam nParam, tmp = *(root);
 
 	nParam = pvPortMalloc(sizeof(SSIParam));
@@ -344,8 +404,15 @@ int SSIParamAdd(pSSIParam* root, char* name , char* value){
 
 	if(nParam != NULL && nParam->name != NULL && nParam->value != NULL){
 
-		strcpy(nParam->name, "TEST");
-		strcpy(nParam->value, "TEST");
+		value = strstr(nameValue, "=");
+		value++;
+
+		strncpy(nParam->name, nameValue, (strlen(nameValue)-strlen(value)-1));
+		strcpy(nParam->value, value);
+
+		nParam->name = strtrim(nParam->name);
+		nParam->value = strtrim(nParam->value);
+
 
 		if(*(root) == NULL){
 			*(root) = nParam;
@@ -355,6 +422,21 @@ int SSIParamAdd(pSSIParam* root, char* name , char* value){
 				tmp = tmp->next;
 			tmp->next = nParam;
 		}
-		printf("SSIParamAdd: added element '%s' \n", nParam->name);
+		printf("SSIParamAdd: added element name: '%s' value: '%s' \n", nParam->name, nParam->value);
 	}
+}
+
+pSSIParam SSIParamGet(pSSIParam root, char* name){
+	pSSIParam ret=NULL;
+
+	printf("SSIParamGet: element name: '%s' \n", root->name);
+	while(root != NULL){
+		printf("SSIParamGet: element name: '%s' \n", root->name);
+
+		if(strcmp(root->name, name) == 0)
+			return root;
+		root = root->next;
+	}
+
+	return ret;
 }
