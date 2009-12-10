@@ -1,0 +1,26 @@
+what,kind,bundleId,bundleVersion,description,time
+started,bundle,org.eclipse.ui.workbench,3.5.1.M20090826-0800a,"org.eclipse.ui.workbench",1259148931737
+started,bundle,org.eclipse.ui.workbench.texteditor,3.5.0.v20090603,"org.eclipse.ui.workbench.texteditor",1259148931738
+started,bundle,org.eclipse.update.configurator,3.3.0.v20090312,"org.eclipse.update.configurator",1259148931739
+started,bundle,org.eclipse.update.core,3.2.300.v20090525,"org.eclipse.update.core",1259148931739
+started,bundle,org.eclipse.update.scheduler,3.2.200.v20081127,"org.eclipse.update.scheduler",1259148931740
+started,bundle,com.collabnet.subversion.merge,1.10.0,"com.collabnet.subversion.merge",1259148931740
+started,bundle,org.eclipse.jdt.core,3.5.1.v_972_R35x,"org.eclipse.jdt.core",1259148931740
+started,bundle,org.eclipse.jdt.core.manipulation,1.3.0.v20090603,"org.eclipse.jdt.core.manipulation",1259148931741
+started,bundle,org.eclipse.jdt.ui,3.5.1.r351_v20090821-0800,"org.eclipse.jdt.ui",1259148931743
+started,bundle,org.tigris.subversion.clientadapter,1.6.4.1,"org.tigris.subversion.clientadapter",1259148931743
+started,bundle,org.tigris.subversion.subclipse.core,1.6.5,"org.tigris.subversion.subclipse.core",1259148931743
+started,bundle,org.tigris.subversion.subclipse.mylyn,3.0.0,"org.tigris.subversion.subclipse.mylyn",1259148931743
+started,bundle,org.tigris.subversion.subclipse.ui,1.6.5,"org.tigris.subversion.subclipse.ui",1259148931743
+os,sysinfo,,,"linux",1259148931746
+arch,sysinfo,,,"x86_64",1259148931746
+ws,sysinfo,,,"gtk",1259148931746
+locale,sysinfo,,,"de_AT",1259148931746
+processors,sysinfo,,,"2",1259148931746
+java.runtime.name,sysinfo,,,"Java(TM) SE Runtime Environment",1259148931747
+java.runtime.version,sysinfo,,,"1.6.0_15-b03",1259148931747
+java.specification.name,sysinfo,,,"Java Platform API Specification",1259148931747
+java.specification.vendor,sysinfo,,,"Sun Microsystems Inc.",1259148931747
+java.specification.version,sysinfo,,,"1.6",1259148931747
+java.vendor,sysinfo,,,"Sun Microsystems Inc.",1259148931747
+java.version,sysinfo,,,"1.6.0_15",1259148931747
