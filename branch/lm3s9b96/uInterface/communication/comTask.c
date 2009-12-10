@@ -69,7 +69,7 @@ void vComTask(void *pvParameters) {
 
 				printf("COMTASK: Sende wert zurueck (%s, %d)\n", xMessage.item,
 						xMessage.value);
-				xQueueSend(xMessage.from, &xMessage, (portTickType) 0);
+				xQueueSend(xHttpdQueue, &xMessage, (portTickType) 0);
 				vTaskResume(xMessage.taskToResume);
 
 			} else if (xMessage.cmd == SET) {

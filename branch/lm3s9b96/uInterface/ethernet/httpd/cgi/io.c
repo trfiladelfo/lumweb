@@ -322,22 +322,15 @@ io_get_number_input_field(char * pcBuf, int iBufLen,  pSSIParam *params){
 	int value = 1;
 	pSSIParam p = NULL;
 	char *id = "INVALID";
+	xComMessage ret;
 
 	p = SSIParamGet(*(params), "id");
 	if(p != NULL)
 		id = p->value;
 
-	snprintf(
-			pcBuf, iBufLen,
-			"<!-- NumberInputField %s %d -->"
-			"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
-			"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
-			"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
-			id, value, id, value, id, id,
-			id);
+	SSIParamDeleteAll(params);
 
-
-/*	if (1){
+	if (1){
 		printf("io_get_number_input_field: getting values \n");
 		xCom_msg.cmd = GET;
 		xCom_msg.dataSouce = DATA;
@@ -345,34 +338,34 @@ io_get_number_input_field(char * pcBuf, int iBufLen,  pSSIParam *params){
 		xCom_msg.taskToResume = xLwipTaskHandle;
 		xCom_msg.freeItem = pdFALSE;
 
-		xCom_msg.item = arg;
+		xCom_msg.item = id;
 
 
-	xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+		xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 		printf("io_get_number_input_field: sending req to com task \n");
 
 		vTaskSuspend(xLwipTaskHandle);
 		printf("io_get_number_input_field: suspend lwipTask \n");
 
-
-		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
-				== pdTRUE){
+		if(xQueueReceive(xHttpdQueue, &ret,  ( portTickType ) 0 ) == pdTRUE){
+//		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
+//				== pdTRUE){
+//		if(1){
 			printf("io_get_number_input_field: got values \n");
 
-			value = xCom_msg.value;
+			value = ret.value;
 			snprintf(
 					pcBuf, iBufLen,
 					"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
 					"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
 					"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
-					arg, value, arg, arg,
-					arg);
+					id, value, id, id,
+					id);
 		}else {
 			printf("io_get_number_input_field: error \n");
-
 			snprintf(pcBuf, iBufLen, "ERROR: NO DATA");
 		}
-	}*/
+	}
 }
 
 //*****************************************************************************
@@ -439,4 +432,16 @@ pSSIParam SSIParamGet(pSSIParam root, char* name){
 	}
 
 	return ret;
+}
+
+void SSIParamDeleteAll(pSSIParam* root){
+	pSSIParam p = (*root), del = NULL;
+
+	while(p != NULL){
+		del = p;
+		p = p->next;
+		mem_free(del->name);
+		mem_free(del->value);
+		mem_free(del);
+	}
 }

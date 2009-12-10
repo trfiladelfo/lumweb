@@ -51,4 +51,6 @@ void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params);
 
 int SSIParamAdd(pSSIParam* root, char* nameValue);
 pSSIParam SSIParamGet(pSSIParam root, char* name);
+void SSIParamDeleteAll(pSSIParam* root);
+
 #endif // __IO_H__

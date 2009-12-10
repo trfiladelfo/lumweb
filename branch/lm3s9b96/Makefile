@@ -34,7 +34,7 @@ LDSCRIPT=standalone_$(BOARD).ld
 LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --no-gc-sections
 
 DEBUG=-g
-OPTIM=-O0
+OPTIM=-O3
 
 
 CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
