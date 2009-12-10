@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>I/O Control Demo 2</title>
+    <script type="text/javascript">
+    </script>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+
+  <form method="get" action="set.cgi" name="times">
+  		<table>
+  			<tr>
+  		</table>
+  		<table>
+			<tr>
+				<th colspan='2'>Tag</th>
+			</tr>
+			<tr>
+				<td>
+					Stunden   <!--#NumberInputField id=day_hour-->
+
+				 </td>
+				<td>
+					Minuten   <!--#NumberInputField id=day_minute-->
+
+				</td>
+			</tr>
+
+			<tr>
+				<th colspan='2'>Nacht</th>
+			</tr>
+			<tr>
+				<td>
+					Stunden <!--#NumberInputField id=night_hour param2=2--> 
+				</td>
+				<td>
+					Minuten <!--#NumberInputField id=night_minute param2=test-->
+				</td>
+			</tr>
+	
+			<tr>
+			  <td  colspan="2"><!--#SubmitInputField--> </td>
+			</tr>
+		</table>
+  </form>
+  </body>
+</html>
