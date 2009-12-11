@@ -62,6 +62,9 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(ETHERNET_DIR)/httpd/cgi/io.c \
 		$(ETHERNET_DIR)/LWIPStack.c \
 		$(ETHERNET_DIR)/ETHIsr.c \
+		$(GRAPHIC_DIR)/graphicTask.c \
+		$(GRAPHIC_DIR)/settings/setip.c \
+		$(COMM_DIR)/comTask.c \
 		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(UART_DIR)/uartstdio.c \
 		$(RTOS_SOURCE_DIR)/list.c \
@@ -103,30 +106,10 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(FATFS_COMMON_DIR)/ff.c \
 		$(FATFS_COMMON_DIR)/mmc-dk-lm3s9b96.c \
 		$(FATFS_COMMON_DIR)/SDcard.c \
-		
-		#	$(LUMINARY_DRIVER_DIR)/driverlib/adc.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/can.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/comp.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/cpu.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/epi.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/ethernet.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/flash.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/gpio.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/hibernate.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/i2c.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/i2s.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/interrupt.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/mpu.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/pwm.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/qei.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/ssi.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/sysctl.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/systick.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/timer.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/uart.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/udma.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/usb.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/watchdog.c \
+		$(LUMINARY_DRIVER_DIR)/kitronix320x240x16_ssd2119_8bit.c \
+		$(LUMINARY_DRIVER_DIR)/touch.c \
+		$(LUMINARY_DRIVER_DIR)/sound.c \
+		$(LUMINARY_DRIVER_DIR)/tlv320aic23b.c
 		
 LIBS= $(GRLIB_COMMON_DIR)/gcc/libgr.a $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a 
 

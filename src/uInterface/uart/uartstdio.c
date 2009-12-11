@@ -344,12 +344,7 @@ UARTStdioInit(unsigned long ulPortNum)
 	  //
 	  SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
 	  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-	
-	  //
-	  // Enable processor interrupts.
-	  //
-	  IntMasterEnable();
-	
+
 	  //
 	  // Set GPIO A0 and A1 as UART pins.
 	  //

@@ -33,7 +33,6 @@
 #include "driverlib/gpio.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
-//#include "ethernet/lwiplib.h"
 #include "ethernet/httpd/httpd.h"
 #include "ethernet/httpd/fs.h"
 #include "ethernet/httpd/fsdata.h"
@@ -125,20 +124,20 @@ void fs_init(void) {
 	// Flag and display which file system we are using.
 	//
 
-	UARTprintf("Webserver using");
+	printf("Webserver using");
 
 	if (fresult == FR_OK) {
 		//
 		// Indicate and display that we are using the SD file system.
 		//
 		g_bFatFsEnabled = true;
-		UARTprintf(" SDCard File Systen\n");
+		printf(" SDCard File Systen\n");
 	} else {
 		//
 		// Indicate and display that we are using the internal file system.
 		//
 		g_bFatFsEnabled = false;
-		UARTprintf(" Internal File Systen\n");
+		printf(" Internal File Systen\n");
 	}
 }
 
@@ -185,7 +184,7 @@ fs_open(char *name) {
 	//
 	// Allocate memory for the file system structure.
 	//
-	ptFile = pvPortMalloc(sizeof(struct fs_file));
+	ptFile = (struct fs_file *) pvPortMalloc(sizeof(struct fs_file));
 	if (NULL == ptFile) {
 		return (NULL);
 	}
@@ -202,7 +201,7 @@ fs_open(char *name) {
 		//
 		// Allocate memory for the Fat File system handle.
 		//
-		ptFatFile = pvPortMalloc(sizeof(FIL));
+		ptFatFile = (FIL*) pvPortMalloc(sizeof(FIL));
 		if (NULL == ptFatFile) {
 			vPortFree(ptFile);
 			return (NULL);
@@ -323,7 +322,7 @@ int fs_read(struct fs_file *file, char *buffer, int count) {
 	// Check to see if a Fat File was opened and process it.
 	//
 	if (file->pextension) {
-		unsigned short usBytesRead;
+		UINT usBytesRead;
 		FRESULT fresult;
 
 		//
