@@ -5,6 +5,7 @@ RTOS_SOURCE_DIR=external/freeRTOS/Source
 LWIP_COMMON_DIR=external/ethernet/lwip131
 FATFS_COMMON_DIR=external/fatfs
 GRLIB_COMMON_DIR=external/grlib
+BGET_COMMON_DIR=external/bget
 
 SOURCE_DIR=./uInterface
 ETHERNET_DIR=$(SOURCE_DIR)/ethernet
@@ -20,7 +21,7 @@ OBJCOPY=arm-none-eabi-objcopy
 LDSCRIPT=standalone.ld
 
 # should use --gc-sections but the debugger does not seem to be able to cope with the option.
-LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --no-gc-sections
+LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --gc-sections
 
 DEBUG=-g
 OPTIM=-O5
@@ -63,7 +64,6 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(ETHERNET_DIR)/LWIPStack.c \
 		$(ETHERNET_DIR)/ETHIsr.c \
 		$(GRAPHIC_DIR)/graphicTask.c \
-		$(GRAPHIC_DIR)/settings/setip.c \
 		$(COMM_DIR)/comTask.c \
 		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(UART_DIR)/uartstdio.c \
@@ -110,6 +110,9 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(LUMINARY_DRIVER_DIR)/touch.c \
 		$(LUMINARY_DRIVER_DIR)/sound.c \
 		$(LUMINARY_DRIVER_DIR)/tlv320aic23b.c
+		
+		#	$(ETHERNET_DIR)/httpc/webclient.c \
+		$(ETHERNET_DIR)/httpc/webclient-strings.c \
 		
 LIBS= $(GRLIB_COMMON_DIR)/gcc/libgr.a $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a 
 

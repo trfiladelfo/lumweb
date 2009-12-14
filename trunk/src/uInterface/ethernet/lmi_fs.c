@@ -38,8 +38,6 @@
 #include "ethernet/httpd/fsdata.h"
 #include "fatfs/ff.h"
 #include "fatfs/diskio.h"
-#include "grlib/grlib.h"
-#include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 
 //*****************************************************************************
 //
@@ -62,13 +60,6 @@
 //*****************************************************************************
 static FATFS g_sFatFs;
 static volatile tBoolean g_bFatFsEnabled = false;
-
-//*****************************************************************************
-//
-// The graphics context defined for the application.
-//
-//*****************************************************************************
-extern tContext g_sContext;
 
 //*****************************************************************************
 //

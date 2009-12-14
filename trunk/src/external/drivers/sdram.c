@@ -33,7 +33,7 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
 #include "driverlib/epi.h"
-#include "third_party/bget/bget.h"
+#include "bget/bget.h"
 #include "sdram.h"
 #include "drivers/set_pinout.h"
 
