@@ -156,7 +156,6 @@ extern unsigned long _data;
 extern unsigned long _edata;
 extern unsigned long _bss;
 extern unsigned long _ebss;
-
 //*****************************************************************************
 //
 // This is the code that gets called when the processor first starts execution

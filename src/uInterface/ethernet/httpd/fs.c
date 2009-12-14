@@ -32,7 +32,6 @@
 #include "lwip/def.h"
 #include "fs.h"
 #include "fsdata.h"
-#include "fsdata.c"
 #include <string.h>
 
 /*-----------------------------------------------------------------------------------*/
