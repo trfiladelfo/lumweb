@@ -617,12 +617,14 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			if (!(netif_is_up(&lwip_netif))) {
 				// set link up flag
 				netif_set_up(&lwip_netif);
-				UARTprintf("DHCP Adresse anfordern ...  ");
-				if (dhcp_renew(&lwip_netif) == ERR_OK) {
-					UARTprintf("[ok]\n");
-					printnetif(&lwip_netif);
-				} else {
-					UARTprintf("[fail]\n");
+				if (ipCfg->IPMode == IPADDR_USE_DHCP){
+					UARTprintf("DHCP Adresse anfordern ...  ");
+					if (dhcp_renew(&lwip_netif) == ERR_OK) {
+						UARTprintf("[ok]\n");
+						printnetif(&lwip_netif);
+					} else {
+						UARTprintf("[fail]\n");
+					}
 				}
 			}
 		} else {
