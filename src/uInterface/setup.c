@@ -10,11 +10,12 @@
 #include "hw_sysctl.h"
 #include "sysctl.h"
 #include "gpio.h"
-#include "grlib.h"
-#include "kitronix320x240x16_ssd2119_8bit.h"
+//#include "grlib.h"
+//#include "widget.h"
+//#include "kitronix320x240x16_ssd2119_8bit.h"
 #include "interrupt.h"
 #include "hw_ints.h"
-#include "widget.h"
+
 
 void prvSetupHardware(void) {
 	/* If running on Rev A2 silicon, turn the LDO voltage up to 2.75V.  This is
@@ -31,6 +32,7 @@ void prvSetupHardware(void) {
 
 	UARTStdioInit(0);
 	ETHServiceTaskInit(0);
+	IntMasterEnable();
 
 	//
 	// Set the interrupt priorities.  We set the SysTick interrupt to a higher
@@ -60,5 +62,5 @@ void prvSetupHardware(void) {
 	//
 	fs_init();
 
-	//IntMasterEnable();
+
 }

@@ -555,22 +555,14 @@ int ETHServiceTaskEnableReceive(const unsigned long ulPort) {
 int ETHServiceTaskWaitReady(const unsigned long ulPort) {
 	if ((ulPort < MAX_ETH_PORTS)
 			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED))) {
+		vTaskSuspendAll();
 		// See if Ethernet completed autonegation,
 
 		//while (!(EthernetPHYRead(ETH_BASE, PHY_MR1) & ETH_PHY_LINK_UP))
-		printf("Wait until up: 0x0%X\n", (EthernetPHYRead(ETH_BASE, PHY_MR1)
-				& ETH_PHY_LINK_UP));
-		while (!(PHY_MR1_ANEGC & EthernetPHYRead(ETHBase[0], PHY_MR1))) {
-			/*
-			 * vTaskDelay() does not provide a good method of controlling the frequency
-			 * of a cyclical task as the path taken through the code, as well as other task and
-			 * interrupt activity, will effect the frequency at which vTaskDelay() gets called
-			 * and therefore the time at which the task next executes.
-			 */
-			// The shortest time to wait with respect to other tasks. If you need
-			// immediate reaction, remove this function.
-			vTaskDelay(1);
-		}
+		printf("Wait until up: ... ");
+		while (!(PHY_MR1_ANEGC & EthernetPHYRead(ETHBase[0], PHY_MR1)));
+		printf("ok\n");
+		xTaskResumeAll();
 		return (0);
 	}
 	HWREGBITW(&ETHDevice[ulPort], ETH_ERROR) = 1;

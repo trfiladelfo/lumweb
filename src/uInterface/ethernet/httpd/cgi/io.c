@@ -53,7 +53,6 @@
 // Message for the Comm-Task
 xComMessage xCom_msg;
 
-
 #ifdef INCLUDE_HTTPD_CGI
 //*****************************************************************************
 //
@@ -61,9 +60,7 @@ xComMessage xCom_msg;
 //
 //*****************************************************************************
 static char *SetCGIHandler(int iIndex, int iNumParams, char *pcParam[],
-                              char *pcValue[]);
-
-
+		char *pcValue[]);
 
 #endif
 
@@ -75,7 +72,8 @@ static char *SetCGIHandler(int iIndex, int iNumParams, char *pcParam[],
 //
 //*****************************************************************************
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
-static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen, pSSIParam *params );
+static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen,
+		pSSIParam *params);
 #else
 static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen );
 #endif
@@ -100,10 +98,8 @@ extern void get_dateandtime(char * pcBuf, int iBufLen);
 //! process it.
 //
 //*****************************************************************************
-static const tCGI g_psConfigCGIURIs[] =
-{
-    { "/set.cgi", SetCGIHandler },      // CGI_INDEX_CONTROL
-};
+static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_INDEX_CONTROL
+		};
 
 //*****************************************************************************
 //
@@ -132,7 +128,6 @@ static const tCGI g_psConfigCGIURIs[] =
 #define SSI_INDEX_NUMBERINPUTFIELD     1
 #define SSI_INDEX_SUBMITINPUTFIELD     2
 
-
 //*****************************************************************************
 //
 // This array holds all the strings that are to be recognized as SSI tag
@@ -142,13 +137,11 @@ static const tCGI g_psConfigCGIURIs[] =
 // files that it serves. Max size is MAX_TAG_NAME_LEN
 //
 //*****************************************************************************
-static const char *g_pcConfigSSITags[] =
-{
-    "DateTime",      // SSI_INDEX_DATEANDTIME
-    "NumberInputField",      // SSI_INDEX_NUMBERINPUTFIELD
-    "SubmitInputField"      // SSI_INDEX_SUBMITINPUTFIELD
+static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
+		"NumberInputField", // SSI_INDEX_NUMBERINPUTFIELD
+		"SubmitInputField" // SSI_INDEX_SUBMITINPUTFIELD
 
-};
+		};
 
 //*****************************************************************************
 //
@@ -164,29 +157,26 @@ static const char *g_pcConfigSSITags[] =
     "//--></script>\n"
 #endif
 
-
 //*****************************************************************************
 //
 // Initialize the IO used in this demo
 // 1. STATUS LED on Port F pin 0
 //
 //*****************************************************************************
-void
-io_init(void){
+void io_init(void) {
 
 #ifdef INCLUDE_HTTPD_SSI
-		//
-		// Pass our tag information to the HTTP server.
-		//
-		http_set_ssi_handler(SSIHandler, g_pcConfigSSITags,
-		                     NUM_CONFIG_SSI_TAGS);
+	//
+	// Pass our tag information to the HTTP server.
+	//
+	http_set_ssi_handler(SSIHandler, g_pcConfigSSITags, NUM_CONFIG_SSI_TAGS);
 #endif
 
 #ifdef INCLUDE_HTTPD_CGI
-    //
-    // Pass our CGI handlers to the HTTP server.
-    //
-    http_set_cgi_handlers(g_psConfigCGIURIs, NUM_CONFIG_CGI_URIS);
+	//
+	// Pass our CGI handlers to the HTTP server.
+	//
+	http_set_cgi_handlers(g_psConfigCGIURIs, NUM_CONFIG_CGI_URIS);
 #endif
 }
 
@@ -198,16 +188,15 @@ io_init(void){
 //
 //*****************************************************************************
 static char *
-SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]){
+SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	printf("SetCGIHandler: %d Params\n", iNumParams);
 
-	if(iNumParams > 0){ //test if set was success full
-	    return "/set_ok.htm";
-	}else{
+	if (iNumParams > 0) { //test if set was success full
+		return "/set_ok.htm";
+	} else {
 		return "/set_nok.htm";
 	}
 }
-
 
 #endif
 
@@ -223,114 +212,106 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]){
 //
 //*****************************************************************************
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
-static int
-SSIHandler(int iIndex, char *pcInsert, int iInsertLen, pSSIParam *params )
+static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen,
+		pSSIParam *params)
 #else
 static int
 SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 #endif
 {
 
-    //
-    // Which SSI tag have we been passed?
-    //
-    switch(iIndex)
-    {
-        case SSI_INDEX_DATEANDTIME:
-            get_dateandtime(pcInsert, iInsertLen);
-            break;
+	//
+	// Which SSI tag have we been passed?
+	//
+	switch (iIndex) {
+	case SSI_INDEX_DATEANDTIME:
+		get_dateandtime(pcInsert, iInsertLen);
+		break;
 
-        case SSI_INDEX_NUMBERINPUTFIELD:
-        	io_get_number_input_field(pcInsert, iInsertLen, params);
-            break;
+	case SSI_INDEX_NUMBERINPUTFIELD:
+		io_get_number_input_field(pcInsert, iInsertLen, params);
+		break;
 
-        case SSI_INDEX_SUBMITINPUTFIELD:
-        	io_get_submit_input_button(pcInsert, iInsertLen, params);
-            break;
+	case SSI_INDEX_SUBMITINPUTFIELD:
+		io_get_submit_input_button(pcInsert, iInsertLen, params);
+		break;
 
-        default:
-            snprintf(pcInsert, iInsertLen, "??");
-            break;
-    }
+	default:
+		snprintf(pcInsert, iInsertLen, "??");
+		break;
+	}
 
-    //
-    // Tell the server how many characters our insert string contains.
-    //
-    return(strlen(pcInsert));
+	//
+	// Tell the server how many characters our insert string contains.
+	//
+	return (strlen(pcInsert));
 }
 #endif
 
+char* strtrimr(char *pszStr) {
+	int i, j; /* Local counters */
 
-char* strtrimr(char *pszStr)
-{
-      int   i, j;                               /* Local counters */
+	/*-------------------------------------------------*/
 
-      /*-------------------------------------------------*/
+	j = i = strlen(pszStr) - 1; /* Calculate the length of the string */
 
-      j = i = strlen(pszStr) - 1; /* Calculate the length of the string */
+	while (isspace(pszStr[i]) && (i >= 0))
 
-      while (isspace(pszStr[i]) && (i >= 0))
+		/* WHILE string ends with a blank */
+		/*1994-01-08/Bac Even if all chars are blanks (= 0) */
 
-            /* WHILE string ends with a blank */
-            /*1994-01-08/Bac Even if all chars are blanks (= 0) */
+		pszStr[i--] = '\0'; /*- Replace blank with '\0' */
 
-            pszStr[ i-- ] = '\0';               /*- Replace blank with '\0' */
-
-      return pszStr;                            /* Return no of replacements */
+	return pszStr; /* Return no of replacements */
 }
 
+char* strtriml(char *pszStr) {
+	int i = 0, j; /* Local counters */
 
-char*  strtriml(char *pszStr)
-{
-      int   i = 0, j;                                 /* Local counters */
+	/*-------------------------------------------------*/
 
-      /*-------------------------------------------------*/
+	j = strlen(pszStr) - 1; /* Calculate the length of the string */
 
-      j = strlen(pszStr) - 1; /* Calculate the length of the string */
+	while (isspace(pszStr[i]) && (i <= j))
 
-      while (isspace(pszStr[i]) && (i <= j))
+		/* WHILE string starts with a blank */
 
-            /* WHILE string starts with a blank */
+		i++; /*- Count no of leading blanks */
 
-            i++;                          /*- Count no of leading blanks */
+	if (0 < i) /* IF leading blanks are found */
+		strcpy(pszStr, &pszStr[i]); /*- Shift string to the left */
 
-      if (0 < i)                          /* IF leading blanks are found */
-            strcpy(pszStr, &pszStr[i]);   /*- Shift string to the left */
-
-      return pszStr;                          /* Return no of replacements */
+	return pszStr; /* Return no of replacements */
 }
 
+char* strtrim(char *pszStr) {
+	char *ret;
 
-char* strtrim(char *pszStr)
-{
-      char *ret;
+	/*-------------------------------------------------*/
 
-      /*-------------------------------------------------*/
+	ret = strtrimr(pszStr); /* Remove trailing blanks */
+	ret = strtriml(ret); /* Remove leading blanks */
 
-      ret  = strtrimr(pszStr);               /* Remove trailing blanks */
-      ret= strtriml(ret);               /* Remove leading blanks */
-
-      return ret;
+	return ret;
 }
 //*****************************************************************************
 //
 // creates number input field  and +/- buttons
 //
 //*****************************************************************************
-void
-io_get_number_input_field(char * pcBuf, int iBufLen,  pSSIParam *params){
+void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
 	pSSIParam p = NULL;
 	char *id = "INVALID";
 	xComMessage ret;
 
 	p = SSIParamGet(*(params), "id");
-	if(p != NULL)
+	if (p != NULL)
 		id = p->value;
 
 	SSIParamDeleteAll(params);
 
-	if (1){
+	if (1) {
 		printf("io_get_number_input_field: getting values \n");
 		xCom_msg.cmd = GET;
 		xCom_msg.dataSouce = DATA;
@@ -340,28 +321,27 @@ io_get_number_input_field(char * pcBuf, int iBufLen,  pSSIParam *params){
 
 		xCom_msg.item = id;
 
-
 		xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 		printf("io_get_number_input_field: sending req to com task \n");
 
 		vTaskSuspend(xLwipTaskHandle);
 		printf("io_get_number_input_field: suspend lwipTask \n");
 
-		if(xQueueReceive(xHttpdQueue, &ret,  ( portTickType ) 0 ) == pdTRUE){
-//		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
-//				== pdTRUE){
-//		if(1){
+		if (xQueueReceive(xHttpdQueue, &ret, ( portTickType ) 0 ) == pdTRUE) {
+			//		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
+			//				== pdTRUE){
+			//		if(1){
 			printf("io_get_number_input_field: got values \n");
 
 			value = ret.value;
 			snprintf(
-					pcBuf, iBufLen,
+					pcBuf,
+					iBufLen,
 					"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
-					"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
-					"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
-					id, value, id, id,
-					id);
-		}else {
+						"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
+						"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
+					id, value, id, id, id);
+		} else {
 			printf("io_get_number_input_field: error \n");
 			snprintf(pcBuf, iBufLen, "ERROR: NO DATA");
 		}
@@ -373,60 +353,72 @@ io_get_number_input_field(char * pcBuf, int iBufLen,  pSSIParam *params){
 // creates submit input button
 //
 //*****************************************************************************
-void
-io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params){
+void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
 	char *arg = "Submit";
 
-	snprintf(pcBuf, iBufLen,
-			"<!-- SubmitInputField %s -->"
-			"<input type=\"submit\" name=\"%s\" value=\"%s"" />",
-			arg, arg, arg);
+	snprintf(pcBuf, iBufLen, "<!-- SubmitInputField %s -->"
+		"<input type=\"submit\" name=\"%s\" value=\"%s" " />", arg, arg, arg);
 }
 
-int SSIParamAdd(pSSIParam* root, char* nameValue){
+int SSIParamAdd(pSSIParam* root, char* nameValue) {
 	int rc = 0;
 	char *value, *name;
-
+	int strnc;
 
 	pSSIParam nParam, tmp = *(root);
 
 	nParam = pvPortMalloc(sizeof(SSIParam));
-
 	nParam->name = pvPortMalloc(strlen(name) + 1);
 	nParam->value = pvPortMalloc(strlen(value) + 1);
 
-	if(nParam != NULL && nParam->name != NULL && nParam->value != NULL){
-
+	if (nParam != NULL && nParam->name != NULL && nParam->value != NULL) {
 		value = strstr(nameValue, "=");
 		value++;
+		printf("Position von = geholt\n");
+		snprintf(nParam->name, (strlen(nameValue) - strlen(value)), "%s", nameValue);
+		sprintf(nParam->value, "%s", value);
 
-		strncpy(nParam->name, nameValue, (strlen(nameValue)-strlen(value)-1));
-		strcpy(nParam->value, value);
+		//ma nParam->name = strtrim(nParam->name);
+		//ma nParam->value = strtrim(nParam->value);
+		//ma printf("Werte getrimmt\n");
 
-		nParam->name = strtrim(nParam->name);
-		nParam->value = strtrim(nParam->value);
-
-
-		if(*(root) == NULL){
-			*(root) = nParam;
+		if (strlen(nParam->name) > 0) {
+			if (*(root) == NULL) {
+				*(root) = nParam;
+			} else {
+				while (tmp->next != NULL) {
+					tmp = tmp->next;
+				}
+				tmp->next = nParam;
+			}
+			printf("SSIParamAdd: added element name: '%s' value: '%s' \n",
+					nParam->name, nParam->value);
+		} else {
+			printf("Nicht eingefuegt, da leer\n");
 		}
-		else{
-			while(tmp->next != NULL)
-				tmp = tmp->next;
-			tmp->next = nParam;
+
+	} else {
+		printf(" ... fail\n");
+		if (nParam->name != NULL) {
+			vPortFree(nParam->name);
 		}
-		printf("SSIParamAdd: added element name: '%s' value: '%s' \n", nParam->name, nParam->value);
+		if (nParam->value != NULL) {
+			vPortFree(nParam->value);
+		}
+		if (nParam != NULL) {
+			vPortFree(nParam);
+		}
 	}
 }
 
-pSSIParam SSIParamGet(pSSIParam root, char* name){
-	pSSIParam ret=NULL;
+pSSIParam SSIParamGet(pSSIParam root, char* name) {
+	pSSIParam ret = NULL;
 
 	printf("SSIParamGet: element name: '%s' \n", root->name);
-	while(root != NULL){
+	while (root != NULL) {
 		printf("SSIParamGet: element name: '%s' \n", root->name);
 
-		if(strcmp(root->name, name) == 0)
+		if (strcmp(root->name, name) == 0)
 			return root;
 		root = root->next;
 	}
@@ -434,10 +426,10 @@ pSSIParam SSIParamGet(pSSIParam root, char* name){
 	return ret;
 }
 
-void SSIParamDeleteAll(pSSIParam* root){
+void SSIParamDeleteAll(pSSIParam* root) {
 	pSSIParam p = (*root), del = NULL;
 
-	while(p != NULL){
+	while (p != NULL) {
 		del = p;
 		p = p->next;
 		vPortFree(del->name);
