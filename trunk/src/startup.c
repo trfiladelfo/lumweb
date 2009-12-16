@@ -47,8 +47,7 @@ extern void xPortSysTickHandler(void);
 extern void vPortSVCHandler(void);
 extern void Timer0IntHandler(void);
 extern void ETH0IntHandler(void);
-extern void TouchScreenIntHandler(void);
-extern void SoundIntHandler(void);
+
 
 //*****************************************************************************
 //
@@ -104,7 +103,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // ADC Sequence 0
     IntDefaultHandler,                      // ADC Sequence 1
     IntDefaultHandler,                      // ADC Sequence 2
-    TouchScreenIntHandler,                  // ADC Sequence 3
+    IntDefaultHandler,                  // ADC Sequence 3
     IntDefaultHandler,                      // Watchdog timer
     Timer0IntHandler,                      // Timer 0 subtimer A
     IntDefaultHandler,                      // Timer 0 subtimer B
@@ -139,7 +138,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // ADC1 Sequence 1
     IntDefaultHandler,                      // ADC1 Sequence 2
     IntDefaultHandler,                      // ADC1 Sequence 3
-    SoundIntHandler,                        // I2S0
+    IntDefaultHandler,                        // I2S0
     IntDefaultHandler,                      // External Bus Interface 0
     IntDefaultHandler                       // GPIO Port J
 };

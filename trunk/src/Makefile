@@ -35,7 +35,6 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		-I $(LWIP_COMMON_DIR)/port/LM3S \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
-		-I $(GRLIB_COMMON_DIR) \
 		-D GCC_ARMCM3_LM3S102 \
 		-I $(LUMINARY_DRIVER_DIR) \
 		-I $(LUMINARY_DRIVER_DIR)/driverlib \
@@ -47,11 +46,6 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		-D malloc=pvPortMalloc -D free=vPortFree \
 		-D printf=UARTprintf -D gcc=1 \
 		-ffunction-sections -fdata-sections 
-		
-#	-I $(UIP_COMMON_DIR) \	
-#   -I ./webserver \
-	-I ./UipBasic \
-	-D printf=uipprintf \
 
 SOURCE=	$(SOURCE_DIR)/main.c \
 		$(SOURCE_DIR)/setup.c \
@@ -63,7 +57,6 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(ETHERNET_DIR)/httpd/cgi/io.c \
 		$(ETHERNET_DIR)/LWIPStack.c \
 		$(ETHERNET_DIR)/ETHIsr.c \
-		$(GRAPHIC_DIR)/graphicTask.c \
 		$(COMM_DIR)/comTask.c \
 		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(UART_DIR)/uartstdio.c \
@@ -105,16 +98,10 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(LUMINARY_DRIVER_DIR)/driverlib/ustdlib.c \
 		$(FATFS_COMMON_DIR)/ff.c \
 		$(FATFS_COMMON_DIR)/mmc-dk-lm3s9b96.c \
-		$(FATFS_COMMON_DIR)/SDcard.c \
-		$(LUMINARY_DRIVER_DIR)/kitronix320x240x16_ssd2119_8bit.c \
-		$(LUMINARY_DRIVER_DIR)/touch.c \
-		$(LUMINARY_DRIVER_DIR)/sound.c \
-		$(LUMINARY_DRIVER_DIR)/tlv320aic23b.c
+		$(FATFS_COMMON_DIR)/SDcard.c
 		
-		#	$(ETHERNET_DIR)/httpc/webclient.c \
-		$(ETHERNET_DIR)/httpc/webclient-strings.c \
-		
-LIBS= $(GRLIB_COMMON_DIR)/gcc/libgr.a $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a 
+LIBS= $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a
+#$(GRLIB_COMMON_DIR)/gcc/libgr.a  
 
 OBJS = $(SOURCE:.c=.o)
 

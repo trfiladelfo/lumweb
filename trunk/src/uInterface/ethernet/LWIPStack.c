@@ -127,9 +127,7 @@ static err_t low_level_init(struct netif *netif) {
 			== xTaskCreate(ethernetif_input, ( signed portCHAR * ) "ETH_INPUT", netifINTERFACE_TASK_STACK_SIZE, (void *)netif, netifINTERFACE_TASK_PRIORITY, NULL)) {
 		ETHServiceTaskEnable(0);
 		LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_input: Waiting for Ethernet to become ready\n"));
-		printf("Waiting for low_level_init ..");
 		ETHServiceTaskWaitReady(0);
-		printf(" ok\n");
 		netif->flags |= NETIF_FLAG_LINK_UP;
 
 		LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_init: Ethernet link is up\n"));
