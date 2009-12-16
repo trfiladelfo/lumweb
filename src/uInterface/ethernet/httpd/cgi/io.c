@@ -48,7 +48,8 @@
 #include "queueConfig.h"
 #include "taskConfig.h"
 
-#define INCLUDE_HTTPD_SSI_PARAMS
+#include "ethernet/lwipopts.h"
+
 
 // Message for the Comm-Task
 xComMessage xCom_msg;
@@ -119,14 +120,7 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
 #endif
 
 #ifdef INCLUDE_HTTPD_SSI
-//*****************************************************************************
-//
-// SSI tag indices for each entry in the g_pcSSITags array.
-//
-//*****************************************************************************
-#define SSI_INDEX_DATEANDTIME  0
-#define SSI_INDEX_NUMBERINPUTFIELD     1
-#define SSI_INDEX_SUBMITINPUTFIELD     2
+
 
 //*****************************************************************************
 //
@@ -140,7 +134,6 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
 static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 		"NumberInputField", // SSI_INDEX_NUMBERINPUTFIELD
 		"SubmitInputField" // SSI_INDEX_SUBMITINPUTFIELD
-
 		};
 
 //*****************************************************************************
@@ -150,6 +143,17 @@ static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 //
 //*****************************************************************************
 #define NUM_CONFIG_SSI_TAGS     (sizeof(g_pcConfigSSITags) / sizeof (char *))
+
+#define OFFSET_NUM_SSI_TAGS (NUM_CONFIG_SSI_TAGS-1)
+
+//*****************************************************************************
+//
+// SSI tag indices for each entry in the g_pcSSITags array.
+//
+//*****************************************************************************
+#define SSI_INDEX_DATEANDTIME  			(0+OFFSET_NUM_SSI_TAGS)
+#define SSI_INDEX_NUMBERINPUTFIELD     	(1+OFFSET_NUM_SSI_TAGS)
+#define SSI_INDEX_SUBMITINPUTFIELD     	(2+OFFSET_NUM_SSI_TAGS)
 
 #define JAVASCRIPT_HEADER                                                     \
     "<script type='text/javascript' language='JavaScript'><!--\n"
@@ -219,7 +223,11 @@ static int
 SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 #endif
 {
+#ifndef INCLUDE_HTTPD_SSI_PARAMS
+	pSSIParam *params = NULL;
+#endif
 
+	printf("SSI HANDLER \n");
 	//
 	// Which SSI tag have we been passed?
 	//
@@ -327,7 +335,7 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 		vTaskSuspend(xLwipTaskHandle);
 		printf("io_get_number_input_field: suspend lwipTask \n");
 
-		if (xQueueReceive(xHttpdQueue, &ret, ( portTickType ) 0 ) == pdTRUE) {
+		if (xQueueReceive(xHttpdQueue, &ret, ( portTickType ) 10 ) == pdTRUE) {
 			//		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
 			//				== pdTRUE){
 			//		if(1){

@@ -112,7 +112,6 @@ void http_set_cgi_handlers(const tCGI *pCGIs, int iNumHandlers);
  * recognized, for example).
  *
  */
-#define INCLUDE_HTTPD_SSI_PARAMS
 
 #ifdef  INCLUDE_HTTPD_SSI_PARAMS
 typedef int (*tSSIHandler)(int iIndex, char *pcInsert, int iInsertLen, pSSIParam* params);
@@ -125,7 +124,7 @@ void http_set_ssi_handler(tSSIHandler pfnSSIHandler,
 
 /* The maximum length of the string comprising the tag name */
 #ifndef MAX_TAG_NAME_LEN
-#define MAX_TAG_NAME_LEN 16
+#define MAX_TAG_NAME_LEN 64
 #endif
 
 /* The maximum length of string that can be returned to replace any given tag */
