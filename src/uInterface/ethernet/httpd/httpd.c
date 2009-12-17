@@ -87,6 +87,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+
 #ifdef INCLUDE_HTTPD_DEBUG
 #define DEBUG_PRINT printf
 #else
@@ -392,9 +393,9 @@ static void get_tag_insert(struct http_state *hs) {
 
 		/* Find this tag in the list we have been provided. */
 		for (loop = g_iNumTags-1; loop < g_iNumTags+g_iNumTags; loop++) {
-			printf("tag name: %s - tagnames[%d] : %s\n", hs->tag_name, loop, g_ppcTags[loop]);
+		//	printf("tag name: %s - tagnames[%d] : %s\n", hs->tag_name, loop, g_ppcTags[loop]);
 			if (strcmp(hs->tag_name, g_ppcTags[loop]) == 0) {
-				printf("TAG FOUND in array\n");
+		//		printf("TAG FOUND in array\n");
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
 				hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
 						MAX_TAG_INSERT_LEN, &(hs->ssi_params));
@@ -403,6 +404,7 @@ static void get_tag_insert(struct http_state *hs) {
 						MAX_TAG_INSERT_LEN);
 #endif
 
+				printf("TAG INSERT DONE\n");
 				return;
 			}
 		}
@@ -826,6 +828,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 				break;
 
 			case TAG_LEADIN:
+				printf("FOUND LEADIN CHAR\n");
 				/* We are processing the lead-in marker, looking for the start of
 				 * the tag name.
 				 */
@@ -877,12 +880,13 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 				if ((*hs->parsed == ' ') || (*hs->parsed == '\t')
 						|| (*hs->parsed == '\n') || (*hs->parsed == '\r')) {
 
+					/* Move on to the next character in the buffer */
 					hs->parse_left--;
 					hs->parsed++;
 
+				//	printf("SWITCH : TAG_FOUND: found space, next char: %c\n", *(hs->parsed));
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
-					if (*(hs->parsed + 1) != g_pcTagLeadOut[0] && *(hs->parsed
-							+ 1) != ' ')
+					if (*(hs->parsed) != g_pcTagLeadOut[0] && *(hs->parsed) != ' ')
 						hs->tag_state = TAG_PARAM;
 #endif
 					break;
@@ -935,6 +939,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 				 * us finding the first leadout character */
 				/* Have we found the end of the tag name? This is signalled by
 				 * us finding the first leadout character */
+
 				if ((*hs->parsed == g_pcTagLeadOut[0])) {
 
 					if (hs->tag_index == 0) {
@@ -947,7 +952,6 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 						printf("SSI param: %s\n", param_name);
 
 						if (strlen(param_name) > 0) {
-							printf("Add SSI param : %s\n", param_name);
 							SSIParamAdd(&(hs->ssi_params), param_name);
 						}
 						/* We read a non-empty tag so go ahead and look for the
@@ -965,18 +969,14 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 				} else {
 					if (*hs->parsed != 0) {
 						c = *hs->parsed;
-						if (c == ' ' || c == '\f' || c == '\n' || c == '\r'
-								|| c == '\t' || c == '\v') {
+						if (c == ' ') {
 							printf("Add from space SSI param : %s\n",
 									param_name);
 							param_name[i] = '\0';
-							printf("schließe param ab\n");
 							if (strlen(param_name) > 0) {
 								SSIParamAdd(&(hs->ssi_params), param_name);
-							} else {
-								printf("Nicht hinzugefuegt, da name leer\n");
 							}
-							printf("lösche param\n");
+							// delete parameter, ready for new
 							param_name[0] = 0;
 							i = 0;
 						} else {
@@ -997,6 +997,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 				 * We are looking for the end of the lead-out marker.
 				 */
 			case TAG_LEADOUT:
+				printf("FOUND LEADOUT CHAR \n");
 				/* Remove leading whitespace between the tag leading and the first
 				 * tag leadout character.
 				 */
@@ -1027,6 +1028,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 						 */
 						get_tag_insert(hs);
 
+						printf("RETURNed FROM TAG_INSERT \n");
 						/* Next time through, we are going to be sending data
 						 * immediately, either the end of the block we start
 						 * sending here or the insert string.
@@ -1039,6 +1041,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 						 * tag, we need to send it now.
 						 */
 						if (hs->tag_end > hs->file) {
+							printf("SEND UNSENT DATA\n");
 							/* How much of the data can we send? */
 							if (len > hs->tag_end - hs->file) {
 								len = hs->tag_end - hs->file;
@@ -1047,10 +1050,13 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 							do {
 								DEBUG_PRINT
 									("Sending %d bytes\n", len);
+								printf("BEFORE TCP WRITE\n");
 								err = tcp_write(pcb, hs->file, len, 0);
+								printf("AFTER TCP WRITE\n");
 								if (err == ERR_MEM) {
 									len /= 2;
 								}
+								printf("Sending %d bytes\n", len);
 							} while (err == ERR_MEM && (len > 1));
 
 							if (err == ERR_OK) {
@@ -1058,7 +1064,9 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 								hs->file += len;
 								hs->left -= len;
 							}
+							printf("SENDING DONE\n");
 						}
+						printf("GOTO TAG SENDING \n");
 					} else {
 						hs->tag_index++;
 					}
@@ -1141,6 +1149,8 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 						hs->tag_state = TAG_NONE;
 					}
 				}
+
+				printf("TAG SENT \n");
 			}
 		}
 

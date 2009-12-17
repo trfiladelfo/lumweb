@@ -195,7 +195,7 @@
 // To enable CGI support, define label INCLUDE_HTTPD_CGI in lwipopts.h.
 #define INCLUDE_HTTPD_CGI 			1
 
-//#define INCLUDE_HTTPD_SSI_PARAMS 	1
+#define INCLUDE_HTTPD_SSI_PARAMS 	1
 
 //#define DYNAMIC_HTTP_HEADERS 		1
 //*****************************************************************************
