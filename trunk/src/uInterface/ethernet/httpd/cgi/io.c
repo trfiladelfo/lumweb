@@ -314,8 +314,10 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	xComMessage ret;
 
 	p = SSIParamGet(*(params), "id");
-	if (p != NULL)
+	if (p != NULL){
 		id = p->value;
+		printf("io_get_number_input_field: found id parameter \n");
+	}
 
 	SSIParamDeleteAll(params);
 
@@ -349,6 +351,8 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 						"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
 						"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
 					id, value, id, id, id);
+			printf("io_get_number_input_field: done \n");
+
 		} else {
 			printf("io_get_number_input_field: error \n");
 			snprintf(pcBuf, iBufLen, "ERROR: NO DATA");
@@ -382,7 +386,6 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 	if (nParam != NULL && nParam->name != NULL && nParam->value != NULL) {
 		value = strstr(nameValue, "=");
 		value++;
-		printf("Position von = geholt\n");
 		snprintf(nParam->name, (strlen(nameValue) - strlen(value)), "%s", nameValue);
 		sprintf(nParam->value, "%s", value);
 
@@ -422,7 +425,6 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 pSSIParam SSIParamGet(pSSIParam root, char* name) {
 	pSSIParam ret = NULL;
 
-	printf("SSIParamGet: element name: '%s' \n", root->name);
 	while (root != NULL) {
 		printf("SSIParamGet: element name: '%s' \n", root->name);
 
@@ -437,11 +439,17 @@ pSSIParam SSIParamGet(pSSIParam root, char* name) {
 void SSIParamDeleteAll(pSSIParam* root) {
 	pSSIParam p = (*root), del = NULL;
 
-	while (p != NULL) {
+/*	while (p != NULL) {
 		del = p;
 		p = p->next;
 		vPortFree(del->name);
+		printf("SSIParamDeleteAll: freed name \n");
 		vPortFree(del->value);
-		vPortFree(del);
+		printf("SSIParamDeleteAll: freed value \n");
+		//vPortFree(del);
+		// TODO Delete structur SSIParam completely
+		printf("SSIParamDeleteAll: delete element : %s \n", p->name);
 	}
+*/
+	printf("SSIParamDeleteAll: deleted all elements \n");
 }

@@ -35,6 +35,9 @@
 #ifndef __HTTPD_H__
 #define __HTTPD_H__
 
+#include "ethernet/lwipopts.h"
+
+
 #include "ethernet/httpd/cgi/io.h"
 
 void httpd_init(void);
@@ -129,7 +132,7 @@ void http_set_ssi_handler(tSSIHandler pfnSSIHandler,
 
 /* The maximum length of string that can be returned to replace any given tag */
 #ifndef MAX_TAG_INSERT_LEN
-#define MAX_TAG_INSERT_LEN 256
+#define MAX_TAG_INSERT_LEN 128
 #endif
 
 #endif
