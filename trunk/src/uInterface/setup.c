@@ -10,9 +10,9 @@
 #include "hw_sysctl.h"
 #include "sysctl.h"
 #include "gpio.h"
-//#include "grlib.h"
-//#include "widget.h"
-//#include "kitronix320x240x16_ssd2119_8bit.h"
+#include "grlib/grlib.h"
+#include "grlib/widget.h"
+#include "kitronix320x240x16_ssd2119_8bit.h"
 #include "interrupt.h"
 #include "hw_ints.h"
 
@@ -48,14 +48,14 @@ void prvSetupHardware(void) {
 	//
 	// Initialize GUI
 	//
-	//Kitronix320x240x16_SSD2119Init();
+	Kitronix320x240x16_SSD2119Init();
 
 	//
 	// Initialize the touch screen driver and have it route its messages to the
 	// widget tree.
 	//
-	//TouchScreenInit();
-	//TouchScreenCallbackSet(WidgetPointerMessage);
+	TouchScreenInit();
+	TouchScreenCallbackSet(WidgetPointerMessage);
 
 	//
 	// Initialize the file system.

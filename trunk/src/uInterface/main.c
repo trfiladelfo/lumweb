@@ -27,7 +27,7 @@
 #include "realtime.h"
 #include "communication/comTask.h"
 #include "ethernet/LWIPStack.h"
-//#include "graphic/graphicTask.h"
+#include "graphic/graphicTask.h"
 
 /* Globals */
 extern int __HEAP_START; // used for _sbrk defined in standalone.ld
@@ -90,9 +90,9 @@ int main(void) {
 		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, ipcfg, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
 	}
 
-	//printf("Starting Graphic Task ... ");
-	//xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
-	//printf("ok\n");
+	printf("Starting Graphic Task ... ");
+	xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
+	printf("ok\n");
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
