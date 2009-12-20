@@ -144,16 +144,14 @@ static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 //*****************************************************************************
 #define NUM_CONFIG_SSI_TAGS     (sizeof(g_pcConfigSSITags) / sizeof (char *))
 
-#define OFFSET_NUM_SSI_TAGS (NUM_CONFIG_SSI_TAGS-1)
-
 //*****************************************************************************
 //
 // SSI tag indices for each entry in the g_pcSSITags array.
 //
 //*****************************************************************************
-#define SSI_INDEX_DATEANDTIME  			(0+OFFSET_NUM_SSI_TAGS)
-#define SSI_INDEX_NUMBERINPUTFIELD     	(1+OFFSET_NUM_SSI_TAGS)
-#define SSI_INDEX_SUBMITINPUTFIELD     	(2+OFFSET_NUM_SSI_TAGS)
+#define SSI_INDEX_DATEANDTIME  			(0)
+#define SSI_INDEX_NUMBERINPUTFIELD     	(1)
+#define SSI_INDEX_SUBMITINPUTFIELD     	(2)
 
 #define JAVASCRIPT_HEADER                                                     \
     "<script type='text/javascript' language='JavaScript'><!--\n"

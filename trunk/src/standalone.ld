@@ -13,9 +13,11 @@ SECTIONS
         *(.rodata*)
         _etext = .;
     } > FLASH
-
-    .data : AT (ADDR(.text) + SIZEOF(.text) + 8)
-    {
+    
+    .data : AT (_etext + 8)
+    /* The offset of 8 Bytes is a workaround for the CodeSourcery C++ Compiler.
+    also defined in the startup.c file */
+    { 
         _data = .;
         *(vtable)
         *(.data*)
