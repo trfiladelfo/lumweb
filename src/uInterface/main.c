@@ -31,6 +31,11 @@
 
 /* Globals */
 extern int __HEAP_START; // used for _sbrk defined in standalone.ld
+extern unsigned long _etext;
+extern unsigned long _data;
+extern unsigned long _edata;
+extern unsigned long _bss;
+extern unsigned long _ebss;
 
 /*-------- MAIN ---------------------------------------------*/
 int main(void) {
@@ -40,8 +45,13 @@ int main(void) {
 	// Setup the Hardware
 	prvSetupHardware();
 
-	UARTprintf("\n\n\nStarte Programm ...\n");
-	UARTprintf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
+	printf("adresse von _etext: 0x%X\n", &_etext);
+	printf("adresse von _data:  0x%X\n", &_data);
+	printf("adresse von _edata: 0x%X\n", &_edata);
+	printf("adresse von _bss:   0x%X\n", &_bss);
+	printf("adresse von _ebss:  0x%X\n", &_ebss);
+	printf("\n\n\nStarte Programm ...\n");
+	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
 
 	printf("Starting Firmware ...\n");
 
@@ -67,14 +77,14 @@ int main(void) {
 		UARTprintf("Initialisiere IP ");
 		ipcfg = pvPortMalloc(sizeof(IP_CONFIG));
 
-		UARTprintf("mit DHCP\n");
-		ipcfg->IPMode = IPADDR_USE_DHCP;
+		//UARTprintf("mit DHCP\n");
+		//ipcfg->IPMode = IPADDR_USE_DHCP;
 
-		//UARTprintf("statisch mit 192.168.20.200\n");
-		//ipcfg->IPMode = IPADDR_USE_STATIC;
-		//ipcfg->IPAddr = 0xC0A814C8; //192.168.20.200
-		//ipcfg->NetMask = 0xffffff00;
-		//ipcfg->GWAddr = 0xC0A81401;
+		UARTprintf("statisch mit 192.168.20.200\n");
+		ipcfg->IPMode = IPADDR_USE_STATIC;
+		ipcfg->IPAddr = 0xC0A814C8; //192.168.20.200
+		ipcfg->NetMask = 0xffffff00;
+		ipcfg->GWAddr = 0xC0A81401;
 
 		UARTprintf("Starte LWIP ...\n");
 		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, ipcfg, LWIP_TASK_PRIORITY, &xLwipTaskHandle );

@@ -392,10 +392,10 @@ static void get_tag_insert(struct http_state *hs) {
 	if (g_pfnSSIHandler && g_ppcTags && g_iNumTags) {
 
 		/* Find this tag in the list we have been provided. */
-		for (loop = g_iNumTags-1; loop < g_iNumTags+g_iNumTags; loop++) {
-		//	printf("tag name: %s - tagnames[%d] : %s\n", hs->tag_name, loop, g_ppcTags[loop]);
+		for (loop = 0; loop < g_iNumTags; loop++) {
+			//printf("tag name: %s - tagnames[%d] : %s\n", hs->tag_name, loop, g_ppcTags[loop]);
 			if (strcmp(hs->tag_name, g_ppcTags[loop]) == 0) {
-		//		printf("TAG FOUND in array\n");
+				//printf("TAG FOUND in array\n");
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
 				hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
 						MAX_TAG_INSERT_LEN, &(hs->ssi_params));
