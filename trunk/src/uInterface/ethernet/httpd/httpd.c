@@ -828,7 +828,6 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 				break;
 
 			case TAG_LEADIN:
-				printf("FOUND LEADIN CHAR\n");
 				/* We are processing the lead-in marker, looking for the start of
 				 * the tag name.
 				 */
@@ -997,7 +996,6 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 				 * We are looking for the end of the lead-out marker.
 				 */
 			case TAG_LEADOUT:
-				printf("FOUND LEADOUT CHAR \n");
 				/* Remove leading whitespace between the tag leading and the first
 				 * tag leadout character.
 				 */
@@ -1028,7 +1026,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 						 */
 						get_tag_insert(hs);
 
-						printf("RETURNed FROM TAG_INSERT \n");
+						//printf("RETURNed FROM TAG_INSERT \n");
 						/* Next time through, we are going to be sending data
 						 * immediately, either the end of the block we start
 						 * sending here or the insert string.
@@ -1041,7 +1039,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 						 * tag, we need to send it now.
 						 */
 						if (hs->tag_end > hs->file) {
-							printf("SEND UNSENT DATA\n");
+							//printf("SEND UNSENT DATA\n");
 							/* How much of the data can we send? */
 							if (len > hs->tag_end - hs->file) {
 								len = hs->tag_end - hs->file;
@@ -1050,9 +1048,9 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 							do {
 								DEBUG_PRINT
 									("Sending %d bytes\n", len);
-								printf("BEFORE TCP WRITE\n");
+							//	printf("BEFORE TCP WRITE\n");
 								err = tcp_write(pcb, hs->file, len, 0);
-								printf("AFTER TCP WRITE\n");
+							//	printf("AFTER TCP WRITE\n");
 								if (err == ERR_MEM) {
 									len /= 2;
 								}
@@ -1064,9 +1062,9 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 								hs->file += len;
 								hs->left -= len;
 							}
-							printf("SENDING DONE\n");
+						//	printf("SENDING DONE\n");
 						}
-						printf("GOTO TAG SENDING \n");
+					//	printf("GOTO TAG SENDING \n");
 					} else {
 						hs->tag_index++;
 					}
@@ -1150,7 +1148,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 					}
 				}
 
-				printf("TAG SENT \n");
+				//printf("TAG SENT \n");
 			}
 		}
 
