@@ -328,7 +328,6 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 		xCom_msg.freeItem = pdFALSE;
 
 		xCom_msg.item = id;
-
 		xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 		printf("io_get_number_input_field: sending req to com task \n");
 
@@ -374,36 +373,48 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 	int rc = 0;
 	char *value, *name;
 	int strnc;
-
 	pSSIParam nParam, tmp = *(root);
 
+	printf("SSIParamAdd: %s \n", nameValue);
+
+	value = strstr(nameValue, "=");
+	value++;
+
 	nParam = pvPortMalloc(sizeof(SSIParam));
-	nParam->name = pvPortMalloc(strlen(name) + 1);
+	nParam->name = pvPortMalloc(strlen(nameValue) - strlen(value) + 1);
 	nParam->value = pvPortMalloc(strlen(value) + 1);
 
 	if (nParam != NULL && nParam->name != NULL && nParam->value != NULL) {
-		value = strstr(nameValue, "=");
-		value++;
+
 		snprintf(nParam->name, (strlen(nameValue) - strlen(value)), "%s", nameValue);
 		sprintf(nParam->value, "%s", value);
 
-		//ma nParam->name = strtrim(nParam->name);
-		//ma nParam->value = strtrim(nParam->value);
-		//ma printf("Werte getrimmt\n");
+		nParam->name = strtrim(nParam->name);
+		nParam->value = strtrim(nParam->value);
+		printf("Werte getrimmt\n");
 
 		if (strlen(nParam->name) > 0) {
+
+			nParam->next = tmp;
+			*(root) = nParam;
+			/*
 			if (*(root) == NULL) {
 				*(root) = nParam;
 			} else {
 				while (tmp->next != NULL) {
+					printf("SSIParamAdd: schon elemente vorhanden : '%s' \n", tmp->name);
 					tmp = tmp->next;
+					printf("SSIParamAdd: tmp : '%p', tmp->next: '%p' \n", tmp, tmp->next);
 				}
-				tmp->next = nParam;
-			}
+				printf("SSIParamAdd: insert param \n");
+
+				tmp->next = nParam; */
+
 			printf("SSIParamAdd: added element name: '%s' value: '%s' \n",
 					nParam->name, nParam->value);
 		} else {
 			printf("Nicht eingefuegt, da leer\n");
+
 		}
 
 	} else {
@@ -436,8 +447,8 @@ pSSIParam SSIParamGet(pSSIParam root, char* name) {
 
 void SSIParamDeleteAll(pSSIParam* root) {
 	pSSIParam p = (*root), del = NULL;
-
-/*	while (p != NULL) {
+/*
+	while (p != NULL) {
 		del = p;
 		p = p->next;
 		vPortFree(del->name);
@@ -447,7 +458,7 @@ void SSIParamDeleteAll(pSSIParam* root) {
 		//vPortFree(del);
 		// TODO Delete structur SSIParam completely
 		printf("SSIParamDeleteAll: delete element : %s \n", p->name);
-	}
-*/
+	}*/
+
 	printf("SSIParamDeleteAll: deleted all elements \n");
 }
