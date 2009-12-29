@@ -183,7 +183,24 @@ void io_init(void) {
 }
 
 #ifdef INCLUDE_HTTPD_CGI
-//*****************************************************************************
+/*
+int atoi(char *s){
+	int num=0,flag=0, len;
+	len = strlen(s);
+
+	for(int i=0;i<=len;i++){
+		if(s[i] >= '0' && s[i] <= '9')
+			num = num * 10 + s[i] -'0';
+		else if(s[0] == '-' && i==0)
+			flag =1;
+		else
+			break;
+	}
+	if(flag == 1)
+		num = num * -1;
+	return num;
+}*/
+  //*****************************************************************************
 //
 // This CGI handler is called whenever the web browser requests set.cgi.
 // This CGI parses the GET Parameters and sets the values
@@ -191,9 +208,28 @@ void io_init(void) {
 //*****************************************************************************
 static char *
 SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
+	int i, value = 0;
+	char *name;
+
 	printf("SetCGIHandler: %d Params\n", iNumParams);
 
 	if (iNumParams > 0) { //test if set was success full
+		for(i = 0; i < iNumParams; i++){
+			name = pcParam[i];
+			value = atoi(pcValue[i]);
+
+			printf("SetCGIHandler: Found param: %s=%d \n", name, value);
+
+			xCom_msg.cmd = SET;
+			xCom_msg.dataSouce = DATA;
+			xCom_msg.from = xHttpdQueue;
+			xCom_msg.taskToResume = xLwipTaskHandle;
+			xCom_msg.freeItem = pdFALSE;
+
+			xCom_msg.item = name;
+			xCom_msg.value = value;
+			xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+		}
 		return "/set_ok.htm";
 	} else {
 		return "/set_nok.htm";
@@ -309,7 +345,6 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
 	pSSIParam p = NULL;
 	char *id = "INVALID";
-	xComMessage ret;
 
 	p = SSIParamGet(*(params), "id");
 	if (p != NULL){
@@ -334,12 +369,12 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 		vTaskSuspend(xLwipTaskHandle);
 		printf("io_get_number_input_field: suspend lwipTask \n");
 
-		if (xQueueReceive(xHttpdQueue, &ret, ( portTickType ) 10 ) == pdTRUE) {
+		if (xQueueReceive(xHttpdQueue, &xCom_msg, ( portTickType ) 10 ) == pdTRUE) {
 			//		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
 			//				== pdTRUE){
 			//		if(1){
 
-			value = ret.value;
+			value = xCom_msg.value;
 			printf("io_get_number_input_field: got values %s=%d \n", id, value);
 
 			snprintf(
@@ -402,7 +437,6 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 					nParam->name, nParam->value);
 		} else {
 			printf("SSIParamAdd: didnt insert element, name empty\n");
-
 		}
 
 	} else {
