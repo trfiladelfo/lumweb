@@ -338,9 +338,10 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			//		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
 			//				== pdTRUE){
 			//		if(1){
-			printf("io_get_number_input_field: got values \n");
 
 			value = ret.value;
+			printf("io_get_number_input_field: got values %s=%d \n", id, value);
+
 			snprintf(
 					pcBuf,
 					iBufLen,
