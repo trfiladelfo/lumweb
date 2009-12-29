@@ -183,23 +183,7 @@ void io_init(void) {
 }
 
 #ifdef INCLUDE_HTTPD_CGI
-/*
-int atoi(char *s){
-	int num=0,flag=0, len;
-	len = strlen(s);
 
-	for(int i=0;i<=len;i++){
-		if(s[i] >= '0' && s[i] <= '9')
-			num = num * 10 + s[i] -'0';
-		else if(s[0] == '-' && i==0)
-			flag =1;
-		else
-			break;
-	}
-	if(flag == 1)
-		num = num * -1;
-	return num;
-}*/
   //*****************************************************************************
 //
 // This CGI handler is called whenever the web browser requests set.cgi.
@@ -216,19 +200,23 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	if (iNumParams > 0) { //test if set was success full
 		for(i = 0; i < iNumParams; i++){
 			name = pcParam[i];
-			value = atoi(pcValue[i]);
 
-			printf("SetCGIHandler: Found param: %s=%d \n", name, value);
+			if(CheckDecimalParam(pcValue[i], &value) == pdTRUE){
+				printf("SetCGIHandler: Found param: %s=%d \n", name, value);
 
-			xCom_msg.cmd = SET;
-			xCom_msg.dataSouce = DATA;
-			xCom_msg.from = xHttpdQueue;
-			xCom_msg.taskToResume = xLwipTaskHandle;
-			xCom_msg.freeItem = pdFALSE;
+				xCom_msg.cmd = SET;
+				xCom_msg.dataSouce = DATA;
+				xCom_msg.from = xHttpdQueue;
+				xCom_msg.taskToResume = xLwipTaskHandle;
+				xCom_msg.freeItem = pdFALSE;
 
-			xCom_msg.item = name;
-			xCom_msg.value = value;
-			xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+				xCom_msg.item = name;
+				xCom_msg.value = value;
+				xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+			}else {
+				printf("SetCGIHandler: Param: %s no number value(%s) \n", name, pcValue[i]);
+				return "/set_nok.htm";
+			}
 		}
 		return "/set_ok.htm";
 	} else {
