@@ -19,11 +19,11 @@
 			</tr>
 			<tr>
 				<td>
-					Stunden   <!--#NumberInputField-->
+					Stunden   <!--#NumberInputField id=day_hour-->
 
 				 </td>
 				<td>
-					Minuten   <!--#NumberInputField-->
+					Minuten   <!--#NumberInputField id=day_minute-->
 
 				</td>
 			</tr>
@@ -33,10 +33,10 @@
 			</tr>
 			<tr>
 				<td>
-					Stunden <!--#NumberInputField--> 
+					Stunden <!--#NumberInputField id=night_hour param2=2--> 
 				</td>
 				<td>
-					Minuten <!--#NumberInputField-->
+					Minuten <!--#NumberInputField id=night_minute param2=test-->
 				</td>
 			</tr>
 	
