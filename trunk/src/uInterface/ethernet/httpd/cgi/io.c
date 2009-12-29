@@ -398,23 +398,10 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 
 			nParam->next = tmp;
 			*(root) = nParam;
-			/*
-			if (*(root) == NULL) {
-				*(root) = nParam;
-			} else {
-				while (tmp->next != NULL) {
-					printf("SSIParamAdd: schon elemente vorhanden : '%s' \n", tmp->name);
-					tmp = tmp->next;
-					printf("SSIParamAdd: tmp : '%p', tmp->next: '%p' \n", tmp, tmp->next);
-				}
-				printf("SSIParamAdd: insert param \n");
-
-				tmp->next = nParam; */
-
 			printf("SSIParamAdd: added element name: '%s' value: '%s' \n",
 					nParam->name, nParam->value);
 		} else {
-			printf("Nicht eingefuegt, da leer\n");
+			printf("SSIParamAdd: didnt insert element, name empty\n");
 
 		}
 
@@ -448,18 +435,18 @@ pSSIParam SSIParamGet(pSSIParam root, char* name) {
 
 void SSIParamDeleteAll(pSSIParam* root) {
 	pSSIParam p = (*root), del = NULL;
-/*
+
 	while (p != NULL) {
+		printf("SSIParamDeleteAll: delete element : %s \n", p->name);
 		del = p;
 		p = p->next;
 		vPortFree(del->name);
 		printf("SSIParamDeleteAll: freed name \n");
 		vPortFree(del->value);
 		printf("SSIParamDeleteAll: freed value \n");
-		//vPortFree(del);
+		vPortFree(del);
 		// TODO Delete structur SSIParam completely
-		printf("SSIParamDeleteAll: delete element : %s \n", p->name);
-	}*/
+	}
 
 	printf("SSIParamDeleteAll: deleted all elements \n");
 }
