@@ -16,3 +16,8 @@ function decrease(id){
 		element.value = n_value;
 }
 
+function submit_form(id){
+	var queryString = $("#form-"+id).formSerialize();
+	queryString += "&ajax=1";
+	$("#container-"+id).load("/set.cgi?"+queryString);
+}
