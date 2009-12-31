@@ -4,11 +4,14 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <title>I/O Control Demo 2</title>
     <script type="text/javascript" src="./js/funcs.js"></script>
+    <script type="text/javascript" src="./js/jquery.js"></script>   
+    <script type="text/javascript" src="./js/form.js"></script>    
+     
     <link rel="stylesheet" href="/style.css">
   </head>
   <body>
 
-  <form method="get" action="set.cgi" name="times">
+  <form method="get" action="set.cgi" name="times" id="form-times">
   		<table>
   			<tr>
   		</table>
@@ -42,7 +45,14 @@
 			<tr>
 			  <td  colspan="2"><!--#SubmitInputField--> </td>
 			</tr>
+			
+			<tr>
+			  <td  colspan="2"><input type="button" value="Speichern AJAX" onclick="submit_form('times');"></td>
+			</tr>							
+			
 		</table>
   </form>
+  
+  <div id="container-times"></div>
   </body>
 </html>

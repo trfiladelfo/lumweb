@@ -218,7 +218,10 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 				return "/set_nok.htm";
 			}
 		}
-		return "/set_ok.htm";
+		if(FindCGIParameter("ajax", pcParam, iNumParams) == -1)
+			return "/set_ok.htm";
+		else
+			return "/set_oka.htm";
 	} else {
 		return "/set_nok.htm";
 	}
@@ -390,7 +393,7 @@ void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
 	char *arg = "Submit";
 
 	snprintf(pcBuf, iBufLen, "<!-- SubmitInputField %s -->"
-		"<input type=\"submit\" name=\"%s\" value=\"%s" " />", arg, arg, arg);
+		"<input type=\"submit\" name=\"%s\" value=\"%s\" />", arg, arg, arg);
 }
 
 int SSIParamAdd(pSSIParam* root, char* nameValue) {
