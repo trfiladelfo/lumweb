@@ -371,7 +371,7 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			snprintf(
 					pcBuf,
 					iBufLen,
-					"<input type=\"text\" name=\"%s\" value=\"%d\" id=\"%s\" />"
+					"<input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
 						"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
 						"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
 					id, value, id, id, id);
