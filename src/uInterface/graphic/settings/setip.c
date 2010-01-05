@@ -2,7 +2,7 @@
  * Menuitem for setting the IP-Address
  */
 
-#include "../graphicTask.h"
+#include "graphic/graphicLib.h"
 #include "hw_types.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
@@ -64,7 +64,7 @@ CanvasStruct(0, 0, &g_sIntroduction,
 
 }; */
 
-void setIP(tWidget *pWidget) {
+/*void setIP(tWidget *pWidget) {
 /*
 	//
 	// Remove the current panel.
@@ -80,9 +80,9 @@ void setIP(tWidget *pWidget) {
 	// Issue the initial paint request to the widgets.
 	//
 	WidgetPaint(WIDGET_ROOT);*/
-	printf("Setze IP aufgerufen\n");
+//	printf("Setze IP aufgerufen\n");
 
-}
+//}
 
 void setGW(tWidget *pWidget) {
 /*	//

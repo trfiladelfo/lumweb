@@ -104,6 +104,7 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(LUMINARY_DRIVER_DIR)/tlv320aic23b.c \
 		$(LUMINARY_DRIVER_DIR)/kitronix320x240x16_ssd2119_8bit.c \
 		$(GRAPHIC_DIR)/graphicTask.c \
+		$(GRAPHIC_DIR)/graphicLib.c \
 		$(GRAPHIC_DIR)/settings/setip.c
 		
 LIBS= $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a $(GRLIB_COMMON_DIR)/gcc/libgr.a  
