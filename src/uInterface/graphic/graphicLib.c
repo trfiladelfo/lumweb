@@ -118,6 +118,40 @@ void addButton(int left, int top, int width, int height, char* label,
 	xLastInsertedObject = (tWidget *) aktButton;
 }
 
+void addLabel     (int left, int top, int width, int height, char* text) {
+	tCanvasWidget * aktLabel = (tCanvasWidget*) pvPortMalloc(
+				sizeof(tCanvasWidget));
+
+		printf("Baue neuen Label (%s)\n", text);
+		aktLabel->pFont = &g_sFontCm14b;
+		aktLabel->pcText = text;
+		aktLabel->pucImage = 0;
+		aktLabel->sBase.lSize = sizeof(tCanvasWidget);
+		aktLabel->sBase.pParent = (tWidget*) xParentContainer;
+		aktLabel->sBase.pChild = 0;
+		aktLabel->sBase.pDisplay = &g_sKitronix320x240x16_SSD2119;
+		aktLabel->sBase.pNext = 0;
+		aktLabel->sBase.pfnMsgProc = CanvasMsgProc;
+		aktLabel->sBase.sPosition.sXMin = left;
+		aktLabel->sBase.sPosition.sYMin = top;
+		aktLabel->sBase.sPosition.sXMax = left + width - 1;
+		aktLabel->sBase.sPosition.sYMax = top + height - 1;
+		aktLabel->ulFillColor = ClrMidnightBlue;
+		aktLabel->ulOutlineColor = ClrGray;
+		aktLabel->ulStyle = CB_STYLE_TEXT;
+		aktLabel->ulTextColor = ClrWhite;
+
+		if (xLastInsertedObject) {
+			xLastInsertedObject->pNext = (tWidget*) aktLabel;
+		}
+
+		if (!xRootObject) {
+			printf("Label als root einhaengen\n");
+			xRootObject = (tWidget *) aktLabel;
+		}
+		printf("Label als last einhaengen\n");
+		xLastInsertedObject = (tWidget *) aktLabel;
+}
 void addSlider(int left, int top, int width, int height, char* label,
 		long value, void(*callback)(tWidget *pWidget, long value)) {
 	tSliderWidget * aktSlider = (tSliderWidget*) pvPortMalloc(
@@ -128,8 +162,8 @@ void addSlider(int left, int top, int width, int height, char* label,
 	aktSlider->pcText = label;
 
 	aktSlider->lValue = value;
-	aktSlider->lMax = value + 25;
-	aktSlider->lMin = value - 25;
+	aktSlider->lMax = 0;
+	aktSlider->lMin = 100;
 
 	aktSlider->pucImage = 0;
 
