@@ -3,8 +3,7 @@
  */
 
 #include "graphic/graphicTask.h"
-#include "graphic/graphicLib.h"
-//#include "graphic/settings/settings.h"
+#include "graphic/graphicWebClient.h""
 
 #include "hw_types.h"
 
@@ -25,47 +24,12 @@
 //
 //*****************************************************************************
 
-
-void setIP(tWidget *pWidget) {
-	/*
-	 //
-	 // Remove the current panel.
-	 //
-	 WidgetRemove(pWidget);
-
-	 //
-	 // Add and draw the new panel.
-	 //
-	 WidgetAdd(WIDGET_ROOT, (tWidget *) (&g_psSliderPanels));
-
-	 //
-	 // Issue the initial paint request to the widgets.
-	 //
-	 WidgetPaint(WIDGET_ROOT);*/
-	printf("Setze IP aufgerufen\n");
-
-}
-
-void sliderChange (tWidget *pWidget, long value) {
-	printf("neuer Slider wert: %d\n", value);
-}
-
 void vGraphicTask(void* pvParameters) {
 
-	printf("Initialize Graphic ...\n");
+	printf("Initialize Graphic ...\nLoad Menu\n");
 
-	initPanel("Hallo Welt!!!");
+	loadMenu();
 
-	addButton(285, 40, 30, 30, "U", setIP);
-	addButton(285, 205, 30, 30, "D", setIP);
-
-	addButton(120, 40, 30, 30, "-", setIP);
-	addSlider(155, 40, 80, 30, "Wert1", 50, sliderChange);
-	addButton(240, 40, 30, 30, "+", setIP);
-	addButton(120, 75, 30, 30, "-", setIP);
-	addSlider(155, 75, 80, 30, "Wert2", 50, sliderChange);
-	addButton(240, 75, 30, 30, "+", setIP);
-	drawPanel();
 	//
 	// Loop forever handling widget messages.
 	//
