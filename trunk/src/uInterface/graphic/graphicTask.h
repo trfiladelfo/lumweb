@@ -10,8 +10,6 @@
 
 #include "grlib/grlib.h"
 
-tContext g_sContext;
-
 void vGraphicTask (void* pvParameters);
 
 #endif /* GRAPHICTASK_H_ */
