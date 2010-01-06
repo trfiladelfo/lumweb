@@ -109,8 +109,8 @@ tPushButtonWidget *addButton(int left, int top, int width, int height,
 
 	if (autorepeat) {
 		aktButton->ulStyle |= PB_STYLE_AUTO_REPEAT;
-		aktButton->usAutoRepeatDelay = 200; // change for Autorepeat
-		aktButton->usAutoRepeatRate = 50;// change for Autorepeat
+		aktButton->usAutoRepeatDelay = 100; // change for Autorepeat
+		aktButton->usAutoRepeatRate = 20;// change for Autorepeat
 		aktButton->ulAutoRepeatCount = 1; // change for Autorepeat
 	} else {
 		aktButton->usAutoRepeatDelay = 0; // change for Autorepeat
