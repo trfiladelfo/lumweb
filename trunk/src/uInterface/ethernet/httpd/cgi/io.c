@@ -214,8 +214,8 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 				xCom_msg.value = value;
 				xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 			}else {
-				printf("SetCGIHandler: Param: %s no number value(%s) \n", name, pcValue[i]);
-				return "/set_nok.htm";
+				printf("SetCGIHandler: WARNING - Param: %s no number value(%s) \n", name, pcValue[i]);
+				return "/set_ok.htm";
 			}
 		}
 		if(FindCGIParameter("ajax", pcParam, iNumParams) == -1)
@@ -335,17 +335,15 @@ char* strtrim(char *pszStr) {
 void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
 	pSSIParam p = NULL;
-	char *id = "INVALID";
+	char *id = NULL, *label = NULL;
 
-	p = SSIParamGet(*(params), "id");
-	if (p != NULL){
-		id = p->value;
-		printf("io_get_number_input_field: found id parameter \n");
-	}
+
+	label = SSIParamGetValue(*(params), "label");
+	id = SSIParamGetValue(*(params), "id");
 
 	SSIParamDeleteAll(params);
 
-	if (1) {
+	if (id != NULL && label != NULL) {
 		printf("io_get_number_input_field: getting values \n");
 		xCom_msg.cmd = GET;
 		xCom_msg.dataSouce = DATA;
@@ -361,26 +359,25 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 		printf("io_get_number_input_field: suspend lwipTask \n");
 
 		if (xQueueReceive(xHttpdQueue, &xCom_msg, ( portTickType ) 10 ) == pdTRUE) {
-			//		if ((xQueueReceive(xCom_msg.from, &xCom_msg, ( portTickType ) 10 ))
-			//				== pdTRUE){
-			//		if(1){
-
 			value = xCom_msg.value;
 			printf("io_get_number_input_field: got values %s=%d \n", id, value);
 
 			snprintf(
 					pcBuf,
 					iBufLen,
-					"<input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
+					"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
 						"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
 						"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
-					id, value, id, id, id);
+						label, id, value, id, id, id);
 			printf("io_get_number_input_field: done \n");
 
 		} else {
-			printf("io_get_number_input_field: error \n");
-			snprintf(pcBuf, iBufLen, "ERROR: NO DATA");
+			printf("io_get_number_input_field: queu error \n");
+			snprintf(pcBuf, iBufLen, "NumberInputField: ERROR - NO DATA FROM QUEUE");
 		}
+	}else{
+		printf("io_get_number_input_field: error no id and/or name found\n");
+		snprintf(pcBuf, iBufLen, "NumberInputField: ERROR - error no id and/or name found");
 	}
 }
 
@@ -390,12 +387,23 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 //
 //*****************************************************************************
 void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
-	char *arg = "Submit";
+	char *label = NULL, *ajax_id= NULL;
+	label = SSIParamGetValue(*(params), "label");
 
-	snprintf(pcBuf, iBufLen, "<!-- SubmitInputField %s -->"
-		"<input type=\"submit\" name=\"%s\" value=\"%s\" />", arg, arg, arg);
+	SSIParamDeleteAll(params);
+
+	if(label != NULL){
+		ajax_id = SSIParamGetValue(*(params), "ajax_id");
+		if(ajax_id != NULL) // AJAX
+			snprintf(pcBuf, iBufLen, "<!-- SubmitInputField label=%s -->"
+				"<input type=\"button\" name=\"%s\" value=\"%s\" onclick=\"submit_form('%s');\"/>", label, label, label, ajax_id);
+		else
+			snprintf(pcBuf, iBufLen, "<!-- SubmitInputField label=%s -->"
+					"<input type=\"submit\" name=\"%s\" value=\"%s\" />", label, label, label);
+	}else{
+		snprintf(pcBuf, iBufLen, "SubmitInputField: ERROR - no param label found ");
+	}
 }
-
 int SSIParamAdd(pSSIParam* root, char* nameValue) {
 	int rc = 0;
 	char *value, *name;
@@ -458,6 +466,18 @@ pSSIParam SSIParamGet(pSSIParam root, char* name) {
 	return ret;
 }
 
+char* SSIParamGetValue(pSSIParam root, char* name) {
+	pSSIParam p;
+	char* value = NULL;
+
+	p = SSIParamGet(root, name);
+	if (p != NULL){
+		value = p->value;
+		printf("SSIParamGetValue: found value '%s' for %s \n", value, name);
+	}
+
+	return value;
+}
 void SSIParamDeleteAll(pSSIParam* root) {
 	pSSIParam p = (*root), del = NULL;
 
