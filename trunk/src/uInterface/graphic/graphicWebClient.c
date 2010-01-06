@@ -105,7 +105,7 @@ void drawGWC(int offset) {
 
 	offset = 0;
 
-	initPanel("Hallo Welt!!!");
+	initPanel("LumWeb - The Universal Interface");
 
 	for (i = 0; akt != 0 && i < GWC_ROWS_PER_VIEW; i++) {
 
@@ -119,12 +119,12 @@ void drawGWC(int offset) {
 		if ((akt->status & GWC_NUMERIC) == GWC_NUMERIC) {
 
 			if (!akt->stringValue) {
-				akt->stringValue = (char*) pvPortMalloc(5 * sizeof(char));
+				akt->stringValue = (char*) pvPortMalloc((GWC_ROW_VALUE_MAX_LENGTH + 1) * sizeof(char));
 			}
 			akt->decrease = addButton(GWC_ROW_DECREASE_BUTTON_LEFT, top,
 					GWC_ROW_DECREASE_BUTTON_WIDTH, GWC_ROW_HEIGHT,
 					GWC_ROW_DECREASE_BUTTON_SYMBOL, GWC_ROW_DECREASE_AUTOREPEAT, decrease);
-			snprintf(akt->stringValue, 5, "%d", akt->value);
+			snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1), "%d", akt->value);
 			akt->valueLabel = addLabel(GWC_ROW_VALUE_LEFT, top,
 					GWC_ROW_VALUE_WIDTH, GWC_ROW_HEIGHT, akt->stringValue);
 			akt->increase = addButton(GWC_ROW_INCREASE_BUTTON_LEFT, top,
@@ -166,14 +166,13 @@ void increase(tWidget *pWidget) {
 		akt->value++;
 
 		if (!akt->stringValue) {
-			akt->stringValue = (char*) pvPortMalloc(5 * sizeof(char));
+			akt->stringValue = (char*) pvPortMalloc((GWC_ROW_VALUE_MAX_LENGTH + 1) * sizeof(char));
 		}
-		snprintf(akt->stringValue, 5, "%d", akt->value);
+		snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d", akt->value);
 		akt->valueLabel->pcText = akt->stringValue;
 
 		WidgetPaint((tWidget*) akt->valueLabel);
 	}
-	printf("increase aufgerufen\n");
 }
 
 void decrease(tWidget *pWidget) {
@@ -188,15 +187,13 @@ void decrease(tWidget *pWidget) {
 		akt->value--;
 
 		if (!akt->stringValue) {
-			akt->stringValue = (char*) pvPortMalloc(5 * sizeof(char));
+			akt->stringValue = (char*) pvPortMalloc((GWC_ROW_VALUE_MAX_LENGTH + 1) * sizeof(char));
 		}
-		snprintf(akt->stringValue, 5, "%d", akt->value);
+		snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1), "%d", akt->value);
 		akt->valueLabel->pcText = akt->stringValue;
 
 		WidgetPaint((tWidget*) akt->valueLabel);
 	}
-
-	printf("decrease aufgerufen\n");
 }
 
 void backPage(tWidget *pWidget) {
