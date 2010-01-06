@@ -33,9 +33,9 @@ tWidget * xLastInsertedObject;
 
 
 void initPanel    (char* headerText);
-void addButton    (int left, int top, int width, int height, char* label, void (*callback)(tWidget *pWidget));
-void addLabel     (int left, int top, int width, int height, char* text);
-void addSlider    (int left, int top, int width, int height, char* label, long value, void (*callback)(tWidget *pWidget, long value));
+tPushButtonWidget *addButton    (int left, int top, int width, int height, char* label, tBoolean autorepeat, void (*callback)(tWidget *pWidget));
+tCanvasWidget *addLabel     (int left, int top, int width, int height, char* text);
+tSliderWidget *addSlider    (int left, int top, int width, int height, char* label, long value, void (*callback)(tWidget *pWidget, long value));
 void drawPanel 	  (void);
 void destroyPanel (void);
 
