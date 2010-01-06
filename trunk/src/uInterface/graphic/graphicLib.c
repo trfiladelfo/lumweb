@@ -46,6 +46,11 @@ void initPanel(char* headerText) {
 	GrStringDrawCentered(&g_sContext, headerText, -1,
 			GrContextDpyWidthGet(&g_sContext) / 2, 15, 0);
 
+	printf("Destroy old Panel\n");
+	destroyPanel();
+
+	printf("Create new Panel\n");
+
 	xParentContainer = (tCanvasWidget*) pvPortMalloc(sizeof(tCanvasWidget));
 
 	xParentContainer->sBase.lSize = sizeof(tCanvasWidget);
@@ -76,12 +81,11 @@ void initPanel(char* headerText) {
 /**
  * Adds a Button to the Panel
  */
-void addButton(int left, int top, int width, int height, char* label,
-		void(*callback)(tWidget *pWidget)) {
+tPushButtonWidget *addButton(int left, int top, int width, int height,
+		char* label, tBoolean autorepeat, void(*callback)(tWidget *pWidget)) {
 	tPushButtonWidget * aktButton = (tPushButtonWidget*) pvPortMalloc(
 			sizeof(tPushButtonWidget));
 
-	printf("Baue neuen Button (%s)\n", label);
 	aktButton->pFont = &g_sFontCm14b;
 	aktButton->pcText = label;
 	aktButton->pfnOnClick = callback;
@@ -102,62 +106,68 @@ void addButton(int left, int top, int width, int height, char* label,
 	aktButton->ulPressFillColor = ClrGray;
 	aktButton->ulStyle = PB_STYLE_FILL | PB_STYLE_OUTLINE | PB_STYLE_TEXT;
 	aktButton->ulTextColor = ClrWhite;
-	aktButton->usAutoRepeatDelay = 0; // change for Autorepeat
-	aktButton->usAutoRepeatRate = 0;// change for Autorepeat
-	aktButton->ulAutoRepeatCount = 0; // change for Autorepeat
 
+	if (autorepeat) {
+		aktButton->ulStyle |= PB_STYLE_AUTO_REPEAT;
+		aktButton->usAutoRepeatDelay = 200; // change for Autorepeat
+		aktButton->usAutoRepeatRate = 50;// change for Autorepeat
+		aktButton->ulAutoRepeatCount = 1; // change for Autorepeat
+	} else {
+		aktButton->usAutoRepeatDelay = 0; // change for Autorepeat
+		aktButton->usAutoRepeatRate = 0;// change for Autorepeat
+		aktButton->ulAutoRepeatCount = 0; // change for Autorepeat
+	}
 	if (xLastInsertedObject) {
 		xLastInsertedObject->pNext = (tWidget*) aktButton;
 	}
 
 	if (!xRootObject) {
-		printf("Button als root einhaengen\n");
 		xRootObject = (tWidget *) aktButton;
 	}
-	printf("Button als last einhaengen\n");
 	xLastInsertedObject = (tWidget *) aktButton;
+
+	return aktButton;
 }
 
-void addLabel     (int left, int top, int width, int height, char* text) {
+tCanvasWidget *addLabel(int left, int top, int width, int height, char* text) {
 	tCanvasWidget * aktLabel = (tCanvasWidget*) pvPortMalloc(
-				sizeof(tCanvasWidget));
+			sizeof(tCanvasWidget));
 
-		printf("Baue neuen Label (%s)\n", text);
-		aktLabel->pFont = &g_sFontCm14b;
-		aktLabel->pcText = text;
-		aktLabel->pucImage = 0;
-		aktLabel->sBase.lSize = sizeof(tCanvasWidget);
-		aktLabel->sBase.pParent = (tWidget*) xParentContainer;
-		aktLabel->sBase.pChild = 0;
-		aktLabel->sBase.pDisplay = &g_sKitronix320x240x16_SSD2119;
-		aktLabel->sBase.pNext = 0;
-		aktLabel->sBase.pfnMsgProc = CanvasMsgProc;
-		aktLabel->sBase.sPosition.sXMin = left;
-		aktLabel->sBase.sPosition.sYMin = top;
-		aktLabel->sBase.sPosition.sXMax = left + width - 1;
-		aktLabel->sBase.sPosition.sYMax = top + height - 1;
-		aktLabel->ulFillColor = ClrMidnightBlue;
-		aktLabel->ulOutlineColor = ClrGray;
-		aktLabel->ulStyle = CB_STYLE_TEXT;
-		aktLabel->ulTextColor = ClrWhite;
+	aktLabel->pFont = &g_sFontCm14b;
+	aktLabel->pcText = text;
+	aktLabel->pucImage = 0;
+	aktLabel->sBase.lSize = sizeof(tCanvasWidget);
+	aktLabel->sBase.pParent = (tWidget*) xParentContainer;
+	aktLabel->sBase.pChild = 0;
+	aktLabel->sBase.pDisplay = &g_sKitronix320x240x16_SSD2119;
+	aktLabel->sBase.pNext = 0;
+	aktLabel->sBase.pfnMsgProc = CanvasMsgProc;
+	aktLabel->sBase.sPosition.sXMin = left;
+	aktLabel->sBase.sPosition.sYMin = top;
+	aktLabel->sBase.sPosition.sXMax = left + width - 1;
+	aktLabel->sBase.sPosition.sYMax = top + height - 1;
+	aktLabel->ulFillColor = ClrBlack;
+	aktLabel->ulOutlineColor = ClrGray;
+	aktLabel->ulStyle = CB_STYLE_TEXT | CB_STYLE_FILL;
+	aktLabel->ulTextColor = ClrWhite;
 
-		if (xLastInsertedObject) {
-			xLastInsertedObject->pNext = (tWidget*) aktLabel;
-		}
+	if (xLastInsertedObject) {
+		xLastInsertedObject->pNext = (tWidget*) aktLabel;
+	}
 
-		if (!xRootObject) {
-			printf("Label als root einhaengen\n");
-			xRootObject = (tWidget *) aktLabel;
-		}
-		printf("Label als last einhaengen\n");
-		xLastInsertedObject = (tWidget *) aktLabel;
+	if (!xRootObject) {
+		xRootObject = (tWidget *) aktLabel;
+	}
+	xLastInsertedObject = (tWidget *) aktLabel;
+
+	return aktLabel;
 }
-void addSlider(int left, int top, int width, int height, char* label,
+
+tSliderWidget *addSlider(int left, int top, int width, int height, char* label,
 		long value, void(*callback)(tWidget *pWidget, long value)) {
 	tSliderWidget * aktSlider = (tSliderWidget*) pvPortMalloc(
 			sizeof(tSliderWidget));
 
-	printf("Baue neuen Slider (%s)\n", label);
 	aktSlider->pFont = &g_sFontCm14b;
 	aktSlider->pcText = label;
 
@@ -192,27 +202,28 @@ void addSlider(int left, int top, int width, int height, char* label,
 	aktSlider->ulStyle = SL_STYLE_BACKG_FILL | SL_STYLE_FILL | SL_STYLE_OUTLINE
 			| SL_STYLE_TEXT | SL_STYLE_BACKG_TEXT;
 
-
 	if (xLastInsertedObject) {
 		xLastInsertedObject->pNext = (tWidget*) aktSlider;
 	}
 
 	if (!xRootObject) {
-		printf("Slider als root einhaengen\n");
 		xRootObject = (tWidget *) aktSlider;
 	}
-	printf("Slider als last einhaengen\n");
 	xLastInsertedObject = (tWidget *) aktSlider;
+
+	return aktSlider;
 }
 
 void drawPanel(void) {
 	//
 	// Issue the initial paint request to the widgets.
 	//
-	xParentContainer->sBase.pChild = xRootObject;
+	if (xParentContainer) {
+		xParentContainer->sBase.pChild = xRootObject;
 
-	printf("Zeichne Panel\n");
-	WidgetPaint(WIDGET_ROOT);
+		printf("Zeichne Panel\n");
+		WidgetPaint(WIDGET_ROOT);
+	}
 }
 
 /**
@@ -229,9 +240,26 @@ void destroyWidget(tWidget* toDestroy) {
  * Free all the RAM from the actual Panel
  */
 void destroyPanel(void) {
-	destroyWidget(xParentContainer->sBase.pChild);
-	destroyWidget(xParentContainer->sBase.pNext);
-	vPortFree(xParentContainer->sBase.sPosition);
-	vPortFree(xParentContainer);
+	if (xParentContainer != 0) {
+		printf("destroyPanel: destroy sBase.child\n");
+		destroyWidget(xParentContainer->sBase.pChild);
+		printf("destroyPanel: destroy sBase.next\n");
+		destroyWidget(xParentContainer->sBase.pNext);
+		printf("destroyPanel: free Container \n");
+		vPortFree(xParentContainer);
+
+		//
+		// Fill the top 24 rows of the screen with blue to create the banner.
+		//
+		sRect.sXMin = 0;
+		sRect.sYMin = 0;
+		sRect.sXMax = GrContextDpyWidthGet(&g_sContext);
+		sRect.sYMax = GrContextDpyHeightGet(&g_sContext);
+
+		GrContextForegroundSet(&g_sContext, ClrBlack);
+		GrContextBackgroundSet(&g_sContext, ClrBlack);
+		GrRectFill(&g_sContext, &sRect);
+		GrRectDraw(&g_sContext, &sRect);
+	}
 }
 

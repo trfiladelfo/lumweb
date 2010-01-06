@@ -14,24 +14,26 @@
 #include "grlib/pushbutton.h"
 #include "grlib/checkbox.h"
 
-#define GWC_LABEL   0b00000001;
-#define GWC_NUMERIC 0b00000010;
-#define GWC_BOOLEAN 0b00000100;
-#define GWC_LINK    0b00001000;
+#define GWC_LABEL   0b00000001
+#define GWC_NUMERIC 0b00000010
+#define GWC_BOOLEAN 0b00000100
+#define GWC_LINK    0b00001000
 
-typedef struct  {
+typedef struct __row  {
 	char *id;
 	char *name;
 	long value;
+	char* stringValue;
+	char status;
 	tCanvasWidget *nameLabel;
 	tCanvasWidget *valueLabel;
 	tPushButtonWidget *decrease;
 	tPushButtonWidget *increase;
 	tCheckBoxWidget *checkbox;
-	struct gwcRow* next;
+	struct __row* next;
 }gwcRow;
 
-gwcRow *root;
+gwcRow *pgwcRoot;
 
 void loadMenu (void);
 
