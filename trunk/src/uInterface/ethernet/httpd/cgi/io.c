@@ -133,8 +133,9 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
 //*****************************************************************************
 static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 		"NumberInputField", // SSI_INDEX_NUMBERINPUTFIELD
-		"SubmitInputField" // SSI_INDEX_SUBMITINPUTFIELD
-		};
+		"SubmitInputField", // SSI_INDEX_SUBMITINPUTFIELD
+		"SavedParams"		//SSI_INDEX_SAVEDPARAMS
+};
 
 //*****************************************************************************
 //
@@ -152,6 +153,8 @@ static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 #define SSI_INDEX_DATEANDTIME  			(0)
 #define SSI_INDEX_NUMBERINPUTFIELD     	(1)
 #define SSI_INDEX_SUBMITINPUTFIELD     	(2)
+#define SSI_INDEX_SAVEDPARAMS    		(3)
+
 
 #define JAVASCRIPT_HEADER                                                     \
     "<script type='text/javascript' language='JavaScript'><!--\n"
@@ -184,6 +187,8 @@ void io_init(void) {
 
 #ifdef INCLUDE_HTTPD_CGI
 
+char **paramsSet, **valuesSet;
+int paramValueLen; 				// number of params/values set last time - 1
   //*****************************************************************************
 //
 // This CGI handler is called whenever the web browser requests set.cgi.
@@ -194,6 +199,10 @@ static char *
 SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	int i, value = 0;
 	char *name;
+
+	paramsSet = pvPortMalloc(sizeof(pcParam));
+	valuesSet = pvPortMalloc(sizeof(pcValue));
+	paramValueLen = -1;
 
 	printf("SetCGIHandler: %d Params\n", iNumParams);
 
@@ -213,15 +222,20 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 				xCom_msg.item = name;
 				xCom_msg.value = value;
 				xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+
+				if(paramsSet != NULL && valuesSet != NULL){
+					*(paramsSet+i) = name;
+					*(valuesSet+i) = pcValue[i];
+					paramValueLen = i;
+				}
 			}else {
 				printf("SetCGIHandler: WARNING - Param: %s no number value(%s) \n", name, pcValue[i]);
-				return "/set_ok.htm";
 			}
 		}
 		if(FindCGIParameter("ajax", pcParam, iNumParams) == -1)
-			return "/set_ok.htm";
+			return "/set_ok.ssi";
 		else
-			return "/set_oka.htm";
+			return "/set_oka.ssi";
 	} else {
 		return "/set_nok.htm";
 	}
@@ -267,6 +281,10 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 
 	case SSI_INDEX_SUBMITINPUTFIELD:
 		io_get_submit_input_button(pcInsert, iInsertLen, params);
+		break;
+
+	case SSI_INDEX_SAVEDPARAMS:
+		io_print_saved_params(pcInsert, iInsertLen);
 		break;
 
 	default:
@@ -404,6 +422,28 @@ void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
 		snprintf(pcBuf, iBufLen, "SubmitInputField: ERROR - no param label found ");
 	}
 }
+
+//*****************************************************************************
+//
+// prints the last set values/params
+//
+//*****************************************************************************
+void io_print_saved_params(char * pcBuf, int iBufLen) {
+	int i;
+	if(paramValueLen == -1){
+		snprintf(pcBuf, iBufLen, "Keine Parameter gesetzt");
+	}else{
+		for(i=0; i <= paramValueLen; i++){
+			printf("io_print_saved_params: valueSet=%s, paramSet=%s \n", *(valuesSet+i), *(paramsSet+i));
+		//	vPortFree((valuesSet+i));
+		//	vPortFree((paramsSet+i));
+		}
+		//vPortFree(paramsSet);
+		//vPortFree(valuesSet);
+		snprintf(pcBuf, iBufLen, "%d Parameter gesetzt", paramValueLen+1);
+	}
+}
+
 int SSIParamAdd(pSSIParam* root, char* nameValue) {
 	int rc = 0;
 	char *value, *name;
@@ -490,7 +530,6 @@ void SSIParamDeleteAll(pSSIParam* root) {
 		vPortFree(del->value);
 		printf("SSIParamDeleteAll: freed value \n");
 		vPortFree(del);
-		// TODO Delete structur SSIParam completely
 	}
 
 	printf("SSIParamDeleteAll: deleted all elements \n");

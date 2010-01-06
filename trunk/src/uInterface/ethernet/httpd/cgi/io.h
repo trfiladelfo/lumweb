@@ -44,6 +44,7 @@ typedef SSIParam * pSSIParam;
 void io_init(void);
 void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params);
+void io_print_saved_params(char * pcBuf, int iBufLen);
 #ifdef __cplusplus
 }
 #endif
