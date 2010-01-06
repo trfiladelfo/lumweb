@@ -18,11 +18,11 @@
 			</tr>
 			<tr>
 				<td>
-					Stunden   <!--#NumberInputField id=day_hour-->
+					 <!--#NumberInputField id=day_hour label=Stunden-->
 
 				 </td>
 				<td>
-					Minuten   <!--#NumberInputField id=day_minute-->
+					<!--#NumberInputField id=day_minute label=Minuten-->
 
 				</td>
 			</tr>
@@ -32,21 +32,23 @@
 			</tr>
 			<tr>
 				<td>
-					Stunden <!--#NumberInputField id=night_hour param2=2--> 
+					<!--#NumberInputField id=night_hour label=Stunden--> 
 				</td>
 				<td>
-					Minuten <!--#NumberInputField id=night_minute param2=test-->
+					<!--#NumberInputField id=night_minute label=Minuten-->
 				</td>
 			</tr>
 	
 			<tr>
-			  <td  colspan="2"><!--#SubmitInputField--> </td>
+			  <td  colspan="2"><!--#SubmitInputField label=Speichern--> </td>
 			</tr>
 			
 			<tr>
 			  <td  colspan="2"><input type="button" value="Speichern AJAX" onclick="submit_form('times');"></td>
 			</tr>							
-			
+			<tr>
+			  <td  colspan="2"><!--#SubmitInputField label=Speichern_AJAX ajax_id=times--> </td>
+			</tr>	
 		</table>
   </form>
   
