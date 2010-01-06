@@ -1,28 +1,11 @@
-Tasks:													Fertig %:
-	- Kommunikationstask (zur Maschine)					0
+Tasks:
+	- Maschinenkommunikation							50% - Bis jetzt nur eine Testklasse implementiert
 	
-	- Config-file 										
-		- designen										0
-		- erstellen										0
-		- parser implementieren							0
-	
-	- Ausgabe	
-		- Ausgabe auf LCD								
-			- "Objekte" zum Anzeigen designen			10
-			- Eingabemögichkeit							
-				- Touch									0
-				- Tasten								50
-				
-		- CGI (Dynamische Ausgabe von Werten)			30
+	- Touchinterface									45%
+		- Webanbindung									 0%
+		- Objeke bauen und anzeigen 					90%
 		
-		- Templatesystem								
-			- designen									0
-			- erstellen									0
-			- parser implementieren						0
-			
-			
-Flash Schreiben/Lesen (lmi_flash.h)
-Lesen der Konfig files via MicroSD und LAN!!
-
-
-HTTPD mit CGI multiuser testen (achtung task suspend!)
+	- Webinterface										80%
+		- SSI											90% - Fehler beim Freigeben vom Speicher
+		- CGI											50% - Interface in arbeit
+		- HTML										   100%	- Ansicht erfolgt automatisch im Browser	
