@@ -18,7 +18,7 @@
 			</tr>
 			<tr>
 				<td>
-					 <!--#NumberInputField id=day_hour label=Stunden-->
+					 <!--#NumberInputField id=day_hour label=Stunden max=24 min=0-->
 
 				 </td>
 				<td>
@@ -44,6 +44,10 @@
 			</tr>
 			
 			<tr>
+			  <td  colspan="2"><!--#CheckboxInputField id=night_hour label=Stunden--> </td>
+			</tr>
+					
+			<tr>
 			  <td  colspan="2"><input type="button" value="Speichern AJAX" onclick="submit_form('times');"></td>
 			</tr>							
 			<tr>
@@ -52,6 +56,8 @@
 		</table>
   </form>
   
-  <div id="container-times"></div>
+  <div id="container-times">
+  	<div id="last-update">Letzte Aktualisierung <!--#DateTime--></div>
+  </div>
   </body>
 </html>

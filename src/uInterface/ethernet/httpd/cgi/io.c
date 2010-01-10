@@ -135,7 +135,8 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
 static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 		"NumberInputField", // SSI_INDEX_NUMBERINPUTFIELD
 		"SubmitInputField", // SSI_INDEX_SUBMITINPUTFIELD
-		"SavedParams"		//SSI_INDEX_SAVEDPARAMS
+		"SavedParams",		//SSI_INDEX_SAVEDPARAMS
+		"CheckboxInputField" // SSI_INDEX_CHECKBOXINPUTFIELD
 };
 
 //*****************************************************************************
@@ -155,6 +156,7 @@ static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 #define SSI_INDEX_NUMBERINPUTFIELD     	(1)
 #define SSI_INDEX_SUBMITINPUTFIELD     	(2)
 #define SSI_INDEX_SAVEDPARAMS    		(3)
+#define SSI_INDEX_CHECKBOXINPUTFIELD    (4)
 
 
 #define JAVASCRIPT_HEADER                                                     \
@@ -199,7 +201,7 @@ int paramValueLen; 				// number of params/values set last time - 1
 static char *
 SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	int i, value = 0;
-	char *name;
+	char *name, save = 0;
 
 	if(paramsSet != NULL && valuesSet != NULL){
 		for(i=0; i <= paramValueLen; i++){
@@ -227,9 +229,9 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 		for(i = 0; i < iNumParams; i++){
 			name = pcParam[i];
 
-			if(CheckDecimalParam(pcValue[i], &value) == pdTRUE){
-				printf("SetCGIHandler: Found param: %s=%d \n", name, value);
-
+			if(strcmp(name, "uid") == 0 || strcmp(name, "ajax") == 0){ // ignore params ajax and uid
+				;
+			}else{
 				xCom_msg.cmd = SET;
 				xCom_msg.dataSouce = DATA;
 				xCom_msg.from = xHttpdQueue;
@@ -237,23 +239,38 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 				xCom_msg.freeItem = pdFALSE;
 
 				xCom_msg.item = name;
-				xCom_msg.value = value;
-				xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+				/* check for checkbox value */
+				if(strcmp(pcValue[i], "on") == 0){
+					printf("SetCGIHandler: Found Checkbox %s\n", name);
+					xCom_msg.value = 1;
+					save = 1;
 
-				if(paramsSet != NULL && valuesSet != NULL && i < 10){
-					*(paramsSet+i) = pvPortMalloc(strlen(name)+1);
-					*(valuesSet+i) = pvPortMalloc(strlen(pcValue[i])+1);
+				}else if(CheckDecimalParam(pcValue[i], &value) == pdTRUE){
+					printf("SetCGIHandler: Found param: %s=%d \n", name, value);
+					xCom_msg.value = value;
+					save = 1;
 
-					if(*(paramsSet+i) != NULL && *(valuesSet+i) != NULL){
-						strcpy(*(paramsSet+i), name);
-						strcpy(*(valuesSet+i), pcValue[i]);
-						printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
-					}
-
-					paramValueLen = i;
+				}else {
+					printf("SetCGIHandler: WARNING - Param: %s no number value(%s) \n", name, pcValue[i]);
 				}
-			}else {
-				printf("SetCGIHandler: WARNING - Param: %s no number value(%s) \n", name, pcValue[i]);
+
+				if(save == 1){ // send value to comTask
+					save = 0;
+					xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+
+					if(paramsSet != NULL && valuesSet != NULL && i < 10){
+						*(paramsSet+i) = pvPortMalloc(strlen(name)+1);
+						*(valuesSet+i) = pvPortMalloc(strlen(pcValue[i])+1);
+
+						if(*(paramsSet+i) != NULL && *(valuesSet+i) != NULL){
+							strcpy(*(paramsSet+i), name);
+							strcpy(*(valuesSet+i), pcValue[i]);
+							printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
+						}
+						paramValueLen = i;
+					}
+				}
+
 			}
 		}
 		if(FindCGIParameter("ajax", pcParam, iNumParams) == -1)
@@ -311,6 +328,10 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 
 	case SSI_INDEX_SAVEDPARAMS:
 		io_print_saved_params(pcInsert, iInsertLen);
+		break;
+
+	case SSI_INDEX_CHECKBOXINPUTFIELD:
+		io_get_checkbox_input_field(pcInsert, iInsertLen, params);
 		break;
 
 	default:
@@ -371,25 +392,16 @@ char* strtrim(char *pszStr) {
 
 	return ret;
 }
+
 //*****************************************************************************
 //
-// creates number input field  and +/- buttons
+// gets a value for $id from comTask
 //
 //*****************************************************************************
-void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
-	int value = 1;
-	pSSIParam p = NULL;
-	char *id = NULL, *label = NULL;
+int io_get_value_from_comtask(char* id){
 
-
-	label = SSIParamGetValue(*(params), "label");
-	id = SSIParamGetValue(*(params), "id");
-
-	SSIParamDeleteAll(params);
-
-	if (id != NULL && label != NULL) {
 #ifdef SSI_DEBUG
-		printf("io_get_number_input_field: getting values \n");
+		printf("io_get_value_from_comtask: getting values \n");
 #endif
 		xCom_msg.cmd = GET;
 		xCom_msg.dataSouce = DATA;
@@ -400,32 +412,61 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 		xCom_msg.item = id;
 		xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 #ifdef SSI_DEBUG
-		printf("io_get_number_input_field: sending req to com task \n");
+		printf("io_get_value_from_comtask: sending req to com task \n");
 #endif
 		vTaskSuspend(xLwipTaskHandle);
-		printf("io_get_number_input_field: suspend lwipTask \n");
+		printf("io_get_value_from_comtask: suspend lwipTask \n");
 
 		if (xQueueReceive(xHttpdQueue, &xCom_msg, ( portTickType ) 10 ) == pdTRUE) {
-			value = xCom_msg.value;
 #ifdef SSI_DEBUG
-			printf("io_get_number_input_field: got values %s=%d \n", id, value);
+			printf("io_get_value_from_comtask: got values %s=%d \n", id, xCom_msg.value);
 #endif
-			snprintf(
-					pcBuf,
-					iBufLen,
-					"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
-						"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
-						"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
-						label, id, value, id, id, id);
-#ifdef SSI_DEBUG
-			printf("io_get_number_input_field: done \n");
-#endif
-		} else {
-#ifdef SSI_DEBUG
-			printf("io_get_number_input_field: queu error \n");
-#endif
-			snprintf(pcBuf, iBufLen, "NumberInputField: ERROR - NO DATA FROM QUEUE");
-		}
+			return xCom_msg.value;
+		} else
+			return -1;
+}
+//*****************************************************************************
+//
+// creates number input field  and +/- buttons
+//
+//*****************************************************************************
+void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
+	int value = 1;
+	pSSIParam p = NULL;
+	char *id = NULL, *label = NULL, *max, *min;
+
+
+	label = SSIParamGetValue(*(params), "label");
+	id = SSIParamGetValue(*(params), "id");
+	max = SSIParamGetValue(*(params),"max");
+	min = SSIParamGetValue(*(params),"min");
+
+	SSIParamDeleteAll(params);
+
+	if (id != NULL && label != NULL) {
+			if(min == NULL)
+				min = "-1";
+			if(max == NULL)
+				max = "-1";
+
+			value = io_get_value_from_comtask(id);
+			if(value != -1){
+				snprintf(
+						pcBuf,
+						iBufLen,
+						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
+							"<br /><input type=\"button\" value=\"+\" onclick=\"inc('%s',%s,%s);\" />"
+							"<input type=\"button\" value=\"-\" onclick=\"dec('%s',%s,%s);\" />",
+							label, id, value, id, id, max, min, id, max, min);
+	#ifdef SSI_DEBUG
+				printf("io_get_number_input_field: done \n");
+	#endif
+			} else {
+	#ifdef SSI_DEBUG
+				printf("io_get_number_input_field: queu error \n");
+	#endif
+				snprintf(pcBuf, iBufLen, "NumberInputField: ERROR - NO DATA FROM QUEUE");
+			}
 	}else{
 #ifdef SSI_DEBUG
 		printf("io_get_number_input_field: error no id and/or name found\n");
@@ -478,6 +519,46 @@ void io_print_saved_params(char * pcBuf, int iBufLen) {
 	}
 }
 
+//*****************************************************************************
+//
+//
+//
+//*****************************************************************************
+void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
+	int value = 1;
+	pSSIParam p = NULL;
+	char *id = NULL, *label = NULL;
+
+
+	label = SSIParamGetValue(*(params), "label");
+	id = SSIParamGetValue(*(params), "id");
+
+	SSIParamDeleteAll(params);
+
+	if(label != NULL && id != NULL){
+		value = io_get_value_from_comtask(id);
+		if (value != -1) {
+			snprintf(
+					pcBuf,
+					iBufLen,
+					"%s <input type=\"checkbox\" class=\"fi\" name=\"%s\"  id=\"%s\" />",
+						label, id, id);
+#ifdef SSI_DEBUG
+			printf("io_get_checkbox_input_field: done \n");
+#endif
+		} else {
+#ifdef SSI_DEBUG
+			printf("io_get_checkbox_input_field: queu error \n");
+#endif
+			snprintf(pcBuf, iBufLen, "CheckboxInputField: ERROR - NO DATA FROM QUEUE");
+		}
+	}else{
+#ifdef SSI_DEBUG
+		printf("io_get_checkbox_input_field: error no id and/or name found\n");
+#endif
+		snprintf(pcBuf, iBufLen, "CheckboxInputField: ERROR - error no id and/or name found");
+	}
+}
 int SSIParamAdd(pSSIParam* root, char* nameValue) {
 	int rc = 0;
 	char *value, *name;
@@ -567,6 +648,7 @@ char* SSIParamGetValue(pSSIParam root, char* name) {
 
 	return value;
 }
+
 void SSIParamDeleteAll(pSSIParam* root) {
 	pSSIParam p = (*root), del = NULL;
 
