@@ -50,6 +50,7 @@
 
 #include "ethernet/lwipopts.h"
 
+#define SSI_DEBUG	1
 
 // Message for the Comm-Task
 xComMessage xCom_msg;
@@ -200,10 +201,26 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	int i, value = 0;
 	char *name;
 
-	paramsSet = pvPortMalloc(sizeof(pcParam));
-	valuesSet = pvPortMalloc(sizeof(pcValue));
-	paramValueLen = -1;
-
+	if(paramsSet != NULL && valuesSet != NULL){
+		for(i=0; i <= paramValueLen; i++){
+			vPortFree(*(valuesSet+i));
+			vPortFree(*(paramsSet+i));
+		}
+/*
+		vPortFree(paramsSet);
+#ifdef SSI_DEBUG
+		printf("io_print_saved_params: freed paramsSet \n");
+#endif
+/*		vPortFree(valuesSet);
+#ifdef SSI_DEBUG
+		printf("io_print_saved_params: freed valuesSet \n");
+#endif */
+	}else{
+		// TODO statische allokkierung dynamisch machen
+		paramsSet = pvPortMalloc(sizeof(char **)*10);
+		valuesSet = pvPortMalloc(sizeof(char **)*10);
+		paramValueLen = -1;
+	}
 	printf("SetCGIHandler: %d Params\n", iNumParams);
 
 	if (iNumParams > 0) { //test if set was success full
@@ -223,9 +240,16 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 				xCom_msg.value = value;
 				xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 
-				if(paramsSet != NULL && valuesSet != NULL){
-					*(paramsSet+i) = name;
-					*(valuesSet+i) = pcValue[i];
+				if(paramsSet != NULL && valuesSet != NULL && i < 10){
+					*(paramsSet+i) = pvPortMalloc(strlen(name)+1);
+					*(valuesSet+i) = pvPortMalloc(strlen(pcValue[i])+1);
+
+					if(*(paramsSet+i) != NULL && *(valuesSet+i) != NULL){
+						strcpy(*(paramsSet+i), name);
+						strcpy(*(valuesSet+i), pcValue[i]);
+						printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
+					}
+
 					paramValueLen = i;
 				}
 			}else {
@@ -266,7 +290,9 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 	pSSIParam *params = NULL;
 #endif
 
+#ifdef SSI_DEBUG
 	printf("SSI HANDLER \n");
+#endif
 	//
 	// Which SSI tag have we been passed?
 	//
@@ -362,7 +388,9 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	SSIParamDeleteAll(params);
 
 	if (id != NULL && label != NULL) {
+#ifdef SSI_DEBUG
 		printf("io_get_number_input_field: getting values \n");
+#endif
 		xCom_msg.cmd = GET;
 		xCom_msg.dataSouce = DATA;
 		xCom_msg.from = xHttpdQueue;
@@ -371,15 +399,17 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 
 		xCom_msg.item = id;
 		xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+#ifdef SSI_DEBUG
 		printf("io_get_number_input_field: sending req to com task \n");
-
+#endif
 		vTaskSuspend(xLwipTaskHandle);
 		printf("io_get_number_input_field: suspend lwipTask \n");
 
 		if (xQueueReceive(xHttpdQueue, &xCom_msg, ( portTickType ) 10 ) == pdTRUE) {
 			value = xCom_msg.value;
+#ifdef SSI_DEBUG
 			printf("io_get_number_input_field: got values %s=%d \n", id, value);
-
+#endif
 			snprintf(
 					pcBuf,
 					iBufLen,
@@ -387,14 +417,19 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 						"<br /><input type=\"button\" value=\"+\" onclick=\"increase('%s');\" />"
 						"<input type=\"button\" value=\"-\" onclick=\"decrease('%s');\" />",
 						label, id, value, id, id, id);
+#ifdef SSI_DEBUG
 			printf("io_get_number_input_field: done \n");
-
+#endif
 		} else {
+#ifdef SSI_DEBUG
 			printf("io_get_number_input_field: queu error \n");
+#endif
 			snprintf(pcBuf, iBufLen, "NumberInputField: ERROR - NO DATA FROM QUEUE");
 		}
 	}else{
+#ifdef SSI_DEBUG
 		printf("io_get_number_input_field: error no id and/or name found\n");
+#endif
 		snprintf(pcBuf, iBufLen, "NumberInputField: ERROR - error no id and/or name found");
 	}
 }
@@ -434,12 +469,11 @@ void io_print_saved_params(char * pcBuf, int iBufLen) {
 		snprintf(pcBuf, iBufLen, "Keine Parameter gesetzt");
 	}else{
 		for(i=0; i <= paramValueLen; i++){
+#ifdef SSI_DEBUG
 			printf("io_print_saved_params: valueSet=%s, paramSet=%s \n", *(valuesSet+i), *(paramsSet+i));
-		//	vPortFree((valuesSet+i));
-		//	vPortFree((paramsSet+i));
+#endif
 		}
-		//vPortFree(paramsSet);
-		//vPortFree(valuesSet);
+
 		snprintf(pcBuf, iBufLen, "%d Parameter gesetzt", paramValueLen+1);
 	}
 }
@@ -450,7 +484,9 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 	int strnc;
 	pSSIParam nParam, tmp = *(root);
 
+#ifdef SSI_DEBUG
 	printf("SSIParamAdd: %s \n", nameValue);
+#endif
 
 	value = strstr(nameValue, "=");
 	value++;
@@ -466,20 +502,30 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 
 		nParam->name = strtrim(nParam->name);
 		nParam->value = strtrim(nParam->value);
+
+#ifdef SSI_DEBUG
 		printf("Werte getrimmt\n");
+#endif
 
 		if (strlen(nParam->name) > 0) {
 
 			nParam->next = tmp;
 			*(root) = nParam;
+#ifdef SSI_DEBUG
 			printf("SSIParamAdd: added element name: '%s' value: '%s' \n",
 					nParam->name, nParam->value);
+#endif
 		} else {
+
+#ifdef SSI_DEBUG
 			printf("SSIParamAdd: didnt insert element, name empty\n");
+#endif
 		}
 
 	} else {
+#ifdef SSI_DEBUG
 		printf(" ... fail\n");
+#endif
 		if (nParam->name != NULL) {
 			vPortFree(nParam->name);
 		}
@@ -496,8 +542,9 @@ pSSIParam SSIParamGet(pSSIParam root, char* name) {
 	pSSIParam ret = NULL;
 
 	while (root != NULL) {
+#ifdef SSI_DEBUG
 		printf("SSIParamGet: element name: '%s' \n", root->name);
-
+#endif
 		if (strcmp(root->name, name) == 0)
 			return root;
 		root = root->next;
@@ -513,7 +560,9 @@ char* SSIParamGetValue(pSSIParam root, char* name) {
 	p = SSIParamGet(root, name);
 	if (p != NULL){
 		value = p->value;
+#ifdef SSI_DEBUG
 		printf("SSIParamGetValue: found value '%s' for %s \n", value, name);
+#endif
 	}
 
 	return value;
@@ -522,15 +571,27 @@ void SSIParamDeleteAll(pSSIParam* root) {
 	pSSIParam p = (*root), del = NULL;
 
 	while (p != NULL) {
+#ifdef SSI_DEBUG
 		printf("SSIParamDeleteAll: delete element : %s \n", p->name);
+#endif
 		del = p;
 		p = p->next;
 		vPortFree(del->name);
+
+#ifdef SSI_DEBUG
 		printf("SSIParamDeleteAll: freed name \n");
+#endif
+
 		vPortFree(del->value);
+
+#ifdef SSI_DEBUG
 		printf("SSIParamDeleteAll: freed value \n");
+#endif
+
 		vPortFree(del);
 	}
 
+#ifdef SSI_DEBUG
 	printf("SSIParamDeleteAll: deleted all elements \n");
+#endif
 }
