@@ -1,18 +1,20 @@
-function increase(id){
+function inc(id, max, min){
 	var element = document.getElementById(id);
 	var n_value = parseInt(element.value) + 1;
-	if(n_value > 24)
-		element.value = 0;
-	else
+	if(max != -1 && min != -1){
+		if(n_value > max)
+			element.value = min;
+	}else
 		element.value = n_value;
 }
 			
-function decrease(id){
+function dec(id, max, min){
 	var element = document.getElementById(id);
 	var n_value = parseInt(element.value) - 1;
-	if(n_value < 0)
-		element.value = 24;
-	else
+	if(max != -1 && min != -1){
+		if(n_value < min)
+			element.value = max;
+	}else
 		element.value = n_value;
 }
 
