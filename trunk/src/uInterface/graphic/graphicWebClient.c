@@ -233,7 +233,7 @@ void loadWeb(tWidget *pWidget) {
 	conn = netconn_new(NETCONN_TCP);
 	// There is only one other possible socket open.
 	conn->socket = 1;
-	remoteIP.addr = htonl(0x7f000001);
+	remoteIP.addr = htonl(0xC0A81401);
 
 	printf("netconn_connect\n");
 	connErr = netconn_connect(conn, &remoteIP, 80);
