@@ -602,8 +602,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	/* Initialize HTTP, DNS, SNTP */
 	UARTprintf("HTTPD Starten ...\n");
 	httpd_init();
-	//UARTprintf("SNTP Starten ...\n");
-	//sntp_init();
+	UARTprintf("SNTP Starten ...\n");
+	sntp_init();
 	UARTprintf("DNS Starten ...\n");
 	dns_init();
 //	UARTprintf("NETBIOS Starten ...\n");

@@ -12,9 +12,13 @@
 #include "lwip/netbuf.h"
 #include "lwip/api.h"
 
+#define STARTTAG_LEN 5
+const char* STARTTAG = "<!--#";
+const char* ENDTAG = ">";
+
 struct netconn *conn;
 struct netbuf *inBuf;
-void *pageData;
+char *pageData;
 
 void insertGWC(gwcRow* toInsert);
 void increase(tWidget *pWidget);
@@ -221,66 +225,130 @@ void onCheckboxClick(tWidget *pWidget, unsigned long bSelected) {
 
 void loadWeb(tWidget *pWidget) {
 
-	char getText[] = "GET / HTTP/1.0\r\n\r\n";
+	// change text of the button
+	tPushButtonWidget *button = (tPushButtonWidget*) pWidget;
+	const char* buttonText = button->pcText;
+	const char* buttonTextLade = "lade ...";
+	button->pcText = buttonTextLade;
+	WidgetPaint((tWidget*) pWidget);
+
+	char tagBuffer[255];
+	tBoolean tagOpen = pdFALSE;
+
+	// Set the get String
+	char getText[] = "GET /menu.htm HTTP/1.0\r\n\r\n";
+
+	// status variables
 	u16_t length, bindErr, connErr, writeErr;
-	u16_t port;
+	u16_t port, tagBufferPos;
+
+	// remote ip
 	struct ip_addr remoteIP;
 
-	printf("WEBCLIENT: Starte WEB anfrage\n");
-
-	// Create a new socket... API will always create socket 0??
+	// create new connection
 	conn = netconn_new(NETCONN_TCP);
-	// There is only one other possible socket open.
-	//conn->socket = 5863;
 
+	// get root context -> only a workaround to set the IP
 	gwcRow * akt = pgwcRoot;
-	int i = 0;
 
+	// loop counter
+	int j, i = 0;
+
+	// buffer to build the IP
 	long ip = 0;
 
+	printf("WEBCLIENT: Remote IP: ");
 	while (akt != 0) {
 		if (i == 4)
 			break;
 
-		printf("WEBCLIENT: IP %d: %d\n", i + 1, akt->value);
+		// shift the value to the buffer
 		ip = ((ip) << 8) | (akt->value & 0xFF);
+		printf("%d.", akt->value);
 
+		// set to the next value
 		akt = akt->next;
 		i++;
 	}
+	printf("\n");
 
+	// set the ip to the structure
 	remoteIP.addr = htonl(ip);
 
-	printf("WEBCLIENT: netconn_connect\n");
+	// create a connection
 	connErr = netconn_connect(conn, &remoteIP, 80);
-	printf("WEBCLIENT: connErr = %d\n", connErr);
 	if (conn != NULL && connErr == 0) {
-		printf("WEBCLIENT: Verbindung erfolgreich\n");
+
+		// send request
 		writeErr = netconn_write(conn, &getText, sizeof(getText),
 				NETCONN_NOCOPY);
-		printf("WEBCLIENT: anfrage gesendet\n");
+
+		tagBufferPos = 0;
+		tagOpen = pdFALSE;
+
+		// recieve answer
 		inBuf = netconn_recv(conn);
-		printf("WEBCLIENT: buffer beinhaltet %d Bytes\n", inBuf->p->len);
 		while (inBuf != NULL) {
-			printf("WEBCLIENT: Daten empfangen\n");
 			do {
-				netbuf_data(inBuf, &pageData, &length);
-				printf("WEBCLIENT: DATA: %s\n\n", pageData);
+				// read data
+				netbuf_data(inBuf, (void**)&pageData, &length);
+
+				for (i = 0; i < length; i++) {
+					if (tagOpen && pageData[i] == ENDTAG[0]) {
+						tagBuffer[tagBufferPos] = 0;
+						if (strncmp(tagBuffer, STARTTAG + 1, STARTTAG_LEN - 1) == 0) {
+							printf("WEBCLIENT TAG FOUND: %s\n", tagBuffer);
+
+							// TODO aktuellen Parameter in eine Struktur schreiben :)
+						}
+						tagOpen = pdFALSE;
+						tagBufferPos = 0;
+					}
+
+					if (tagOpen) {
+						tagBuffer[tagBufferPos] = pageData[i];
+						tagBufferPos++;
+
+						if (pageData[i] == ' ' || pageData[i] == '\n'
+								|| pageData[i] == '\t' || pageData[i] == '\r') {
+							if (strncmp(tagBuffer, STARTTAG + 1, STARTTAG_LEN - 1) != 0) {
+								tagBufferPos = 0;
+								tagOpen = pdFALSE;
+							}
+						}
+					}
+
+					if (pageData[i] == STARTTAG[0]) {
+						tagOpen = pdTRUE;
+						tagBufferPos = 0;
+					}
+
+				}
 			} while (netbuf_next(inBuf) >= 0);
+
+			// delete buffer
 			if (inBuf != NULL)
 				netbuf_delete(inBuf);
+
+			// fetch next data
 			inBuf = netconn_recv(conn);
 		}
 
+	} else {
+		printf("WEBCLIENT: ERROR: %d\n", connErr);
 	}
-	printf("WEBCLIENT: alle daten empfangen\n");
+
+	// close connection
 	if (conn != NULL) {
-		printf("WEBCLIENT: verbindung offen -> wird geschlossen\n");
 		while (netconn_delete(conn) != ERR_OK) {
-			printf("WEBCLIENT: verbindung schließen fehlgeschlagen ... warte\n");
 			vTaskDelay(1);
 		}
 	}
-	printf("WEBCLIENT: fertig\n");
+
+	// change text of the button
+	button->pcText = buttonText;
+	WidgetPaint((tWidget*) pWidget);
+
+	printf("WEBCLIENT: FINISHED\n");
 }
 
