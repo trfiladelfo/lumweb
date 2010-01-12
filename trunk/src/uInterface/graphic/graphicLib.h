@@ -31,12 +31,44 @@ tWidget * xRootObject;
 /* Pointer to the last inserted Object */
 tWidget * xLastInsertedObject;
 
+void initPanel(char* headerText);
+tPushButtonWidget *addButton( // Insert new Graphic Button
+		int left,
+		int top,
+		int width,
+		int height,
+		char* label,
+		tBoolean autorepeat,
+		void(*callback)(tWidget *pWidget)
+	);
 
-void initPanel    (char* headerText);
-tPushButtonWidget *addButton    (int left, int top, int width, int height, char* label, tBoolean autorepeat, void (*callback)(tWidget *pWidget));
-tCanvasWidget *addLabel     (int left, int top, int width, int height, char* text);
-tSliderWidget *addSlider    (int left, int top, int width, int height, char* label, long value, void (*callback)(tWidget *pWidget, long value));
-void drawPanel 	  (void);
-void destroyPanel (void);
+tCanvasWidget *addLabel( // Insert new Label
+		int left,
+		int top,
+		int width,
+		int height,
+		char* text
+	);
+
+tSliderWidget *addSlider( // Insert new Slider
+		int left,
+		int top,
+		int width,
+		int height,
+		char* label,
+		long value, void(*callback)(tWidget *pWidget, long value)
+	);
+
+tCheckBoxWidget *addCheckbox(
+		int left,
+		int top,
+		int width,
+		int height,
+		unsigned long bSelected,
+		void (*pfnOnChange)(tWidget *pWidget, unsigned long bSelected)
+	);
+void drawPanel(void);
+void destroyPanel(void);
+void cleanDisplay(void);
 
 #endif /* GRAPHICLIB_H_ */

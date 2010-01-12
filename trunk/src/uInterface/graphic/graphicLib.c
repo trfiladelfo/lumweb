@@ -5,11 +5,14 @@
 #include "grlib/widget.h"
 #include "grlib/canvas.h"
 #include "grlib/pushbutton.h"
+#include "grlib/checkbox.h"
 #include "grlib/slider.h"
 #include "kitronix320x240x16_ssd2119_8bit.h"
 
 /* Header Rectangle */
 tRectangle sRect;
+
+int contextInitialized = 0;
 
 /**
  * Initializes the Panel
@@ -19,8 +22,11 @@ void initPanel(char* headerText) {
 	//
 	// Initialize the graphics context.
 	//
-	printf("Initialize Graphic Context ...\n");
-	GrContextInit(&g_sContext, &g_sKitronix320x240x16_SSD2119);
+	if (!contextInitialized) {
+		printf("Initialize Graphic Context ...\n");
+		GrContextInit(&g_sContext, &g_sKitronix320x240x16_SSD2119);
+		contextInitialized = 1;
+	}
 
 	//
 	// Fill the top 24 rows of the screen with blue to create the banner.
@@ -46,8 +52,8 @@ void initPanel(char* headerText) {
 	GrStringDrawCentered(&g_sContext, headerText, -1,
 			GrContextDpyWidthGet(&g_sContext) / 2, 15, 0);
 
-	printf("Destroy old Panel\n");
-	destroyPanel();
+	printf("Clear Display\n");
+	cleanDisplay();
 
 	printf("Create new Panel\n");
 
@@ -62,7 +68,7 @@ void initPanel(char* headerText) {
 	xParentContainer->sBase.sPosition.sXMin = 0;
 	xParentContainer->sBase.sPosition.sYMin = 30;
 	xParentContainer->sBase.sPosition.sXMax = 320;
-	xParentContainer->sBase.sPosition.sYMax = 166;
+	xParentContainer->sBase.sPosition.sYMax = 210;
 
 	xParentContainer->pFont = 0;
 	xParentContainer->pcText = 0;
@@ -163,6 +169,47 @@ tCanvasWidget *addLabel(int left, int top, int width, int height, char* text) {
 	return aktLabel;
 }
 
+tCheckBoxWidget *addCheckbox(int left, int top, int width, int height,
+		unsigned long bSelected, void(*pfnOnChange)(tWidget *pWidget,
+				unsigned long bSelected)) {
+	tCheckBoxWidget * aktCheckbox = (tCheckBoxWidget*) pvPortMalloc(
+			sizeof(tCheckBoxWidget));
+
+	aktCheckbox->pFont = &g_sFontCm14b;
+	aktCheckbox->pcText = "";
+	aktCheckbox->pucImage = 0;
+	aktCheckbox->sBase.lSize = sizeof(tCanvasWidget);
+	aktCheckbox->sBase.pParent = (tWidget*) xParentContainer;
+	aktCheckbox->sBase.pChild = 0;
+	aktCheckbox->sBase.pDisplay = &g_sKitronix320x240x16_SSD2119;
+	aktCheckbox->sBase.pNext = 0;
+	aktCheckbox->sBase.pfnMsgProc = CheckBoxMsgProc;
+	aktCheckbox->sBase.sPosition.sXMin = left;
+	aktCheckbox->sBase.sPosition.sYMin = top;
+	aktCheckbox->sBase.sPosition.sXMax = left + width - 1;
+	aktCheckbox->sBase.sPosition.sYMax = top + height - 1;
+	aktCheckbox->ulFillColor = ClrBlack;
+	aktCheckbox->ulOutlineColor = ClrWhite;
+	aktCheckbox->pfnOnChange = pfnOnChange;
+	aktCheckbox->usStyle = CB_STYLE_FILL;
+	aktCheckbox->usBoxSize = 30;
+
+	if (bSelected) {
+		aktCheckbox->usStyle |= CB_STYLE_SELECTED;
+	}
+
+	if (xLastInsertedObject) {
+		xLastInsertedObject->pNext = (tWidget*) aktCheckbox;
+	}
+
+	if (!xRootObject) {
+		xRootObject = (tWidget *) aktCheckbox;
+	}
+	xLastInsertedObject = (tWidget *) aktCheckbox;
+
+	return aktCheckbox;
+}
+
 tSliderWidget *addSlider(int left, int top, int width, int height, char* label,
 		long value, void(*callback)(tWidget *pWidget, long value)) {
 	tSliderWidget * aktSlider = (tSliderWidget*) pvPortMalloc(
@@ -220,9 +267,7 @@ void drawPanel(void) {
 	//
 	if (xParentContainer) {
 		xParentContainer->sBase.pChild = xRootObject;
-
-		printf("Zeichne Panel\n");
-		WidgetPaint(WIDGET_ROOT);
+		WidgetPaint((tWidget*)xParentContainer);
 	}
 }
 
@@ -233,6 +278,20 @@ void destroyWidget(tWidget* toDestroy) {
 	if (toDestroy) {
 		destroyWidget(toDestroy->pChild);
 		destroyWidget(toDestroy->pNext);
+		WidgetRemove(toDestroy);
+		if (toDestroy) {
+			vPortFree(toDestroy);
+		}
+	}
+}
+
+/**
+ * Cleans the Display and clears all the child objects
+ */
+void cleanDisplay() {
+	if (xParentContainer) {
+		destroyWidget(xParentContainer->sBase.pChild);
+		WidgetPaint((tWidget*)xParentContainer);
 	}
 }
 
@@ -247,19 +306,6 @@ void destroyPanel(void) {
 		destroyWidget(xParentContainer->sBase.pNext);
 		printf("destroyPanel: free Container \n");
 		vPortFree(xParentContainer);
-
-		//
-		// Fill the top 24 rows of the screen with blue to create the banner.
-		//
-		sRect.sXMin = 0;
-		sRect.sYMin = 0;
-		sRect.sXMax = GrContextDpyWidthGet(&g_sContext);
-		sRect.sYMax = GrContextDpyHeightGet(&g_sContext);
-
-		GrContextForegroundSet(&g_sContext, ClrBlack);
-		GrContextBackgroundSet(&g_sContext, ClrBlack);
-		GrRectFill(&g_sContext, &sRect);
-		GrRectDraw(&g_sContext, &sRect);
 	}
 }
 
