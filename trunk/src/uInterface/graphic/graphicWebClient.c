@@ -12,6 +12,10 @@
 #include "lwip/netbuf.h"
 #include "lwip/api.h"
 
+struct netconn *conn;
+struct netbuf *inBuf;
+void *pageData;
+
 void insertGWC(gwcRow* toInsert);
 void increase(tWidget *pWidget);
 void decrease(tWidget *pWidget);
@@ -28,12 +32,10 @@ void loadMenu(void) {
 
 	aktPage = 1;
 
-	addRow("x1", "Feld 1", 1, (GWC_LABEL | GWC_NUMERIC));
-	addRow("x2", "Feld 2", 2, (GWC_LABEL | GWC_NUMERIC));
-	addRow("x3", "Feld 3", 3, (GWC_LABEL | GWC_NUMERIC));
-	addRow("x4", "Feld 4", 0, (GWC_LABEL | GWC_BOOLEAN));
-	addRow("x5", "Feld 5", 5, (GWC_LABEL | GWC_NUMERIC));
-	addRow("x6", "Feld 6", 6, (GWC_LABEL | GWC_NUMERIC));
+	addRow("x1", "Feld 1", 192, (GWC_LABEL | GWC_NUMERIC));
+	addRow("x2", "Feld 2", 168, (GWC_LABEL | GWC_NUMERIC));
+	addRow("x3", "Feld 3", 20, (GWC_LABEL | GWC_NUMERIC));
+	addRow("x4", "Feld 4", 01, (GWC_LABEL | GWC_NUMERIC));
 
 	drawGWC((aktPage - 1) * GWC_ROWS_PER_VIEW);
 
@@ -219,44 +221,66 @@ void onCheckboxClick(tWidget *pWidget, unsigned long bSelected) {
 
 void loadWeb(tWidget *pWidget) {
 
-	struct netconn *conn;
-	struct netbuf *inBuf;
-	char pageData[1024];
 	char getText[] = "GET / HTTP/1.0\r\n\r\n";
-	int length, bindErr, connErr, writeErr;
+	u16_t length, bindErr, connErr, writeErr;
 	u16_t port;
 	struct ip_addr remoteIP;
 
-	printf("Starte WEB anfrage\n");
-	//while (true) {
+	printf("WEBCLIENT: Starte WEB anfrage\n");
+
 	// Create a new socket... API will always create socket 0??
 	conn = netconn_new(NETCONN_TCP);
 	// There is only one other possible socket open.
-	conn->socket = 1;
-	remoteIP.addr = htonl(0xC0A81401);
+	//conn->socket = 5863;
 
-	printf("netconn_connect\n");
+	gwcRow * akt = pgwcRoot;
+	int i = 0;
+
+	long ip = 0;
+
+	while (akt != 0) {
+		if (i == 4)
+			break;
+
+		printf("WEBCLIENT: IP %d: %d\n", i + 1, akt->value);
+		ip = ((ip) << 8) | (akt->value & 0xFF);
+
+		akt = akt->next;
+		i++;
+	}
+
+	remoteIP.addr = htonl(ip);
+
+	printf("WEBCLIENT: netconn_connect\n");
 	connErr = netconn_connect(conn, &remoteIP, 80);
-	printf("connErr = %d\n", connErr);
+	printf("WEBCLIENT: connErr = %d\n", connErr);
 	if (conn != NULL && connErr == 0) {
+		printf("WEBCLIENT: Verbindung erfolgreich\n");
 		writeErr = netconn_write(conn, &getText, sizeof(getText),
 				NETCONN_NOCOPY);
-		inBuf = netbuf_new();
-		while ((inBuf = netconn_recv(conn)) != NULL) {
-			printf("Daten empfangen\n");
+		printf("WEBCLIENT: anfrage gesendet\n");
+		inBuf = netconn_recv(conn);
+		printf("WEBCLIENT: buffer beinhaltet %d Bytes\n", inBuf->p->len);
+		while (inBuf != NULL) {
+			printf("WEBCLIENT: Daten empfangen\n");
 			do {
-				netbuf_data(inBuf, (void **) &pageData, &length);
-				printf("DATA: %s", pageData);
+				netbuf_data(inBuf, &pageData, &length);
+				printf("WEBCLIENT: DATA: %s\n\n", pageData);
 			} while (netbuf_next(inBuf) >= 0);
+			if (inBuf != NULL)
+				netbuf_delete(inBuf);
+			inBuf = netconn_recv(conn);
 		}
-		if (inBuf != NULL)
-			netbuf_delete(inBuf);
+
 	}
+	printf("WEBCLIENT: alle daten empfangen\n");
 	if (conn != NULL) {
+		printf("WEBCLIENT: verbindung offen -> wird geschlossen\n");
 		while (netconn_delete(conn) != ERR_OK) {
+			printf("WEBCLIENT: verbindung schließen fehlgeschlagen ... warte\n");
 			vTaskDelay(1);
 		}
 	}
-	printf("fertig\n");
+	printf("WEBCLIENT: fertig\n");
 }
 
