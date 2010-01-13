@@ -64,6 +64,7 @@
 #include "LWIPStack.h"
 
 #include "projectConfig.h"
+#include "configuration/configloader.h"
 
 // Sanity Check:  This interface driver will NOT work if the following defines are incorrect.
 #if (PBUF_LINK_HLEN != 16)
@@ -85,6 +86,7 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p);
 //
 //*****************************************************************************
 static struct netif lwip_netif;
+static struct netif lwip_netif_local;
 
 //*****************************************************************************
 //
@@ -471,7 +473,7 @@ err_t ethernetif_init(struct netif *netif) {
 	 * of bits per second.
 	 */
 	//NETIF_INIT_SNMP(netif, snmp_ifType_ethernet_csmacd, ETH_DEFAULT_LINK_SPEED);
-	 NETIF_INIT_SNMP(netif, snmp_ifType_ethernet_csmacd, 1000000);
+	NETIF_INIT_SNMP(netif, snmp_ifType_ethernet_csmacd, 1000000);
 
 	netif->name[0] = IFNAME0;
 	netif->name[1] = IFNAME1;
@@ -511,8 +513,36 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	struct ip_addr net_mask;
 	struct ip_addr gw_addr;
 
+	struct ip_addr ip_addr_local;
+	struct ip_addr net_mask_local;
+
+	char* configLoad;
+
 	UARTprintf("Zuweisen der IP ...\n");
 	IP_CONFIG * ipCfg = (IP_CONFIG *) pvParameters;
+
+	UARTprintf("Initialisiere IP ");
+	ipCfg = pvPortMalloc(sizeof(IP_CONFIG));
+
+	configLoad = loadFromConfig(IP_CONFIG_FILE, "USE_DHCP");
+
+	printf("LWIPSTACK: LOAD CONFIG: (%s)\n", configLoad);
+	if (strcmp(configLoad, "true") == 0) {
+
+		printf("mit DHCP\n");
+		ipCfg->IPMode = IPADDR_USE_DHCP;
+
+	} else {
+
+		UARTprintf("statisch mit 192.168.20.200\n");
+		ipCfg->IPMode = IPADDR_USE_STATIC;
+		ipCfg->IPAddr = 0xC0A814C8; //192.168.20.200
+		ipCfg->NetMask = 0xffffff00;
+		ipCfg->GWAddr = 0xC0A81401;
+
+	}
+
+	vPortFree(configLoad);
 
 	LWIP_ASSERT("pvParameters != NULL", (pvParameters != NULL));
 
@@ -562,8 +592,6 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			ethernetif_init, tcpip_input);
 	netif_set_default(&lwip_netif);
 
-	loopif_init(&lwip_netif);
-
 	printf("NETIF UP\n");
 
 	// Start DHCP, if enabled.
@@ -610,8 +638,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	sntp_init();
 	UARTprintf("DNS Starten ...\n");
 	dns_init();
-//	UARTprintf("NETBIOS Starten ...\n");
-//	netbios_init();
+	//	UARTprintf("NETBIOS Starten ...\n");
+	//	netbios_init();
 
 	UARTprintf("Dienste gestartet ...\n");
 	// Nothing else to do.  No point hanging around.
@@ -621,7 +649,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			if (!(netif_is_up(&lwip_netif))) {
 				// set link up flag
 				netif_set_up(&lwip_netif);
-				if (ipCfg->IPMode == IPADDR_USE_DHCP){
+				if (ipCfg->IPMode == IPADDR_USE_DHCP) {
 					UARTprintf("DHCP Adresse anfordern ...  ");
 					if (dhcp_renew(&lwip_netif) == ERR_OK) {
 						UARTprintf("[ok]\n");

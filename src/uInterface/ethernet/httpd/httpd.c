@@ -82,7 +82,7 @@
 
 #include "lwip/tcp.h"
 
-#include "fs.h"
+#include "lmi_fs.h"
 
 #include <string.h>
 #include <stdlib.h>

@@ -1,0 +1,9 @@
+# Konfiguration für die LWIP einstellungen
+SET_VIA_SCREEN=0
+USE_DHCP=false			 # true (achtung klein schreiben!!) wenn DHCP zu Benutzen
+IP_ADDRESS=192.168.20.200
+IP_SUBNETMASK=255.255.255.0
+IP_GATEWAY=192.168.20.1
+DEFAULT_MENU_PAGE=menu.htm
+IS_SERVER_AND_CLIENT=1
+REMOTE_IP=192.168.20.1

@@ -9,6 +9,8 @@
 #include "graphic/graphicLib.h"
 #include "graphic/graphicSettings.h"
 
+#include "configuration/configloader.h"
+
 #include "lwip/netbuf.h"
 #include "lwip/api.h"
 
@@ -225,6 +227,8 @@ void onCheckboxClick(tWidget *pWidget, unsigned long bSelected) {
 
 void loadWeb(tWidget *pWidget) {
 
+	char* configLoad;
+
 	// change text of the button
 	tPushButtonWidget *button = (tPushButtonWidget*) pWidget;
 	const char* buttonText = button->pcText;
@@ -235,8 +239,15 @@ void loadWeb(tWidget *pWidget) {
 	char tagBuffer[255];
 	tBoolean tagOpen = pdFALSE;
 
+	char getText[256];
+
+	configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_MENU_PAGE");
 	// Set the get String
-	char getText[] = "GET / HTTP/1.0\r\n\r\n";
+
+	sprintf(getText, "GET /%s HTTP/1.0\r\n\r\n", configLoad);
+	printf(getText);
+
+	vPortFree(configLoad);
 
 	// status variables
 	u16_t length, bindErr, connErr, writeErr;
