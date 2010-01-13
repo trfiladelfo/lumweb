@@ -262,8 +262,8 @@
 // ---------- LOOPIF options ----------
 //
 //*****************************************************************************
-//#define LWIP_HAVE_LOOPIF                0
-//#define LWIP_LOOPIF_MULTITHREADING      1
+#define LWIP_HAVE_LOOPIF                1
+#define LWIP_LOOPIF_MULTITHREADING      1
 
 //*****************************************************************************
 //

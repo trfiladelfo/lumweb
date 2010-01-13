@@ -41,6 +41,7 @@
 #include "lwip/autoip.h"
 #include "lwip/dns.h"
 #include "lwip/icmp.h"
+#include "netif/loopif.h"
 
 //*****************************************************************************
 //
@@ -560,6 +561,9 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	netif_add(&lwip_netif, &ip_addr, &net_mask, &gw_addr, NULL,
 			ethernetif_init, tcpip_input);
 	netif_set_default(&lwip_netif);
+
+	loopif_init(&lwip_netif);
+
 	printf("NETIF UP\n");
 
 	// Start DHCP, if enabled.
