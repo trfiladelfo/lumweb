@@ -51,14 +51,14 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(SOURCE_DIR)/setup.c \
 		$(SOURCE_DIR)/timer.c \
 		$(SOURCE_DIR)/realtime.c \
-		$(ETHERNET_DIR)/lmi_fs.c\
+		$(SOURCE_DIR)/lmi_fs.c \
+		$(CONF_DIR)/configloader.c \
 		$(ETHERNET_DIR)/httpd/httpd.c \
 		$(ETHERNET_DIR)/httpd/cgi/cgifuncs.c \
 		$(ETHERNET_DIR)/httpd/cgi/io.c \
 		$(ETHERNET_DIR)/LWIPStack.c \
 		$(ETHERNET_DIR)/ETHIsr.c \
 		$(COMM_DIR)/comTask.c \
-		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(UART_DIR)/uartstdio.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
@@ -96,7 +96,6 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(LWIP_COMMON_DIR)/src/api/api_lib.c \
 		$(LWIP_COMMON_DIR)/src/netif/etharp.c \
 		$(LWIP_COMMON_DIR)/src/netif/loopif.c \
-		$(LUMINARY_DRIVER_DIR)/driverlib/ustdlib.c \
 		$(FATFS_COMMON_DIR)/ff.c \
 		$(FATFS_COMMON_DIR)/mmc-dk-lm3s9b96.c \
 		$(FATFS_COMMON_DIR)/SDcard.c \
@@ -104,6 +103,8 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(LUMINARY_DRIVER_DIR)/touch.c \
 		$(LUMINARY_DRIVER_DIR)/tlv320aic23b.c \
 		$(LUMINARY_DRIVER_DIR)/kitronix320x240x16_ssd2119_8bit.c \
+		$(LUMINARY_DRIVER_DIR)/driverlib/ustdlib.c \
+		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(GRAPHIC_DIR)/graphicTask.c \
 		$(GRAPHIC_DIR)/graphicLib.c \
 		$(GRAPHIC_DIR)/graphicWebClient.c

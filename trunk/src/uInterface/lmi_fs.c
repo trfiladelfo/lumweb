@@ -26,6 +26,7 @@
 //*****************************************************************************
 
 #include <string.h>
+#include "lmi_fs.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_ssi.h"
 #include "inc/hw_sysctl.h"
@@ -33,8 +34,7 @@
 #include "driverlib/gpio.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
-#include "ethernet/httpd/httpd.h"
-#include "ethernet/httpd/fs.h"
+//#include "ethernet/httpd/httpd.h"
 #include "ethernet/httpd/fsdata.h"
 #include "fatfs/ff.h"
 #include "fatfs/diskio.h"

@@ -25,7 +25,6 @@
 //
 //*****************************************************************************
 
-#include <stdio.h>
 #include <string.h>
 
 /* Scheduler includes. */
@@ -50,7 +49,7 @@
 
 #include "ethernet/lwipopts.h"
 
-#define SSI_DEBUG	1
+//#define SSI_DEBUG	1
 
 // Message for the Comm-Task
 xComMessage xCom_msg;
@@ -100,8 +99,9 @@ extern void get_dateandtime(char * pcBuf, int iBufLen);
 //! process it.
 //
 //*****************************************************************************
-static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_INDEX_CONTROL
-		};
+static const tCGI g_psConfigCGIURIs[] = {
+	{ "/set.cgi", SetCGIHandler }, // CGI_INDEX_CONTROL
+};
 
 //*****************************************************************************
 //
@@ -157,7 +157,8 @@ int paramValueLen; 				// number of params/values set last time - 1
 //*****************************************************************************
 static char *
 SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
-	int i, value = 0;
+	int i;
+	long value = 0;
 	char *name, save = 0;
 
 	if(paramsSet != NULL && valuesSet != NULL){
@@ -202,7 +203,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 					xCom_msg.value = 1;
 					save = 1;
 
-				}else if(CheckDecimalParam(pcValue[i], &value) == pdTRUE){
+				}else if(CheckDecimalParam((const char*) pcValue[i], &value) == pdTRUE){
 					printf("SetCGIHandler: Found param: %s=%d \n", name, value);
 					xCom_msg.value = value;
 					save = 1;
@@ -411,11 +412,11 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 				snprintf(
 						pcBuf,
 						iBufLen,
-						"<--!$NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" -->"
+						//"<!--$NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
 							"<br /><input type=\"button\" value=\"+\" onclick=\"inc('%s',%s,%s);\" />"
 							"<input type=\"button\" value=\"-\" onclick=\"dec('%s',%s,%s);\" />",
-							label, value, id, max, min, label, id, value, id, id, max, min, id, max, min);
+							/* label, value, id, max, min, */ label, id, value, id, id, max, min, id, max, min);
 	#ifdef SSI_DEBUG
 				printf("io_get_number_input_field: done \n");
 	#endif
