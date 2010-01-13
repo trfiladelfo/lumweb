@@ -120,50 +120,7 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
 
 #endif
 
-#ifdef INCLUDE_HTTPD_SSI
 
-
-//*****************************************************************************
-//
-// This array holds all the strings that are to be recognized as SSI tag
-// names by the HTTPD server.  The server will call SSIHandler to request a
-// replacement string whenever the pattern <!--#tagname--> (where tagname
-// appears in the following array) is found in ".ssi", ".shtml" or ".shtm"
-// files that it serves. Max size is MAX_TAG_NAME_LEN
-//
-//*****************************************************************************
-static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
-		"NumberInputField", // SSI_INDEX_NUMBERINPUTFIELD
-		"SubmitInputField", // SSI_INDEX_SUBMITINPUTFIELD
-		"SavedParams",		//SSI_INDEX_SAVEDPARAMS
-		"CheckboxInputField" // SSI_INDEX_CHECKBOXINPUTFIELD
-};
-
-//*****************************************************************************
-//
-//! The number of individual SSI tags that the HTTPD server can expect to
-//! find in our configuration pages.
-//
-//*****************************************************************************
-#define NUM_CONFIG_SSI_TAGS     (sizeof(g_pcConfigSSITags) / sizeof (char *))
-
-//*****************************************************************************
-//
-// SSI tag indices for each entry in the g_pcSSITags array.
-//
-//*****************************************************************************
-#define SSI_INDEX_DATEANDTIME  			(0)
-#define SSI_INDEX_NUMBERINPUTFIELD     	(1)
-#define SSI_INDEX_SUBMITINPUTFIELD     	(2)
-#define SSI_INDEX_SAVEDPARAMS    		(3)
-#define SSI_INDEX_CHECKBOXINPUTFIELD    (4)
-
-
-#define JAVASCRIPT_HEADER                                                     \
-    "<script type='text/javascript' language='JavaScript'><!--\n"
-#define JAVASCRIPT_FOOTER                                                     \
-    "//--></script>\n"
-#endif
 
 //*****************************************************************************
 //
