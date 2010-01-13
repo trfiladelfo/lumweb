@@ -77,14 +77,14 @@ int main(void) {
 		UARTprintf("Initialisiere IP ");
 		ipcfg = pvPortMalloc(sizeof(IP_CONFIG));
 
-		printf("mit DHCP\n");
-		ipcfg->IPMode = IPADDR_USE_DHCP;
+		//printf("mit DHCP\n");
+		//ipcfg->IPMode = IPADDR_USE_DHCP;
 
-		//UARTprintf("statisch mit 192.168.20.200\n");
-		//ipcfg->IPMode = IPADDR_USE_STATIC;
-		//ipcfg->IPAddr = 0xC0A814C8; //192.168.20.200
-		//ipcfg->NetMask = 0xffffff00;
-		//ipcfg->GWAddr = 0xC0A81401;
+		UARTprintf("statisch mit 192.168.20.200\n");
+		ipcfg->IPMode = IPADDR_USE_STATIC;
+		ipcfg->IPAddr = 0xC0A814C8; //192.168.20.200
+		ipcfg->NetMask = 0xffffff00;
+		ipcfg->GWAddr = 0xC0A81401;
 
 		printf("Starte LWIP ...\n");
 		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, ipcfg, LWIP_TASK_PRIORITY, &xLwipTaskHandle );

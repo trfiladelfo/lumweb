@@ -95,6 +95,7 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(LWIP_COMMON_DIR)/src/api/netbuf.c \
 		$(LWIP_COMMON_DIR)/src/api/api_lib.c \
 		$(LWIP_COMMON_DIR)/src/netif/etharp.c \
+		$(LWIP_COMMON_DIR)/src/netif/loopif.c \
 		$(LUMINARY_DRIVER_DIR)/driverlib/ustdlib.c \
 		$(FATFS_COMMON_DIR)/ff.c \
 		$(FATFS_COMMON_DIR)/mmc-dk-lm3s9b96.c \

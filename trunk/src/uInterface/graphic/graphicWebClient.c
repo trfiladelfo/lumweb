@@ -236,7 +236,7 @@ void loadWeb(tWidget *pWidget) {
 	tBoolean tagOpen = pdFALSE;
 
 	// Set the get String
-	char getText[] = "GET /menu.htm HTTP/1.0\r\n\r\n";
+	char getText[] = "GET / HTTP/1.0\r\n\r\n";
 
 	// status variables
 	u16_t length, bindErr, connErr, writeErr;
@@ -293,6 +293,7 @@ void loadWeb(tWidget *pWidget) {
 				// read data
 				netbuf_data(inBuf, (void**)&pageData, &length);
 
+				printf("WEBCLIENT DATA: %s\n\n", pageData);
 				for (i = 0; i < length; i++) {
 					if (tagOpen && pageData[i] == ENDTAG[0]) {
 						tagBuffer[tagBufferPos] = 0;
@@ -319,8 +320,10 @@ void loadWeb(tWidget *pWidget) {
 					}
 
 					if (pageData[i] == STARTTAG[0]) {
-						tagOpen = pdTRUE;
 						tagBufferPos = 0;
+						tagBuffer[tagBufferPos] = pageData[i];
+						tagBufferPos++;
+						tagOpen = pdTRUE;
 					}
 
 				}
