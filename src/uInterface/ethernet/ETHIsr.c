@@ -238,7 +238,7 @@ int ETHServiceTaskInit(const unsigned long ulPort) {
 		FlashUserGet(&ulUser0, &ulUser1);
 		if ((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff)) {
 			// TODO: do something...
-			FlashUserSet(0x001b1a00, 0x001e1f1d);
+			FlashUserSet(0x001b1a01, 0x001e1f1d);
 		}
 		FlashUserGet(&ulUser0, &ulUser1);
 

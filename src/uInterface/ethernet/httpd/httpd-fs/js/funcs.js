@@ -18,6 +18,11 @@ function dec(id, max, min){
 		element.value = n_value;
 }
 
+function abs(id, max, min){
+	document.write("<br /><input type=\"button\" value=\"+\" onclick=\"inc('"+id+"',"+max+","+min+");\" /><input type=\"button\" value=\"-\" onclick=\"dec('"+id+"',"+max+","+min+");\" />",")
+	
+}
+
 function submit_form(id){
 	var get_string = get_form_values();
 	var form = document.getElementById('form-'+id);

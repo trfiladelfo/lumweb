@@ -391,7 +391,7 @@ int io_get_value_from_comtask(char* id){
 void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
 	pSSIParam p = NULL;
-	char *id = NULL, *label = NULL, *max, *min;
+	char *id = NULL, *label = NULL, *max, *min; //, sbuf[128];
 
 
 	label = SSIParamGetValue(*(params), "label");
@@ -407,16 +407,28 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			if(max == NULL)
 				max = "-1";
 
+			printf("io_get_number_input_field: sizeof pcBuf: %d\n", sizeof(pcBuf));
 			value = io_get_value_from_comtask(id);
 			if(value != -1){
-				snprintf(
+/*				snprintf(sbuf, 128,
+						"<!--$NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" -->",
+						label, value, id, max, min) */
+/*				snprintf(
 						pcBuf,
 						iBufLen,
-						//"<!--$NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" -->"
+						"<!--$NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
 							"<br /><input type=\"button\" value=\"+\" onclick=\"inc('%s',%s,%s);\" />"
 							"<input type=\"button\" value=\"-\" onclick=\"dec('%s',%s,%s);\" />",
-							/* label, value, id, max, min, */ label, id, value, id, id, max, min, id, max, min);
+							 label, value, id, max, min, label, id, value, id, id, max, min, id, max, min); */
+				snprintf(
+						pcBuf,
+						iBufLen,
+						"<!--$NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" -->"
+						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
+							"<script>abs('%s',%s,%s);</script>",
+							 label, value, id, max, min, label, id, value, id, id, max, min, id, max, min);
+
 	#ifdef SSI_DEBUG
 				printf("io_get_number_input_field: done \n");
 	#endif
