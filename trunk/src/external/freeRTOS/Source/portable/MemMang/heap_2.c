@@ -227,6 +227,7 @@ void *pvReturn = NULL;
 			}
 		}
 	}
+	//printf("Remaining free heap space: %d\n", xPortGetFreeHeapSize());
 	xTaskResumeAll();
 
 	#if( configUSE_MALLOC_FAILED_HOOK == 1 )

@@ -10,7 +10,7 @@
 
 #include "FreeRTOSConfig.h"
 
-#define LWIP_STACK_SIZE		512
+#define LWIP_STACK_SIZE		512*2
 #define LWIP_TASK_NAME		"lwip"
 #define LWIP_TASK_PRIORITY  (configMAX_PRIORITIES - 2)
 #define LWIP_USE_DHCP		0
