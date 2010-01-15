@@ -5,8 +5,8 @@ function inc(id, max, min){
 	var element = document.getElementById(id);
 	var n_value = parseInt(element.value) + 1;
 	if(max != -1 && min != -1){
-		if(n_value > max) element.value = min;
-		else element.value = n_value;
+		if(n_value > max)
+			element.value = min;
 	}else
 		element.value = n_value;
 }
@@ -15,10 +15,15 @@ function dec(id, max, min){
 	var element = document.getElementById(id);
 	var n_value = parseInt(element.value) - 1;
 	if(max != -1 && min != -1){
-		if(n_value < min) element.value = max;
-		else element.value = n_value;
+		if(n_value < min)
+			element.value = max;
 	}else
 		element.value = n_value;
+}
+
+function addB(id, max, min){
+	document.write("<br /><input type=\"button\" value=\"+\" onclick=\"inc('"+id+"',"+max+","+min+");\" /><input type=\"button\" value=\"-\" onclick=\"dec('"+id+"',"+max+","+min+");\" />");
+	
 }
 
 function submit_form(id){
