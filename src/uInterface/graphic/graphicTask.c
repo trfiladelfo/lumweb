@@ -3,7 +3,8 @@
  */
 
 #include "graphic/graphicTask.h"
-#include "graphic/graphicWebClient.h""
+#include "graphic/graphicWebClient.h"
+#include "graphic/graphicLib.h"
 
 #include "hw_types.h"
 
@@ -18,6 +19,7 @@
 
 #include "kitronix320x240x16_ssd2119_8bit.h"
 
+
 //*****************************************************************************
 //
 // The sixth panel, which contains a selection of push buttons.
@@ -28,7 +30,7 @@ void vGraphicTask(void* pvParameters) {
 
 	printf("Initialize Graphic ...\nLoad Menu\n");
 
-	loadMenu();
+	showBootText("booting ...");
 
 	//
 	// Loop forever handling widget messages.
@@ -42,4 +44,3 @@ void vGraphicTask(void* pvParameters) {
 		vTaskDelay(1);
 	}
 }
-

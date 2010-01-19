@@ -227,7 +227,7 @@ void *pvReturn = NULL;
 			}
 		}
 	}
-	//printf("Remaining free heap space: %d\n", xPortGetFreeHeapSize());
+	printf("-- malloc -- %d (%d)\n", xWantedSize, xFreeBytesRemaining);
 	xTaskResumeAll();
 
 	#if( configUSE_MALLOC_FAILED_HOOK == 1 )
@@ -264,6 +264,7 @@ xBlockLink *pxLink;
 			prvInsertBlockIntoFreeList( ( ( xBlockLink * ) pxLink ) );
 			xFreeBytesRemaining += pxLink->xBlockSize;
 		}
+		printf("-- free -- %d (%d)\n", pxLink->xBlockSize, xFreeBytesRemaining);
 		xTaskResumeAll();
 	}
 }

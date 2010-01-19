@@ -115,20 +115,16 @@ void fs_init(void) {
 	// Flag and display which file system we are using.
 	//
 
-	printf("Webserver using");
-
 	if (fresult == FR_OK) {
 		//
 		// Indicate and display that we are using the SD file system.
 		//
 		g_bFatFsEnabled = true;
-		printf(" SDCard File Systen\n");
 	} else {
 		//
 		// Indicate and display that we are using the internal file system.
 		//
 		g_bFatFsEnabled = false;
-		printf(" Internal File Systen\n");
 	}
 }
 

@@ -66,6 +66,8 @@
 #include "projectConfig.h"
 #include "configuration/configloader.h"
 
+#include "graphic/graphicLib.h"
+
 // Sanity Check:  This interface driver will NOT work if the following defines are incorrect.
 #if (PBUF_LINK_HLEN != 16)
 #warning "PBUF_LINK_HLEN must be 16 for this interface driver!"
@@ -526,6 +528,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "USE_DHCP");
 
+	showBootText("load ipconfig ...");
+
 	printf("LWIPSTACK: LOAD CONFIG: (%s)\n", configLoad);
 	if (strcmp(configLoad, "true") == 0) {
 
@@ -588,6 +592,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	// @SEE http://lwip.wikia.com/wiki/Initialization_using_tcpip.c
 
 	printf("Starting NETIF ... \n");
+	showBootText("starting Network ...");
 	netif_add(&lwip_netif, &ip_addr, &net_mask, &gw_addr, NULL,
 			ethernetif_init, tcpip_input);
 	netif_set_default(&lwip_netif);
@@ -597,6 +602,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	// Start DHCP, if enabled.
 #if LWIP_DHCP
 	if (ipCfg->IPMode == IPADDR_USE_DHCP) {
+		showBootText("waiting for DHCP ...");
 		UARTprintf("Starte DHCP Client ...     ");
 		if (dhcp_start(&lwip_netif) == ERR_OK) {
 			UARTprintf("[ok]\n");
@@ -631,9 +637,13 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	printnetif(&lwip_netif);
 
-	/* Initialize HTTP, DNS, SNTP */
-	UARTprintf("HTTPD Starten ...\n");
-	httpd_init();
+	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_SERVER");
+	if (strcmp(configLoad, "true") == 0) {
+		/* Initialize HTTP, DNS, SNTP */
+		UARTprintf("HTTPD Starten ...\n");
+		httpd_init();
+	}
+	vPortFree(configLoad);
 	UARTprintf("SNTP Starten ...\n");
 	sntp_init();
 	UARTprintf("DNS Starten ...\n");
@@ -642,6 +652,16 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	//	netbios_init();
 
 	UARTprintf("Dienste gestartet ...\n");
+
+	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
+	if (strcmp(configLoad, "true") == 0) {
+		showBootText("loading menu ...");
+		loadMenu();
+	} else {
+		showBootText("ready for requests ...");
+	}
+	vPortFree(configLoad);
+
 	// Nothing else to do.  No point hanging around.
 	while (1) {
 		vTaskDelay(500 / portTICK_RATE_MS);
@@ -649,6 +669,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			if (!(netif_is_up(&lwip_netif))) {
 				// set link up flag
 				netif_set_up(&lwip_netif);
+				showBootText("activate networkinterface ...");
 				if (ipCfg->IPMode == IPADDR_USE_DHCP) {
 					UARTprintf("DHCP Adresse anfordern ...  ");
 					if (dhcp_renew(&lwip_netif) == ERR_OK) {
@@ -661,13 +682,13 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			}
 		} else {
 			if (netif_is_up(&lwip_netif)) {
+				showBootText("no networkconnection!!");
 				UARTprintf("Deaktiviere Netzwerkinterface ...  ");
 				netif_set_down(&lwip_netif);
 			}
 		}
 
 	}
-	//	vTaskDelete( NULL);
 }
 
 //*****************************************************************************

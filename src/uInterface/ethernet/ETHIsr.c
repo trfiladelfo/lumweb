@@ -236,9 +236,11 @@ int ETHServiceTaskInit(const unsigned long ulPort) {
 		//
 
 		FlashUserGet(&ulUser0, &ulUser1);
+
 		if ((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff)) {
 			// TODO: do something...
-			FlashUserSet(0x001b1a01, 0x001e1f1d);
+			printf("Flash new MAC\n");
+			FlashUserSet(0x001b1a00, 0x001e1f1d);
 		}
 		FlashUserGet(&ulUser0, &ulUser1);
 
@@ -560,7 +562,8 @@ int ETHServiceTaskWaitReady(const unsigned long ulPort) {
 
 		//while (!(EthernetPHYRead(ETH_BASE, PHY_MR1) & ETH_PHY_LINK_UP))
 		printf("Wait until up: ... ");
-		while (!(PHY_MR1_ANEGC & EthernetPHYRead(ETHBase[0], PHY_MR1)));
+		while (!(PHY_MR1_ANEGC & EthernetPHYRead(ETHBase[0], PHY_MR1)))
+			;
 		printf("ok\n");
 		xTaskResumeAll();
 		return (0);

@@ -309,3 +309,41 @@ void destroyPanel(void) {
 	}
 }
 
+
+void showBootText(char* textToShow) {
+
+	/* Header Rectangle */
+	tRectangle sRect;
+
+
+
+	if (g_sContext.pDisplay == 0) {
+		printf("Initialize Graphic Context ...\n");
+		GrContextInit(&g_sContext, &g_sKitronix320x240x16_SSD2119);
+	}
+
+	//
+	// Fill the top 24 rows of the screen with blue to create the banner.
+	//
+	sRect.sXMin = 5;
+	sRect.sYMin = 5;
+	sRect.sXMax = GrContextDpyWidthGet(&g_sContext) - 5;
+	sRect.sYMax = GrContextDpyHeightGet(&g_sContext) - 5;
+
+	GrContextForegroundSet(&g_sContext, ClrRed);
+	GrRectFill(&g_sContext, &sRect);
+
+	//
+	// Put a white box around the banner.
+	//
+	GrContextForegroundSet(&g_sContext, ClrWhite);
+	GrRectDraw(&g_sContext, &sRect);
+
+	//
+	// Put the application name in the middle of the banner.
+	//
+	GrContextFontSet(&g_sContext, &g_sFontCm14);
+	GrStringDrawCentered(&g_sContext, textToShow, -1,
+			GrContextDpyWidthGet(&g_sContext) / 2, GrContextDpyHeightGet(&g_sContext) / 2, 0);
+}
+

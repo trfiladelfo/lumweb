@@ -46,12 +46,6 @@ int main(void) {
 
 	// Setup the Hardware
 	prvSetupHardware();
-
-	printf("adresse von _etext: 0x%X\n", &_etext);
-	printf("adresse von _data:  0x%X\n", &_data);
-	printf("adresse von _edata: 0x%X\n", &_edata);
-	printf("adresse von _bss:   0x%X\n", &_bss);
-	printf("adresse von _ebss:  0x%X\n", &_ebss);
 	printf("\n\n\nStarte Programm ...\n");
 	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
 
