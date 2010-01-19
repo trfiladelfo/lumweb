@@ -28,6 +28,7 @@ char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
 				returnValue[j] = value[j];
 			}
 			returnValue[j] = 0;
+			 strtrim(returnValue);
 			return returnValue;
 		}
 		for (j = 0; j < READBUFFERLEN; j++) {
@@ -70,6 +71,7 @@ char* loadFromConfig(char* filePath, char* param) {
 					if (buffer[i] == '#' && (nameLen > 0 || valueLen > 0)) {
 
 						if (strcmp(name, param) == 0 && beforeEqual == false) {
+							fs_close(file);
 							return paramAndValueFound(name, value, nameLen,
 									valueLen);
 						} else {
@@ -104,6 +106,7 @@ char* loadFromConfig(char* filePath, char* param) {
 						isInComment = false;
 						beforeEqual = true;
 						if (strcmp(name, param) == 0) {
+							fs_close(file);
 							return paramAndValueFound(name, value, nameLen,
 									valueLen);
 						} else {

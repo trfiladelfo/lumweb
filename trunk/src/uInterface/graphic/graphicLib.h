@@ -71,4 +71,6 @@ void drawPanel(void);
 void destroyPanel(void);
 void cleanDisplay(void);
 
+void showBootText(char* textToShow);
+
 #endif /* GRAPHICLIB_H_ */

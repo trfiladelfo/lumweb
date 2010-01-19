@@ -14,6 +14,8 @@
 #include "grlib/pushbutton.h"
 #include "grlib/checkbox.h"
 
+extern int aktPage;
+
 #define GWC_LABEL   0b00000001
 #define GWC_NUMERIC 0b00000010
 #define GWC_BOOLEAN 0b00000100
@@ -36,5 +38,6 @@ typedef struct __row  {
 gwcRow *pgwcRoot;
 
 void loadMenu (void);
+void loadPage(char *uri);
 
 #endif /* GRAPHICWEBCLIENT_H_ */

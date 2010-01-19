@@ -44,9 +44,9 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		-D sprintf=usprintf -D snprintf=usnprintf \
 		-D _sprintf=usprintf -D _snprintf=usnprintf \
 		-D malloc=pvPortMalloc -D free=vPortFree \
-		-D printf=UARTprintf -D gcc=1 \
+		-D gcc=1 -D printf=UARTprintf \
 		-ffunction-sections -fdata-sections 
-
+		
 SOURCE=	$(SOURCE_DIR)/main.c \
 		$(SOURCE_DIR)/setup.c \
 		$(SOURCE_DIR)/timer.c \
@@ -107,7 +107,8 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(GRAPHIC_DIR)/graphicTask.c \
 		$(GRAPHIC_DIR)/graphicLib.c \
-		$(GRAPHIC_DIR)/graphicWebClient.c
+		$(GRAPHIC_DIR)/graphicWebClient.c \
+		$(GRAPHIC_DIR)/touchActions.c
 		
 LIBS= $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a $(GRLIB_COMMON_DIR)/gcc/libgr.a  
 
