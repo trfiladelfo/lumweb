@@ -41,13 +41,19 @@ typedef struct
 //
 //*****************************************************************************
 extern void LWIPServiceTaskInit(void *pvParameters);
-void printnetif (struct netif *aktNetif);
-void printip (struct ip_addr *addr);
 
 #if CORTEX_DEBUG
 void stellarisif_debug_print(struct pbuf *p);
 #else
 #define stellarisif_debug_print(p)
 #endif /* CORTEX_DEBUG */
+
+//*****************************************************************************
+//
+// The lwIP network interface structure for the Stellaris Ethernet MAC.
+//
+//*****************************************************************************
+static struct netif lwip_netif;
+//static struct netif lwip_netif_local;
 
 #endif /*LWIPSTACK_H_*/

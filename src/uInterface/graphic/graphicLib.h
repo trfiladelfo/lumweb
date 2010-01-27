@@ -67,6 +67,7 @@ tCheckBoxWidget *addCheckbox(
 		unsigned long bSelected,
 		void (*pfnOnChange)(tWidget *pWidget, unsigned long bSelected)
 	);
+
 void drawPanel(void);
 void destroyPanel(void);
 void cleanDisplay(void);

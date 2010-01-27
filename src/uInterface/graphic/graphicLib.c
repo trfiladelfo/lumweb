@@ -1,5 +1,3 @@
-#include "graphic/graphicLib.h"
-
 #include "hw_types.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
@@ -9,16 +7,25 @@
 #include "grlib/slider.h"
 #include "kitronix320x240x16_ssd2119_8bit.h"
 
+#include "graphic/graphicLib.h"
+
 /* Header Rectangle */
 tRectangle sRect;
 
 int contextInitialized = 0;
+char* aktTitle = 0;
+
+void reInitPanel(void);
 
 /**
  * Initializes the Panel
  */
 void initPanel(char* headerText) {
+	aktTitle = headerText;
+	reInitPanel();
+}
 
+void reInitPanel(void) {
 	//
 	// Initialize the graphics context.
 	//
@@ -28,59 +35,37 @@ void initPanel(char* headerText) {
 		contextInitialized = 1;
 	}
 
-	//
-	// Fill the top 24 rows of the screen with blue to create the banner.
-	//
-	sRect.sXMin = 5;
-	sRect.sYMin = 5;
-	sRect.sXMax = GrContextDpyWidthGet(&g_sContext) - 5;
-	sRect.sYMax = 28;
-
-	GrContextForegroundSet(&g_sContext, ClrRed);
-	GrRectFill(&g_sContext, &sRect);
-
-	//
-	// Put a white box around the banner.
-	//
-	GrContextForegroundSet(&g_sContext, ClrWhite);
-	GrRectDraw(&g_sContext, &sRect);
-
-	//
-	// Put the application name in the middle of the banner.
-	//
-	GrContextFontSet(&g_sContext, &g_sFontCm14);
-	GrStringDrawCentered(&g_sContext, headerText, -1,
-			GrContextDpyWidthGet(&g_sContext) / 2, 15, 0);
-
 	printf("Clear Display\n");
 	cleanDisplay();
 
 	printf("Create new Panel\n");
 
-	xParentContainer = (tCanvasWidget*) pvPortMalloc(sizeof(tCanvasWidget));
-
-	xParentContainer->sBase.lSize = sizeof(tCanvasWidget);
-
-	xParentContainer->sBase.pParent = 0;
-	xParentContainer->sBase.pDisplay = &g_sKitronix320x240x16_SSD2119;
-	xParentContainer->sBase.pNext = 0;
-	xParentContainer->sBase.pfnMsgProc = CanvasMsgProc;
-	xParentContainer->sBase.sPosition.sXMin = 0;
-	xParentContainer->sBase.sPosition.sYMin = 30;
-	xParentContainer->sBase.sPosition.sXMax = 320;
-	xParentContainer->sBase.sPosition.sYMax = 210;
-
-	xParentContainer->pFont = 0;
-	xParentContainer->pcText = 0;
-	xParentContainer->pfnOnPaint = 0;
-	xParentContainer->pucImage = 0;
-	xParentContainer->ulFillColor = ClrBlack;
-	xParentContainer->ulOutlineColor = 0;
-	xParentContainer->ulStyle = CANVAS_STYLE_FILL;
-	xParentContainer->ulTextColor = 0;
-
 	printf("Adding ROOT Widget ...\n");
 	WidgetAdd(WIDGET_ROOT, (tWidget*) xParentContainer);
+
+	//
+	// Fill the top 24 rows of the screen with blue to create the banner.
+	//
+	/*sRect.sXMin = 5;
+	 sRect.sYMin = 5;
+	 sRect.sXMax = GrContextDpyWidthGet(&g_sContext) - 5;
+	 sRect.sYMax = 28;
+
+	 GrContextForegroundSet(&g_sContext, ClrRed);
+	 GrRectFill(&g_sContext, &sRect);
+
+	 //
+	 // Put a white box around the banner.
+	 //
+	 GrContextForegroundSet(&g_sContext, ClrWhite);
+	 GrRectDraw(&g_sContext, &sRect);
+
+	 //
+	 // Put the application name in the middle of the banner.
+	 //
+	 GrContextFontSet(&g_sContext, &g_sFontCm14);
+	 GrStringDrawCentered(&g_sContext, aktTitle, -1,
+	 GrContextDpyWidthGet(&g_sContext) / 2, 15, 0); */
 
 }
 
@@ -279,7 +264,7 @@ void destroyWidget(tWidget* toDestroy) {
 		destroyWidget(toDestroy->pChild);
 		destroyWidget(toDestroy->pNext);
 		WidgetRemove(toDestroy);
-		if (toDestroy) {
+		if (toDestroy != 0) {
 			vPortFree(toDestroy);
 		}
 	}
@@ -300,22 +285,16 @@ void cleanDisplay() {
  */
 void destroyPanel(void) {
 	if (xParentContainer != 0) {
-		printf("destroyPanel: destroy sBase.child\n");
 		destroyWidget(xParentContainer->sBase.pChild);
-		printf("destroyPanel: destroy sBase.next\n");
 		destroyWidget(xParentContainer->sBase.pNext);
-		printf("destroyPanel: free Container \n");
 		vPortFree(xParentContainer);
 	}
 }
-
 
 void showBootText(char* textToShow) {
 
 	/* Header Rectangle */
 	tRectangle sRect;
-
-
 
 	if (g_sContext.pDisplay == 0) {
 		printf("Initialize Graphic Context ...\n");

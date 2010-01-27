@@ -181,7 +181,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 		valuesSet = pvPortMalloc(sizeof(char **)*10);
 		paramValueLen = -1;
 	}
-	printf("SetCGIHandler: %d Params\n", iNumParams);
+	//printf("SetCGIHandler: %d Params\n", iNumParams);
 
 	if (iNumParams > 0) { //test if set was success full
 		for(i = 0; i < iNumParams; i++){
@@ -199,17 +199,17 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 				xCom_msg.item = name;
 				/* check for checkbox value */
 				if(strcmp(pcValue[i], "on") == 0){
-					printf("SetCGIHandler: Found Checkbox %s\n", name);
+					//printf("SetCGIHandler: Found Checkbox %s\n", name);
 					xCom_msg.value = 1;
 					save = 1;
 
 				}else if(CheckDecimalParam((const char*) pcValue[i], &value) == pdTRUE){
-					printf("SetCGIHandler: Found param: %s=%d \n", name, value);
+					//printf("SetCGIHandler: Found param: %s=%d \n", name, value);
 					xCom_msg.value = value;
 					save = 1;
 
 				}else {
-					printf("SetCGIHandler: WARNING - Param: %s no number value(%s) \n", name, pcValue[i]);
+					//printf("SetCGIHandler: WARNING - Param: %s no number value(%s) \n", name, pcValue[i]);
 				}
 
 				if(save == 1){ // send value to comTask
@@ -223,7 +223,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 						if(*(paramsSet+i) != NULL && *(valuesSet+i) != NULL){
 							strcpy(*(paramsSet+i), name);
 							strcpy(*(valuesSet+i), pcValue[i]);
-							printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
+							//printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
 						}
 						paramValueLen = i;
 					}
@@ -373,7 +373,9 @@ int io_get_value_from_comtask(char* id){
 		printf("io_get_value_from_comtask: sending req to com task \n");
 #endif
 		vTaskSuspend(xLwipTaskHandle);
+#ifdef SSI_DEBUG
 		printf("io_get_value_from_comtask: suspend lwipTask \n");
+#endif
 
 		if (xQueueReceive(xHttpdQueue, &xCom_msg, ( portTickType ) 10 ) == pdTRUE) {
 #ifdef SSI_DEBUG
@@ -412,9 +414,9 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 				snprintf(
 						pcBuf,
 						iBufLen,
-						"<!--$NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" -->"
+						"<!-- $ NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" $ -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
-							"<script>\n addB('%s',%s,%s); \n</script>",
+							"<script>addB('%s',%s,%s);</script>",
 							 label, value, id, max, min, label, id, value, id, id, max, min);
 
 	#ifdef SSI_DEBUG
@@ -440,19 +442,18 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 //
 //*****************************************************************************
 void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
-	char *label = NULL, *ajax_id= NULL;
+	char *label = NULL, *form_id= NULL;
 	label = SSIParamGetValue(*(params), "label");
 
 	SSIParamDeleteAll(params);
 
 	if(label != NULL){
-		ajax_id = SSIParamGetValue(*(params), "ajax_id");
-		if(ajax_id != NULL) // AJAX
-			snprintf(pcBuf, iBufLen, "<!-- SubmitInputField label=%s -->"
-				"<input type=\"button\" name=\"%s\" value=\"%s\" onclick=\"submit_form('%s');\"/>", label, label, label, ajax_id);
-		else
-			snprintf(pcBuf, iBufLen, "<!-- SubmitInputField label=%s -->"
-					"<input type=\"submit\" name=\"%s\" value=\"%s\" />", label, label, label);
+		//if(ajax_id != NULL) // AJAX
+			snprintf(pcBuf, iBufLen, "<!-- $ SubmitInputField label=\"%s\" $ -->"
+				"<input type=\"submit\" value=\"%s\"/>", label, label);
+		//else
+		//	snprintf(pcBuf, iBufLen, "<!-- $ SubmitInputField label=%s $ -->"
+		//			"<input type=\"submit\" name=\"%s\" value=\"%s\" />", label, label, label);
 	}else{
 		snprintf(pcBuf, iBufLen, "SubmitInputField: ERROR - no param label found ");
 	}
@@ -500,8 +501,8 @@ void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			snprintf(
 					pcBuf,
 					iBufLen,
-					"%s <input type=\"checkbox\" class=\"fi\" name=\"%s\"  id=\"%s\" />",
-						label, id, id);
+					"<!-- $ CheckboxInputField name=\"%s\" id=\"%s\" value=\"%d\" $ --> %s <input type=\"checkbox\" class=\"fi\" name=\"%s\" id=\"%s\" %s />",
+						label, id, ((value != 0)? 1 : 0), label, id, id, ((value != 0)? "checked=\"checked\"" : ""));
 #ifdef SSI_DEBUG
 			printf("io_get_checkbox_input_field: done \n");
 #endif

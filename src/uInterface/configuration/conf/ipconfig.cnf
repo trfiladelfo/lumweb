@@ -1,13 +1,16 @@
 # Konfiguration für die LWIP einstellungen
-USE_DHCP=true	 	# (true|false) (achtung klein schreiben!!)
-IS_SERVER=true 		# (true|false) (achtung klein schreiben!!)
-IS_CLIENT=false 	# (true|false) (achtung klein schreiben!!)
-DEFAULT_MENU_PAGE=menu.htm
+SET_VIA_SCREEN=0
+USE_DHCP=true	 # true (achtung klein schreiben!!) wenn DHCP zu Benutzen
+DEFAULT_MENU_PAGE=times_p.ssi
+IS_SERVER=true
+IS_CLIENT=true
+REMOTE_IP=localhost
+TIME_ZONE=1
 
-#################### unsused!!!
-#SET_VIA_SCREEN=0
-#IP_ADDRESS=192.168.20.200
-#IP_SUBNETMASK=255.255.255.0
-#IP_GATEWAY=192.168.20.1
-#REMOTE_IP=192.168.20.1
-###################
+
+## UNSUSED ##
+
+IP_ADDRESS=192.168.20.200
+IP_SUBNETMASK=255.255.255.0
+IP_GATEWAY=192.168.20.1
+

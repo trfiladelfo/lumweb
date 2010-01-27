@@ -1,63 +1,39 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <title>I/O Control Demo 2</title>
-    <script type="text/javascript" src="./js/funcs_c.js"></script>
-    <link rel="stylesheet" href="/style.css">
-  </head>
-  <body>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+		<title>I/O Control Demo 2</title>
+		<script type="text/javascript" src="./js/funcs_c.js"></script>
+		<link rel="stylesheet" href="/style.css">
+	</head>
+	<body>
+		<form method="get" action="set.cgi" name="times" id="form-times" onsubmit="return submit_form(this)">
+			<table>
+				<tr>
+					<th colspan='2'>Tag</th>
+				</tr>
+				<tr>
+					<td><!--#NumberInputField id=day_hour label=Stunden max=24 min=0 --></td>
+					<td><!--#NumberInputField id=day_minute label=Minuten --></td>
+				</tr>
+				<tr>
+					<th colspan='2'>Nacht</th>
+				</tr>
+				<tr>
+					<td><!--#NumberInputField id=night_hour label=Stunden --></td>
+					<td><!--#NumberInputField id=night_minute label=Minuten --></td>
+				</tr>			
+				<tr>
+					<td  colspan="2"><!--#CheckboxInputField id=night_hour label=Stunden --> </td>
+				</tr>	
+				<tr>
+					<td  colspan="2"><!--#SubmitInputField label=Speichern form_id=times --> </td>
+				</tr>
+			</table>
+		</form>
 
-  <form method="get" action="set.cgi" name="times" id="form-times">
-  		<table>
-  			<tr>
-  		</table>
-  		<table>
-			<tr>
-				<th colspan='2'>Tag</th>
-			</tr>
-			<tr>
-				<td>
-					 <!--#NumberInputField id=day_hour label=Stunden max=24 min=0-->
-
-				 </td>
-				<td>
-					<!--#NumberInputField id=day_minute label=Minuten-->
-
-				</td>
-			</tr>
-
-			<tr>
-				<th colspan='2'>Nacht</th>
-			</tr>
-			<tr>
-				<td>
-					<!--#NumberInputField id=night_hour label=Stunden--> 
-				</td>
-				<td>
-					<!--#NumberInputField id=night_minute label=Minuten-->
-				</td>
-			</tr>
-	
-			<tr>
-			  <td  colspan="2"><!--#SubmitInputField label=Speichern--> </td>
-			</tr>
-			
-			<tr>
-			  <td  colspan="2"><!--#CheckboxInputField id=night_hour label=Stunden--> </td>
-			</tr>
-					
-			<tr>
-			  <td  colspan="2"><input type="button" value="Speichern AJAX" onclick="submit_form('times');"></td>
-			</tr>							
-			<tr>
-			  <td  colspan="2"><!--#SubmitInputField label=Speichern_AJAX ajax_id=times--> </td>
-			</tr>	
-		</table>
-  </form>
-  
-  <div id="container-times">
-  	<div id="last-update">Letzte Aktualisierung <!--#DateTime--></div>
-  </div>
-  </body>
+		<div id="container-times">
+			<div id="last-update">Letzte Aktualisierung <!--#DateTime--></div>
+		</div>
+	</body>
 </html>

@@ -26,15 +26,15 @@ function addB(id, max, min){
 	
 }
 
-function submit_form(id){
+function submit_form(form){
 	var get_string = get_form_values();
-	var form = document.getElementById('form-'+id);
+	//var form = document.getElementById('form-'+id);
 
 	jx.load(form.action+get_string+"ajax=1",function(data){
-		var return_container = document.getElementById('container-'+id);
+		var return_container = document.getElementById("container-" + form.name);
 		return_container.innerHTML = data;
 	});
-
+	return false;
 }
 
 function getElementsByClass( searchClass, domNode, tagName) {

@@ -24,7 +24,7 @@ LDSCRIPT=standalone.ld
 LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --gc-sections
 
 DEBUG=-g
-OPTIM=-O5
+OPTIM=-O3
 
 
 CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
@@ -52,6 +52,7 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(SOURCE_DIR)/timer.c \
 		$(SOURCE_DIR)/realtime.c \
 		$(SOURCE_DIR)/lmi_fs.c \
+		$(SOURCE_DIR)/utils.c \
 		$(CONF_DIR)/configloader.c \
 		$(ETHERNET_DIR)/httpd/httpd.c \
 		$(ETHERNET_DIR)/httpd/cgi/cgifuncs.c \

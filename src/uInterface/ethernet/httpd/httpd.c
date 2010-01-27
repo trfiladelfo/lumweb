@@ -404,7 +404,7 @@ static void get_tag_insert(struct http_state *hs) {
 						MAX_TAG_INSERT_LEN);
 #endif
 
-				printf("TAG INSERT DONE\n");
+				//printf("TAG INSERT DONE\n");
 				return;
 			}
 		}
@@ -948,7 +948,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 
 						param_name[i] = '\0';
 
-						printf("SSI param: %s\n", param_name);
+						//printf("SSI param: %s\n", param_name);
 
 						if (strlen(param_name) > 0) {
 							SSIParamAdd(&(hs->ssi_params), param_name);
@@ -969,8 +969,8 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 					if (*hs->parsed != 0) {
 						c = *hs->parsed;
 						if (c == ' ') {
-							printf("Add from space SSI param : %s\n",
-									param_name);
+							//printf("Add from space SSI param : %s\n",
+							//		param_name);
 							param_name[i] = '\0';
 							if (strlen(param_name) > 0) {
 								SSIParamAdd(&(hs->ssi_params), param_name);
@@ -1054,7 +1054,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 								if (err == ERR_MEM) {
 									len /= 2;
 								}
-								printf("Sending %d bytes\n", len);
+								//printf("Sending %d bytes\n", len);
 							} while (err == ERR_MEM && (len > 1));
 
 							if (err == ERR_OK) {

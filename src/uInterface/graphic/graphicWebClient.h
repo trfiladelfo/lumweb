@@ -14,6 +14,8 @@
 #include "grlib/pushbutton.h"
 #include "grlib/checkbox.h"
 
+#include "lwip/ip_addr.h"
+
 extern int aktPage;
 
 #define GWC_LABEL   0b00000001
@@ -39,5 +41,7 @@ gwcRow *pgwcRoot;
 
 void loadMenu (void);
 void loadPage(char *uri);
+
+struct ip_addr *remoteIP;
 
 #endif /* GRAPHICWEBCLIENT_H_ */

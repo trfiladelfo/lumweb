@@ -15,7 +15,4 @@
 
 time_t t; // Holds the actual Time
 
-//#define USE_DHCP 			0
-
-
 #endif /* PROJECTCONFIG_H_ */
