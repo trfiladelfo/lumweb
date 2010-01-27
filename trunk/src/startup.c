@@ -34,6 +34,7 @@ void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
+static void IntEmptyHandler (void);
 
 //*****************************************************************************
 //
@@ -97,7 +98,7 @@ void (* const g_pfnVectors[])(void) = {
 		IntDefaultHandler, // GPIO Port C
 		IntDefaultHandler, // GPIO Port D
 		IntDefaultHandler, // GPIO Port E
-		IntDefaultHandler, // UART0 Rx and Tx
+		IntEmptyHandler, // UART0 Rx and Tx
 		IntDefaultHandler, // UART1 Rx and Tx
 		IntDefaultHandler, // SSI0 Rx and Tx
 		IntDefaultHandler, // I2C0 Master and Slave
@@ -208,6 +209,7 @@ static void NmiSR(void) {
 	//
 	// Enter an infinite loop.
 	//
+	printf("FATAL ERROR: NmiSR()");
 	while (1) {
 	}
 }
@@ -223,6 +225,7 @@ static void FaultISR(void) {
 	//
 	// Enter an infinite loop.
 	//
+	printf("FATAL ERROR: FaultISR()");
 	while (1) {
 	}
 }
@@ -238,7 +241,11 @@ static void IntDefaultHandler(void) {
 	//
 	// Go into an infinite loop.
 	//
+	printf("FATAL ERROR: IntDefaultHandler()");
 	while (1) {
 	}
 }
 
+static void IntEmptyHandler (void) {
+
+}

@@ -22,7 +22,6 @@ char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
 	if (paramLen > 0) {
 		paramLen = 0;
 		if (valueLen > 0) {
-			printf("CONFIG: name - value pair found: %s == %s\n", param, value);
 			returnValue = (char*) pvPortMalloc(valueLen * sizeof(char) + 1);
 			for (j = 0; j < valueLen && value[j] > 0x20 && value[j] < 0x7F; j++) {
 				returnValue[j] = value[j];
@@ -49,11 +48,9 @@ char* loadFromConfig(char* filePath, char* param) {
 
 	int nameLen = 0;
 	int valueLen = 0;
-	printf("CONFIG: open file %s\n", filePath);
 	file = fs_open(filePath);
 
 	if (file != NULL) {
-		printf("CONFIG: file opened\n");
 		while (fs_read(file, buffer, READBUFFERLEN) > 0) {
 
 			for (i = 0; i < READBUFFERLEN; i++) {

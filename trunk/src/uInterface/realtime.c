@@ -5,11 +5,15 @@
  *      Author: root
  */
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "realtime.h"
 #include "lwip/sntp.h"
+
+#include "configuration/configloader.h"
 
 time_t systemtime;
 /*
@@ -32,7 +36,18 @@ void vRealTimeClockTask(void * pvParameters) {
  * Setter for the RealTimeClock
  */
 void vSetRealTimeClock(time_t t_new) {
-	systemtime = t_new;
+	vTaskSuspendAll();
+	{
+		int addSec = 0;
+		char *configLoad = loadFromConfig(IP_CONFIG_FILE, "TIME_ZONE");
+		if (configLoad != NULL) {
+			addSec = atoi(configLoad) * 3600;
+
+			vPortFree(configLoad);
+		}
+		systemtime = t_new + addSec;
+	}
+	xTaskResumeAll();
 }
 
 /*
@@ -40,6 +55,5 @@ void vSetRealTimeClock(time_t t_new) {
  */
 char* get_dateandtime(char * pcBuf, int iBufLen) {
 	snprintf(pcBuf, iBufLen, ctime(&systemtime));
-	printf("Hole Zeit: %s", pcBuf);
 	return pcBuf;
 }

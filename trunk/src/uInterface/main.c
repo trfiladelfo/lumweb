@@ -57,8 +57,8 @@ int main(void) {
 	xComQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xComMessage));
 	printf("\txHttpdQueue\n");
 	xHttpdQueue = xQueueCreate(HTTPD_QUEUE_SIZE, sizeof(xComMessage));
-	printf("\txGraphQueue\n");
-	xGraphQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xComMessage));
+	//printf("\txGraphQueue\n");
+	//xGraphQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xComMessage));
 
 	// Tasks
 	printf("Starting RealTimeClock ... ");

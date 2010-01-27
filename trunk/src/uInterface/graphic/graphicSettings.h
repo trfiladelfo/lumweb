@@ -12,7 +12,7 @@
 
 #define GWC_ROWS_PER_VIEW				5
 
-#define GWC_FIRST_ROW_TOP				35
+#define GWC_FIRST_ROW_TOP				25
 
 #define GWC_ROW_HEIGHT					30
 #define GWC_ROW_MARGIN_TOP				5

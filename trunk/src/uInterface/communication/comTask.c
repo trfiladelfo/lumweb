@@ -48,7 +48,7 @@ void vComTask(void *pvParameters) {
 		if (xQueueReceive( xComQueue, &xMessage, ( portTickType ) 100 )
 				== pdTRUE) {
 
-			printf("ComTask: Got Item from Queue \n");
+			//printf("ComTask: Got Item from Queue \n");
 
 			xMessage.errorDesc = NULL;
 
@@ -67,8 +67,8 @@ void vComTask(void *pvParameters) {
 					sprintf(xMessage.errorDesc, "\"ERROR: %s\"", xMessage.item);
 				}
 
-				printf("COMTASK: Sende wert zurueck (%s, %d)\n", xMessage.item,
-						xMessage.value);
+				//printf("COMTASK: Sende wert zurueck (%s, %d)\n", xMessage.item,
+				//		xMessage.value);
 				xQueueSend(xHttpdQueue, &xMessage, (portTickType) 0);
 				vTaskResume(xMessage.taskToResume);
 
@@ -84,10 +84,10 @@ void vComTask(void *pvParameters) {
 					night_minute = xMessage.value;
 				} else {
 					sprintf(buffer, "FAIL: %s", xMessage.item);
-					printf("COMTASK: %s\n", buffer);
+					//printf("COMTASK: %s\n", buffer);
 				}
-					printf("COMTASK: Daten gespeichert (%s = %d)\n", xMessage.item,
-							xMessage.value);
+					//printf("COMTASK: Daten gespeichert (%s = %d)\n", xMessage.item,
+					//		xMessage.value);
 
 				if (xMessage.freeItem == pdTRUE) {
 					vPortFree(xMessage.item);

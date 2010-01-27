@@ -60,13 +60,16 @@
 
 #include "httpd/httpd.h"
 
-#include "ETHIsr.h"
-#include "LWIPStack.h"
+#include "utils.h"
+
+#include "ethernet/ETHIsr.h"
+#include "ethernet/LWIPStack.h"
 
 #include "projectConfig.h"
 #include "configuration/configloader.h"
 
 #include "graphic/graphicLib.h"
+#include "graphic/graphicWebClient.h"
 
 // Sanity Check:  This interface driver will NOT work if the following defines are incorrect.
 #if (PBUF_LINK_HLEN != 16)
@@ -81,14 +84,6 @@ static void ethernetif_input(void *pParams);
 static struct pbuf * low_level_input(struct netif *netif);
 static err_t low_level_output(struct netif *netif, struct pbuf *p);
 static err_t low_level_transmit(struct netif *netif, struct pbuf *p);
-
-//*****************************************************************************
-//
-// The lwIP network interface structure for the Stellaris Ethernet MAC.
-//
-//*****************************************************************************
-static struct netif lwip_netif;
-static struct netif lwip_netif_local;
 
 //*****************************************************************************
 //
@@ -520,8 +515,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	char* configLoad;
 
-	UARTprintf("Zuweisen der IP ...\n");
-	IP_CONFIG * ipCfg = (IP_CONFIG *) pvParameters;
+	IP_CONFIG * ipCfg;
 
 	UARTprintf("Initialisiere IP ");
 	ipCfg = pvPortMalloc(sizeof(IP_CONFIG));
@@ -629,13 +623,25 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	while (0 == netif_is_up(&lwip_netif)) {
 		vTaskDelay(5000 / portTICK_RATE_MS);
-		/*if(0 == netif_is_up(&lwip_netif))
-		 {
-		 dhcp_renew(&lwip_netif);
-		 }*/
+		if (0 == netif_is_up(&lwip_netif)) {
+			dhcp_renew(&lwip_netif);
+		}
 	}
 
 	printnetif(&lwip_netif);
+
+	configLoad = loadFromConfig(IP_CONFIG_FILE, "REMOTE_IP");
+	if (strcmp(configLoad, "localhost") == 0) {
+		printf("Fetch local Address\n");
+		remoteIP = &(lwip_netif.ip_addr);
+	} else {
+		// TODO Parse IP From the Config File
+
+		// set the ip to the structure
+		//remoteIP = pvPortMalloc(sizeof(struct ip_addr));
+		//remoteIP.addr = ...;
+	}
+	vPortFree(configLoad);
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_SERVER");
 	if (strcmp(configLoad, "true") == 0) {
@@ -922,20 +928,4 @@ stellarisif_debug_print(struct pbuf *p)
 	LWIP_DEBUGF(CORTEX_DEBUG, ("Packet Type:0x%04"U16_F" \n", ethhdr->type));
 }
 #endif /* CORTEX_DEBUG */
-
-void printaddr(struct ip_addr addr) {
-	printf("%d.%d.%d.%d", ((addr.addr) & 0xFF), ((addr.addr >> 8) & 0xFF),
-			((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF));
-}
-
-void printnetif(struct netif *netif) {
-	//struct dhcp *dhcp = netif->dhcp;
-	printf("Adresskonfiguration:\n\tIP Adresse: ");
-	printaddr(netif->ip_addr);
-	printf("\n\tSubnet    : ");
-	printaddr(netif->netmask);
-	printf("\n\tGateway   : ");
-	printaddr(netif->gw);
-	printf("\n");
-}
 

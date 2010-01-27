@@ -5,6 +5,7 @@
  *      Author: root
  */
 
+#include <string.h>
 #include "graphic/graphicWebClient.h"
 #include "graphic/graphicLib.h"
 #include "graphic/graphicSettings.h"
@@ -12,8 +13,12 @@
 
 #include "configuration/configloader.h"
 
+#include "ethernet/LWIPStack.h"
+
 #include "lwip/netbuf.h"
 #include "lwip/api.h"
+
+#include "utils.h"
 
 #define STARTTAG_LEN 5
 const char* STARTTAG = "<!--$";
@@ -23,24 +28,19 @@ struct netconn *conn;
 struct netbuf *inBuf;
 char *pageData;
 
-void drawGWC(int offset);
+void drawGWC();
 void addRow(char* id, char* name, long value, char status);
-
+void addHTMLToList(char* str, int len);
+char* getValueForParamName(char* str, char* search, char* retValue);
+char *getElementType(char * str, char *buff);
 
 int aktPage = 1;
 char* aktWebPage = NULL;
 
 void loadMenu(void) {
-
-	aktPage = 1;
-
-	addRow("x1", "Feld 1", 192, (GWC_LABEL | GWC_NUMERIC));
-	addRow("x2", "Feld 2", 168, (GWC_LABEL | GWC_NUMERIC));
-	addRow("x3", "Feld 3", 20, (GWC_LABEL | GWC_NUMERIC));
-	addRow("x4", "Feld 4", 200, (GWC_LABEL | GWC_NUMERIC));
-
-	drawGWC((aktPage - 1) * GWC_ROWS_PER_VIEW);
-
+	char* configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_MENU_PAGE");
+	loadPage(configLoad);
+	vPortFree(configLoad);
 }
 
 void addRow(char* id, char* name, long value, char status) {
@@ -51,25 +51,32 @@ void addRow(char* id, char* name, long value, char status) {
 	newRow->name = name;
 	newRow->value = value;
 	newRow->status = status;
+	newRow->next = NULL;
+	newRow->stringValue = NULL;
+	newRow->checkbox = NULL;
+	newRow->decrease = NULL;
+	newRow->increase = NULL;
+	newRow->nameLabel = NULL;
+	newRow->valueLabel = NULL;
 
 	insertGWC(newRow);
 }
 
 void insertGWC(gwcRow* toInsert) {
 	gwcRow* akt = pgwcRoot;
-	if (pgwcRoot == 0) {
-		printf("Füge ROOT row ein (%s)\n", toInsert->name);
+	if (akt == NULL) {
 		pgwcRoot = toInsert;
 	} else {
-		while (akt->next != 0) {
+		while (akt->next != NULL) {
 			akt = akt->next;
 		}
-		printf("Füge Weitere row ein (%s)\n", toInsert->name);
 		akt->next = toInsert;
 	}
 }
 
-void drawGWC(int offset) {
+void drawGWC() {
+
+	int offset = (aktPage - 1) * GWC_ROWS_PER_VIEW;
 	gwcRow *akt = pgwcRoot;
 
 	int aktRow = 0;
@@ -79,7 +86,7 @@ void drawGWC(int offset) {
 	printf("aktPage %d\noffset %d\n", aktPage, offset);
 
 	if (offset > 0) {
-		for (i = 0; akt->next && i < offset; i++) {
+		for (i = 0; akt->next != NULL && i < offset; i++) {
 			akt = akt->next;
 		}
 	} else if (offset < 0) {
@@ -87,17 +94,20 @@ void drawGWC(int offset) {
 	}
 
 	initPanel("LumWeb - The Universal Interface");
+	//cleanDisplay();
 
-	for (i = 0; akt != 0 && i < GWC_ROWS_PER_VIEW; i++) {
+	for (i = 0; akt != NULL && i < GWC_ROWS_PER_VIEW; i++) {
 
 		printf("Erstelle Zeile %s\n", akt->name);
 
 		if ((akt->status & GWC_LABEL) == GWC_LABEL) {
+			printf("Erstelle Label %s\n", akt->name);
 			akt->nameLabel = addLabel(GWC_ROW_LABEL_LEFT, top,
 					GWC_ROW_LABEL_WIDTH, GWC_ROW_HEIGHT, akt->name);
 		}
 
 		if ((akt->status & GWC_NUMERIC) == GWC_NUMERIC) {
+			printf("Erstelle Numerics %s\n", akt->name);
 
 			if (!akt->stringValue) {
 				akt->stringValue = (char*) pvPortMalloc(
@@ -117,6 +127,7 @@ void drawGWC(int offset) {
 					GWC_ROW_INCREASE_AUTOREPEAT, increase);
 
 		} else if (akt->status & GWC_BOOLEAN == GWC_BOOLEAN) {
+			printf("Erstelle Boolean %s\n", akt->name);
 
 			akt->checkbox = addCheckbox(GWC_ROW_CHECKBOX_LEFT, top,
 					GWC_ROW_CHECKBOX_WIDTH, GWC_ROW_HEIGHT,
@@ -130,11 +141,13 @@ void drawGWC(int offset) {
 	}
 
 	if (offset > 0) {
-		addButton(5, 210, 80, 30, "Back", 0, backPage);
+		addButton(5, 205, 80, 30, "Back", 0, backPage);
 	}
-	addButton(90, 210, 140, 30, "Speichern", 0, loadWeb);
-	if (akt) {
-		addButton(235, 210, 80, 30, "Continue", 0, continuePage);
+
+	addButton(90, 205, 140, 30, "Speichern", 0, loadWeb);
+
+	if (akt != NULL && akt->next != NULL) {
+		addButton(235, 205, 80, 30, "Continue", 0, continuePage);
 	}
 
 	printf("Starte output\n");
@@ -142,110 +155,58 @@ void drawGWC(int offset) {
 	printf("Ouput erfolgreich\n");
 }
 
-
-
 void loadPage(char *uri) {
-	char tagBuffer[255];
 	tBoolean tagOpen = pdFALSE;
 
-	char getText[256];
-
-	// Set the get String
-
-	sprintf(getText, "GET /%s HTTP/1.0\r\n\r\n", uri);
-	printf(getText);
+	char buffer[128];
+	char inTag = 0;
 
 	// status variables
 	u16_t length, bindErr, connErr, writeErr;
-	u16_t port, tagBufferPos;
+	u16_t port;
 
-	// remote ip
-	struct ip_addr remoteIP;
+	aktPage = 1;
+	// Set the get String
+
+	sprintf(buffer, "GET /%s HTTP/1.0\r\n\r\n", uri);
+	printf(buffer);
 
 	// create new connection
 	conn = netconn_new(NETCONN_TCP);
 
-	// get root context -> only a workaround to set the IP
-	gwcRow * akt = pgwcRoot;
-
 	// loop counter
-	int j, i = 0;
-
-	// buffer to build the IP
-	long ip = 0;
-
-	printf("WEBCLIENT: Remote IP: ");
-	while (akt != 0) {
-		if (i == 4)
-			break;
-
-		// shift the value to the buffer
-		ip = ((ip) << 8) | (akt->value & 0xFF);
-		printf("%d.", akt->value);
-
-		// set to the next value
-		akt = akt->next;
-		i++;
-	}
-	printf("\n");
-
-	// set the ip to the structure
-	remoteIP.addr = htonl(ip);
+	int i = 0, bufferPos;
 
 	// create a connection
-	connErr = netconn_connect(conn, &remoteIP, 80);
+	connErr = netconn_connect(conn, remoteIP, 80);
 	if (conn != NULL && connErr == 0) {
 
 		// send request
-		writeErr = netconn_write(conn, &getText, sizeof(getText),
-				NETCONN_NOCOPY);
-
-		tagBufferPos = 0;
-		tagOpen = pdFALSE;
+		writeErr = netconn_write(conn, &buffer, sizeof(buffer), NETCONN_NOCOPY);
 
 		// recieve answer
 		inBuf = netconn_recv(conn);
+		inTag = 0;
 		while (inBuf != NULL) {
 			do {
 				// read data
 				netbuf_data(inBuf, (void**) &pageData, &length);
 
-				printf("WEBCLIENT DATA: %s\n\n", pageData);
 				for (i = 0; i < length; i++) {
-					if (tagOpen && pageData[i] == ENDTAG[0]) {
-						tagBuffer[tagBufferPos] = 0;
-						if (strncmp(tagBuffer, STARTTAG + 1, STARTTAG_LEN - 1)
-								== 0) {
-							printf("WEBCLIENT TAG FOUND: %s\n", tagBuffer);
-
-							// TODO aktuellen Parameter in eine Struktur schreiben :)
+					if (pageData[i] == '$') {
+						inTag = (inTag != 0) ? 0 : 1;
+						if (inTag == 0) {
+							buffer[bufferPos] = 0;
+							addHTMLToList(buffer, bufferPos);
+						} else {
+							bufferPos = 0;
 						}
-						tagOpen = pdFALSE;
-						tagBufferPos = 0;
+					} else if (inTag) {
+						buffer[bufferPos] = pageData[i];
+						bufferPos++;
 					}
-
-					if (tagOpen) {
-						tagBuffer[tagBufferPos] = pageData[i];
-						tagBufferPos++;
-
-						if (pageData[i] == ' ' || pageData[i] == '\n'
-								|| pageData[i] == '\t' || pageData[i] == '\r') {
-							if (strncmp(tagBuffer, STARTTAG + 1, STARTTAG_LEN
-									- 1) != 0) {
-								tagBufferPos = 0;
-								tagOpen = pdFALSE;
-							}
-						}
-					}
-
-					if (pageData[i] == STARTTAG[0]) {
-						tagBufferPos = 0;
-						tagBuffer[tagBufferPos] = pageData[i];
-						tagBufferPos++;
-						tagOpen = pdTRUE;
-					}
-
 				}
+
 			} while (netbuf_next(inBuf) >= 0);
 
 			// delete buffer
@@ -268,4 +229,79 @@ void loadPage(char *uri) {
 	}
 
 	printf("WEBCLIENT: FINISHED\n");
+	drawGWC();
+}
+
+void addHTMLToList(char* str, int len) {
+	char buffer[32];
+	char status = 0, *name, *id;
+	int i, strLen;
+	long value = 0;
+
+	getElementType(str, buffer);
+	if (strcmp(buffer, "NumberInputField") == 0) {
+		status |= GWC_NUMERIC;
+	} else if (strcmp(buffer, "CheckboxInputField") == 0) {
+		status |= GWC_BOOLEAN;
+	}
+
+	if (getValueForParamName(str, "name", buffer) != NULL) {
+		status |= GWC_LABEL;
+		strLen = strlen(buffer);
+		name = pvPortMalloc((strLen + 1) * sizeof(char));
+		for (i = 0; i < strLen; i++) {
+			name[i] = buffer[i];
+		}
+		name[i] = 0;
+	}
+
+	if (getValueForParamName(str, "value", buffer) != NULL) {
+		value = atoi(buffer);
+	}
+
+	if (getValueForParamName(str, "id", buffer) != NULL) {
+		strLen = strlen(buffer);
+		id = pvPortMalloc((strLen + 1) * sizeof(char));
+		for (i = 0; i < strLen; i++) {
+			id[i] = buffer[i];
+		}
+		id[i] = 0;
+		addRow(id, name == NULL ? "" : name, value, status);
+	}
+}
+
+char* getValueForParamName(char* str, char* search, char* retValue) {
+
+	char *buffer;
+	int i, j;
+	buffer = strstr(str, search);
+	if (buffer != NULL) {
+
+		buffer = strstr(buffer, "=\"");
+		buffer += 2;
+		j = 0;
+		for (i = 0; buffer[i] != '\"'; i++) {
+			retValue[j] = buffer[i];
+			j++;
+		}
+		retValue[j] = 0;
+		printf("test: %s\n", retValue);
+	}
+	return retValue;
+}
+
+char *getElementType(char * str, char *buff) {
+	int i = 0, pos = 0;
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\r' || str[i] == '\n') {
+		i++;
+	}
+	while (str[i] != ' ' && pos >= 0) {
+		if (str[i] != ' ') {
+			buff[pos] = str[i];
+			pos++;
+		}
+		i++;
+	}
+	buff[pos] = 0;
+	return buff;
 }

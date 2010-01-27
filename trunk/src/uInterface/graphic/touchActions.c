@@ -89,5 +89,6 @@ void onCheckboxClick(tWidget *pWidget, unsigned long bSelected) {
 }
 
 void loadWeb(tWidget *pWidget) {
-	loadPage("times_p.ssi");
+	//loadPage("times_p.ssi");
+	printf("TODO: implement store :)\n");
 }
