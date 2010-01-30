@@ -24,6 +24,7 @@
 #include "setup.h"
 
 /* Project Includes */
+#include "utils.h"
 #include "realtime.h"
 #include "communication/comTask.h"
 #include "ethernet/LWIPStack.h"

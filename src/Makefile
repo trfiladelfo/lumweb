@@ -1,3 +1,14 @@
+# Makefile for the Luminary Project.
+# This Makefile is made for the CodeSourcery G++ Lite Compiler and optimized for the LM3S9B96
+#
+# Please change only the first Part of this File until. This is the Variable Part of the Makefile
+# The last Part of this File contains the Compiler Options
+#
+# Author:  Anzinger Martin, Hahn Florian
+# Version: 1.0
+# Date:	   2009 - 2010
+#
+
 NAME = Luminary_Webinterface
 
 LUMINARY_DRIVER_DIR=external/drivers
@@ -14,39 +25,6 @@ UART_DIR=$(SOURCE_DIR)/uart
 COMM_DIR=$(SOURCE_DIR)/communication
 CONF_DIR=$(SOURCE_DIR)/configuration
 
-SCRIPT_DIR=lm3s_scripts
-
-CC=arm-none-eabi-gcc
-OBJCOPY=arm-none-eabi-objcopy
-LDSCRIPT=standalone.ld
-
-# should use --gc-sections but the debugger does not seem to be able to cope with the option.
-LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --gc-sections
-
-DEBUG=-g
-OPTIM=-O3
-
-
-CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
-		-I external \
-		-I $(SOURCE_DIR)/ethernet \
-		-I $(LWIP_COMMON_DIR)/src/include \
-		-I $(LWIP_COMMON_DIR)/src/include/ipv4 \
-		-I $(LWIP_COMMON_DIR)/port/LM3S \
-		-I $(RTOS_SOURCE_DIR)/include \
-		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
-		-D GCC_ARMCM3_LM3S102 \
-		-I $(LUMINARY_DRIVER_DIR) \
-		-I $(LUMINARY_DRIVER_DIR)/driverlib \
-		-I $(LUMINARY_DRIVER_DIR)/inc \
-		-D inline= -mthumb -mcpu=cortex-m3 \
-		$(OPTIM) -T$(LDSCRIPT) \
-		-D sprintf=usprintf -D snprintf=usnprintf \
-		-D _sprintf=usprintf -D _snprintf=usnprintf \
-		-D malloc=pvPortMalloc -D free=vPortFree \
-		-D gcc=1 -D printf=UARTprintf \
-		-ffunction-sections -fdata-sections 
-		
 SOURCE=	$(SOURCE_DIR)/main.c \
 		$(SOURCE_DIR)/setup.c \
 		$(SOURCE_DIR)/timer.c \
@@ -110,6 +88,47 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(GRAPHIC_DIR)/graphicLib.c \
 		$(GRAPHIC_DIR)/graphicWebClient.c \
 		$(GRAPHIC_DIR)/touchActions.c
+
+
+
+SCRIPT_DIR=lm3s_scripts
+
+
+###############################################################################
+###############               PLEASE DO NOT EDIT!               ###############
+###############################################################################
+
+CC=arm-none-eabi-gcc
+OBJCOPY=arm-none-eabi-objcopy
+LDSCRIPT=standalone.ld
+
+LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --gc-sections
+
+DEBUG=-g
+OPTIM=-O3
+
+
+CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
+		-I external \
+		-I $(SOURCE_DIR)/ethernet \
+		-I $(LWIP_COMMON_DIR)/src/include \
+		-I $(LWIP_COMMON_DIR)/src/include/ipv4 \
+		-I $(LWIP_COMMON_DIR)/port/LM3S \
+		-I $(RTOS_SOURCE_DIR)/include \
+		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
+		-D GCC_ARMCM3_LM3S102 \
+		-I $(LUMINARY_DRIVER_DIR) \
+		-I $(LUMINARY_DRIVER_DIR)/driverlib \
+		-I $(LUMINARY_DRIVER_DIR)/inc \
+		-D inline= -mthumb -mcpu=cortex-m3 \
+		$(OPTIM) -T$(LDSCRIPT) \
+		-D sprintf=usprintf -D snprintf=usnprintf \
+		-D _sprintf=usprintf -D _snprintf=usnprintf \
+		-D malloc=pvPortMalloc -D free=vPortFree \
+		-D gcc=1 -D printf=UARTprintf \
+		-ffunction-sections -fdata-sections 
+		
+
 		
 LIBS= $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a $(GRLIB_COMMON_DIR)/gcc/libgr.a  
 
@@ -142,7 +161,7 @@ flash : all
 	openocd -f $(SCRIPT_DIR)/lm3s_flash_start.cfg -c "flash write_bank 0 ./$(NAME).bin 0" -f $(SCRIPT_DIR)/lm3s_flash_end.cfg 
 
 doc : 
-	doxygen ../../doc/code/DoxyFile
+	doxygen ../doc/code/DoxyFile
 	
 cleanflash : clean flash
 	

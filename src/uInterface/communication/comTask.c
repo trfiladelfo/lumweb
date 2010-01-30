@@ -37,6 +37,7 @@ int day_hour = 10;
 int day_minute = 30;
 int night_hour = 23;
 int night_minute = 15;
+int checkbox = 0;
 
 xComMessage xMessage;
 
@@ -63,6 +64,8 @@ void vComTask(void *pvParameters) {
 					xMessage.value = night_hour;
 				} else if (strcmp(xMessage.item, "night_minute") == 0) {
 					xMessage.value = night_minute;
+				} else if (strcmp(xMessage.item, "checkbox") == 0) {
+					xMessage.value = checkbox;
 				} else {
 					sprintf(xMessage.errorDesc, "\"ERROR: %s\"", xMessage.item);
 				}
@@ -82,12 +85,14 @@ void vComTask(void *pvParameters) {
 					night_hour = xMessage.value;
 				} else if (strcmp(xMessage.item, "night_minute") == 0) {
 					night_minute = xMessage.value;
+				}else if (strcmp(xMessage.item, "checkbox") == 0) {
+					checkbox = xMessage.value;
 				} else {
 					sprintf(buffer, "FAIL: %s", xMessage.item);
 					//printf("COMTASK: %s\n", buffer);
 				}
-					//printf("COMTASK: Daten gespeichert (%s = %d)\n", xMessage.item,
-					//		xMessage.value);
+				//printf("COMTASK: Daten gespeichert (%s = %d)\n", xMessage.item,
+				//		xMessage.value);
 
 				if (xMessage.freeItem == pdTRUE) {
 					vPortFree(xMessage.item);
