@@ -92,7 +92,7 @@ void drawGWC() {
 	}
 
 	initPanel("LumWeb - The Universal Interface");
-	//cleanDisplay();
+	cleanDisplay();
 
 	for (i = 0; akt != NULL && i < GWC_ROWS_PER_VIEW; i++) {
 
@@ -334,6 +334,21 @@ void sendData(tWidget *pWidget) {
 
 		// send request
 		writeErr = netconn_write(conn, &buffer, sizeof(buffer), NETCONN_NOCOPY);
+		// Delete incoming data!
+		while (inBuf != NULL) {
+			do {
+				// read data
+				netbuf_data(inBuf, (void**) &pageData, &length);
+			} while (netbuf_next(inBuf) >= 0);
+
+			// delete buffer
+			if (inBuf != NULL)
+				netbuf_delete(inBuf);
+
+			// fetch next data
+			inBuf = netconn_recv(conn);
+		}
+		// end delete
 
 	} else {
 		printf("WEBCLIENT: ERROR: %d\n", connErr);

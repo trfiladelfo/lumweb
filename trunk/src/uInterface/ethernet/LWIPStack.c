@@ -79,6 +79,9 @@
 #warning "ETH_PAD_SIZE must be 2 for this interface driver!"
 #endif
 
+#define IP_STATIC 	1
+#define IP_DYNAMIC 	2
+
 // Forward declarations.
 static void ethernetif_input(void *pParams);
 static struct pbuf * low_level_input(struct netif *netif);
@@ -506,58 +509,38 @@ err_t ethernetif_init(struct netif *netif) {
 //
 //*****************************************************************************
 void LWIPServiceTaskInit(void *pvParameters) {
-	struct ip_addr ip_addr;
-	struct ip_addr net_mask;
-	struct ip_addr gw_addr;
+	struct ip_addr *ip_addr;
+	struct ip_addr *net_mask;
+	struct ip_addr *gw_addr;
 
-	struct ip_addr ip_addr_local;
-	struct ip_addr net_mask_local;
+	//struct ip_addr ip_addr_local;
+	//struct ip_addr net_mask_local;
+
+	char IPState = 0;
 
 	char* configLoad;
 
 	IP_CONFIG * ipCfg;
 
-	UARTprintf("Initialisiere IP ");
+	printf("Initialisiere IP ");
 	ipCfg = pvPortMalloc(sizeof(IP_CONFIG));
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "USE_DHCP");
 
 	showBootText("load ipconfig ...");
 
+
+
 	printf("LWIPSTACK: LOAD CONFIG: (%s)\n", configLoad);
-	if (strcmp(configLoad, "true") == 0) {
-
-		printf("mit DHCP\n");
-		ipCfg->IPMode = IPADDR_USE_DHCP;
-
+	if (configLoad == 0) {
+		IPState = IPADDR_USE_AUTOIP;
+	} else if (strcmp(configLoad, "true") == 0) {
+		IPState = IPADDR_USE_DHCP;
 	} else {
-
-		UARTprintf("statisch mit 192.168.20.200\n");
-		ipCfg->IPMode = IPADDR_USE_STATIC;
-		ipCfg->IPAddr = 0xC0A814C8; //192.168.20.200
-		ipCfg->NetMask = 0xffffff00;
-		ipCfg->GWAddr = 0xC0A81401;
-
+		IPState = IPADDR_USE_STATIC;
 	}
 
 	vPortFree(configLoad);
-
-	LWIP_ASSERT("pvParameters != NULL", (pvParameters != NULL));
-
-	// Check the parameters.	
-#if LWIP_DHCP && LWIP_AUTOIP
-	ASSERT((ipCfg->IPMode == IPADDR_USE_STATIC) ||
-			(ipCfg->IPMode == IPADDR_USE_DHCP) ||
-			(ipCfg->IPMode == IPADDR_USE_AUTOIP))
-#elif LWIP_DHCP
-	ASSERT((ipCfg->IPMode == IPADDR_USE_STATIC) ||
-			(ipCfg->IPMode == IPADDR_USE_DHCP))
-#elif LWIP_AUTOIP
-	ASSERT((ipCfg->IPMode == IPADDR_USE_STATIC) ||
-			(ipCfg->IPMode == IPADDR_USE_AUTOIP))
-#else
-	ASSERT(ipCfg->IPMode == IPADDR_USE_STATIC)
-#endif
 
 	// Start the TCP/IP thread & init stuff
 	tcpip_init(NULL, NULL);
@@ -565,16 +548,16 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	vTaskDelay(100 / portTICK_RATE_MS);
 
 	// Setup the network address values.
-	if (ipCfg->IPMode == IPADDR_USE_STATIC) {
-		ip_addr.addr = htonl(ipCfg->IPAddr);
-		net_mask.addr = htonl(ipCfg->NetMask);
-		gw_addr.addr = htonl(ipCfg->GWAddr);
+	if (IPState == IPADDR_USE_STATIC) {
+		ip_addr = getAddresFromConfig("IP_ADDRESS");
+		net_mask = getAddresFromConfig("IP_SUBNETMASK");
+		gw_addr = getAddresFromConfig("IP_GATEWAY");
 	}
 #if LWIP_DHCP || LWIP_AUTOIP
 	else {
-		ip_addr.addr = 0;
-		net_mask.addr = 0;
-		gw_addr.addr = 0;
+		ip_addr = pvPortMalloc(sizeof(struct ip_addr));
+		net_mask = pvPortMalloc(sizeof(struct ip_addr));
+		gw_addr = pvPortMalloc(sizeof(struct ip_addr));
 	}
 #endif
 
@@ -587,7 +570,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	printf("Starting NETIF ... \n");
 	showBootText("starting Network ...");
-	netif_add(&lwip_netif, &ip_addr, &net_mask, &gw_addr, NULL,
+	netif_add(&lwip_netif, ip_addr, net_mask, gw_addr, NULL,
 			ethernetif_init, tcpip_input);
 	netif_set_default(&lwip_netif);
 
@@ -595,27 +578,27 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	// Start DHCP, if enabled.
 #if LWIP_DHCP
-	if (ipCfg->IPMode == IPADDR_USE_DHCP) {
+	if (IPState == IPADDR_USE_DHCP) {
 		showBootText("waiting for DHCP ...");
-		UARTprintf("Starte DHCP Client ...     ");
+		printf("Starte DHCP Client ...     ");
 		if (dhcp_start(&lwip_netif) == ERR_OK) {
-			UARTprintf("[ok]\n");
+			printf("[ok]\n");
 		} else {
-			UARTprintf("[fail]\n");
+			printf("[fail]\n");
 		}
 	}
 #endif
 
 	// Start AutoIP, if enabled and DHCP is not.
 #if LWIP_AUTOIP
-	if (ipCfg->IPMode == IPADDR_USE_AUTOIP)
+	if (IPState == IPADDR_USE_AUTOIP)
 	{
-		UARTprintf ("Setzte Auto IP (NICHT DHCP) ...\n");
+		printf ("Setzte Auto IP (NICHT DHCP) ...\n");
 		autoip_start(&lwip_netif);
 	}
 #endif
 
-	if (ipCfg->IPMode == IPADDR_USE_STATIC) {
+	if (IPState == IPADDR_USE_STATIC) {
 		// Bring the interface up.
 		netif_set_up(&lwip_netif);
 	}
@@ -630,34 +613,27 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	printnetif(&lwip_netif);
 
-	configLoad = loadFromConfig(IP_CONFIG_FILE, "REMOTE_IP");
-	if (strcmp(configLoad, "localhost") == 0) {
-		printf("Fetch local Address\n");
-		remoteIP = &(lwip_netif.ip_addr);
-	} else {
-		// TODO Parse IP From the Config File
+	remoteIP = getAddresFromConfig("REMOTE_IP");
 
-		// set the ip to the structure
-		//remoteIP = pvPortMalloc(sizeof(struct ip_addr));
-		//remoteIP.addr = ...;
-	}
-	vPortFree(configLoad);
+	printf("Remote IP: ");
+	printip(remoteIP);
+	printf("\n");
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_SERVER");
 	if (strcmp(configLoad, "true") == 0) {
 		/* Initialize HTTP, DNS, SNTP */
-		UARTprintf("HTTPD Starten ...\n");
+		printf("HTTPD Starten ...\n");
 		httpd_init();
 	}
 	vPortFree(configLoad);
-	UARTprintf("SNTP Starten ...\n");
+	printf("SNTP Starten ...\n");
 	sntp_init();
-	UARTprintf("DNS Starten ...\n");
+	printf("DNS Starten ...\n");
 	dns_init();
-	//	UARTprintf("NETBIOS Starten ...\n");
-	//	netbios_init();
+	//printf("NETBIOS Starten ...\n");
+	//netbios_init();
 
-	UARTprintf("Dienste gestartet ...\n");
+	printf("Dienste gestartet ...\n");
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
 	if (strcmp(configLoad, "true") == 0) {
@@ -676,20 +652,20 @@ void LWIPServiceTaskInit(void *pvParameters) {
 				// set link up flag
 				netif_set_up(&lwip_netif);
 				showBootText("activate networkinterface ...");
-				if (ipCfg->IPMode == IPADDR_USE_DHCP) {
-					UARTprintf("DHCP Adresse anfordern ...  ");
+				if (IPState == IPADDR_USE_DHCP) {
+					printf("DHCP Adresse anfordern ...  ");
 					if (dhcp_renew(&lwip_netif) == ERR_OK) {
-						UARTprintf("[ok]\n");
+						printf("[ok]\n");
 						printnetif(&lwip_netif);
 					} else {
-						UARTprintf("[fail]\n");
+						printf("[fail]\n");
 					}
 				}
 			}
 		} else {
 			if (netif_is_up(&lwip_netif)) {
 				showBootText("no networkconnection!!");
-				UARTprintf("Deaktiviere Netzwerkinterface ...  ");
+				printf("Deaktiviere Netzwerkinterface ...  ");
 				netif_set_down(&lwip_netif);
 			}
 		}

@@ -42,31 +42,6 @@ void reInitPanel(void) {
 
 	printf("Adding ROOT Widget ...\n");
 	WidgetAdd(WIDGET_ROOT, (tWidget*) xParentContainer);
-
-	//
-	// Fill the top 24 rows of the screen with blue to create the banner.
-	//
-	/*sRect.sXMin = 5;
-	 sRect.sYMin = 5;
-	 sRect.sXMax = GrContextDpyWidthGet(&g_sContext) - 5;
-	 sRect.sYMax = 28;
-
-	 GrContextForegroundSet(&g_sContext, ClrRed);
-	 GrRectFill(&g_sContext, &sRect);
-
-	 //
-	 // Put a white box around the banner.
-	 //
-	 GrContextForegroundSet(&g_sContext, ClrWhite);
-	 GrRectDraw(&g_sContext, &sRect);
-
-	 //
-	 // Put the application name in the middle of the banner.
-	 //
-	 GrContextFontSet(&g_sContext, &g_sFontCm14);
-	 GrStringDrawCentered(&g_sContext, aktTitle, -1,
-	 GrContextDpyWidthGet(&g_sContext) / 2, 15, 0); */
-
 }
 
 /**
