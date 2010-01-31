@@ -94,11 +94,12 @@ int main(void) {
 		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
 	}
 
+#ifdef ENABLE_GRAPHIC
 	/* Graphic Task */
-/*	printf("Starting Graphic Task ... ");
+	printf("Starting Graphic Task ... ");
 	xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
 	printf("ok\n");
-*/
+#endif
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
