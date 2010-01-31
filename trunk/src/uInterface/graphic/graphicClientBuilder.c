@@ -31,6 +31,8 @@ void vInsertClientEntity(xClientEntity* toInsert);
 int aktPage = 1;
 char* aktWebPage = NULL;
 
+xClientEntity *xClientRoot = NULL;
+
 void vLoadMenu(void) {
 	//char* configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_MENU_PAGE");
 	//vLoadPage(configLoad);
@@ -91,15 +93,21 @@ void vAddActionButton(char* name, char* link, char status) {
 }
 
 void vInsertClientEntity(xClientEntity* toInsert) {
+	printf("Insert into List\n");
 	xClientEntity* akt = xClientRoot;
-	if (akt == NULL) {
+	printf("buffer created\n");
+	if (xClientRoot == NULL) {
+		printf("insert into ROOT\n");
 		xClientRoot = toInsert;
 	} else {
-		while (akt->next != NULL) {
+		printf("ROOT not Null\n");
+		while (akt != NULL && akt->next != NULL) {
 			akt = akt->next;
 		}
+		printf("position found and do Insert\n");
 		akt->next = toInsert;
 	}
+	printf("inserted\n");
 }
 
 void vDrawClientEntity(void) {
@@ -180,7 +188,6 @@ void vDrawClientEntity(void) {
 		addButton(235, 205, 80, 30, "Continue", 0, continuePage);
 	}
 
-
 	printf("Beginne Output\n");
 	vDrawPanel();
 	printf("Ouput erfolgreich\n");
@@ -198,17 +205,20 @@ void vDestroyClientEntities(void) {
 			vPortFree(akt->stringValue);
 		}
 
-		destroyWidget(akt->checkbox);
-		destroyWidget(akt->decrease);
-		destroyWidget(akt->increase);
-		destroyWidget(akt->nameLabel);
-		destroyWidget(akt->actionButton);
-		destroyWidget(akt->valueLabel);
-
+		vDestroyWidget(akt->checkbox);
+		vDestroyWidget(akt->decrease);
+		vDestroyWidget(akt->increase);
+		vDestroyWidget(akt->nameLabel);
+		vDestroyWidget(akt->actionButton);
+		vDestroyWidget(akt->valueLabel);
 
 		toDelete = akt;
-		vPortFree(toDelete);
-
 		akt = akt->next;
+		vPortFree(toDelete);
 	}
+	xClientRoot = NULL;
+}
+
+xClientEntity *getClientRoot(void) {
+	return xClientRoot;
 }

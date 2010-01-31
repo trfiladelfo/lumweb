@@ -530,7 +530,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "USE_DHCP");
 
 #ifdef ENABLE_GRAPHIC
-	showBootText("load ipconfig ...");
+	vShowBootText("load ipconfig ...");
 #endif
 
 
@@ -573,7 +573,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	printf("Starting NETIF ... \n");
 #ifdef ENABLE_GRAPHIC
-	showBootText("starting Network ...");
+	vShowBootText("starting Network ...");
 #endif
 	netif_add(&lwip_netif, ip_addr, net_mask, gw_addr, NULL,
 			ethernetif_init, tcpip_input);
@@ -585,7 +585,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 #if LWIP_DHCP
 	if (IPState == IPADDR_USE_DHCP) {
 #ifdef ENABLE_GRAPHIC
-		showBootText("waiting for DHCP ...");
+		vShowBootText("waiting for DHCP ...");
 #endif
 		printf("Starte DHCP Client ...     ");
 		if (dhcp_start(&lwip_netif) == ERR_OK) {
@@ -645,11 +645,11 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
 #ifdef ENABLE_GRAPHIC
 	if (strcmp(configLoad, "true") == 0) {
-		showBootText("loading menu ...");
-		loadMenu();
+		vShowBootText("loading menu ...");
+		vLoadMenu();
 
 	} else {
-		showBootText("ready for requests ...");
+		vShowBootText("ready for requests ...");
 	}
 #endif
 	vPortFree(configLoad);
@@ -662,7 +662,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 				// set link up flag
 				netif_set_up(&lwip_netif);
 #ifdef ENABLE_GRAPHIC
-				showBootText("activate networkinterface ...");
+				vShowBootText("activate networkinterface ...");
 #endif
 				if (IPState == IPADDR_USE_DHCP) {
 					printf("DHCP Adresse anfordern ...  ");
@@ -677,7 +677,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 		} else {
 			if (netif_is_up(&lwip_netif)) {
 #ifdef ENABLE_GRAPHIC
-				showBootText("no networkconnection!!");
+				vShowBootText("no networkconnection!!");
 #endif
 				printf("Deaktiviere Netzwerkinterface ...  ");
 				netif_set_down(&lwip_netif);
