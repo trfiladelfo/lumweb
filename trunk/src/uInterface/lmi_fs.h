@@ -44,5 +44,6 @@ struct fs_file {
 struct fs_file *fs_open(char *name);
 void fs_close(struct fs_file *file);
 int fs_read(struct fs_file *file, char *buffer, int count);
+void fs_enable(unsigned long ulFrequency);
 
 #endif /* __FS_H__ */

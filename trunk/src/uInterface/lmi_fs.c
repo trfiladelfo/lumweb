@@ -66,7 +66,7 @@ static volatile tBoolean g_bFatFsEnabled = false;
 // Enable the SSI Port for FatFs usage.
 //
 //*****************************************************************************
-static void fs_enable(unsigned long ulFrequency) {
+void fs_enable(unsigned long ulFrequency) {
 	//
 	// Disable the SSI Port.
 	//

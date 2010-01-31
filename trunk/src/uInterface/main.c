@@ -29,6 +29,7 @@
 #include "communication/comTask.h"
 #include "ethernet/LWIPStack.h"
 #include "graphic/graphicTask.h"
+#include "log/logging.h"
 
 
 /* Globals */
@@ -47,10 +48,23 @@ int main(void) {
 
 	// Setup the Hardware
 	prvSetupHardware();
-	printf("\n\n\nStarte Programm ...\n");
+
+	//start Logging
+	UARTprintf("Init log file: Status = %d\n", initLog());
+	appendToLog("Starting Firmware");
+	appendToLog("Universelles Interface von Anzinger Martin und Hahn Florian");
+
+	printf("adresse von _etext: 0x%X\n", &_etext);
+	printf("adresse von _data:  0x%X\n", &_data);
+	printf("adresse von _edata: 0x%X\n", &_edata);
+	printf("adresse von _bss:   0x%X\n", &_bss);
+	printf("adresse von _ebss:  0x%X\n", &_ebss);
+	
+    printf("\n\n\nStarte Programm ...\n");
 	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
 
 	printf("Starting Firmware ...\n");
+
 
 	// Queue Definition
 	/* The main Communication between COMM-, GRAPH and HTTPD Task */
@@ -61,23 +75,30 @@ int main(void) {
 	//printf("\txGraphQueue\n");
 	//xGraphQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xComMessage));
 
+
 	// Tasks
+
+	/* Real Time Clock Task */
 	printf("Starting RealTimeClock ... ");
 	xTaskCreate( vRealTimeClockTask, TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
 	printf("ok\n");
+
+	/* Communication Task */
 	printf("Starting Communication Task ... ");
 	xTaskCreate( vComTask, COM_TASK_NAME, COM_STACK_SIZE, NULL, COM_TASK_PRIORITY, &xComTaskHandle);
 	printf("ok\n");
 
-	/* Create the lwIP task if running on a processor that includes a MAC and	PHY. */
+	/* LWIP Task */
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
-		printf("Starte LWIP ...\n");
+		printf("Starting LWIP ...\n");
 		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
 	}
 
-	printf("Starting Graphic Task ... ");
+	/* Graphic Task */
+/*	printf("Starting Graphic Task ... ");
 	xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
 	printf("ok\n");
+*/
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();

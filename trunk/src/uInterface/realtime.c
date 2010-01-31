@@ -55,5 +55,6 @@ void vSetRealTimeClock(time_t t_new) {
  */
 char* get_dateandtime(char * pcBuf, int iBufLen) {
 	snprintf(pcBuf, iBufLen, ctime(&systemtime));
+	printf("vRealTimeClockTask: get time %s", pcBuf);
 	return pcBuf;
 }

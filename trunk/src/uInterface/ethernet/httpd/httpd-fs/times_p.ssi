@@ -1,39 +1,149 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-		<title>I/O Control Demo 2</title>
-		<script type="text/javascript" src="./js/funcs_c.js"></script>
-		<link rel="stylesheet" href="/style.css">
+		<title>Zeiteinstellung</title>
+		<style type="text/css">
+			body {
+				position: absolute; 
+				left: 0px; 
+				top: 0px; 
+				width:100%; 
+				height:100%; 
+				margin:0px; 
+				padding: 0px; 
+				background-color:#EEEEEE;
+				font-family: Verdana, Arial, Sans Serif;
+			}
+
+			div#container {
+				border: 1px solid black;
+				position: absolute; 
+				left: 10%; 
+				top: 5%; 
+				height: 80%; 
+				width: 80%;
+				background-color: #AAAAAA;
+				overflow: auto;
+			}	
+			div#footer {
+				border: 1px solid black;
+				position: absolute; 
+				left: 10%; 
+				bottom: 5%; 
+				width: 80%;
+				height: 3%;
+				padding-top: 2px;
+				background-color: #AAAAAA;
+				overflow: hidden;
+				text-align: center;
+			}		
+			input {
+				border: 1px solid #666666;
+				background-color:#EFEFEF;
+			}
+			td {
+				font-size: 12px;
+			}
+			a {
+				color: #444444;
+			}
+			a:hover {
+				color: #4444FF;
+			}
+		</style>
+		<script type="text/javascript" language="javascript">
+			jx={getHTTPObject:function(){var A=false;if(typeof ActiveXObject!="undefined"){try{A=new ActiveXObject("Msxml2.XMLHTTP")}catch(C){try{A=new ActiveXObject("Microsoft.XMLHTTP")}catch(B){A=false}}}else{if(window.XMLHttpRequest){try{A=new XMLHttpRequest()}catch(C){A=false}}}return A},load:function(url,callback,format){var http=this.init();if(!http||!url){return }if(http.overrideMimeType){http.overrideMimeType("text/xml")}if(!format){var format="text"}format=format.toLowerCase();var now="uid="+new Date().getTime();url+=(url.indexOf("?")+1)?"&":"?";url+=now;http.open("GET",url,true);http.onreadystatechange=function(){if(http.readyState==4){if(http.status==200){var result="";if(http.responseText){result=http.responseText}if(format.charAt(0)=="j"){result=result.replace(/[\n\r]/g,"");result=eval("("+result+")")}if(callback){callback(result)}}else{if(error){error(http.status)}}}};http.send(null)},init:function(){return this.getHTTPObject()}}
+
+			function inc(id, max, min){
+				var element = document.getElementById(id);
+				var n_value = parseInt(element.value) + 1;
+				element.value = n_value;
+				if(max != -1 && min != -1){
+					if(n_value > max)
+						element.value = min;
+				}
+			}
+			
+			function dec(id, max, min){
+				var element = document.getElementById(id);
+				var n_value = parseInt(element.value) - 1;
+				element.value = n_value;
+				if(max != -1 && min != -1){
+					if(n_value < min)
+						element.value = max;
+				}		
+			}
+
+			function addB(id, max, min){
+				document.write("<input type=\"button\" value=\"+\" onclick=\"inc('"+id+"',"+max+","+min+");\" /><input type=\"button\" value=\"-\" onclick=\"dec('"+id+"',"+max+","+min+");\" />");
+	
+			}
+
+			function submit_form(form){
+				var get_string = get_form_values();
+				//var form = document.getElementById('form-'+id);
+
+				jx.load(form.action+get_string+"ajax=1",function(data){
+					var return_container = document.getElementById("container-" + form.name);
+					return_container.innerHTML = data;
+				});
+				return false;
+			}
+
+			function getElementsByClass( searchClass, domNode, tagName) {
+				if (domNode == null) domNode = document;
+				if (tagName == null) tagName = '*';
+				var el = new Array();
+				var tags = domNode.getElementsByTagName(tagName);
+				var tcl = " "+searchClass+" ";
+				for(i=0,j=0; i<tags.length; i++) {
+					var test = " " + tags[i].className + " ";
+					if (test.indexOf(tcl) != -1)
+						el[j++] = tags[i];
+				}
+				return el;
+			}
+			 
+
+			function get_form_values(){
+				var get_string = "?";
+				var fields = getElementsByClass('fi');
+				for(i=0; i<fields.length; i++){
+					get_string += fields[i].name + "=" + fields[i].value +"&";		
+				}
+				return get_string;
+			}
+		</script>
 	</head>
 	<body>
-		<form method="get" action="set.cgi" name="times" id="form-times" onsubmit="return submit_form(this)">
-			<table>
-				<tr>
-					<th colspan='2'>Tag</th>
-				</tr>
-				<tr>
-					<td><!--#NumberInputField id=day_hour label=Stunden max=24 min=0 --></td>
-					<td><!--#NumberInputField id=day_minute label=Minuten --></td>
-				</tr>
-				<tr>
-					<th colspan='2'>Nacht</th>
-				</tr>
-				<tr>
-					<td><!--#NumberInputField id=night_hour label=Stunden --></td>
-					<td><!--#NumberInputField id=night_minute label=Minuten --></td>
-				</tr>			
-				<tr>
-					<td  colspan="2"><!--#CheckboxInputField id=night_hour label=Stunden --> </td>
-				</tr>	
-				<tr>
-					<td  colspan="2"><!--#SubmitInputField label=Speichern form_id=times --> </td>
-				</tr>
-			</table>
-		</form>
-
-		<div id="container-times">
-			<div id="last-update">Letzte Aktualisierung <!--#DateTime--></div>
+		<div id="container">
+			<center><h1>Zeiteinstellung</h1></center>
+			<form method="get" action="set.cgi" name="times" id="form-times" onsubmit="return submit_form(this)">
+				<center><table style="width: 75%; border:1px solid black;" border="0">
+					<tr>
+						<td align="center" colspan="4"><b>Tag</b></td>
+					</tr>	
+					<tr>
+						<td align="center"><!--#NumberInputField id=day_hour label=Stunden max=23 min=0 --></td> 
+						<td align="center"><!--#NumberInputField id=day_minute label=Minuten max=59 min=0 --></td> 
+					</tr>	
+					<tr>
+						<td align="center" colspan="4"><b>Nacht</b></td>
+					</tr>
+					<tr>
+						<td align="center"><!--#NumberInputField id=night_hour label=Stunden max=23 min=0 --></td> 
+						<td align="center"><!--#NumberInputField id=night_minute label=Minuten max=59 min=0 --></td> 
+					</tr>	
+					<tr>
+						<td align="right" colspan="4"><!--#CheckboxInputField id=led_ein label=Einschalten --> <input type="reset" name="test" value="Zur&uuml;cksetzen" /><!--#SubmitInputField label=Speichern form_id=times --></td>
+					</tr>
+				</table>
+				<div id="container-times" class="answer">
+					<div id="last-update">Letzte Aktualisierung <!--#DateTime--></div>
+				</div></center>	
+			</form>
+		</div>
+		<div id="footer">
+			<nobr><font style="font-size: 12px">&copy; 2009 - 2010 Anzinger und Hahn in Zusammenarbeit mit <b>Hainzl Industriesysteme</b></font><nobr>
 		</div>
 	</body>
 </html>
