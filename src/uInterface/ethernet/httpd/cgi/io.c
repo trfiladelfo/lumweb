@@ -49,7 +49,7 @@
 
 #include "ethernet/lwipopts.h"
 
-#define SSI_DEBUG	1
+//#define SSI_DEBUG	1
 
 // Message for the Comm-Task
 xComMessage xCom_msg;

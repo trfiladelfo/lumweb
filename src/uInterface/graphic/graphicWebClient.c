@@ -35,6 +35,8 @@ void vLoadPage(char *uri) {
 	char buffer[128];
 	char inTag = 0;
 
+	vDestroyClientEntities();
+
 	// status variables
 	u16_t length, bindErr, connErr, writeErr;
 	u16_t port;
@@ -177,16 +179,16 @@ void addHTMLToList(char* str, int len) {
 
 	} else if ((status & GWC_SUBMIT) == GWC_SUBMIT) {
 
-		if (getValueForParamName(str, "value", buffer) != NULL) {
+		if (getValueForParamName(str, "label", buffer) != NULL) {
 			strLen = strlen(buffer);
-			link = pvPortMalloc((strLen + 1) * sizeof(char));
+			name = pvPortMalloc((strLen + 1) * sizeof(char));
 			for (i = 0; i < strLen; i++) {
-				link[i] = buffer[i];
+				name[i] = buffer[i];
 			}
-			link[i] = 0;
+			name[i] = 0;
 		}
-		printf("new SubmitButton %s", link);
-		vAddActionButton(link, NULL, status);
+		printf("new SubmitButton %s", name);
+		vAddActionButton(name, NULL, status);
 
 	} else if ((status & GWC_HYPERLINK) == GWC_HYPERLINK) {
 		printf("new Hyperlink");
@@ -256,7 +258,7 @@ void vSendData(tWidget *pWidget) {
 
 	strcpy(buffer, "GET /set.cgi?");
 
-	xClientEntity *akt = xClientRoot;
+	xClientEntity *akt = getClientRoot();
 
 	int i = 0;
 	while (akt != NULL) {

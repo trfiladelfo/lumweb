@@ -46,8 +46,6 @@ typedef struct __ClientEntity  {
 	struct __ClientEntity* next;
 }xClientEntity;
 
-xClientEntity *xClientRoot;
-
 extern int aktPage;
 
 void vLoadWebPage (char *uri);
@@ -61,5 +59,7 @@ void vAddActionButton (char* name, char* link, char status);
 
 void vDrawClientEntity(void);
 void vDestroyClientEntities(void);
+
+xClientEntity *getClientRoot(void);
 
 #endif /* GRAPHICWEBCLIENT_H_ */

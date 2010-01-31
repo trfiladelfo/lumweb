@@ -12,7 +12,7 @@
 #include "graphic/graphicWebClient.h"
 
 void increase(tWidget *pWidget) {
-	xClientEntity * akt = xClientRoot;
+	xClientEntity * akt = getClientRoot();
 
 	int divisor = 1;
 	char i;
@@ -53,7 +53,7 @@ void increase(tWidget *pWidget) {
 }
 
 void decrease(tWidget *pWidget) {
-	xClientEntity * akt = xClientRoot;
+	xClientEntity * akt = getClientRoot();
 	int divisor = 1;
 	char i;
 	while (akt != 0) {
@@ -103,7 +103,7 @@ void continuePage(tWidget *pWidget) {
 }
 
 void onCheckboxClick(tWidget *pWidget, unsigned long bSelected) {
-	xClientEntity * akt = xClientRoot;
+	xClientEntity * akt = getClientRoot();
 	while (akt != 0) {
 		if (akt->checkbox == (tCheckBoxWidget*) pWidget) {
 			break;
@@ -123,7 +123,7 @@ void onCheckboxClick(tWidget *pWidget, unsigned long bSelected) {
 }
 
 void vLoadNewPage(tWidget *pWidget) {
-	xClientEntity * akt = xClientRoot;
+	xClientEntity * akt = getClientRoot();
 
 	while (akt != 0) {
 		if (akt->actionButton == (tPushButtonWidget*) pWidget) {

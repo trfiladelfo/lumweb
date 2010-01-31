@@ -215,6 +215,7 @@ void vDrawPanel(void) {
 	// Issue the initial paint request to the widgets.
 	//
 	if (xParentContainer) {
+		printf("output (0x%X)\n", xRootObject);
 		xParentContainer->sBase.pChild = xRootObject;
 		WidgetPaint((tWidget*)xParentContainer);
 	}
@@ -231,6 +232,7 @@ void vDestroyWidget(tWidget* toDestroy) {
 		if (toDestroy != 0) {
 			vPortFree(toDestroy);
 		}
+		toDestroy == 0;
 	}
 }
 
@@ -240,6 +242,7 @@ void vDestroyWidget(tWidget* toDestroy) {
 void vCleanDisplay() {
 	if (xParentContainer) {
 		vDestroyWidget(xParentContainer->sBase.pChild);
+		xRootObject = 0;
 		WidgetPaint((tWidget*)xParentContainer);
 	}
 }
