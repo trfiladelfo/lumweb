@@ -53,7 +53,7 @@ void vGraphicTask(void* pvParameters) {
 	xParentContainer->ulStyle = CANVAS_STYLE_FILL;
 	xParentContainer->ulTextColor = 0;
 
-	showBootText("booting ...");
+	vShowBootText("booting ...");
 
 	//
 	// Loop forever handling widget messages.

@@ -68,7 +68,6 @@
 #include "projectConfig.h"
 #include "configuration/configloader.h"
 
-#include "graphic/graphicLib.h"
 #include "graphic/graphicWebClient.h"
 
 // Sanity Check:  This interface driver will NOT work if the following defines are incorrect.
@@ -527,7 +526,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "USE_DHCP");
 
-	showBootText("load ipconfig ...");
+	vShowBootText("load ipconfig ...");
 
 
 
@@ -569,7 +568,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	// @SEE http://lwip.wikia.com/wiki/Initialization_using_tcpip.c
 
 	printf("Starting NETIF ... \n");
-	showBootText("starting Network ...");
+	vShowBootText("starting Network ...");
 	netif_add(&lwip_netif, ip_addr, net_mask, gw_addr, NULL,
 			ethernetif_init, tcpip_input);
 	netif_set_default(&lwip_netif);
@@ -579,7 +578,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	// Start DHCP, if enabled.
 #if LWIP_DHCP
 	if (IPState == IPADDR_USE_DHCP) {
-		showBootText("waiting for DHCP ...");
+		vShowBootText("waiting for DHCP ...");
 		printf("Starte DHCP Client ...     ");
 		if (dhcp_start(&lwip_netif) == ERR_OK) {
 			printf("[ok]\n");
@@ -637,10 +636,10 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
 	if (strcmp(configLoad, "true") == 0) {
-		showBootText("loading menu ...");
-		loadMenu();
+		vShowBootText("loading menu ...");
+		vLoadMenu();
 	} else {
-		showBootText("ready for requests ...");
+		vShowBootText("ready for requests ...");
 	}
 	vPortFree(configLoad);
 
@@ -651,7 +650,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			if (!(netif_is_up(&lwip_netif))) {
 				// set link up flag
 				netif_set_up(&lwip_netif);
-				showBootText("activate networkinterface ...");
+				vShowBootText("activate networkinterface ...");
 				if (IPState == IPADDR_USE_DHCP) {
 					printf("DHCP Adresse anfordern ...  ");
 					if (dhcp_renew(&lwip_netif) == ERR_OK) {
@@ -664,7 +663,7 @@ void LWIPServiceTaskInit(void *pvParameters) {
 			}
 		} else {
 			if (netif_is_up(&lwip_netif)) {
-				showBootText("no networkconnection!!");
+				vShowBootText("no networkconnection!!");
 				printf("Deaktiviere Netzwerkinterface ...  ");
 				netif_set_down(&lwip_netif);
 			}

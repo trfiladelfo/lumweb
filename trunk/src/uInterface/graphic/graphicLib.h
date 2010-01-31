@@ -31,7 +31,6 @@ tWidget * xRootObject;
 /* Pointer to the last inserted Object */
 tWidget * xLastInsertedObject;
 
-void initPanel(char* headerText);
 tPushButtonWidget *addButton( // Insert new Graphic Button
 		int left,
 		int top,
@@ -68,10 +67,11 @@ tCheckBoxWidget *addCheckbox(
 		void (*pfnOnChange)(tWidget *pWidget, unsigned long bSelected)
 	);
 
-void drawPanel(void);
-void destroyPanel(void);
-void cleanDisplay(void);
+void vDrawPanel(void);
+void vDestroyPanel(void);
+void vCleanDisplay(void);
+void vInitPanel(void);
 
-void showBootText(char* textToShow);
+void vShowBootText(char* textToShow);
 
 #endif /* GRAPHICLIB_H_ */
