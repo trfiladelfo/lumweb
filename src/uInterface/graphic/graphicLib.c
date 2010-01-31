@@ -13,19 +13,8 @@
 tRectangle sRect;
 
 int contextInitialized = 0;
-char* aktTitle = 0;
 
-void reInitPanel(void);
-
-/**
- * Initializes the Panel
- */
-void initPanel(char* headerText) {
-	aktTitle = headerText;
-	reInitPanel();
-}
-
-void reInitPanel(void) {
+void vInitPanel(void) {
 	//
 	// Initialize the graphics context.
 	//
@@ -36,7 +25,7 @@ void reInitPanel(void) {
 	}
 
 	printf("Clear Display\n");
-	cleanDisplay();
+	vCleanDisplay();
 
 	printf("Create new Panel\n");
 
@@ -87,7 +76,7 @@ tPushButtonWidget *addButton(int left, int top, int width, int height,
 		xLastInsertedObject->pNext = (tWidget*) aktButton;
 	}
 
-	if (!xRootObject) {
+	if (xRootObject == 0) {
 		xRootObject = (tWidget *) aktButton;
 	}
 	xLastInsertedObject = (tWidget *) aktButton;
@@ -221,7 +210,7 @@ tSliderWidget *addSlider(int left, int top, int width, int height, char* label,
 	return aktSlider;
 }
 
-void drawPanel(void) {
+void vDrawPanel(void) {
 	//
 	// Issue the initial paint request to the widgets.
 	//
@@ -234,10 +223,10 @@ void drawPanel(void) {
 /**
  * Frees the RAM for any Widget (recursive)
  */
-void destroyWidget(tWidget* toDestroy) {
+void vDestroyWidget(tWidget* toDestroy) {
 	if (toDestroy) {
-		destroyWidget(toDestroy->pChild);
-		destroyWidget(toDestroy->pNext);
+		vDestroyWidget(toDestroy->pChild);
+		vDestroyWidget(toDestroy->pNext);
 		WidgetRemove(toDestroy);
 		if (toDestroy != 0) {
 			vPortFree(toDestroy);
@@ -248,9 +237,9 @@ void destroyWidget(tWidget* toDestroy) {
 /**
  * Cleans the Display and clears all the child objects
  */
-void cleanDisplay() {
+void vCleanDisplay() {
 	if (xParentContainer) {
-		destroyWidget(xParentContainer->sBase.pChild);
+		vDestroyWidget(xParentContainer->sBase.pChild);
 		WidgetPaint((tWidget*)xParentContainer);
 	}
 }
@@ -258,7 +247,7 @@ void cleanDisplay() {
 /**
  * Free all the RAM from the actual Panel
  */
-void destroyPanel(void) {
+void vDestroyPanel(void) {
 	if (xParentContainer != 0) {
 		destroyWidget(xParentContainer->sBase.pChild);
 		destroyWidget(xParentContainer->sBase.pNext);
@@ -266,7 +255,7 @@ void destroyPanel(void) {
 	}
 }
 
-void showBootText(char* textToShow) {
+void vShowBootText(char* textToShow) {
 
 	/* Header Rectangle */
 	tRectangle sRect;

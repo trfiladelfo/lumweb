@@ -87,6 +87,7 @@ SOURCE=	$(SOURCE_DIR)/main.c \
 		$(GRAPHIC_DIR)/graphicTask.c \
 		$(GRAPHIC_DIR)/graphicLib.c \
 		$(GRAPHIC_DIR)/graphicWebClient.c \
+		$(GRAPHIC_DIR)/graphicClientBuilder.c \
 		$(GRAPHIC_DIR)/touchActions.c
 
 

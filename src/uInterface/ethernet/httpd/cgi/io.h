@@ -51,7 +51,8 @@ static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 		"NumberInputField", // SSI_INDEX_NUMBERINPUTFIELD
 		"SubmitInputField", // SSI_INDEX_SUBMITINPUTFIELD
 		"SavedParams",		//SSI_INDEX_SAVEDPARAMS
-		"CheckboxInputField" // SSI_INDEX_CHECKBOXINPUTFIELD
+		"CheckboxInputField", // SSI_INDEX_CHECKBOXINPUTFIELD
+		"Hyperlink" // SSI_INDEX_HYPERLINK
 };
 
 //*****************************************************************************
@@ -72,6 +73,7 @@ static const char *g_pcConfigSSITags[] = { "DateTime", // SSI_INDEX_DATEANDTIME
 #define SSI_INDEX_SUBMITINPUTFIELD     	(2)
 #define SSI_INDEX_SAVEDPARAMS    		(3)
 #define SSI_INDEX_CHECKBOXINPUTFIELD    (4)
+#define SSI_INDEX_HYPERLINK			    (5)
 
 #endif
 
@@ -88,6 +90,7 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_print_saved_params(char * pcBuf, int iBufLen);
 void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
+void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params);
 #ifdef __cplusplus
 }
 #endif

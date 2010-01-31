@@ -14,14 +14,15 @@
 #include "grlib/pushbutton.h"
 #include "grlib/checkbox.h"
 
-#include "graphic/graphicWebClient.h"
+#include "graphic/graphicClientBuilder.h"
 
 void onCheckboxClick(tWidget *pWidget, unsigned long bSelected);
 void loadWeb(tWidget *pWidget);
-void insertGWC(gwcRow* toInsert);
+void insertClientEntity(xClientEntity* toInsert);
 void increase(tWidget *pWidget);
 void decrease(tWidget *pWidget);
 void backPage(tWidget *pWidget);
 void continuePage(tWidget *pWidget);
+void vLoadNewPage(tWidget *pWidget);
 
 #endif /* TOUCHACTIONS_H_ */
