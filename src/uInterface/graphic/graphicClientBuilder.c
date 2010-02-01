@@ -148,8 +148,8 @@ void vDrawClientEntity(void) {
 					GWC_ROW_DECREASE_BUTTON_WIDTH, GWC_ROW_HEIGHT,
 					GWC_ROW_DECREASE_BUTTON_SYMBOL,
 					GWC_ROW_DECREASE_AUTOREPEAT, decrease);
-			snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1), "%d",
-					akt->value);
+			snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1), "%d,%d",
+					akt->value / 10, akt->value % 10);
 			akt->valueLabel = addLabel(GWC_ROW_VALUE_LEFT, top,
 					GWC_ROW_VALUE_WIDTH, GWC_ROW_HEIGHT, akt->stringValue);
 			akt->increase = addButton(GWC_ROW_INCREASE_BUTTON_LEFT, top,
