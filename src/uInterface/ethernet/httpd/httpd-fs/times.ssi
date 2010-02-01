@@ -31,7 +31,7 @@
 				bottom: 5%; 
 				width: 80%;
 				height: 3%;
-				padding-top: 2px;
+				padding-top: 2%;
 				background-color: #AAAAAA;
 				overflow: hidden;
 				text-align: center;
