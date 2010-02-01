@@ -1,0 +1,66 @@
+<html>
+	<head>
+		<title>Zeiteinstellung</title>
+		<style type="text/css">
+			body {
+				position: absolute; 
+				left: 0px; 
+				top: 0px; 
+				width:100%; 
+				height:100%; 
+				margin:0px; 
+				padding: 0px; 
+				background-color:#EEEEEE;
+				font-family: Verdana, Arial, Sans Serif;
+			}
+
+			div#container {
+				border: 1px solid black;
+				position: absolute; 
+				left: 10%; 
+				top: 5%; 
+				height: 80%; 
+				width: 80%;
+				background-color: #AAAAAA;
+				overflow: auto;
+			}	
+			div#footer {
+				border: 1px solid black;
+				position: absolute; 
+				left: 10%; 
+				bottom: 5%; 
+				width: 80%;
+				height: 3%;
+				padding-top: 2%;
+				background-color: #AAAAAA;
+				overflow: hidden;
+				text-align: center;
+			}		
+			input {
+				border: 1px solid #666666;
+				background-color:#EFEFEF;
+			}
+			td {
+				font-size: 12px;
+			}
+			a {
+				color: #444444;
+			}
+			a:hover {
+				color: #4444FF;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<center>
+				<h1>Men&uuml;</h1>
+				<!--#Hyperlink label=Zeiteinstellung value=times.ssi --> <br/>
+				&nbsp;
+			</center>
+		</div>
+		<div id="footer">
+			<nobr><font style="font-size: 12px">&copy; 2009 - 2010 Anzinger und Hahn in Zusammenarbeit mit <b>Hainzl Industriesysteme</b></font><nobr>
+		</div>
+	</body>
+</html>
