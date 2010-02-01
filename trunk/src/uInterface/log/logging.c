@@ -30,17 +30,22 @@ FRESULT initLog(){
 
 FRESULT appendToLog(char *msg){
 	FRESULT rc = FR_NO_FILE;
-	unsigned int bw;
+	unsigned int bw, i = 0;
 	char buf[128], time_buf[30];
 
 
+	get_dateandtime(time_buf, sizeof(time_buf));
+	i = strlen(time_buf);
+	i--;
+	time_buf[i] = 0;
+
 	if(log_file != NULL){
-		snprintf(&buf, 127, "%s : %s\n", get_dateandtime(time_buf, sizeof(time_buf)), msg);
-		rc = f_write(log_file, buf, sizeof(buf), &bw);
+		snprintf(&buf, 127, "%s : %s\n", time_buf , msg);
+		rc = f_write(log_file, buf, strlen(buf), &bw);
 
 #ifdef DEBUG_LOG
 		if(rc == FR_OK)
-			UARTprintf("appendToLog: wrote msg '%s' \n", buf);
+			UARTprintf("appendToLog: wrote msg %s", buf);
 #endif
 		f_sync(log_file);
 	}
