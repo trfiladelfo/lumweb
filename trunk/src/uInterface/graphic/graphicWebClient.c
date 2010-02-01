@@ -172,7 +172,7 @@ void addHTMLToList(char* str, int len) {
 			id[i] = 0;
 		}
 
-		printf("ADD NEW ENTITY: %s, %s, %d, %d, %d, %d, 0x%X\n", id, name, value,
+		printf("ADD NEW ENTITY: %s, %s, %d, %d, %d, %d, %d, 0x%X\n", id, name, value,
 				min, max, increment, decimal, status);
 		vAddRow(id, name == NULL ? "" : name, value, min, max, increment,
 				decimal, status);
@@ -230,6 +230,7 @@ char* getValueForParamName(char* str, char* search, char* retValue) {
 		}
 		retValue[j] = 0;
 	}
+	printf("getValueForParam: \"%s\" \"%s\"\n", search, retValue);
 	return retValue;
 }
 

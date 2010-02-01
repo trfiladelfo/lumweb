@@ -14,7 +14,6 @@
 void increase(tWidget *pWidget) {
 	xClientEntity * akt = getClientRoot();
 
-	int divisor = 1;
 	char i;
 
 	while (akt != 0) {
@@ -26,7 +25,7 @@ void increase(tWidget *pWidget) {
 	if (akt->increase == (tPushButtonWidget*) pWidget) {
 		akt->value += akt->increment;
 
-		if (akt->status & GWC_VALUE_MAX && akt->value > akt->maxValue) {
+		if ((akt->status & GWC_VALUE_MAX) == GWC_VALUE_MAX && akt->value > akt->maxValue) {
 			akt->value = akt->minValue;
 		}
 
@@ -35,17 +34,9 @@ void increase(tWidget *pWidget) {
 					+ 1) * sizeof(char));
 		}
 
-		for (i = 0; i < akt->decimal; i++) {
-			divisor *= 10;
-		}
+		snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d,%d",
+				akt->value / 10, akt->value % 10);
 
-		if (divisor > 1) {
-			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d,%d",
-					akt->value / divisor, akt->value % divisor);
-		} else {
-			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d",
-					akt->value);
-		}
 		akt->valueLabel->pcText = akt->stringValue;
 
 		WidgetPaint((tWidget*) akt->valueLabel);
@@ -54,7 +45,6 @@ void increase(tWidget *pWidget) {
 
 void decrease(tWidget *pWidget) {
 	xClientEntity * akt = getClientRoot();
-	int divisor = 1;
 	char i;
 	while (akt != 0) {
 		if (akt->decrease == (tPushButtonWidget*) pWidget) {
@@ -65,7 +55,7 @@ void decrease(tWidget *pWidget) {
 	if (akt->decrease == (tPushButtonWidget*) pWidget) {
 		akt->value -= akt->increment;
 
-		if (akt->status & GWC_VALUE_MIN && akt->value < akt->minValue) {
+		if ((akt->status & GWC_VALUE_MIN) == GWC_VALUE_MIN && akt->value < akt->minValue) {
 			akt->value = akt->maxValue;
 		}
 
@@ -73,17 +63,10 @@ void decrease(tWidget *pWidget) {
 			akt->stringValue = (char*) pvPortMalloc((GWC_ROW_VALUE_MAX_LENGTH
 					+ 1) * sizeof(char));
 		}
-		for (i = 0; i < akt->decimal; i++) {
-			divisor *= 10;
-		}
 
-		if (divisor > 1) {
-			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d,%d",
-					akt->value / divisor, akt->value % divisor);
-		} else {
-			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d",
-					akt->value);
-		}
+		snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d,%d",
+				akt->value / 10, akt->value % 10);
+
 		akt->valueLabel->pcText = akt->stringValue;
 
 		WidgetPaint((tWidget*) akt->valueLabel);
