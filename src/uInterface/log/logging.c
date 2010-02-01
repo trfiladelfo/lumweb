@@ -1,4 +1,8 @@
-
+//*****************************************************************************
+//
+// logging.c - Routines for handling log files
+//
+//*****************************************************************************
 
 #include "lmi_fs.h"
 #include "hw_types.h"
@@ -8,7 +12,16 @@
 #include "realtime.h"
 #include "log/logging.h"
 
-
+//*****************************************************************************
+//
+// Opens the log file (path defined as LOG_FILE_PATH) and
+// sets file pointer to the end of file
+//
+// @returns FR_OK 		.... log file was opened successfully
+//			FR_NO_FILE  .... memory alloctaion went wrong
+//			other RC    .... see return codes of f_open()
+//
+//*****************************************************************************
 FRESULT initLog(){
 	FRESULT rc = FR_NO_FILE;
 	log_file = (FIL*) pvPortMalloc(sizeof(FIL));
@@ -28,6 +41,18 @@ FRESULT initLog(){
 	return rc;
 }
 
+//*****************************************************************************
+//
+// Appends the message to the log file and adds the current time
+// (format: $time : $msg
+//
+// @params msg 			.... log message
+//
+// @returns FR_OK 		.... message wrote successfully
+//			FR_NO_FILE  .... log_file pointer was not initialized
+//			other RC    .... see return codes of f_open()
+//
+//*****************************************************************************
 FRESULT appendToLog(char *msg){
 	FRESULT rc = FR_NO_FILE;
 	unsigned int bw, i = 0;

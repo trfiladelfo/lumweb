@@ -560,6 +560,15 @@ void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params) {
 				"Hyperlink: ERROR - error no id and/or value found");
 	}
 }
+//*****************************************************************************
+//
+// adds a new element to the list
+//
+// @params  root  .... root element of list
+//			namevalue  .... name-value string ($name=$value)
+//
+// @return  0 .... element not added
+//*****************************************************************************
 int SSIParamAdd(pSSIParam* root, char* nameValue) {
 	int rc = 0;
 	char *value, *name;
@@ -620,7 +629,16 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 		}
 	}
 }
-
+//*****************************************************************************
+//
+// gets an element with $name from the list
+//
+// @params  root  .... root element of list
+//			name  .... name of the element
+//
+// @return  element with $name .... element found
+//			NULL .... element not found
+//*****************************************************************************
 pSSIParam SSIParamGet(pSSIParam root, char* name) {
 	pSSIParam ret = NULL;
 
@@ -635,7 +653,16 @@ pSSIParam SSIParamGet(pSSIParam root, char* name) {
 
 	return ret;
 }
-
+//*****************************************************************************
+//
+// gets a value of an element with $name from the list
+//
+// @params  root  .... root element of list
+//			name  .... name of the element
+//
+// @return  string with the value .... element found
+//			NULL .... element not found
+//*****************************************************************************
 char* SSIParamGetValue(pSSIParam root, char* name) {
 	pSSIParam p;
 	char* value = NULL;
@@ -650,7 +677,13 @@ char* SSIParamGetValue(pSSIParam root, char* name) {
 
 	return value;
 }
-
+//*****************************************************************************
+//
+// deletes and frees all elements ot the list
+//
+// @params root  .... root element of list
+//
+//*****************************************************************************
 void SSIParamDeleteAll(pSSIParam* root) {
 	pSSIParam p = (*root), del = NULL;
 
