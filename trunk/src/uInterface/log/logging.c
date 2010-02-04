@@ -1,3 +1,14 @@
+/**
+ * \addtogroup logging
+ * @{
+ *
+ * \file logging.c
+ * \author Anziner, Hahn
+ * \brief Routines for handling log files
+ *
+ *
+ */
+
 //*****************************************************************************
 //
 // logging.c - Routines for handling log files
@@ -12,16 +23,14 @@
 #include "realtime.h"
 #include "log/logging.h"
 
-//*****************************************************************************
-//
-// Opens the log file (path defined as LOG_FILE_PATH) and
-// sets file pointer to the end of file
-//
-// @returns FR_OK 		.... log file was opened successfully
-//			FR_NO_FILE  .... memory alloctaion went wrong
-//			other RC    .... see return codes of f_open()
-//
-//*****************************************************************************
+/**
+ Opens the log file (path defined as LOG_FILE_PATH) and
+ sets file pointer to the end of file
+
+ @return FR_OK 		.... log file was opened successfully
+ @return FR_NO_FILE  .... memory alloctaion went wrong
+ @return other RC    .... see return codes of f_open()
+*/
 FRESULT initLog(){
 	FRESULT rc = FR_NO_FILE;
 	log_file = (FIL*) pvPortMalloc(sizeof(FIL));
@@ -41,18 +50,17 @@ FRESULT initLog(){
 	return rc;
 }
 
-//*****************************************************************************
-//
-// Appends the message to the log file and adds the current time
-// (format: $time : $msg
-//
-// @params msg 			.... log message
-//
-// @returns FR_OK 		.... message wrote successfully
-//			FR_NO_FILE  .... log_file pointer was not initialized
-//			other RC    .... see return codes of f_open()
-//
-//*****************************************************************************
+/**
+ Appends the message to the log file and adds the current time
+ (format: $time : $msg
+
+ @param *msg  pointer to log message
+
+ @return FR_OK 		.... message wrote successfully
+ @return FR_NO_FILE  .... log_file pointer was not initialized
+ @return other RC    .... see return codes of f_open()
+
+*/
 FRESULT appendToLog(char *msg){
 	FRESULT rc = FR_NO_FILE;
 	unsigned int bw, i = 0;

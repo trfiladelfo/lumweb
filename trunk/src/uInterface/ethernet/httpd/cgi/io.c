@@ -25,6 +25,16 @@
 //
 //*****************************************************************************
 
+/**
+ * \addtogroup CGIandSSI
+ * @{
+ *
+ * \file io.c
+ * \author Anziner, Hahn
+ * \brief I/O routines for the enet_io example application.
+ *
+*/
+
 #include <string.h>
 
 /* Scheduler includes. */
@@ -119,12 +129,11 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
 
 #endif
 
-//*****************************************************************************
-//
-// Initialize the IO used in this demo
-// 1. STATUS LED on Port F pin 0
-//
-//*****************************************************************************
+/**
+ *
+ * Initialize IO and SSI Handlers
+ *
+ */
 void io_init(void) {
 
 #ifdef INCLUDE_HTTPD_SSI
@@ -145,13 +154,13 @@ void io_init(void) {
 #ifdef INCLUDE_HTTPD_CGI
 
 char **paramsSet, **valuesSet;
-int paramValueLen; // number of params/values set last time - 1
-//*****************************************************************************
-//
-// This CGI handler is called whenever the web browser requests set.cgi.
-// This CGI parses the GET Parameters and sets the values
-//
-//*****************************************************************************
+int paramValueLen; /// number of params/values set last time - 1
+/**
+ *
+ * This CGI handler is called whenever the web browser requests set.cgi.
+ * This CGI parses the GET Parameters and sets the values
+ *
+*/
 static char *
 SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	int i;
@@ -243,15 +252,13 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 
 #ifdef INCLUDE_HTTPD_SSI
 
-//*****************************************************************************
-//
-// This function is called by the HTTP server whenever it encounters an SSI
-// tag in a web page.  The iIndex parameter provides the index of the tag in
-// the g_pcConfigSSITags array. This function writes the substitution text
-// into the pcInsert array, writing no more than iInsertLen characters.
-// max size of array: MAX_TAG_INSERT_LEN
-//
-//*****************************************************************************
+/**
+ * This function is called by the HTTP server whenever it encounters an SSI
+ * tag in a web page.  The iIndex parameter provides the index of the tag in
+ * the g_pcConfigSSITags array. This function writes the substitution text
+ * into the pcInsert array, writing no more than iInsertLen characters.
+ * max size of array: MAX_TAG_INSERT_LEN
+*/
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
 static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen,
 		pSSIParam *params)
@@ -353,12 +360,11 @@ char* strtrim(char *pszStr) {
 
 	return ret;
 }
-
-//*****************************************************************************
-//
-// gets a value for $id from comTask
-//
-//*****************************************************************************
+/**
+ *
+ * gets a value for $id from comTask
+ *
+ */
 int io_get_value_from_comtask(char* id) {
 
 #ifdef SSI_DEBUG
@@ -389,11 +395,11 @@ int io_get_value_from_comtask(char* id) {
 	} else
 		return -1;
 }
-//*****************************************************************************
-//
-// creates number input field  and +/- buttons
-//
-//*****************************************************************************
+/**
+ *
+ * creates number input field  and +/- buttons
+ *
+ */
 void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
 	pSSIParam p = NULL;
@@ -440,12 +446,11 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 				"NumberInputField: ERROR - error no id and/or name found");
 	}
 }
-
-//*****************************************************************************
-//
-// creates submit input button
-//
-//*****************************************************************************
+/**
+ *
+ * creates submit input button
+ *
+ */
 void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
 	char *label = NULL, *form_id = NULL;
 	label = SSIParamGetValue(*(params), "label");
@@ -465,11 +470,11 @@ void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
 	}
 }
 
-//*****************************************************************************
-//
-// prints the last set values/params
-//
-//*****************************************************************************
+/**
+ *
+ * prints the last set values/params
+ *
+*/
 void io_print_saved_params(char * pcBuf, int iBufLen) {
 	int i;
 	if (paramValueLen == -1) {
@@ -560,16 +565,15 @@ void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params) {
 				"Hyperlink: ERROR - error no id and/or value found");
 	}
 }
-//*****************************************************************************
-//
-// adds a new element to the list
-//
-// @params  root  .... root element of list
-//			namevalue  .... name-value string ($name=$value)
-//
-// @return  0 .... element not added
-//*****************************************************************************
-int SSIParamAdd(pSSIParam* root, char* nameValue) {
+/**
+ adds a new element to the list
+
+ @param *root 		pointer to root element of list
+ @param *nameValue	pointer to name-value string ($name=$value)
+
+ @return 0	element not added
+*/
+int SSIParamAdd(pSSIParam *root, char *nameValue) {
 	int rc = 0;
 	char *value, *name;
 	int strnc;
@@ -629,17 +633,16 @@ int SSIParamAdd(pSSIParam* root, char* nameValue) {
 		}
 	}
 }
-//*****************************************************************************
-//
-// gets an element with $name from the list
-//
-// @params  root  .... root element of list
-//			name  .... name of the element
-//
-// @return  element with $name .... element found
-//			NULL .... element not found
-//*****************************************************************************
-pSSIParam SSIParamGet(pSSIParam root, char* name) {
+/**
+ gets an element with $name from the list
+
+ @param  root	root element of list
+ @param  *name	pointer to name of the element
+
+ @return element with $name .... element found
+ @return NULL .... element not found
+*/
+pSSIParam SSIParamGet(pSSIParam root, char *name) {
 	pSSIParam ret = NULL;
 
 	while (root != NULL) {
@@ -653,17 +656,16 @@ pSSIParam SSIParamGet(pSSIParam root, char* name) {
 
 	return ret;
 }
-//*****************************************************************************
-//
-// gets a value of an element with $name from the list
-//
-// @params  root  .... root element of list
-//			name  .... name of the element
-//
-// @return  string with the value .... element found
-//			NULL .... element not found
-//*****************************************************************************
-char* SSIParamGetValue(pSSIParam root, char* name) {
+/**
+ gets a value of an element with $name from the list
+
+ @param root	root element of list
+ @param *name	pointer to name of the element
+
+ @return string with the value .... element found
+ @return NULL .... element not found
+*/
+char* SSIParamGetValue(pSSIParam root, char *name) {
 	pSSIParam p;
 	char* value = NULL;
 
@@ -677,14 +679,13 @@ char* SSIParamGetValue(pSSIParam root, char* name) {
 
 	return value;
 }
-//*****************************************************************************
-//
-// deletes and frees all elements ot the list
-//
-// @params root  .... root element of list
-//
-//*****************************************************************************
-void SSIParamDeleteAll(pSSIParam* root) {
+/**
+ * deletes and frees all elements ot the list
+ *
+ * @param *root	pointer to root element of list
+ *
+*/
+void SSIParamDeleteAll(pSSIParam *root) {
 	pSSIParam p = (*root), del = NULL;
 
 	while (p != NULL) {
