@@ -49,6 +49,9 @@ extern "C"
 
 #ifdef INCLUDE_HTTPD_SSI
 
+/// define for SSI debug messages
+#undef SSI_DEBUG	1
+
 
 /**
  This array holds all the strings that are to be recognized as SSI tag

@@ -32,6 +32,16 @@
  * server-side-include (SSI) and Common Gateway Interface (CGI) capability.
  */
 
+/**
+ * \addtogroup httpd
+ * @{
+ *
+ * \file httpd.h
+ * \author Anziner, Hahn
+ * \brief
+ *
+*/
+
 #ifndef __HTTPD_H__
 #define __HTTPD_H__
 

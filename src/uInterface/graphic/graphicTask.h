@@ -1,9 +1,13 @@
-/*
- * graphicTask.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 22.11.2009
- *      Author: root
- */
+ * \file graphicTask.h
+ * \author Anziner, Hahn
+ * \brief Definition of Graphics Task for the LM3S9B96 Board
+ *
+*/
+
 
 #ifndef GRAPHICTASK_H_
 #define GRAPHICTASK_H_

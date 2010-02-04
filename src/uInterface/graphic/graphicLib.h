@@ -1,9 +1,12 @@
-/*
- * graphicLib.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 05.01.2010
- *      Author: root
- */
+ * \file graphicLib.h
+ * \author Anziner, Hahn
+ * \brief
+ *
+*/
 
 #ifndef GRAPHICLIB_H_
 #define GRAPHICLIB_H_

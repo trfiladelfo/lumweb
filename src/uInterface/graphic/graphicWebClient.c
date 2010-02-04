@@ -1,9 +1,13 @@
-/*
- * graphicWebClient.c
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 05.01.2010
- *      Author: root
- */
+ * \file graphicWebClient.c
+ * \author Anziner, Hahn
+ * \brief
+ *
+*/
+
 
 #include <string.h>
 #include "hw_types.h"

@@ -1,3 +1,13 @@
+/**
+ * \addtogroup Graphic
+ * @{
+ *
+ * \file graphicLib.c
+ * \author Anziner, Hahn
+ * \brief
+ *
+*/
+
 #include "hw_types.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"

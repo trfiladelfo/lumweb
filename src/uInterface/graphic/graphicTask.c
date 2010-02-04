@@ -1,6 +1,12 @@
 /**
- * This is the Graphics Task for the LM3S9B96 Board
- */
+ * \addtogroup Graphic
+ * @{
+ *
+ * \file graphicTask.c
+ * \author Anziner, Hahn
+ * \brief Implementation of Graphics Task for the LM3S9B96 Board
+ *
+*/
 
 #include "graphic/graphicTask.h"
 #include "graphic/graphicWebClient.h"

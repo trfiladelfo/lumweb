@@ -1,20 +1,30 @@
-/*
- * configloader.c
+/**
+ * \addtogroup Config
+ * @{
  *
- *  Created on: 13.01.2010
- *      Author: root
- */
+ * \file configloader.c
+ * \author Anziner, Hahn
+ * \brief Routines for conf file handling
+ *
+*/
+
 
 #include "lmi_fs.h"
 #include "hw_types.h"
 #include <string.h>
 
+/// Enables debug messages for config handling
 #define CONFIG_DEBUG 1
 
+/// length of read buffer
 #define READBUFFERLEN 	128
 
-struct fs_file *file;
+/// pointer to the config file
+struct fs_file *config_file;
+
+/// read buffer
 char buffer[READBUFFERLEN];
+
 
 char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
 	char* returnValue;
@@ -37,6 +47,11 @@ char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
 	return NULL;
 }
 
+/**
+ *
+ * searchs the config file for a parameter and returns the value
+ *
+ */
 char* loadFromConfig(char* filePath, char* param) {
 	int i, j;
 	tBoolean beforeEqual, isInComment = false;
@@ -48,10 +63,10 @@ char* loadFromConfig(char* filePath, char* param) {
 
 	int nameLen = 0;
 	int valueLen = 0;
-	file = fs_open(filePath);
+	config_file = fs_open(filePath);
 
-	if (file != NULL) {
-		while (fs_read(file, buffer, READBUFFERLEN) > 0) {
+	if (config_file != NULL) {
+		while (fs_read(config_file, buffer, READBUFFERLEN) > 0) {
 
 			for (i = 0; i < READBUFFERLEN; i++) {
 				if (last == '\n') {
@@ -68,7 +83,7 @@ char* loadFromConfig(char* filePath, char* param) {
 					if (buffer[i] == '#' && (nameLen > 0 || valueLen > 0)) {
 
 						if (strcmp(name, param) == 0 && beforeEqual == false) {
-							fs_close(file);
+							fs_close(config_file);
 							return paramAndValueFound(name, value, nameLen,
 									valueLen);
 						} else {
@@ -103,7 +118,7 @@ char* loadFromConfig(char* filePath, char* param) {
 						isInComment = false;
 						beforeEqual = true;
 						if (strcmp(name, param) == 0) {
-							fs_close(file);
+							fs_close(config_file);
 							return paramAndValueFound(name, value, nameLen,
 									valueLen);
 						} else {
@@ -129,6 +144,6 @@ char* loadFromConfig(char* filePath, char* param) {
 	} else {
 		printf("CONF: File can't be opened");
 	}
-	fs_close(file);
+	fs_close(config_file);
 	return NULL;
 }
