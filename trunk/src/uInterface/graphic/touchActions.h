@@ -1,9 +1,13 @@
-/*
- * touchActions.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 18.01.2010
- *      Author: root
- */
+ * \file touchAction.h
+ * \author Anziner, Hahn
+ * \brief
+ *
+*/
+
 
 #ifndef TOUCHACTIONS_H_
 #define TOUCHACTIONS_H_

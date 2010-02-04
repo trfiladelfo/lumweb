@@ -1,9 +1,13 @@
-/*
- * configloader.h
+/**
+ * \addtogroup Config
+ * @{
  *
- *  Created on: 13.01.2010
- *      Author: root
- */
+ * \file configloader.h
+ * \author Anziner, Hahn
+ * \brief Prototypes for conf file handling
+ *
+*/
+
 
 #ifndef CONFIGLOADER_H_
 #define CONFIGLOADER_H_

@@ -1,9 +1,12 @@
-/*
- * graphicWebClient.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 05.01.2010
- *      Author: root
- */
+ * \file graphicClientBuilder.h
+ * \author Anziner, Hahn
+ * \brief
+ *
+*/
 
 #ifndef GRAPHICCLIENTBUILDER_H_
 #define GRAPHICCLIENTBUILDER_H_

@@ -30,6 +30,16 @@
  *
  */
 
+/**
+ * \addtogroup httpd
+ * @{
+ *
+ * \file httpd.c
+ * \author Anziner, Hahn
+ * \brief
+ *
+*/
+
 /* This file is modified from the original version (httpd.c) as shipped with
  * lwIP version 1.3.0. Changes have been made to allow support for a
  * rudimentary server-side-include facility which will replace tags of the form

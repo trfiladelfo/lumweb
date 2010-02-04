@@ -1,9 +1,13 @@
-/*
- * touchActions.c
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 18.01.2010
- *      Author: root
- */
+ * \file touchAction.c
+ * \author Anziner, Hahn
+ * \brief
+ *
+*/
+
 
 #include "graphic/graphicLib.h"
 #include "graphic/graphicSettings.h"

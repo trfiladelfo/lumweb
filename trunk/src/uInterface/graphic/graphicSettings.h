@@ -1,11 +1,13 @@
-/*
- * graphicSettings.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- * Stylesheet für die Graphische Oberfläche
+ * \file graphicSettings.h
+ * \author Anziner, Hahn
+ * \brief stylesheet for the graphical interface
  *
- *  Created on: 06.01.2010
- *      Author: root
- */
+*/
+
 
 #ifndef GRAPHICSETTINGS_H_
 #define GRAPHICSETTINGS_H_

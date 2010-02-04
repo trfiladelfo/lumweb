@@ -59,9 +59,8 @@
 
 #include "ethernet/lwipopts.h"
 
-//#define SSI_DEBUG	1
 
-// Message for the Comm-Task
+/// Message for the Comm-Task
 xComMessage xCom_msg;
 
 #ifdef INCLUDE_HTTPD_CGI
@@ -70,18 +69,24 @@ xComMessage xCom_msg;
 //! Prototypes for the various CGI handler functions.
 //
 //*****************************************************************************
+/**
+ *
+ * This CGI handler is called whenever the web browser requests set.cgi.
+ * This CGI parses the GET Parameters and sets the values
+ *
+*/
 static char *SetCGIHandler(int iIndex, int iNumParams, char *pcParam[],
 		char *pcValue[]);
 
 #endif
 
 #ifdef INCLUDE_HTTPD_SSI
-//*****************************************************************************
-//
-//! Prototype for the main handler used to process server-side-includes for the
-//! application's web-based configuration screens.
-//
-//*****************************************************************************
+/*
+ *
+ * Prototype for the main handler used to process server-side-includes for the
+ * application's web-based configuration screens.
+ *
+*/
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
 static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen,
 		pSSIParam *params);
@@ -91,6 +96,12 @@ static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen );
 
 #endif
 
+/**
+ * gets current date and time
+ *
+ * @param *pcBuf	pointer to char buffer for the date and time
+ * @param iBufLen	length of buffer
+ */
 extern void get_dateandtime(char * pcBuf, int iBufLen);
 
 #ifdef INCLUDE_HTTPD_CGI
@@ -101,22 +112,22 @@ extern void get_dateandtime(char * pcBuf, int iBufLen);
 //*****************************************************************************
 #define CGI_INDEX_CONTROL       0
 
-//*****************************************************************************
-//
-//! This array is passed to the HTTPD server to inform it of special URIs
-//! that are treated as common gateway interface (CGI) scripts.  Each URI name
-//! is defined along with a pointer to the function which is to be called to
-//! process it.
-//
-//*****************************************************************************
+/**
+ *
+ * This array is passed to the HTTPD server to inform it of special URIs
+ * that are treated as common gateway interface (CGI) scripts.  Each URI name
+ * is defined along with a pointer to the function which is to be called to
+ * process it.
+ *
+ */
 static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_INDEX_CONTROL
 		};
 
-//*****************************************************************************
-//
-//! The number of individual CGI URIs that are configured for this system.
-//
-//*****************************************************************************
+/**
+ *
+ * The number of individual CGI URIs that are configured for this system.
+ *
+ */
 #define NUM_CONFIG_CGI_URIS     (sizeof(g_psConfigCGIURIs) / sizeof(tCGI))
 
 //*****************************************************************************
@@ -155,6 +166,7 @@ void io_init(void) {
 
 char **paramsSet, **valuesSet;
 int paramValueLen; /// number of params/values set last time - 1
+
 /**
  *
  * This CGI handler is called whenever the web browser requests set.cgi.
@@ -314,6 +326,16 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 }
 #endif
 
+/**
+ *
+ * Removes trailing blanks
+ *
+ * @param *pszStr	pointer to the string
+ *
+ * @return returns a pointer to the trimmed string
+ *
+ */
+
 char* strtrimr(char *pszStr) {
 	int i, j; /* Local counters */
 
@@ -331,6 +353,15 @@ char* strtrimr(char *pszStr) {
 	return pszStr; /* Return no of replacements */
 }
 
+/**
+ *
+ * Removes leading blanks
+ *
+ * @param *pszStr	pointer to the string
+ *
+ * @return returns a pointer to the trimmed string
+ *
+ */
 char* strtriml(char *pszStr) {
 	int i = 0, j; /* Local counters */
 
@@ -350,6 +381,15 @@ char* strtriml(char *pszStr) {
 	return pszStr; /* Return no of replacements */
 }
 
+/**
+ *
+ * Removes trailing and leading blanks
+ *
+ * @param *pszStr	pointer to the string
+ *
+ * @return returns a pointer to the trimmed string
+ *
+ */
 char* strtrim(char *pszStr) {
 	char *ret;
 
