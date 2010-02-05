@@ -50,8 +50,10 @@ xComMessage xMessage;
 
 void vComTask(void *pvParameters) {
 	char buffer[100];
-	unsigned char ucBufferOut = "HA";
+	unsigned char ucBufferOut[8];
 	tCANMsgObject sMsgObjectTx;
+
+	sprintf(&ucBufferOut, "TEST");
 
 	//
 	// Configure and start transmit of message object.
