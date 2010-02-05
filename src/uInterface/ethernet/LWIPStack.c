@@ -533,7 +533,6 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	vShowBootText("load ipconfig ...");
 #endif
 
-
 	printf("LWIPSTACK: LOAD CONFIG: (%s)\n", configLoad);
 	if (configLoad == 0) {
 		IPState = IPADDR_USE_AUTOIP;
@@ -575,8 +574,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 #ifdef ENABLE_GRAPHIC
 	vShowBootText("starting Network ...");
 #endif
-	netif_add(&lwip_netif, ip_addr, net_mask, gw_addr, NULL,
-			ethernetif_init, tcpip_input);
+	netif_add(&lwip_netif, ip_addr, net_mask, gw_addr, NULL, ethernetif_init,
+			tcpip_input);
 	netif_set_default(&lwip_netif);
 
 	printf("NETIF UP\n");
@@ -642,8 +641,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	printf("Dienste gestartet ...\n");
 
-	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
 #ifdef ENABLE_GRAPHIC
+	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
 	if (strcmp(configLoad, "true") == 0) {
 		vShowBootText("loading menu ...");
 		vLoadMenu();
@@ -651,8 +650,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	} else {
 		vShowBootText("ready for requests ...");
 	}
-#endif
 	vPortFree(configLoad);
+#endif
 
 	// Nothing else to do.  No point hanging around.
 	while (1) {
@@ -663,6 +662,15 @@ void LWIPServiceTaskInit(void *pvParameters) {
 				netif_set_up(&lwip_netif);
 #ifdef ENABLE_GRAPHIC
 				vShowBootText("activate networkinterface ...");
+				configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
+				if (strcmp(configLoad, "true") == 0) {
+					vShowBootText("loading menu ...");
+					vLoadMenu();
+
+				} else {
+					vShowBootText("ready for requests ...");
+				}
+				vPortFree(configLoad);
 #endif
 				if (IPState == IPADDR_USE_DHCP) {
 					printf("DHCP Adresse anfordern ...  ");

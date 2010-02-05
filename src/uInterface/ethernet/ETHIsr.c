@@ -240,7 +240,7 @@ int ETHServiceTaskInit(const unsigned long ulPort) {
 		if ((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff)) {
 			// TODO: do something...
 			printf("Flash new MAC\n");
-			FlashUserSet(0x001b1a00, 0x001e1f1d);
+			FlashUserSet(0x001b2a00, 0x001e1f1d);
 		}
 		FlashUserGet(&ulUser0, &ulUser1);
 

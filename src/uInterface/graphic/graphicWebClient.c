@@ -27,13 +27,14 @@
 
 #include "utils.h"
 
-struct netconn *conn;
-struct netbuf *inBuf;
-char *pageData;
+
 
 void addHTMLToList(char* str, int len);
 
 void vLoadPage(char *uri) {
+	struct netconn *conn;
+	struct netbuf *inBuf;
+	char *pageData;
 	tBoolean tagOpen = pdFALSE;
 
 	char buffer[128];
@@ -53,6 +54,7 @@ void vLoadPage(char *uri) {
 
 	// create new connection
 	conn = netconn_new(NETCONN_TCP);
+
 
 	// loop counter
 	int i = 0, bufferPos;
@@ -255,6 +257,9 @@ char *getElementType(char * str, char *buff) {
 }
 
 void vSendData(tWidget *pWidget) {
+	struct netconn *conn;
+	struct netbuf *inBuf;
+	char *pageData;
 	char buffer[256];
 	char valBuffer[100];
 	// status variables
@@ -285,6 +290,7 @@ void vSendData(tWidget *pWidget) {
 
 	// create new connection
 	conn = netconn_new(NETCONN_TCP);
+
 
 	// create a connection
 	connErr = netconn_connect(conn, remoteIP, 80);

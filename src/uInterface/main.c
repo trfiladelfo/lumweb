@@ -50,15 +50,15 @@ int main(void) {
 	prvSetupHardware();
 
 	//start Logging
-	UARTprintf("Init log file: Status = %d\n", initLog());
-	appendToLog("Starting Firmware");
-	appendToLog("Universelles Interface von Anzinger Martin und Hahn Florian");
+	//UARTprintf("Init log file: Status = %d\n", initLog());
+	//appendToLog("Starting Firmware");
+	//appendToLog("Universelles Interface von Anzinger Martin und Hahn Florian");
 
-	printf("adresse von _etext: 0x%X\n", &_etext);
-	printf("adresse von _data:  0x%X\n", &_data);
-	printf("adresse von _edata: 0x%X\n", &_edata);
-	printf("adresse von _bss:   0x%X\n", &_bss);
-	printf("adresse von _ebss:  0x%X\n", &_ebss);
+	//printf("adresse von _etext: 0x%X\n", &_etext);
+	//printf("adresse von _data:  0x%X\n", &_data);
+	//printf("adresse von _edata: 0x%X\n", &_edata);
+	//printf("adresse von _bss:   0x%X\n", &_bss);
+	//printf("adresse von _ebss:  0x%X\n", &_ebss);
 	
     printf("\n\n\nStarte Programm ...\n");
 	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
