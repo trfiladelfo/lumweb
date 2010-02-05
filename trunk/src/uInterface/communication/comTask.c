@@ -27,6 +27,10 @@
 
 /* HW includes */
 #include "portmacro.h"
+#include "hw_memmap.h"
+#include "hw_types.h"
+#include "hw_can.h"
+#include "can.h"
 
 
 /* Include Queue staff */
@@ -46,7 +50,17 @@ xComMessage xMessage;
 
 void vComTask(void *pvParameters) {
 	char buffer[100];
+	unsigned char ucBufferOut = "HA";
+	tCANMsgObject sMsgObjectTx;
 
+	//
+	// Configure and start transmit of message object.
+	//
+	sMsgObjectTx.ulMsgID = 0x400;
+	sMsgObjectTx.ulFlags = 0;
+	sMsgObjectTx.ulMsgLen = 8;
+	sMsgObjectTx.pucMsgData = ucBufferOut;
+	CANMessageSet(CAN0_BASE, 2, &sMsgObjectTx, MSG_OBJ_TYPE_TX);
 
 
 	for (;;) {
