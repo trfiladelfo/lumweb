@@ -11,7 +11,7 @@
 
 NAME = Luminary_Webinterface
 
-LUMINARY_DRIVER_DIR=external/drivers
+LUMINARY_DRIVER_DIR=external/drivers/lm3s9b96
 RTOS_SOURCE_DIR=external/freeRTOS/Source
 LWIP_COMMON_DIR=external/ethernet/lwip131
 FATFS_COMMON_DIR=external/fatfs
