@@ -28,6 +28,7 @@
 /* HW includes */
 #include "portmacro.h"
 
+
 /* Include Queue staff */
 #include "comTask.h"
 #include "../taskConfig.h"
@@ -45,6 +46,8 @@ xComMessage xMessage;
 
 void vComTask(void *pvParameters) {
 	char buffer[100];
+
+
 
 	for (;;) {
 		/* Wait for a message to arrive */
