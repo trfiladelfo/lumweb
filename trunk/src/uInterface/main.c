@@ -49,9 +49,9 @@ int main(void) {
 	// Setup the Hardware
 	prvSetupHardware();
 
-	//start Logging
-	//UARTprintf("Init log file: Status = %d\n", initLog());
-	//appendToLog("Starting Firmware");
+	// start Logging
+	// UARTprintf("Init log file: Status = %d\n", initLog());
+//	appendToLog("Starting Firmware");
 	//appendToLog("Universelles Interface von Anzinger Martin und Hahn Florian");
 
 	//printf("adresse von _etext: 0x%X\n", &_etext);
