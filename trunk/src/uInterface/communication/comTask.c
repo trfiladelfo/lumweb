@@ -36,11 +36,11 @@
 #include "../uart/uartstdio.h"
 
 /* TODO only testvalues */
-int day_hour = 10;
-int day_minute = 30;
-int night_hour = 23;
-int night_minute = 15;
-int checkbox = 0;
+int day_hour = 100;
+int day_minute = 300;
+int night_hour = 230;
+int night_minute = 150;
+int checkbox = 1;
 
 xComMessage xMessage;
 
@@ -69,7 +69,7 @@ void vComTask(void *pvParameters) {
 					xMessage.value = night_hour;
 				} else if (strcmp(xMessage.item, "night_minute") == 0) {
 					xMessage.value = night_minute;
-				} else if (strcmp(xMessage.item, "checkbox") == 0) {
+				} else if (strcmp(xMessage.item, "led_ein") == 0) {
 					xMessage.value = checkbox;
 				} else {
 					sprintf(xMessage.errorDesc, "\"ERROR: %s\"", xMessage.item);
@@ -90,7 +90,7 @@ void vComTask(void *pvParameters) {
 					night_hour = xMessage.value;
 				} else if (strcmp(xMessage.item, "night_minute") == 0) {
 					night_minute = xMessage.value;
-				}else if (strcmp(xMessage.item, "checkbox") == 0) {
+				}else if (strcmp(xMessage.item, "led_ein") == 0) {
 					checkbox = xMessage.value;
 				} else {
 					sprintf(buffer, "FAIL: %s", xMessage.item);

@@ -24,11 +24,10 @@ extern int aktPage;
 #define GWC_LABEL   		0b00000001
 #define GWC_NUMERIC 		0b00000010
 #define GWC_BOOLEAN 		0b00000100
-#define GWC_LINK    		0b00001000
+#define GWC_HYPERLINK   	0b00001000
 #define GWC_VALUE_MIN 		0b00010000
 #define GWC_VALUE_MAX 		0b00100000
 #define GWC_SUBMIT		 	0b01000000
-#define GWC_HYPERLINK		0b10000000
 
 typedef struct __ClientEntity  {
 	char *id;

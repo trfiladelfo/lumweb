@@ -37,11 +37,13 @@ char* aktWebPage = NULL;
 xClientEntity *xClientRoot = NULL;
 
 void vLoadMenu(void) {
-	//char* configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_MENU_PAGE");
-	//vLoadPage(configLoad);
-	//vPortFree(configLoad);
-
-	vLoadPage("");
+	char* configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_MENU_PAGE");
+	if (configLoad != NULL) {
+		vLoadPage(configLoad);
+		vPortFree(configLoad);
+	} else {
+		vLoadPage("");
+	}
 }
 
 void vAddRow(char* id, char* name, long value, long min, long max, long inc,
@@ -96,21 +98,15 @@ void vAddActionButton(char* name, char* link, char status) {
 }
 
 void vInsertClientEntity(xClientEntity* toInsert) {
-	printf("Insert into List\n");
 	xClientEntity* akt = xClientRoot;
-	printf("buffer created\n");
 	if (xClientRoot == NULL) {
-		printf("insert into ROOT\n");
 		xClientRoot = toInsert;
 	} else {
-		printf("ROOT not Null\n");
 		while (akt != NULL && akt->next != NULL) {
 			akt = akt->next;
 		}
-		printf("position found and do Insert\n");
 		akt->next = toInsert;
 	}
-	printf("inserted\n");
 }
 
 void vDrawClientEntity(void) {
@@ -131,7 +127,6 @@ void vDrawClientEntity(void) {
 	}
 
 	vInitPanel();
-	vCleanDisplay();
 
 	for (i = 0; akt != NULL && i < GWC_ROWS_PER_VIEW; i++) {
 
@@ -166,7 +161,6 @@ void vDrawClientEntity(void) {
 					(unsigned long) akt->value, onCheckboxClick);
 
 		} else if ((akt->status & GWC_SUBMIT) == GWC_SUBMIT) {
-			printf("new SubmitButton\n");
 			akt->actionButton = addButton(GWC_ACTION_BUTTON_LEFT, top,
 					GWC_ACTION_BUTTON_WIDTH, GWC_ROW_HEIGHT, akt->name, 0,
 					vSendData);
@@ -185,13 +179,10 @@ void vDrawClientEntity(void) {
 		addButton(5, 205, 80, 30, "Back", 0, backPage);
 	}
 
-	//addButton(90, 205, 140, 30, "Speichern", 0, sendData);
-
-	if (akt != NULL && akt->next != NULL) {
+	if (akt != NULL) {
 		addButton(235, 205, 80, 30, "Continue", 0, continuePage);
 	}
 
-	printf("Beginne Output\n");
 	vDrawPanel();
 	printf("Ouput erfolgreich\n");
 }
@@ -199,7 +190,14 @@ void vDrawClientEntity(void) {
 void vDestroyClientEntities(void) {
 	xClientEntity *akt = xClientRoot;
 	xClientEntity *toDelete = NULL;
+
+	vCleanDisplay();
+
 	while (akt != NULL) {
+		if (akt->id != NULL) {
+			vPortFree(akt->id);
+		}
+
 		if (akt->name != NULL) {
 			vPortFree(akt->name);
 		}
@@ -207,13 +205,6 @@ void vDestroyClientEntities(void) {
 		if (akt->stringValue != NULL) {
 			vPortFree(akt->stringValue);
 		}
-
-		vDestroyWidget(akt->checkbox);
-		vDestroyWidget(akt->decrease);
-		vDestroyWidget(akt->increase);
-		vDestroyWidget(akt->nameLabel);
-		vDestroyWidget(akt->actionButton);
-		vDestroyWidget(akt->valueLabel);
 
 		toDelete = akt;
 		akt = akt->next;

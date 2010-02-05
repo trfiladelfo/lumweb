@@ -11,6 +11,7 @@
 
 #include "lmi_fs.h"
 #include "hw_types.h"
+#include "setup.h"
 #include <string.h>
 
 /// Enables debug messages for config handling
@@ -142,6 +143,9 @@ char* loadFromConfig(char* filePath, char* param) {
 			}
 		}
 	} else {
+		#ifdef ENABLE_GRAPHIC
+			vShowBootText("Please insert a correct MicroSD card!");
+		#endif
 		printf("CONF: File can't be opened");
 	}
 	fs_close(config_file);

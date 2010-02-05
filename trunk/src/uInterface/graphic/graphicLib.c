@@ -32,15 +32,15 @@ void vInitPanel(void) {
 		printf("Initialize Graphic Context ...\n");
 		GrContextInit(&g_sContext, &g_sKitronix320x240x16_SSD2119);
 		contextInitialized = 1;
+
+	} else {
+		printf("Clear Display\n");
+		vCleanDisplay();
+
 	}
-
-	printf("Clear Display\n");
-	vCleanDisplay();
-
-	printf("Create new Panel\n");
-
 	printf("Adding ROOT Widget ...\n");
 	WidgetAdd(WIDGET_ROOT, (tWidget*) xParentContainer);
+
 }
 
 /**
@@ -236,13 +236,17 @@ void vDrawPanel(void) {
  */
 void vDestroyWidget(tWidget* toDestroy) {
 	if (toDestroy) {
+		//if (toDestroy == xRootObject) {
+		//	xRootObject = 0;
+		//}
 		vDestroyWidget(toDestroy->pChild);
 		vDestroyWidget(toDestroy->pNext);
 		WidgetRemove(toDestroy);
 		if (toDestroy != 0) {
 			vPortFree(toDestroy);
 		}
-		toDestroy == 0;
+		printf("toDestroy 0x%x\n", toDestroy);
+		//toDestroy = 0;
 	}
 }
 
@@ -251,8 +255,7 @@ void vDestroyWidget(tWidget* toDestroy) {
  */
 void vCleanDisplay() {
 	if (xParentContainer) {
-		vDestroyWidget(xParentContainer->sBase.pChild);
-		xRootObject = 0;
+		vDestroyPanel();
 		WidgetPaint((tWidget*)xParentContainer);
 	}
 }
@@ -262,9 +265,8 @@ void vCleanDisplay() {
  */
 void vDestroyPanel(void) {
 	if (xParentContainer != 0) {
-		destroyWidget(xParentContainer->sBase.pChild);
-		destroyWidget(xParentContainer->sBase.pNext);
-		vPortFree(xParentContainer);
+		vDestroyWidget(xParentContainer->sBase.pChild);
+		vDestroyWidget(xParentContainer->sBase.pNext);
 	}
 }
 
