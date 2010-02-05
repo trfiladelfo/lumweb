@@ -16,8 +16,15 @@
 #include "interrupt.h"
 #include "hw_ints.h"
 
+#include "hw_can.h"
+#include "can.h"
+
 
 void prvSetupHardware(void) {
+
+	tCANBitClkParms CANBitClk; // Canbus parameter
+
+
 	/* If running on Rev A2 silicon, turn the LDO voltage up to 2.75V.  This is
 	 a workaround to allow the PLL to operate reliably. */
 	if (DEVICE_IS_REVA2) {
@@ -61,6 +68,34 @@ void prvSetupHardware(void) {
 	// Initialize the file system.
 	//
 	fs_init();
+
+	/*---------------- CAN BUS -------------------------------------- */
+
+	// Configure CAN Pins for PORT A
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+	GPIOPinTypeCAN(GPIO_PORTA_BASE, GPIO_PIN_6 | GPIO_PIN_7);
+
+	// Enable CAN Controller
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_CAN0);
+
+	//
+	// Reset the state of all the message objects and the state of the CAN
+	// module to a known state.
+	//
+	CANInit(CAN0_BASE);
+
+	//
+	// Configure the controller for 1 Mbit operation.
+	//
+	CANBitClk.uSyncPropPhase1Seg = 5;
+	CANBitClk.uPhase2Seg = 2;
+	CANBitClk.uQuantumPrescaler = 1;
+	CANBitClk.uSJW = 2;
+	CANSetBitTiming(CAN0_BASE, &CANBitClk);
+	//
+	// Take the CAN0 device out of INIT state.
+	//
+	CANEnable(CAN0_BASE);
 
 
 }
