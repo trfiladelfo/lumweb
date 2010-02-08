@@ -1,11 +1,36 @@
 Tasks:
 	- Maschinenkommunikation							50% - Bis jetzt nur eine Testklasse implementiert
 	
-	- Touchinterface									45%
-		- Webanbindung									 0%
-		- Objeke bauen und anzeigen 					90%
+	- Touchinterface									90%
+		- Webanbindung								    90% - Web ist zwar in ordnung, jedoch manchmal fehler beim Aufbauen
+		- Objeke bauen und anzeigen 					90% - Vermutlich speicherprobleme
 		
-	- Webinterface										80%
-		- SSI											90% - Fehler beim Freigeben vom Speicher
-		- CGI											50% - Interface in arbeit
-		- HTML										   100%	- Ansicht erfolgt automatisch im Browser	
+	- Webinterface										96%
+		- SSI											99% - Fehler beim Freigeben vom Speicher
+		- CGI											90% - Interface in arbeit
+		- HTML										   100%	- Ansicht erfolgt automatisch im Browser
+		
+		
+Vorschlag:
+
+CAN-Kommunikation: 
+	Bitmuster
+	
+	AAAA AAAD WWWW WWWW WWWW WWWW
+	
+	A ... Adresse / ID
+	D ... Decimal (= 1 Nachkommastelle)
+	W ... Werte (4Byte = Int32)	
+	
+	
+	
+	8.2.2010 ##########################################################################
+Fehlerbehandlung HTTP (200)
+Geänderte Parameter zurücklesen und beim Client anzeigen
+3 Typische Seiten (Normal, Absenkbetrieb (Zeit und Temperatur); Heizkuve; Menü)
+
+Titel Tag und Gruppen (titel, group)
+
+Step by Step Anleitung für Erstellung einer einfachen Seite.
+
+Schematische Darstellung 
