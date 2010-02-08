@@ -314,6 +314,13 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 		io_get_hyperlink(pcInsert, iInsertLen, params);
 		break;
 
+	case SSI_INDEX_TITEL:
+		io_get_titel(pcInsert, iInsertLen, params);
+		break;
+
+	case SSI_INDEX_GROUP:
+		io_get_group(pcInsert, iInsertLen, params);
+		break;
 	default:
 		snprintf(pcInsert, iInsertLen, "??");
 		break;
@@ -611,6 +618,47 @@ void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params) {
 				"Hyperlink: ERROR - error no id and/or value found");
 	}
 }
+
+/**
+ *
+ * creates a titel line
+ *
+ */
+void io_get_titel(char * pcBuf, int iBufLen, pSSIParam *params) {
+	char *label = NULL;
+	label = SSIParamGetValue(*(params), "label");
+
+	SSIParamDeleteAll(params);
+
+	if (label != NULL) {
+		snprintf(pcBuf, iBufLen, "<!-- $ Titel label=\"%s\" $ -->"
+			"<h1>%s</h1>", label, label);
+	} else {
+		snprintf(pcBuf, iBufLen,
+				"SubmitInputField: ERROR - no param label found ");
+	}
+}
+
+/**
+ *
+ * creates a group line
+ *
+ */
+void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params) {
+	char *label = NULL;
+	label = SSIParamGetValue(*(params), "label");
+
+	SSIParamDeleteAll(params);
+
+	if (label != NULL) {
+		snprintf(pcBuf, iBufLen, "<!-- $ Group label=\"%s\" $ -->"
+			"<h3>%s</h3>", label, label);
+	} else {
+		snprintf(pcBuf, iBufLen,
+				"SubmitInputField: ERROR - no param label found ");
+	}
+}
+
 /**
  adds a new element to the list
 

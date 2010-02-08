@@ -7,7 +7,7 @@
 		<div id="container">
 			<center>
 				<h1>Men&uuml;</h1>
-				<!--#Hyperlink label=Zeiteinstellung value=times.ssi --><br/>
+				<!--#Hyperlink label=Absenkzeiten value=times.ssi --><br/>
 				<!--#Hyperlink label=Testseite 2 value=times1.ssi --> <br/>
 				&nbsp;
 			</center>

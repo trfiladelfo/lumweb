@@ -6,18 +6,18 @@
 	</head>
 	<body>
 		<div id="container">
-			<center><h1>Zeiteinstellung</h1></center>
+			<center><!--#Titel label=Absenkzeiten --></center>
 			<form method="get" action="set.cgi" name="times" id="form-times" onsubmit="return submit_form(this)">
 				<center><table style="width: 75%; border:1px solid black;" border="0">
 					<tr>
-						<td align="center" colspan="4"><b>Tag</b></td>
+						<td align="center" colspan="4"><b><!--#Group label=Startzeit --></b></td>
 					</tr>	
 					<tr>
 						<td align="center"><!--#NumberInputField id=day_hour label=Stunden max=230 min=0 decimal=0 --></td> 
 						<td align="center"><!--#NumberInputField id=day_minute label=Minuten max=590 min=0 decimal=0 increase=15 --></td> 
 					</tr>	
 					<tr>
-						<td align="center" colspan="4"><b>Nacht</b></td>
+						<td align="center" colspan="4"><!--#Group label=Endzeit --></td>
 					</tr>
 					<tr>
 						<td align="center"><!--#NumberInputField id=night_hour label=Stunden max=230 min=0 decimal=0 --></td> 
@@ -25,7 +25,6 @@
 					</tr>	
 					<tr>
 						<td align="right" colspan="4">
-							<!--#CheckboxInputField id=led_ein label=Einschalten -->
 							<input type="reset" name="test" value="Zur&uuml;cksetzen" />
 							<!--#SubmitInputField label=Speichern form_id=times -->
 						</td>
