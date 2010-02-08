@@ -1,18 +1,31 @@
-/*
- * setup.h
+/**
+ * \addtogroup Configuration
+ * @{
  *
- *  Created on: 14.11.2009
- *      Author: root
+ * \file setup.h
+ * \author Anziner, Hahn
+ * \brief global config file for the project
+ *
+ *
  */
 
 #ifndef SETUP_H_
 #define SETUP_H_
+
+#include <stdio.h>
+#include <time.h>
+
+
+time_t t; /// Holds the actual Time
+
 
 #define SYSTICK_INT_PRIORITY    0x80
 #define ETHERNET_INT_PRIORITY   0xC0
 
 // #define ENABLE_LOG	1
 #define ENABLE_GRAPHIC	1
+
+// #define DEBUG_MEMORY 1
 
 
 void prvSetupHardware(void);

@@ -65,7 +65,6 @@
 #include "ethernet/ETHIsr.h"
 #include "ethernet/LWIPStack.h"
 
-#include "projectConfig.h"
 #include "configuration/configloader.h"
 
 #include "graphic/graphicLib.h"

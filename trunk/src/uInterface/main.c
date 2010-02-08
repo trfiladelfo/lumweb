@@ -18,7 +18,6 @@
 
 /* Configuration */
 #include "FreeRTOSConfig.h"
-#include "projectConfig.h"
 #include "queueConfig.h"
 #include "taskConfig.h"
 #include "setup.h"

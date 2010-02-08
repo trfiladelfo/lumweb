@@ -68,6 +68,7 @@ task.h is included from an application file. */
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "setup.h"
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
@@ -227,7 +228,9 @@ void *pvReturn = NULL;
 			}
 		}
 	}
+#ifdef DEBUG_MEMORY
 	printf("-- malloc -- %d (%d)\n", xWantedSize, xFreeBytesRemaining);
+#endif
 	xTaskResumeAll();
 
 	#if( configUSE_MALLOC_FAILED_HOOK == 1 )
@@ -264,7 +267,9 @@ xBlockLink *pxLink;
 			prvInsertBlockIntoFreeList( ( ( xBlockLink * ) pxLink ) );
 			xFreeBytesRemaining += pxLink->xBlockSize;
 		}
+#ifdef DEBUG_MEMORY
 		printf("-- free -- %d (%d)\n", pxLink->xBlockSize, xFreeBytesRemaining);
+#endif
 		xTaskResumeAll();
 	}
 }
