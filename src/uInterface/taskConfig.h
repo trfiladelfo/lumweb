@@ -1,8 +1,12 @@
-/*
- * taskConfig.h
+/**
+ * \addtogroup Configuration
+ * @{
  *
- *  Created on: 14.11.2009
- *      Author: root
+ * \file queueConfig.h
+ * \author Anziner, Hahn
+ * \brief Configfile for tasks
+ *
+ *
  */
 
 #ifndef TASKCONFIG_H_
