@@ -65,8 +65,8 @@ static const char *g_pcConfigSSITags[] = { "DateTime", /// SSI_INDEX_DATEANDTIME
 		"SubmitInputField", /// SSI_INDEX_SUBMITINPUTFIELD
 		"SavedParams",		///SSI_INDEX_SAVEDPARAMS
 		"CheckboxInputField", /// SSI_INDEX_CHECKBOXINPUTFIELD
-		"Hyperlink" /// SSI_INDEX_HYPERLINK
-		"Titel" /// SSI_INDEX_TITLE
+		"Hyperlink", /// SSI_INDEX_HYPERLINK
+		"Titel", /// SSI_INDEX_TITLE
 		"Group" /// SSI_INDEX_GROUP
 };
 
