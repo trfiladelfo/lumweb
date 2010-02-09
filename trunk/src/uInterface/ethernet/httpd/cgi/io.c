@@ -176,14 +176,16 @@ int paramValueLen; /// number of params/values set last time - 1
 static char *
 SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	int i;
-	long value = 0;
+	long value = 0, r_value;
 	char *name, save = 0;
 
+	// TODO CHECK FREE MEMORY
 	if (paramsSet != NULL && valuesSet != NULL) {
 		for (i = 0; i <= paramValueLen; i++) {
 			vPortFree(*(valuesSet + i));
 			vPortFree(*(paramsSet + i));
 		}
+
 		/*
 		 vPortFree(paramsSet);
 		 #ifdef SSI_DEBUG
@@ -235,6 +237,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 					save = 0;
 					xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 
+
 					if (paramsSet != NULL && valuesSet != NULL && i < 10) {
 						*(paramsSet + i) = pvPortMalloc(strlen(name) + 1);
 						*(valuesSet + i) = pvPortMalloc(strlen(pcValue[i]) + 1);
@@ -247,6 +250,15 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 						}
 						paramValueLen = i;
 					}
+
+
+					// gesetzten parameter reuecklesen, zur ueberpruefung ob ok
+					r_value = io_get_value_from_comtask(name);
+
+					if(r_value == value){
+						return "/set_ok.ssi";
+					}else
+						return "/set_nok.htm";
 				}
 
 			}
