@@ -7,6 +7,7 @@
  * \brief Implementation of Graphics Task for the LM3S9B96 Board
  *
 */
+#include "setup.h"
 
 #include "graphic/graphicTask.h"
 #include "graphic/graphicWebClient.h"
@@ -33,7 +34,9 @@
 
 void vGraphicTask(void* pvParameters) {
 
-	printf("Initialize Graphic ...\n");
+#ifdef DEBUG_GRAPHIC
+	printf("Initialize Graphic Task ...\n");
+#endif
 
 	xParentContainer = (tCanvasWidget*) pvPortMalloc(sizeof(tCanvasWidget));
 
@@ -64,7 +67,9 @@ void vGraphicTask(void* pvParameters) {
 	//
 	// Loop forever handling widget messages.
 	//
+#ifdef DEBUG_GRAPHIC
 	printf("Waiting for Touch Interrups ...\n");
+#endif
 	while (1) {
 		//
 		// Process any messages in the widget message queue.

@@ -6,10 +6,12 @@
  * \author Anziner, Hahn
  * \brief
  *
-*/
-
+ */
 
 #include <string.h>
+
+#include "setup.h"
+
 #include "hw_types.h"
 
 #include "graphic/graphicWebClient.h"
@@ -26,8 +28,6 @@
 #include "grlib/widget.h"
 
 #include "utils.h"
-
-
 
 void addHTMLToList(char* str, int len);
 
@@ -50,11 +50,12 @@ void vLoadPage(char *uri) {
 	// Set the get String
 
 	sprintf(buffer, "GET /%s HTTP/1.0\r\n\r\n", uri);
+#ifdef DEBUG_GRAPHIC
 	printf(buffer);
+#endif
 
 	// create new connection
 	conn = netconn_new(NETCONN_TCP);
-
 
 	// loop counter
 	int i = 0, bufferPos;
@@ -100,7 +101,9 @@ void vLoadPage(char *uri) {
 		}
 
 	} else {
+#ifdef DEBUG_GRAPHIC
 		printf("WEBCLIENT: ERROR: %d\n", connErr);
+#endif
 	}
 
 	// close connection
@@ -109,134 +112,133 @@ void vLoadPage(char *uri) {
 			vTaskDelay(1);
 		}
 	}
-
+#ifdef DEBUG_GRAPHIC
 	printf("WEBCLIENT: FINISHED\n");
+#endif
 	vDrawClientEntity();
 }
 
 void addHTMLToList(char* str, int len) {
-	char buffer[32];
-	char status = 0, *name, *id, *link;
-	int i, strLen;
-	int value = 0, min = 0, max = 0, decimal = 0, increment = 1;
 
-	getElementType(str, buffer);
-	if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_NUMBERINPUTFIELD]) == 0) {
-		printf("\t\tNumericInputField found\n");
-		status = GWC_NUMERIC;
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_CHECKBOXINPUTFIELD])
-			== 0) {
-		printf("\t\tCheckboxInputField found\n");
-		status = GWC_BOOLEAN;
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_SUBMITINPUTFIELD])
-			== 0) {
-		printf("\t\tSubmitButton found\n");
-		status = GWC_SUBMIT;
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_HYPERLINK]) == 0) {
-		printf("\t\tHyperlink found\n");
-		status = GWC_HYPERLINK;
+	vTaskSuspendAll();
+	{
+		char buffer[32];
+		char status = 0, *name, *id, *link;
+		int i, strLen;
+		int value = 0, min = 0, max = 0, decimal = 0, increment = 1;
+
+		getElementType(str, buffer);
+		if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_NUMBERINPUTFIELD]) == 0) {
+#ifdef DEBUG_GRAPHIC
+			printf("NumericInputField found\n");
+#endif
+			status = GWC_NUMERIC;
+		} else if (strcmp(buffer,
+				g_pcConfigSSITags[SSI_INDEX_CHECKBOXINPUTFIELD]) == 0) {
+#ifdef DEBUG_GRAPHIC
+			printf("CheckboxInputField found\n");
+#endif
+			status = GWC_BOOLEAN;
+		} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_SUBMITINPUTFIELD])
+				== 0) {
+#ifdef DEBUG_GRAPHIC
+			printf("SubmitButton found\n");
+#endif
+			status = GWC_SUBMIT;
+		} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_HYPERLINK]) == 0) {
+#ifdef DEBUG_GRAPHIC
+			printf("Hyperlink found\n");
+#endif
+			status = GWC_HYPERLINK;
+		}
+
+		if ((status & GWC_NUMERIC) == GWC_NUMERIC || (status & GWC_BOOLEAN)
+				== GWC_BOOLEAN) {
+			if (getValueForParamName(str, "name", buffer) != NULL) {
+				status |= GWC_LABEL;
+				name = pcStrdup(buffer);
+			}
+
+			if (getValueForParamName(str, "value", buffer) != NULL) {
+				value = atoi(buffer);
+			}
+
+			if (getValueForParamName(str, "min", buffer) != NULL) {
+				min = atoi(buffer);
+				status |= GWC_VALUE_MIN;
+			}
+
+			if (getValueForParamName(str, "max", buffer) != NULL) {
+				max = atoi(buffer);
+				status |= GWC_VALUE_MAX;
+			}
+			if (getValueForParamName(str, "increment", buffer) != NULL) {
+				increment = atoi(buffer);
+			}
+			if (getValueForParamName(str, "decimal", buffer) != NULL) {
+				decimal = atoi(buffer);
+			}
+
+			if (getValueForParamName(str, "id", buffer) != NULL) {
+				id = pcStrdup(buffer);
+			}
+#ifdef DEBUG_GRAPHIC
+			printf("ADD NEW ENTITY: %s, %s, %d, %d, %d, %d, %d, 0x%X\n", id,name, value, min, max, increment, decimal, status);
+#endif
+
+			vAddRow(id, name == NULL ? "" : name, value, min, max, increment,
+					decimal, status);
+
+		} else if ((status & GWC_SUBMIT) == GWC_SUBMIT) {
+
+			if (getValueForParamName(str, "label", buffer) != NULL) {
+				name = pcStrdup(buffer);
+			}
+#ifdef DEBUG_GRAPHIC
+			printf("new SubmitButton %s", name);
+#endif
+			vAddActionButton(name, NULL, status);
+
+		} else if ((status & GWC_HYPERLINK) == GWC_HYPERLINK) {
+			if (getValueForParamName(str, "name", buffer) != NULL) {
+				name = pcStrdup(buffer);
+			}
+			if (getValueForParamName(str, "value", buffer) != NULL) {
+				link = pcStrdup(buffer);
+			}
+#ifdef DEBUG_GRAPHIC
+			printf(" \"%s\" - \"%s\"\n", name, link);
+#endif
+			vAddActionButton(name == NULL ? "" : name,
+					link == NULL ? "" : link, status);
+		}
 	}
-
-	if ((status & GWC_NUMERIC) == GWC_NUMERIC || (status & GWC_BOOLEAN)
-			== GWC_BOOLEAN) {
-		if (getValueForParamName(str, "name", buffer) != NULL) {
-			status |= GWC_LABEL;
-			strLen = strlen(buffer);
-			name = pvPortMalloc((strLen + 1) * sizeof(char));
-			for (i = 0; i < strLen; i++) {
-				name[i] = buffer[i];
-			}
-			name[i] = 0;
-		}
-
-		if (getValueForParamName(str, "value", buffer) != NULL) {
-			value = atoi(buffer);
-		}
-
-		if (getValueForParamName(str, "min", buffer) != NULL) {
-			min = atoi(buffer);
-			status |= GWC_VALUE_MIN;
-		}
-
-		if (getValueForParamName(str, "max", buffer) != NULL) {
-			max = atoi(buffer);
-			status |= GWC_VALUE_MAX;
-		}
-		if (getValueForParamName(str, "increment", buffer) != NULL) {
-			increment = atoi(buffer);
-		}
-		if (getValueForParamName(str, "decimal", buffer) != NULL) {
-			decimal = atoi(buffer);
-		}
-
-		if (getValueForParamName(str, "id", buffer) != NULL) {
-			strLen = strlen(buffer);
-			id = pvPortMalloc((strLen + 1) * sizeof(char));
-			for (i = 0; i < strLen; i++) {
-				id[i] = buffer[i];
-			}
-			id[i] = 0;
-		}
-
-		printf("ADD NEW ENTITY: %s, %s, %d, %d, %d, %d, %d, 0x%X\n", id, name, value,
-				min, max, increment, decimal, status);
-		vAddRow(id, name == NULL ? "" : name, value, min, max, increment,
-				decimal, status);
-
-	} else if ((status & GWC_SUBMIT) == GWC_SUBMIT) {
-
-		if (getValueForParamName(str, "label", buffer) != NULL) {
-			strLen = strlen(buffer);
-			name = pvPortMalloc((strLen + 1) * sizeof(char));
-			for (i = 0; i < strLen; i++) {
-				name[i] = buffer[i];
-			}
-			name[i] = 0;
-		}
-		printf("new SubmitButton %s", name);
-		vAddActionButton(name, NULL, status);
-
-	} else if ((status & GWC_HYPERLINK) == GWC_HYPERLINK) {
-		printf("new Hyperlink");
-		if (getValueForParamName(str, "name", buffer) != NULL) {
-			strLen = strlen(buffer);
-			name = pvPortMalloc((strLen + 1) * sizeof(char));
-			for (i = 0; i < strLen; i++) {
-				name[i] = buffer[i];
-			}
-			name[i] = 0;
-		}
-		if (getValueForParamName(str, "value", buffer) != NULL) {
-			strLen = strlen(buffer);
-			link = pvPortMalloc((strLen + 1) * sizeof(char));
-			for (i = 0; i < strLen; i++) {
-				link[i] = buffer[i];
-			}
-			link[i] = 0;
-		}
-		printf(" \"%s\" - \"%s\"\n", name, link);
-		vAddActionButton(name == NULL ? "" : name, link == NULL ? "" : link,
-				status);
-	}
+	xTaskResumeAll();
 }
 
 char* getValueForParamName(char* str, char* search, char* retValue) {
 
-	char *buffer;
-	int i, j;
-	buffer = strstr(str, search);
-	if (buffer != NULL) {
+	vTaskSuspendAll();
+	{
+		char *buffer;
+		int i, j;
+		buffer = strstr(str, search);
+		if (buffer != NULL) {
 
-		buffer = strstr(buffer, "=\"");
-		buffer += 2;
-		j = 0;
-		for (i = 0; buffer[i] != '\"'; i++) {
-			retValue[j] = buffer[i];
-			j++;
+			buffer = strstr(buffer, "=\"");
+			buffer += 2;
+			j = 0;
+			for (i = 0; buffer[i] != '\"'; i++) {
+				retValue[j] = buffer[i];
+				j++;
+			}
+			retValue[j] = 0;
 		}
-		retValue[j] = 0;
+#ifdef DEBUG_GRAPHIC
+		printf("getValueForParam: \"%s\" \"%s\"\n", search, retValue);
+#endif
 	}
-	printf("getValueForParam: \"%s\" \"%s\"\n", search, retValue);
+	xTaskResumeAll();
 	return retValue;
 }
 
@@ -277,7 +279,9 @@ void vSendData(tWidget *pWidget) {
 				strcat(buffer, "&");
 			}
 			sprintf(valBuffer, "%s=%d", akt->id, akt->value);
+#ifdef DEBUG_GRAPHIC
 			printf("%s\n", valBuffer);
+#endif
 			strcat(buffer, valBuffer);
 			i++;
 		}
@@ -286,11 +290,12 @@ void vSendData(tWidget *pWidget) {
 	}
 
 	strcat(buffer, " HTTP/1.0\r\n\r\n");
+#ifdef DEBUG_GRAPHIC
 	printf(buffer);
+#endif
 
 	// create new connection
 	conn = netconn_new(NETCONN_TCP);
-
 
 	// create a connection
 	connErr = netconn_connect(conn, remoteIP, 80);
@@ -315,7 +320,9 @@ void vSendData(tWidget *pWidget) {
 		// end delete
 
 	} else {
+#ifdef DEBUG_GRAPHIC
 		printf("WEBCLIENT: ERROR: %d\n", connErr);
+#endif
 	}
 
 	// close connection
@@ -324,5 +331,7 @@ void vSendData(tWidget *pWidget) {
 			vTaskDelay(1);
 		}
 	}
+#ifdef DEBUG_GRAPHIC
 	printf("WEBCLIENT: SEND FINISHED\n");
+#endif
 }

@@ -462,6 +462,7 @@ int io_get_value_from_comtask(char* id) {
  */
 void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
+	char strValue[10];
 	pSSIParam p = NULL;
 	char *id = NULL, *label = NULL, *max = NULL, *min = NULL, *decimal = NULL, *increment = NULL;
 
@@ -486,13 +487,18 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 
 		value = io_get_value_from_comtask(id);
 		if (value != -1) {
+			/*if (strcmp (decimal, "0") != 0) {
+				snprintf(strValue, 10, "%d,%d", value / 10, value % 10);
+			} else {
+				snprintf(strValue, 10, "%d", value / 10);
+			}*/
 			snprintf(
 					pcBuf,
 					iBufLen,
 					"<!-- $ NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" decimal=\"%s\" increment=\"%s\" $ -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
-						"<script>addB('%s',%s,%s);</script>", label, value, id,
-					max, min, decimal, increment, label, id, value, id, id, max, min);
+						"<script>addB('%s',%s,%s,%s,%s);</script>", label, value, id,
+					max, min, decimal, increment, label, id, value, id, id, max, min, increment, decimal);
 
 #ifdef SSI_DEBUG
 			printf("io_get_number_input_field: done \n");

@@ -16,7 +16,7 @@
 #include <time.h>
 
 
-time_t t; /// Holds the actual Time
+//time_t t; /// Holds the actual Time
 
 
 #define SYSTICK_INT_PRIORITY    0x80
@@ -26,6 +26,8 @@ time_t t; /// Holds the actual Time
 #define ENABLE_GRAPHIC	1
 
 // #define DEBUG_MEMORY 1
+// #define DEBUG_GRAPHIC 1
+// #define DEBUG_SSI 1
 
 
 void prvSetupHardware(void);

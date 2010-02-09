@@ -6,9 +6,9 @@
  * \author Anziner, Hahn
  * \brief
  *
-*/
+ */
 
-
+#include "setup.h"
 #include "graphic/graphicLib.h"
 #include "graphic/graphicSettings.h"
 #include "graphic/touchActions.h"
@@ -27,9 +27,11 @@ void increase(tWidget *pWidget) {
 		akt = akt->next;
 	}
 	if (akt->increase == (tPushButtonWidget*) pWidget) {
+
 		akt->value += akt->increment;
 
-		if ((akt->status & GWC_VALUE_MAX) == GWC_VALUE_MAX && akt->value > akt->maxValue) {
+		if ((akt->status & GWC_VALUE_MAX) == GWC_VALUE_MAX && akt->value
+				> akt->maxValue) {
 			akt->value = akt->minValue;
 		}
 
@@ -38,8 +40,14 @@ void increase(tWidget *pWidget) {
 					+ 1) * sizeof(char));
 		}
 
-		snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d,%d",
-				akt->value / 10, akt->value % 10);
+		/*if (akt->decimal == 0) {
+			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d",
+					akt->value / 10);
+		} else {
+			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d,%d",
+					akt->value / 10, akt->value % 10);
+		}*/
+		snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d",	akt->value);
 
 		akt->valueLabel->pcText = akt->stringValue;
 
@@ -59,7 +67,8 @@ void decrease(tWidget *pWidget) {
 	if (akt->decrease == (tPushButtonWidget*) pWidget) {
 		akt->value -= akt->increment;
 
-		if ((akt->status & GWC_VALUE_MIN) == GWC_VALUE_MIN && akt->value < akt->minValue) {
+		if ((akt->status & GWC_VALUE_MIN) == GWC_VALUE_MIN && akt->value
+				< akt->minValue) {
 			akt->value = akt->maxValue;
 		}
 
@@ -68,8 +77,14 @@ void decrease(tWidget *pWidget) {
 					+ 1) * sizeof(char));
 		}
 
-		snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d,%d",
-				akt->value / 10, akt->value % 10);
+		/*if (akt->decimal == 0) {
+			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d",
+					akt->value / 10);
+		} else {
+			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d,%d",
+					akt->value / 10, akt->value % 10);
+		}*/
+		snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d",	akt->value);
 
 		akt->valueLabel->pcText = akt->stringValue;
 
@@ -79,13 +94,17 @@ void decrease(tWidget *pWidget) {
 
 void backPage(tWidget *pWidget) {
 	aktPage--;
+#ifdef DEBUG_GRAPHIC
 	printf("vorherige Seite aufgerufen\n");
+#endif
 	vDrawClientEntity();
 }
 
 void continuePage(tWidget *pWidget) {
 	aktPage++;
+#ifdef DEBUG_GRAPHIC
 	printf("naechste Seite aufgerufen\n");
+#endif
 	vDrawClientEntity();
 }
 
@@ -106,7 +125,6 @@ void onCheckboxClick(tWidget *pWidget, unsigned long bSelected) {
 		}
 		WidgetPaint((tWidget*) akt->checkbox);
 	}
-	printf("Change Checkboxvalue");
 }
 
 void vLoadNewPage(tWidget *pWidget) {
@@ -118,6 +136,8 @@ void vLoadNewPage(tWidget *pWidget) {
 		}
 		akt = akt->next;
 	}
+#ifdef DEBUG_GRAPHIC
 	printf("load page %s\n", akt->stringValue);
+#endif
 	vLoadPage(akt->stringValue);
 }

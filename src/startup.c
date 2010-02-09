@@ -157,46 +157,63 @@ void (* const g_pfnVectors[])(void) = {
 // for the "data" segment resides immediately following the "text" segment.
 //
 //*****************************************************************************
-extern unsigned long _etext;
+//
+// The following are constructs created by the linker, indicating where the
+// the "data" and "bss" segments reside in memory.
+//
+//*****************************************************************************
+extern unsigned long _flash_data;
 extern unsigned long _data;
 extern unsigned long _edata;
 extern unsigned long _bss;
 extern unsigned long _ebss;
+
 //*****************************************************************************
 //
 // This is the code that gets called when the processor first starts execution
-// following a reset event.  Only the absolutely necessary set is performed,
-// after which the application supplied main() routine is called.  Any fancy
+// following a reset event. Only the absolutely necessary set is performed,
+// after which the application supplied entry() routine is called. Any fancy
 // actions (such as making decisions based on the reset cause register, and
 // resetting the bits in that register) are left solely in the hands of the
 // application.
 //
 //*****************************************************************************
-void ResetISR(void) {
-	unsigned long *pulSrc, *pulDest;
-
-	//
-	// Copy the data segment initializers from flash to SRAM.
-	//
-	pulSrc = &_etext + 2;
-	// The offset of 8 Bytes is a workaround for the CodeSourcery C++ Compiler.
-	// also to set in the Linkerfile
-	for (pulDest = &_data; pulDest < &_edata;) {
-		*pulDest++ = *pulSrc++;
-	}
-
-	//
-	// Zero fill the bss segment.
-	//
-	for (pulDest = &_bss; pulDest < &_ebss;) {
-		*pulDest++ = 0;
-	}
-
-	//
-	// Call the application's entry point.
-	//
-	main();
+void
+ResetISR(void)
+{
+    unsigned long *pulSrc, *pulDest;
+    //
+    // Fill the stack with a known value.
+    //
+    for(pulDest = pulStack; pulDest < pulStack + STACK_SIZE; )
+    {
+       *pulDest++ = 0xABCD;
+    }
+    //
+    // Copy the data segment initializers from flash to SRAM.
+    //
+    pulSrc = &_flash_data;
+    for(pulDest = &_data; pulDest < &_edata; )
+    {
+       *pulDest++ = *pulSrc++;
+    }
+    //
+    // Zero fill the bss segment.
+    //
+    for(pulDest = &_bss; pulDest < &_ebss; )
+    {
+       *pulDest++ = 0;
+    }
+    //
+    //Call the global objets constructors
+    //
+    __libc_init_array();
+    //
+    // Call the application's entry point.
+    //
+    main();
 }
+
 
 //*****************************************************************************
 //
