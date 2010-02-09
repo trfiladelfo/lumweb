@@ -179,22 +179,23 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	long value = 0, r_value;
 	char *name, save = 0;
 
-	// TODO CHECK FREE MEMORY
+	// TODO MEMORY HANDLING
 	if (paramsSet != NULL && valuesSet != NULL) {
 		for (i = 0; i <= paramValueLen; i++) {
 			vPortFree(*(valuesSet + i));
 			vPortFree(*(paramsSet + i));
 		}
 
-		/*
-		 vPortFree(paramsSet);
+/*		 vPortFree(**(paramsSet));
 		 #ifdef SSI_DEBUG
 		 printf("io_print_saved_params: freed paramsSet \n");
 		 #endif
-		 /*		vPortFree(valuesSet);
+
+		 vPortFree(**(valuesSet));
 		 #ifdef SSI_DEBUG
 		 printf("io_print_saved_params: freed valuesSet \n");
-		 #endif */
+		 #endif
+*/
 	} else {
 		// TODO statische allokkierung dynamisch machen
 		paramsSet = pvPortMalloc(sizeof(char **) * 10);
