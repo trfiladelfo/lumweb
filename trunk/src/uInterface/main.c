@@ -32,7 +32,7 @@
 
 
 /* Globals */
-extern int __HEAP_START; // used for _sbrk defined in standalone.ld
+//extern int __HEAP_START; // used for _sbrk defined in standalone.ld
 extern unsigned long _etext;
 extern unsigned long _data;
 extern unsigned long _edata;
@@ -165,18 +165,18 @@ void hard_fault_handler_c(unsigned int * hardfault_args) {
 /*
  * Routine with a pointer to the actual Position of the Heap
  */
-caddr_t _sbrk(int incr) {
-	static unsigned char *heap = NULL;
-	unsigned char *prev_heap;
+//caddr_t _sbrk(int incr) {
+//	static unsigned char *heap = NULL;
+//	unsigned char *prev_heap;
 
-	if (heap == NULL) {
-		heap = (unsigned char *) &__HEAP_START;
-	}
-	prev_heap = heap;
+//  if (heap == NULL) {
+//		heap = (unsigned char *) &__HEAP_START;
+//	}
+//	prev_heap = heap;
 	/* check removed to show basic approach */
 
-	heap += incr;
+//	heap += incr;
 
-	return (caddr_t) prev_heap;
-}
+//	return (caddr_t) prev_heap;
+//}
 /*-----------------------------------------------------------*/

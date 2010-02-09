@@ -25,7 +25,8 @@ UART_DIR=$(SOURCE_DIR)/uart
 COMM_DIR=$(SOURCE_DIR)/communication
 CONF_DIR=$(SOURCE_DIR)/configuration
 
-SOURCE=	$(SOURCE_DIR)/main.c \
+SOURCE=	syscall.c \
+		$(SOURCE_DIR)/main.c \
 		$(SOURCE_DIR)/setup.c \
 		$(SOURCE_DIR)/timer.c \
 		$(SOURCE_DIR)/realtime.c \
@@ -102,8 +103,8 @@ CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 LDSCRIPT=standalone.ld
 
-LINKER_FLAGS=-nostartfiles -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -Xlinker --gc-sections
-
+LINKER_FLAGS= -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map
+#-nostartfiles -Xlinker  --no-gc-sections
 DEBUG=-g
 OPTIM=-O3
 
@@ -124,12 +125,11 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		$(OPTIM) -T$(LDSCRIPT) \
 		-D sprintf=usprintf -D snprintf=usnprintf \
 		-D _sprintf=usprintf -D _snprintf=usnprintf \
-		-D malloc=pvPortMalloc -D free=vPortFree \
 		-D gcc=1 -D printf=UARTprintf \
-		-ffunction-sections -fdata-sections 
+		-ffunction-sections -fdata-sections \
+		-D malloc=pvPortMalloc -D free=vPortFree \
 		
 
-		
 LIBS= $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a $(GRLIB_COMMON_DIR)/gcc/libgr.a  
 
 OBJS = $(SOURCE:.c=.o)

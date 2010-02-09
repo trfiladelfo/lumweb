@@ -8,6 +8,10 @@
  *
 */
 
+#include "FreeRTOS.h"
+
+#include "setup.h"
+
 #include "hw_types.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
@@ -29,16 +33,22 @@ void vInitPanel(void) {
 	// Initialize the graphics context.
 	//
 	if (!contextInitialized) {
+#ifdef DEBUG_GRAPHIC
 		printf("Initialize Graphic Context ...\n");
+#endif
 		GrContextInit(&g_sContext, &g_sKitronix320x240x16_SSD2119);
 		contextInitialized = 1;
 
 	} else {
+#ifdef DEBUG_GRAPHIC
 		printf("Clear Display\n");
+#endif
 		vCleanDisplay();
 
 	}
+#ifdef DEBUG_GRAPHIC
 	printf("Adding ROOT Widget ...\n");
+#endif
 	WidgetAdd(WIDGET_ROOT, (tWidget*) xParentContainer);
 
 }
@@ -225,7 +235,9 @@ void vDrawPanel(void) {
 	// Issue the initial paint request to the widgets.
 	//
 	if (xParentContainer) {
+#ifdef DEBUG_GRAPHIC
 		printf("output (0x%X)\n", xRootObject);
+#endif
 		xParentContainer->sBase.pChild = xRootObject;
 		WidgetPaint((tWidget*)xParentContainer);
 	}
@@ -235,18 +247,18 @@ void vDrawPanel(void) {
  * Frees the RAM for any Widget (recursive)
  */
 void vDestroyWidget(tWidget* toDestroy) {
-	if (toDestroy) {
-		//if (toDestroy == xRootObject) {
-		//	xRootObject = 0;
-		//}
+	if (toDestroy != NULL) {
 		vDestroyWidget(toDestroy->pChild);
 		vDestroyWidget(toDestroy->pNext);
 		WidgetRemove(toDestroy);
-		if (toDestroy != 0) {
+		if (toDestroy != NULL) {
 			vPortFree(toDestroy);
+			toDestroy = NULL;
 		}
+#ifdef DEBUG_GRAPHIC
 		printf("toDestroy 0x%x\n", toDestroy);
-		//toDestroy = 0;
+#endif
+
 	}
 }
 
@@ -276,7 +288,9 @@ void vShowBootText(char* textToShow) {
 	tRectangle sRect;
 
 	if (g_sContext.pDisplay == 0) {
+#ifdef DEBUG_GRAPHIC
 		printf("Initialize Graphic Context ...\n");
+#endif
 		GrContextInit(&g_sContext, &g_sKitronix320x240x16_SSD2119);
 	}
 

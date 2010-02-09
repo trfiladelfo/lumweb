@@ -6,9 +6,10 @@
  * \author Anziner, Hahn
  * \brief
  *
-*/
+ */
 
 #include <string.h>
+#include "setup.h"
 #include "graphic/graphicWebClient.h"
 #include "graphic/graphicLib.h"
 #include "graphic/graphicSettings.h"
@@ -41,6 +42,7 @@ void vLoadMenu(void) {
 	if (configLoad != NULL) {
 		vLoadPage(configLoad);
 		vPortFree(configLoad);
+		configLoad = NULL;
 	} else {
 		vLoadPage("");
 	}
@@ -146,8 +148,15 @@ void vDrawClientEntity(void) {
 					GWC_ROW_DECREASE_BUTTON_WIDTH, GWC_ROW_HEIGHT,
 					GWC_ROW_DECREASE_BUTTON_SYMBOL,
 					GWC_ROW_DECREASE_AUTOREPEAT, decrease);
-			snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1), "%d,%d",
-					akt->value / 10, akt->value % 10);
+
+			/*if (akt->decimal == 0) {
+				snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1),
+						"%d", akt->value / 10);
+			} else {
+				snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1),
+						"%d,%d", akt->value / 10, akt->value % 10);
+			}*/
+			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d",	akt->value);
 			akt->valueLabel = addLabel(GWC_ROW_VALUE_LEFT, top,
 					GWC_ROW_VALUE_WIDTH, GWC_ROW_HEIGHT, akt->stringValue);
 			akt->increase = addButton(GWC_ROW_INCREASE_BUTTON_LEFT, top,
@@ -184,32 +193,57 @@ void vDrawClientEntity(void) {
 	}
 
 	vDrawPanel();
+#ifdef DEBUG_GRAPHIC
 	printf("Ouput erfolgreich\n");
+#endif
 }
 
 void vDestroyClientEntities(void) {
 	xClientEntity *akt = xClientRoot;
 	xClientEntity *toDelete = NULL;
-
+#ifdef DEBUG_GRAPHIC
+	printf("vDestroyClientEntities start ...\n");
+#endif
 	vCleanDisplay();
-
+#ifdef DEBUG_GRAPHIC
+	printf("vDestroyClientEntities destroy structures ...\n");
+#endif
 	while (akt != NULL) {
 		if (akt->id != NULL) {
+#ifdef DEBUG_GRAPHIC
+			printf("vDestroyClientEntities free id\n");
+#endif
 			vPortFree(akt->id);
+			akt->id = NULL;
 		}
 
 		if (akt->name != NULL) {
+#ifdef DEBUG_GRAPHIC
+			printf("vDestroyClientEntities free name\n");
+#endif
 			vPortFree(akt->name);
+			akt->name = NULL;
 		}
 
 		if (akt->stringValue != NULL) {
+#ifdef DEBUG_GRAPHIC
+			printf("vDestroyClientEntities free stringValue\n");
+#endif
 			vPortFree(akt->stringValue);
+			akt->stringValue = NULL;
 		}
 
 		toDelete = akt;
 		akt = akt->next;
+#ifdef DEBUG_GRAPHIC
+		printf("vDestroyClientEntities free structure\n");
+#endif
 		vPortFree(toDelete);
+		toDelete = NULL;
 	}
+#ifdef DEBUG_GRAPHIC
+	printf("vDestroyClientEntities Entities destroyed\n");
+#endif
 	xClientRoot = NULL;
 }
 

@@ -39,12 +39,14 @@ char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
 			}
 			returnValue[j] = 0;
 			 strtrim(returnValue);
+			 xTaskResumeAll();
 			return returnValue;
 		}
 		for (j = 0; j < READBUFFERLEN; j++) {
 			param[j] = 0;
 		}
 	}
+	xTaskResumeAll();
 	return NULL;
 }
 
@@ -56,6 +58,8 @@ char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
 char* loadFromConfig(char* filePath, char* param) {
 	int i, j;
 	tBoolean beforeEqual, isInComment = false;
+
+	vTaskSuspendAll();
 
 	char name[READBUFFERLEN];
 	char value[READBUFFERLEN];
@@ -149,5 +153,6 @@ char* loadFromConfig(char* filePath, char* param) {
 		printf("CONF: File can't be opened");
 	}
 	fs_close(config_file);
+	xTaskResumeAll();
 	return NULL;
 }

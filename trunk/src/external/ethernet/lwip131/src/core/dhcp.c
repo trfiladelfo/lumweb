@@ -85,6 +85,7 @@
 #include "netif/etharp.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 /** Default for DHCP_GLOBAL_XID is 0xABCD0000
  * This can be changed by defining DHCP_GLOBAL_XID and DHCP_GLOBAL_XID_HEADER, e.g.

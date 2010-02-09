@@ -38,6 +38,8 @@
 
 #include "lwip/opt.h"
 
+#include "stdlib.h"
+
 #if !NO_SYS /* don't build if not configured for use in lwipopts.h */
 
 #include "lwip/sys.h"

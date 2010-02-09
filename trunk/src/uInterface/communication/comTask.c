@@ -17,8 +17,8 @@
  *
  */
 
-
 #include <stdio.h>
+#include <string.h>
 
 /* queue includes. */
 #include "FreeRTOS.h"
@@ -32,7 +32,6 @@
 #include "hw_can.h"
 #include "can.h"
 
-
 /* Include Queue staff */
 #include "comTask.h"
 #include "../taskConfig.h"
@@ -40,10 +39,10 @@
 #include "../uart/uartstdio.h"
 
 /* TODO only testvalues */
-int day_hour = 100;
-int day_minute = 300;
-int night_hour = 230;
-int night_minute = 150;
+int day_hour = 10;
+int day_minute = 30;
+int night_hour = 23;
+int night_minute = 15;
 int checkbox = 1;
 
 xComMessage xMessage;
@@ -53,7 +52,7 @@ void vComTask(void *pvParameters) {
 	unsigned char ucBufferOut[8];
 	tCANMsgObject sMsgObjectTx;
 
-	sprintf(&ucBufferOut, "TEST");
+	strcpy(ucBufferOut, "TEST");
 
 	//
 	// Configure and start transmit of message object.
@@ -63,7 +62,6 @@ void vComTask(void *pvParameters) {
 	sMsgObjectTx.ulMsgLen = 8;
 	sMsgObjectTx.pucMsgData = ucBufferOut;
 	CANMessageSet(CAN0_BASE, 2, &sMsgObjectTx, MSG_OBJ_TYPE_TX);
-
 
 	for (;;) {
 		/* Wait for a message to arrive */
@@ -106,7 +104,7 @@ void vComTask(void *pvParameters) {
 					night_hour = xMessage.value;
 				} else if (strcmp(xMessage.item, "night_minute") == 0) {
 					night_minute = xMessage.value;
-				}else if (strcmp(xMessage.item, "led_ein") == 0) {
+				} else if (strcmp(xMessage.item, "led_ein") == 0) {
 					checkbox = xMessage.value;
 				} else {
 					sprintf(buffer, "FAIL: %s", xMessage.item);
@@ -120,7 +118,6 @@ void vComTask(void *pvParameters) {
 				}
 				vTaskResume(xMessage.taskToResume);
 			}
-
 		}
 		// send can bus message */
 	}

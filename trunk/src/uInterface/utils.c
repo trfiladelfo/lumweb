@@ -13,6 +13,8 @@
 
 #include "configuration/configloader.h"
 
+#include "utils.h"
+
 void printaddr(struct ip_addr addr) {
 	printf("%d.%d.%d.%d", ((addr.addr) & 0xFF), ((addr.addr >> 8) & 0xFF),
 			((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF));
@@ -41,7 +43,8 @@ struct ip_addr* getAddresFromConfig(char* config) {
 
 	char* configLoad = loadFromConfig(IP_CONFIG_FILE, config);
 
-	if (strcmp(configLoad, "localhost") == 0 && strcmp(config, "REMOTE_IP") == 0) {
+	if (strcmp(configLoad, "localhost") == 0 && strcmp(config, "REMOTE_IP")
+			== 0) {
 		return &(lwip_netif.ip_addr);
 	}
 
@@ -73,4 +76,17 @@ struct ip_addr* getAddresFromConfig(char* config) {
 	}
 	vPortFree(configLoad);
 	return retAddr;
+}
+
+char* pcStrdup(char *src) {
+	int i, len = strlen(src);
+	char* ret = (char*) pvPortMalloc(len + 1);
+
+	if (ret != NULL) {
+		for (i = 0; i < len && src[i] != 0; i++) {
+			ret[i] = src[i];
+		}
+		ret[i] = 0;
+	}
+	return ret;
 }
