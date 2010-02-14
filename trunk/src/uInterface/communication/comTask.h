@@ -48,4 +48,12 @@ typedef struct
 /** Prototype for the CommTask */
 void vComTask( void *pvParameters );
 
+/** Prototpye for the method that communicates directly with
+ *  the machine (on CAN Bus or whatever) and sets values*/
+int sendToMachine(char* id, int value);
+
+/** Prototpye for the method that communicates directly with
+ *  the machine (on CAN Bus or whatever) and gets values*/
+int getFormMachine(char* id);
+
 #endif /* COMTASK_H */

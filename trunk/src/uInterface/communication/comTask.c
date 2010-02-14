@@ -44,8 +44,61 @@ int day_minute = 30;
 int night_hour = 23;
 int night_minute = 15;
 int checkbox = 1;
+int heizkurve = 1;
+int norm_temp = 21;
+int abs_temp = 17;
+
 
 xComMessage xMessage;
+
+int sendToMachine(char* id, int value){
+	int rc = 0;
+
+	if (strcmp(id, "day_hour") == 0) {
+		day_hour = xMessage.value;
+	} else if (strcmp(id, "day_minute") == 0) {
+		day_minute = value;
+	} else if (strcmp(id, "night_hour") == 0) {
+		night_hour = value;
+	} else if (strcmp(id, "night_minute") == 0) {
+		night_minute = value;
+	} else if (strcmp(id, "heizkurve") == 0) {
+		heizkurve = value;
+	} else if (strcmp(id, "led_ein") == 0) {
+		checkbox = value;
+	} else if (strcmp(id, "norm_temp") == 0) {
+		norm_temp = value;
+	} else if (strcmp(id, "abs_temp") == 0) {
+		abs_temp = value;
+	} else {
+		rc = -1;
+	}
+
+	return rc;
+}
+
+int getFormMachine(char* id){
+	int value = -999; // error code
+	if (strcmp(id, "day_hour") == 0) {
+		value = day_hour;
+	} else if (strcmp(id, "day_minute") == 0) {
+		value = day_minute;
+	} else if (strcmp(id, "night_hour") == 0) {
+		value = night_hour;
+	} else if (strcmp(id, "night_minute") == 0) {
+		value = night_minute;
+	} else if (strcmp(id, "led_ein") == 0) {
+		value = checkbox;
+	} else if (strcmp(id, "norm_temp") == 0) {
+		value = norm_temp;
+	} else if (strcmp(id, "abs_temp") == 0) {
+		value = abs_temp;
+	}else if (strcmp(id, "heizkurve") == 0) {
+		value = heizkurve;
+	}
+
+	return value;
+}
 
 void vComTask(void *pvParameters) {
 	char buffer[100];
@@ -75,19 +128,11 @@ void vComTask(void *pvParameters) {
 			if (xMessage.cmd == GET) {
 				xMessage.value = -999;
 
-				if (strcmp(xMessage.item, "day_hour") == 0) {
-					xMessage.value = day_hour;
-				} else if (strcmp(xMessage.item, "day_minute") == 0) {
-					xMessage.value = day_minute;
-				} else if (strcmp(xMessage.item, "night_hour") == 0) {
-					xMessage.value = night_hour;
-				} else if (strcmp(xMessage.item, "night_minute") == 0) {
-					xMessage.value = night_minute;
-				} else if (strcmp(xMessage.item, "led_ein") == 0) {
-					xMessage.value = checkbox;
-				} else {
+				xMessage.value = getFormMachine(xMessage.item);
+
+				if(xMessage.value == -999)
 					sprintf(xMessage.errorDesc, "\"ERROR: %s\"", xMessage.item);
-				}
+
 
 				//printf("COMTASK: Sende wert zurueck (%s, %d)\n", xMessage.item,
 				//		xMessage.value);
@@ -96,20 +141,9 @@ void vComTask(void *pvParameters) {
 
 			} else if (xMessage.cmd == SET) {
 
-				if (strcmp(xMessage.item, "day_hour") == 0) {
-					day_hour = xMessage.value;
-				} else if (strcmp(xMessage.item, "day_minute") == 0) {
-					day_minute = xMessage.value;
-				} else if (strcmp(xMessage.item, "night_hour") == 0) {
-					night_hour = xMessage.value;
-				} else if (strcmp(xMessage.item, "night_minute") == 0) {
-					night_minute = xMessage.value;
-				} else if (strcmp(xMessage.item, "led_ein") == 0) {
-					checkbox = xMessage.value;
-				} else {
+				if(sendToMachine(xMessage.item, xMessage.value) == -1)
 					sprintf(buffer, "FAIL: %s", xMessage.item);
-					//printf("COMTASK: %s\n", buffer);
-				}
+
 				//printf("COMTASK: Daten gespeichert (%s = %d)\n", xMessage.item,
 				//		xMessage.value);
 
