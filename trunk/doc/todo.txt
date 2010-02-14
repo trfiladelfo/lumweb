@@ -25,12 +25,13 @@ CAN-Kommunikation:
 	
 	
 	8.2.2010 ##########################################################################
-Fehlerbehandlung HTTP (200)
-Geänderte Parameter zurücklesen und beim Client anzeigen
-3 Typische Seiten (Normal, Absenkbetrieb (Zeit und Temperatur); Heizkuve; Menü)
 
-Titel Tag und Gruppen (titel, group)
+to do:
+   * Fehlerbehandlung HTTP (200)
+   * Step by Step Anleitung für Erstellung einer einfachen Seite.
+   * Schematische Darstellung 
 
-Step by Step Anleitung für Erstellung einer einfachen Seite.
-
-Schematische Darstellung 
+done:
+	* Geänderte Parameter zurücklesen und beim Client anzeigen
+	* Titel Tag und Gruppen (titel, group)  
+	* 3 Typische Seiten (Normal, Absenkbetrieb (Zeit und Temperatur); Heizkuve; Menü)	
