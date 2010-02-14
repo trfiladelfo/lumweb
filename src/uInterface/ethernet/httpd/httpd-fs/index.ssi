@@ -7,8 +7,9 @@
 		<div id="container">
 			<center>
 				<h1>Men&uuml;</h1>
+				<!--#Hyperlink label=Temperaturen value=temps.ssi --> <br/>
 				<!--#Hyperlink label=Absenkzeiten value=times.ssi --><br/>
-				<!--#Hyperlink label=Heizkurve value=times1.ssi --> <br/>
+				<!--#Hyperlink label=Heizkurve value=kurve.ssi --> <br/>
 				&nbsp;
 			</center>
 		</div>

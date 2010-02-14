@@ -6,11 +6,11 @@
 	</head>
 	<body>
 		<div id="container">
-			<center><!--#Titel label=Absenkzeiten --></center>
+			<center><!--#Titel label=Absenkbetrieb --></center>
 			<form method="get" action="set.cgi" name="times" id="form-times" onsubmit="return submit_form(this)">
 				<center><table style="width: 75%; border:1px solid black;" border="0">
 					<tr>
-						<td align="center" colspan="4"><b><!--#Group label=Startzeit --></b></td>
+						<td align="center" colspan="4"><!--#Group label=Startzeit --></td>
 					</tr>	
 					<tr>
 						<td align="center"><!--#NumberInputField id=day_hour label=Stunden max=23 min=0 decimal=0 increment=1--></td> 
@@ -30,7 +30,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td align="right" colspan="4"><!--#Hyperlink label=Menue value= --></td>
+						<td align="right" colspan="4"><!--#Hyperlink label=Menue value=index.ssi --></td>
 					</tr>
 				</table>
 				<div id="container-times" class="answer">
