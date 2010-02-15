@@ -29,9 +29,11 @@ CAN-Kommunikation:
 to do:
    * Fehlerbehandlung HTTP (200)
    * Step by Step Anleitung für Erstellung einer einfachen Seite.
-   * Schematische Darstellung 
+   * Fehlerbehandlung Tagparsen in getValueForParam im Grafiktask
 
 done:
 	* Geänderte Parameter zurücklesen und beim Client anzeigen
 	* Titel Tag und Gruppen (titel, group)  
 	* 3 Typische Seiten (Normal, Absenkbetrieb (Zeit und Temperatur); Heizkuve; Menü)	
+	* Schematische Darstellung 
+
