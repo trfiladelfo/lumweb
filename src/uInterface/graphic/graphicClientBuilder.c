@@ -128,14 +128,15 @@ void vDrawClientEntity(void) {
 		offset = 0;
 	}
 
-	vInitPanel();
-
 	for (i = 0; akt != NULL && i < GWC_ROWS_PER_VIEW; i++) {
 
 		if ((akt->status & GWC_LABEL) == GWC_LABEL) {
 
 			akt->nameLabel = addLabel(GWC_ROW_LABEL_LEFT, top,
 					GWC_ROW_LABEL_WIDTH, GWC_ROW_HEIGHT, akt->name);
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Label %s\n", akt->name);
+#endif
 		}
 
 		if ((akt->status & GWC_NUMERIC) == GWC_NUMERIC) {
@@ -148,6 +149,9 @@ void vDrawClientEntity(void) {
 					GWC_ROW_DECREASE_BUTTON_WIDTH, GWC_ROW_HEIGHT,
 					GWC_ROW_DECREASE_BUTTON_SYMBOL,
 					GWC_ROW_DECREASE_AUTOREPEAT, decrease);
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Decrease Button\n");
+#endif
 
 			/*if (akt->decimal == 0) {
 				snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1),
@@ -156,28 +160,43 @@ void vDrawClientEntity(void) {
 				snprintf(akt->stringValue, (GWC_ROW_VALUE_MAX_LENGTH + 1),
 						"%d,%d", akt->value / 10, akt->value % 10);
 			}*/
-			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH + 1, "%d",	akt->value);
+			snprintf(akt->stringValue, GWC_ROW_VALUE_MAX_LENGTH, "%d",	akt->value);
 			akt->valueLabel = addLabel(GWC_ROW_VALUE_LEFT, top,
 					GWC_ROW_VALUE_WIDTH, GWC_ROW_HEIGHT, akt->stringValue);
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Value %s\n", akt->stringValue);
+#endif
 			akt->increase = addButton(GWC_ROW_INCREASE_BUTTON_LEFT, top,
 					GWC_ROW_INCREASE_BUTTON_WIDTH, GWC_ROW_HEIGHT,
 					GWC_ROW_INCREASE_BUTTON_SYMBOL,
 					GWC_ROW_INCREASE_AUTOREPEAT, increase);
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Increase Button\n");
+#endif
 
 		} else if ((akt->status & GWC_BOOLEAN) == GWC_BOOLEAN) {
 			akt->checkbox = addCheckbox(GWC_ROW_CHECKBOX_LEFT, top,
 					GWC_ROW_CHECKBOX_WIDTH, GWC_ROW_HEIGHT,
 					(unsigned long) akt->value, onCheckboxClick);
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Checkbox %d\n", akt->status);
+#endif
 
 		} else if ((akt->status & GWC_SUBMIT) == GWC_SUBMIT) {
 			akt->actionButton = addButton(GWC_ACTION_BUTTON_LEFT, top,
 					GWC_ACTION_BUTTON_WIDTH, GWC_ROW_HEIGHT, akt->name, 0,
 					vSendData);
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Submit %s\n", akt->name);
+#endif
 
 		} else if ((akt->status & GWC_HYPERLINK) == GWC_HYPERLINK) {
 			akt->actionButton = addButton(GWC_ACTION_BUTTON_LEFT, top,
 					GWC_ACTION_BUTTON_WIDTH, GWC_ROW_HEIGHT, akt->name, 0,
 					vLoadNewPage);
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Hyperlink %s\n", akt->name);
+#endif
 		}
 
 		akt = akt->next;
@@ -185,16 +204,22 @@ void vDrawClientEntity(void) {
 	}
 
 	if (offset > 0) {
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Back\n");
+#endif
 		addButton(5, 205, 80, 30, "Back", 0, backPage);
 	}
 
 	if (akt != NULL) {
+#ifdef DEBUG_GRAPHIC
+	printf("vDrawClientEntity: add Continue\n");
+#endif
 		addButton(235, 205, 80, 30, "Continue", 0, continuePage);
 	}
 
 	vDrawPanel();
 #ifdef DEBUG_GRAPHIC
-	printf("Ouput erfolgreich\n");
+	printf("vDrawClientEntity: Output erfolgreich\n");
 #endif
 }
 

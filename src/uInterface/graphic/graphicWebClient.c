@@ -42,6 +42,9 @@ void vLoadPage(char *uri) {
 
 	vDestroyClientEntities();
 
+	vInitPanel();
+	vShowBootText("loading new Page ...");
+
 	// status variables
 	u16_t length, bindErr, connErr, writeErr;
 	u16_t port;
