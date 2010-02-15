@@ -95,16 +95,18 @@ void decrease(tWidget *pWidget) {
 void backPage(tWidget *pWidget) {
 	aktPage--;
 #ifdef DEBUG_GRAPHIC
-	printf("vorherige Seite aufgerufen\n");
+	printf("backPage: vorherige Seite aufgerufen\n");
 #endif
+	vDestroyPanel();
 	vDrawClientEntity();
 }
 
 void continuePage(tWidget *pWidget) {
 	aktPage++;
 #ifdef DEBUG_GRAPHIC
-	printf("naechste Seite aufgerufen\n");
+	printf("continuePage: naechste Seite aufgerufen\n");
 #endif
+	vDestroyPanel();
 	vDrawClientEntity();
 }
 

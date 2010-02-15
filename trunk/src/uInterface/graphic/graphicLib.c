@@ -123,7 +123,7 @@ tCanvasWidget *addLabel(int left, int top, int width, int height, char* text) {
 	aktLabel->sBase.sPosition.sYMax = top + height - 1;
 	aktLabel->ulFillColor = ClrBlack;
 	aktLabel->ulOutlineColor = ClrGray;
-	aktLabel->ulStyle = CB_STYLE_TEXT | CB_STYLE_FILL;
+	aktLabel->ulStyle = CANVAS_STYLE_TEXT | CANVAS_STYLE_FILL;
 	aktLabel->ulTextColor = ClrWhite;
 
 	if (xLastInsertedObject) {
