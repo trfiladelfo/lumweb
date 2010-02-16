@@ -15,10 +15,12 @@
 //
 //*****************************************************************************
 
+#include "FreeRTOS.h"
 #include "lmi_fs.h"
 #include "hw_types.h"
 
 #include <string.h>
+#include <stdio.h>
 
 #include "realtime.h"
 #include "log/logging.h"
@@ -38,7 +40,7 @@ FRESULT initLog() {
 
 	if (log_file != NULL) {
 #ifdef DEBUG_LOG
-		UARTprintf("Opening file, memory OK \n");
+		printf("Opening file, memory OK \n");
 #endif
 		rc = f_open(log_file, LOG_FILE_PATH, FA_WRITE);
 
@@ -76,12 +78,12 @@ FRESULT appendToLog(char *msg) {
 	if (rc == FR_OK) {
 		f_lseek(log_file, log_file->fsize);
 
-		snprintf(&buf, 127, "%s : %s\n", time_buf, msg);
+		snprintf(buf, 127, "%s : %s\n", time_buf, msg);
 		rc = f_write(log_file, buf, strlen(buf), &bw);
 
 #ifdef DEBUG_LOG
 		if (rc == FR_OK)
-			UARTprintf("appendToLog: wrote msg %s", buf);
+			printf("appendToLog: wrote msg %s", buf);
 #endif
 		f_sync(log_file);
 		f_close(log_file);

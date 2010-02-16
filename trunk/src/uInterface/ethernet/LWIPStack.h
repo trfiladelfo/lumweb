@@ -53,7 +53,7 @@ void stellarisif_debug_print(struct pbuf *p);
 // The lwIP network interface structure for the Stellaris Ethernet MAC.
 //
 //*****************************************************************************
-static struct netif lwip_netif;
+
 //static struct netif lwip_netif_local;
 
 #endif /*LWIPSTACK_H_*/

@@ -103,7 +103,7 @@ CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 LDSCRIPT=standalone.ld
 
-LINKER_FLAGS= -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map
+LINKER_FLAGS= -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -T$(LDSCRIPT)
 #-nostartfiles -Xlinker  --no-gc-sections
 DEBUG=-g
 OPTIM=-O3
@@ -117,18 +117,24 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		-I $(LWIP_COMMON_DIR)/port/LM3S \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
-		-D GCC_ARMCM3_LM3S102 \
 		-I $(LUMINARY_DRIVER_DIR) \
 		-I $(LUMINARY_DRIVER_DIR)/driverlib \
 		-I $(LUMINARY_DRIVER_DIR)/inc \
 		-D inline= -mthumb -mcpu=cortex-m3 \
-		$(OPTIM) -T$(LDSCRIPT) \
+		$(OPTIM) \
+		-ffunction-sections \
+		-Wall \
 		-D sprintf=usprintf -D snprintf=usnprintf \
 		-D _sprintf=usprintf -D _snprintf=usnprintf \
-		-D gcc=1 -D printf=UARTprintf \
-		-ffunction-sections -fdata-sections \
+		-D printf=UARTprintf \
+		-Dgcc \
 		-D malloc=pvPortMalloc -D free=vPortFree \
 		
+		
+	
+		# -D GCC_ARMCM3_LM3S102 \
+		-c \
+		 -fdata-sections 
 
 LIBS= $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a $(GRLIB_COMMON_DIR)/gcc/libgr.a  
 

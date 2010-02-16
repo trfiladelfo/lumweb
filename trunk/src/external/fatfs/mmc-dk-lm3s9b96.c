@@ -18,6 +18,8 @@
 #include "sysctl.h"
 #include "diskio.h"
 
+#include "mmc.h"
+
 /*
  * The following header defines the hardware connections used to connect
  * the SDCard.  This can be found under the relevant board directory.
@@ -42,7 +44,7 @@
 #define CMD58    (0x40+58)    /* READ_OCR */
 
 // asserts the CS pin to the card
-static
+
 void SELECT (void)
 {
     //
@@ -58,7 +60,7 @@ void SELECT (void)
 }
 
 // de-asserts the CS pin to the card.
-static
+
 void DESELECT (void)
 {
     GPIOPinWrite(SDCARD_CS_BASE, SDCARD_CS_PIN, SDCARD_CS_PIN);
@@ -70,23 +72,23 @@ void DESELECT (void)
 
 ---------------------------------------------------------------------------*/
 
-static volatile
+ volatile
 DSTATUS Stat = STA_NOINIT;    /* Disk status */
 
-static volatile
+ volatile
 BYTE Timer1, Timer2;    /* 100Hz decrement timer */
 
-static
+
 BYTE CardType;            /* b0:MMC, b1:SDC, b2:Block addressing */
 
-static
+
 BYTE PowerFlag = 0;     /* indicates if "power" is on */
 
 /*-----------------------------------------------------------------------*/
 /* Transmit a byte to MMC via SPI  (Platform dependent)                  */
 /*-----------------------------------------------------------------------*/
 
-static
+
 void xmit_spi (BYTE dat)
 {
     DWORD rcvdat;
@@ -101,7 +103,7 @@ void xmit_spi (BYTE dat)
 /* Receive a byte from MMC via SPI  (Platform dependent)                 */
 /*-----------------------------------------------------------------------*/
 
-static
+
 BYTE rcvr_spi (void)
 {
     DWORD rcvdat;
@@ -114,7 +116,7 @@ BYTE rcvr_spi (void)
 }
 
 
-static
+
 void rcvr_spi_m (BYTE *dst)
 {
     *dst = rcvr_spi();
@@ -124,7 +126,7 @@ void rcvr_spi_m (BYTE *dst)
 /* Wait for card ready                                                   */
 /*-----------------------------------------------------------------------*/
 
-static
+
 BYTE wait_ready (void)
 {
     BYTE res;
@@ -143,7 +145,7 @@ BYTE wait_ready (void)
 /* Send 80 or so clock transitions with CS and DI held high. This is     */
 /* required after card power up to get it into SPI mode                  */
 /*-----------------------------------------------------------------------*/
-static
+
 void send_initial_clock_train (void)
 {
     unsigned int i;
@@ -178,7 +180,7 @@ void send_initial_clock_train (void)
 /* When the target system does not support socket power control, there   */
 /* is nothing to do in these functions and chk_power always returns 1.   */
 
-static
+
 void power_on (void)
 {
     /*
@@ -224,7 +226,7 @@ void power_on (void)
 }
 
 // set the SSI speed to the max setting
-static
+
 void set_max_speed(void)
 {
     unsigned long i;
@@ -247,13 +249,13 @@ void set_max_speed(void)
     SSIEnable(SDC_SSI_BASE);
 }
 
-static
+
 void power_off (void)
 {
     PowerFlag = 0;
 }
 
-static
+
 int chk_power(void)        /* Socket power state: 0=off, 1=on */
 {
     return PowerFlag;
@@ -265,7 +267,7 @@ int chk_power(void)        /* Socket power state: 0=off, 1=on */
 /* Receive a data packet from MMC                                        */
 /*-----------------------------------------------------------------------*/
 
-static
+
 BOOL rcvr_datablock (
     BYTE *buff,            /* Data buffer to store received data */
     UINT btr            /* Byte count (must be even number) */
@@ -297,7 +299,7 @@ BOOL rcvr_datablock (
 /*-----------------------------------------------------------------------*/
 
 #if _READONLY == 0
-static
+
 BOOL xmit_datablock (
     const BYTE *buff,    /* 512 byte data block to be transmitted */
     BYTE token            /* Data/Stop token */
@@ -332,7 +334,7 @@ BOOL xmit_datablock (
 /* Send a command packet to MMC                                          */
 /*-----------------------------------------------------------------------*/
 
-static
+
 BYTE send_cmd (
     BYTE cmd,        /* Command byte */
     DWORD arg        /* Argument */

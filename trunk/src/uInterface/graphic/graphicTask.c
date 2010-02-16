@@ -7,6 +7,9 @@
  * \brief Implementation of Graphics Task for the LM3S9B96 Board
  *
 */
+
+#include "FreeRTOS.h"
+#include "task.h"
 #include "setup.h"
 
 #include "graphic/graphicTask.h"

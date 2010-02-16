@@ -37,6 +37,8 @@
 
 #include <string.h>
 
+#include "utils.h"
+
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -139,6 +141,23 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
 //*****************************************************************************
 
 #endif
+
+/**
+ This array holds all the strings that are to be recognized as SSI tag
+ names by the HTTPD server.  The server will call SSIHandler to request a
+ replacement string whenever the pattern <!--#tagname--> (where tagname
+ appears in the following array) is found in ".ssi", ".shtml" or ".shtm"
+ files that it serves. Max size is MAX_TAG_NAME_LEN
+*/
+const char * const g_pcConfigSSITags[] = { "DateTime", /// SSI_INDEX_DATEANDTIME
+		"NumberInputField", /// SSI_INDEX_NUMBERINPUTFIELD
+		"SubmitInputField", /// SSI_INDEX_SUBMITINPUTFIELD
+		"SavedParams",		///SSI_INDEX_SAVEDPARAMS
+		"CheckboxInputField", /// SSI_INDEX_CHECKBOXINPUTFIELD
+		"Hyperlink", /// SSI_INDEX_HYPERLINK
+		"Titel", /// SSI_INDEX_TITLE
+		"Group" /// SSI_INDEX_GROUP
+};
 
 /**
  *
@@ -462,8 +481,6 @@ int io_get_value_from_comtask(char* id) {
  */
 void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
-	char strValue[10];
-	pSSIParam p = NULL;
 	char *id = NULL, *label = NULL, *max = NULL, *min = NULL, *decimal = NULL, *increment = NULL;
 
 	label = SSIParamGetValue(*(params), "label");
@@ -524,7 +541,7 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
  *
  */
 void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
-	char *label = NULL, *form_id = NULL;
+	char *label = NULL;
 	label = SSIParamGetValue(*(params), "label");
 
 	SSIParamDeleteAll(params);
@@ -570,7 +587,6 @@ void io_print_saved_params(char * pcBuf, int iBufLen) {
 //*****************************************************************************
 void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
-	pSSIParam p = NULL;
 	char *id = NULL, *label = NULL;
 
 	label = SSIParamGetValue(*(params), "label");
@@ -612,7 +628,6 @@ void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 //
 //*****************************************************************************
 void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params) {
-	pSSIParam p = NULL;
 	char *value = NULL, *label = NULL;
 
 	label = SSIParamGetValue(*(params), "label");
@@ -687,9 +702,7 @@ void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params) {
  @return 0	element not added
 */
 int SSIParamAdd(pSSIParam *root, char *nameValue) {
-	int rc = 0;
-	char *value, *name;
-	int strnc;
+	char *value;
 	pSSIParam nParam, tmp = *(root);
 
 #ifdef SSI_DEBUG
@@ -745,6 +758,7 @@ int SSIParamAdd(pSSIParam *root, char *nameValue) {
 			vPortFree(nParam);
 		}
 	}
+	return 0;
 }
 /**
  gets an element with $name from the list

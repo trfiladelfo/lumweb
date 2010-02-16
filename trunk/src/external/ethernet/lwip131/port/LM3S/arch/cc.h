@@ -57,13 +57,15 @@ typedef u32_t               mem_ptr_t;
 #ifdef DEBUG
 extern void __error__(char *pcFilename, unsigned long ulLine);
 #define LWIP_PLATFORM_ASSERT(expr) __error__(__FILE__, __LINE__);
-//pf #define LWIP_PLATFORM_ASSERT(expr)      \
-//pf {                                       \
-//pf     if(!(expr))                         \
-//pf     {                                   \
-//pf         __error__(__FILE__, __LINE__);  \
-//pf     }                                   \
-//pf }
+/*
+#define LWIP_PLATFORM_ASSERT(expr)      \
+{                                       \
+     if(!(expr))                         \
+     {                                   \
+         __error__(__FILE__, __LINE__);  \
+     }                                   \
+ }
+ */
 #else
 #define LWIP_PLATFORM_ASSERT(expr)
 #endif

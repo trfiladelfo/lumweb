@@ -102,7 +102,7 @@ int getFormMachine(char* id){
 
 void vComTask(void *pvParameters) {
 	char buffer[100];
-	unsigned char ucBufferOut[8];
+	char ucBufferOut[8];
 	tCANMsgObject sMsgObjectTx;
 
 	strcpy(ucBufferOut, "TEST");
@@ -113,7 +113,7 @@ void vComTask(void *pvParameters) {
 	sMsgObjectTx.ulMsgID = 0x400;
 	sMsgObjectTx.ulFlags = 0;
 	sMsgObjectTx.ulMsgLen = 8;
-	sMsgObjectTx.pucMsgData = ucBufferOut;
+	sMsgObjectTx.pucMsgData = (unsigned char*) ucBufferOut;
 	CANMessageSet(CAN0_BASE, 2, &sMsgObjectTx, MSG_OBJ_TYPE_TX);
 
 	for (;;) {

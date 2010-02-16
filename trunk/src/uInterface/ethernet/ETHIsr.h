@@ -6,8 +6,11 @@
 #ifndef ETHISR_H_
 #define ETHISR_H_
 
+#include "FreeRTOS.h"
 
 #include "hw_ethernet.h"
+#include "hw_types.h"
+#include "semphr.h"
 
 //*****************************************************************************
 //

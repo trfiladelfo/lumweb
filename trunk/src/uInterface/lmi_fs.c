@@ -24,7 +24,7 @@
 // This is part of revision 4905 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
-
+#include "FreeRTOS.h"
 #include <string.h>
 #include "lmi_fs.h"
 #include "inc/hw_memmap.h"
@@ -38,6 +38,8 @@
 #include "ethernet/httpd/fsdata.h"
 #include "fatfs/ff.h"
 #include "fatfs/diskio.h"
+
+#include "fatfs/mmc.h"
 
 //*****************************************************************************
 //
@@ -200,8 +202,8 @@ fs_open(char *name) {
 		fresult = f_open(ptFatFile, name, FA_READ);
 		if (FR_OK == fresult) {
 			ptFile->data = NULL;
-			ptFile->len = NULL;
-			ptFile->index = NULL;
+			ptFile->len = 0;
+			ptFile->index = 0;
 			ptFile->pextension = ptFatFile;
 			return (ptFile);
 		}
