@@ -65,15 +65,7 @@ extern "C"
  appears in the following array) is found in ".ssi", ".shtml" or ".shtm"
  files that it serves. Max size is MAX_TAG_NAME_LEN
 */
-static const char *g_pcConfigSSITags[] = { "DateTime", /// SSI_INDEX_DATEANDTIME
-		"NumberInputField", /// SSI_INDEX_NUMBERINPUTFIELD
-		"SubmitInputField", /// SSI_INDEX_SUBMITINPUTFIELD
-		"SavedParams",		///SSI_INDEX_SAVEDPARAMS
-		"CheckboxInputField", /// SSI_INDEX_CHECKBOXINPUTFIELD
-		"Hyperlink", /// SSI_INDEX_HYPERLINK
-		"Titel", /// SSI_INDEX_TITLE
-		"Group" /// SSI_INDEX_GROUP
-};
+extern const char * const g_pcConfigSSITags[];
 
 /**
  The number of individual SSI tags that the HTTPD server can expect to
@@ -113,6 +105,8 @@ void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_get_titel(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params);
+
+int io_get_value_from_comtask(char* id);
 
 #ifdef __cplusplus
 }

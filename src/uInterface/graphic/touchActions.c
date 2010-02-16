@@ -7,7 +7,7 @@
  * \brief
  *
  */
-
+#include "FreeRTOS.h"
 #include "setup.h"
 #include "graphic/graphicLib.h"
 #include "graphic/graphicSettings.h"
@@ -17,8 +17,6 @@
 
 void increase(tWidget *pWidget) {
 	xClientEntity * akt = getClientRoot();
-
-	char i;
 
 	while (akt != 0) {
 		if (akt->increase == (tPushButtonWidget*) pWidget) {
@@ -57,7 +55,6 @@ void increase(tWidget *pWidget) {
 
 void decrease(tWidget *pWidget) {
 	xClientEntity * akt = getClientRoot();
-	char i;
 	while (akt != 0) {
 		if (akt->decrease == (tPushButtonWidget*) pWidget) {
 			break;

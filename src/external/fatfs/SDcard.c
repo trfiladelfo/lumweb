@@ -60,7 +60,7 @@
 // Initially it is root ("/").
 //
 //*****************************************************************************
-static char g_cCwdBuf[PATH_BUF_SIZE] = "/";
+//ma static char g_cCwdBuf[PATH_BUF_SIZE] = "/";
 
 //*****************************************************************************
 //
@@ -68,8 +68,8 @@ static char g_cCwdBuf[PATH_BUF_SIZE] = "/";
 //
 //*****************************************************************************
 static FATFS g_sFatFs;
-static DIR g_sDirObject;
-static FILINFO g_sFileInfo;
+//ma static DIR g_sDirObject;
+//ma static FILINFO g_sFileInfo;
 
 void disk_timerproc(void);
 /*-----------------------------------------------------------------------*/

@@ -13,6 +13,12 @@
 #include "hw_types.h"
 #include "setup.h"
 #include <string.h>
+#include <stdlib.h>
+
+#include "graphic/graphicLib.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 /// Enables debug messages for config handling
 #define CONFIG_DEBUG 1
@@ -57,7 +63,7 @@ char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
  */
 char* loadFromConfig(char* filePath, char* param) {
 	int i, j;
-	tBoolean beforeEqual, isInComment = false;
+	tBoolean beforeEqual = true, isInComment = false;
 
 	vTaskSuspendAll();
 

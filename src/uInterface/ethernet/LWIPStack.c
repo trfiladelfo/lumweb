@@ -69,6 +69,7 @@
 
 #include "graphic/graphicLib.h"
 #include "graphic/graphicWebClient.h"
+#include "graphic/graphicClientBuilder.h"
 
 #include "setup.h"
 
@@ -88,6 +89,8 @@ static void ethernetif_input(void *pParams);
 static struct pbuf * low_level_input(struct netif *netif);
 static err_t low_level_output(struct netif *netif, struct pbuf *p);
 static err_t low_level_transmit(struct netif *netif, struct pbuf *p);
+
+static struct netif lwip_netif;
 
 //*****************************************************************************
 //
@@ -808,6 +811,7 @@ void lwIPNetworkConfigChange(struct netif *netif, IP_CONFIG * ipCfg) {
 #endif
 
 	// Switch on the current IP Address Aquisition mode.
+	currentIPConfig.IPMode = IPADDR_USE_DHCP;
 	LWIPServiceTaskIPConfigGet(netif, &currentIPConfig);
 
 	switch (currentIPConfig.IPMode) {

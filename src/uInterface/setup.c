@@ -2,12 +2,11 @@
  * File with all configuration Routines
  */
 
-#include "setup.h"
-
 /* Hardware library includes. */
 #include "hw_memmap.h"
 #include "hw_types.h"
 #include "hw_sysctl.h"
+#include "set_pinout.h"
 #include "sysctl.h"
 #include "gpio.h"
 #include "grlib/grlib.h"
@@ -18,6 +17,12 @@
 
 #include "hw_can.h"
 #include "can.h"
+#include "touch.h"
+#include "lmi_fs.h"
+
+#include "setup.h"
+#include "uart/uartstdio.h"
+#include "ethernet/ETHIsr.h"
 
 
 void prvSetupHardware(void) {

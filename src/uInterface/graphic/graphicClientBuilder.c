@@ -116,7 +116,6 @@ void vDrawClientEntity(void) {
 	int offset = (aktPage - 1) * GWC_ROWS_PER_VIEW;
 	xClientEntity *akt = xClientRoot;
 
-	int aktRow = 0;
 	int top = GWC_FIRST_ROW_TOP;
 	int i;
 

@@ -11,6 +11,7 @@
 #include "FreeRTOS.h"
 
 #include "setup.h"
+#include <stdio.h>
 
 #include "hw_types.h"
 #include "grlib/grlib.h"
@@ -236,7 +237,7 @@ void vDrawPanel(void) {
 	//
 	if (xParentContainer) {
 #ifdef DEBUG_GRAPHIC
-		printf("output (0x%X)\n", xRootObject);
+		printf("output (0x%X)\n", (unsigned int) xRootObject);
 #endif
 		xParentContainer->sBase.pChild = xRootObject;
 		WidgetPaint((tWidget*)xParentContainer);
@@ -256,7 +257,7 @@ void vDestroyWidget(tWidget* toDestroy) {
 			toDestroy = NULL;
 		}
 #ifdef DEBUG_GRAPHIC
-		printf("toDestroy 0x%x\n", toDestroy);
+		printf("toDestroy 0x%x\n", (unsigned int)toDestroy);
 #endif
 
 	}

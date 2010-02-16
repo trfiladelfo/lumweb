@@ -424,7 +424,7 @@ static void get_tag_insert(struct http_state *hs) {
 	 * we don't have a handler for. Merely echo back the tags with an error
 	 * marker.
 	 */
-	usnprintf(hs->tag_insert, MAX_TAG_INSERT_LEN + 1,
+	snprintf(hs->tag_insert, MAX_TAG_INSERT_LEN + 1,
 			"<b>***UNKNOWN TAG %s***</b>", hs->tag_name);
 	hs->tag_insert_len = strlen(hs->tag_insert);
 }

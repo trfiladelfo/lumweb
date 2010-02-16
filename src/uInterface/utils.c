@@ -5,7 +5,10 @@
  *      Author: root
  */
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
+#include "FreeRTOS.h"
 #include "lwip/ip_addr.h"
 #include "lwip/netif.h"
 
@@ -16,13 +19,13 @@
 #include "utils.h"
 
 void printaddr(struct ip_addr addr) {
-	printf("%d.%d.%d.%d", ((addr.addr) & 0xFF), ((addr.addr >> 8) & 0xFF),
-			((addr.addr >> 16) & 0xFF), ((addr.addr >> 24) & 0xFF));
+	printf("%d.%d.%d.%d", (unsigned int) ((addr.addr) & 0xFF), (unsigned int) ((addr.addr >> 8) & 0xFF),
+			(unsigned int) ((addr.addr >> 16) & 0xFF), (unsigned int) ((addr.addr >> 24) & 0xFF));
 }
 
 void printip(struct ip_addr *addr) {
-	printf("%d.%d.%d.%d", ((addr->addr) & 0xFF), ((addr->addr >> 8) & 0xFF),
-			((addr->addr >> 16) & 0xFF), ((addr->addr >> 24) & 0xFF));
+	printf("%d.%d.%d.%d", (unsigned int) ((addr->addr) & 0xFF), (unsigned int) ((addr->addr >> 8) & 0xFF),
+			(unsigned int) ((addr->addr >> 16) & 0xFF), (unsigned int) ((addr->addr >> 24) & 0xFF));
 }
 
 void printnetif(struct netif *netif) {
@@ -37,16 +40,11 @@ void printnetif(struct netif *netif) {
 }
 
 struct ip_addr* getAddresFromConfig(char* config) {
-	char ip1, ip2, ip3, ip4, buffer[4][4];
+	char buffer[4][4];
 	int i, j, pos = 0;
 	struct ip_addr *retAddr = NULL;
 
 	char* configLoad = loadFromConfig(IP_CONFIG_FILE, config);
-
-	if (strcmp(configLoad, "localhost") == 0 && strcmp(config, "REMOTE_IP")
-			== 0) {
-		return &(lwip_netif.ip_addr);
-	}
 
 	if (configLoad[0] < '0' && configLoad[0] > '9') {
 		retAddr = NULL;
@@ -90,3 +88,11 @@ char* pcStrdup(char *src) {
 	}
 	return ret;
 }
+
+/*int isspace (char c) {
+
+	if (c != 0x20 && c != 0x09 && c != 0x0a && c != 0x0b && c != 0x0c && c != 0x0d) {
+		return 0;
+	}
+	return c;
+}*/

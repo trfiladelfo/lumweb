@@ -9,6 +9,7 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "setup.h"
 
@@ -16,6 +17,7 @@
 
 #include "graphic/graphicWebClient.h"
 #include "graphic/graphicClientBuilder.h"
+#include "graphic/graphicLib.h"
 
 #include "configuration/configloader.h"
 
@@ -35,7 +37,6 @@ void vLoadPage(char *uri) {
 	struct netconn *conn;
 	struct netbuf *inBuf;
 	char *pageData;
-	tBoolean tagOpen = pdFALSE;
 
 	char buffer[128];
 	char inTag = 0;
@@ -46,8 +47,7 @@ void vLoadPage(char *uri) {
 	vShowBootText("loading new Page ...");
 
 	// status variables
-	u16_t length, bindErr, connErr, writeErr;
-	u16_t port;
+	u16_t length, connErr, writeErr;
 
 	aktPage = 1;
 	// Set the get String
@@ -73,6 +73,7 @@ void vLoadPage(char *uri) {
 		// recieve answer
 		inBuf = netconn_recv(conn);
 		inTag = 0;
+		bufferPos = 0;
 		while (inBuf != NULL) {
 			do {
 				// read data
@@ -127,7 +128,6 @@ void addHTMLToList(char* str, int len) {
 	{
 		char buffer[32];
 		char status = 0, *name, *id, *link;
-		int i, strLen;
 		int value = 0, min = 0, max = 0, decimal = 0, increment = 1;
 
 		getElementType(str, buffer);
@@ -263,13 +263,12 @@ char *getElementType(char * str, char *buff) {
 
 void vSendData(tWidget *pWidget) {
 	struct netconn *conn;
-	struct netbuf *inBuf;
+	struct netbuf *inBuf = NULL;
 	char *pageData;
 	char buffer[256];
 	char valBuffer[100];
 	// status variables
-	u16_t length, bindErr, connErr, writeErr;
-	u16_t port;
+	u16_t length, connErr, writeErr;
 
 	strcpy(buffer, "GET /set.cgi?");
 

@@ -30,6 +30,9 @@
 // Forward declaration of the default fault handlers.
 //
 //*****************************************************************************
+
+#include <stdio.h>
+
 void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
@@ -207,7 +210,7 @@ ResetISR(void)
     //
     //Call the global objets constructors
     //
-    __libc_init_array();
+  //ma  __libc_init_array();
     //
     // Call the application's entry point.
     //

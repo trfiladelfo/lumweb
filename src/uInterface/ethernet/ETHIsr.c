@@ -4,6 +4,8 @@
 //
 //*****************************************************************************
 
+#include <stdio.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -21,6 +23,7 @@
 #include "flash.h"
 
 #include "ETHIsr.h"
+
 
 //*****************************************************************************
 //
@@ -172,7 +175,7 @@ void ETH0IntHandler(void) {
 		// Read and Clear the interrupt.
 		unsigned long phyStatus = EthernetPHYRead(ETHBase[0], PHY_MR17);
 
-		printf("phy: %X\n", phyStatus);
+		printf("phy: %X\n", (unsigned int) phyStatus);
 		switch (phyStatus & ETH_PHY_INT_MASKED) {
 		case ETH_LINK_DOWN:
 			HWREGBITW(&ETHDevice[0], ETH_ERROR) = 0;
@@ -201,7 +204,6 @@ void ETH0IntHandler(void) {
 int ETHServiceTaskInit(const unsigned long ulPort) {
 	unsigned char hwaddr[ETH_HWADDR_LEN];
 	unsigned long ulUser0, ulUser1;
-	int i = 0;
 
 	if (ulPort < MAX_ETH_PORTS) {
 		// Check if peripheral is present
@@ -272,7 +274,6 @@ int ETHServiceTaskInit(const unsigned long ulPort) {
 //*****************************************************************************
 int ETHServiceTaskEnable(unsigned long ulPort) {
 	unsigned long temp;
-	unsigned long phyStatus;
 
 	if (ulPort < MAX_ETH_PORTS) {
 		// Do whatever else is needed to initialize interface.

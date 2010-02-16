@@ -41,10 +41,6 @@ extern unsigned long _ebss;
 
 /*-------- MAIN ---------------------------------------------*/
 int main(void) {
-	/* Variables */
-	IP_CONFIG * ipcfg;
-	char* configLoad;
-
 	// Setup the Hardware
 	prvSetupHardware();
 
@@ -79,24 +75,24 @@ int main(void) {
 
 	/* Real Time Clock Task */
 	printf("Starting RealTimeClock ... ");
-	xTaskCreate( vRealTimeClockTask, TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
+	xTaskCreate( vRealTimeClockTask, (const signed char * const)TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
 	printf("ok\n");
 
 	/* Communication Task */
 	printf("Starting Communication Task ... ");
-	xTaskCreate( vComTask, COM_TASK_NAME, COM_STACK_SIZE, NULL, COM_TASK_PRIORITY, &xComTaskHandle);
+	xTaskCreate( vComTask, (const signed char * const)COM_TASK_NAME, COM_STACK_SIZE, NULL, COM_TASK_PRIORITY, &xComTaskHandle);
 	printf("ok\n");
 
 	/* LWIP Task */
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		printf("Starting LWIP ...\n");
-		xTaskCreate( LWIPServiceTaskInit, LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
+		xTaskCreate( LWIPServiceTaskInit, (const signed char * const)LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
 	}
 
 #ifdef ENABLE_GRAPHIC
 	/* Graphic Task */
 	printf("Starting Graphic Task ... ");
-	xTaskCreate( vGraphicTask, GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
+	xTaskCreate( vGraphicTask, (const signed char * const)GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
 	printf("ok\n");
 #endif
 
@@ -152,31 +148,12 @@ void hard_fault_handler_c(unsigned int * hardfault_args) {
 	printf("LR = %x\n", stacked_lr);
 	printf("PC = %x\n", stacked_pc);
 	printf("PSR = %x\n", stacked_psr);
-	printf("BFAR = %x\n", (*((volatile unsigned long *) (0xE000ED38))));
-	printf("CFSR = %x\n", (*((volatile unsigned long *) (0xE000ED28))));
-	printf("HFSR = %x\n", (*((volatile unsigned long *) (0xE000ED2C))));
-	printf("DFSR = %x\n", (*((volatile unsigned long *) (0xE000ED30))));
-	printf("AFSR = %x\n", (*((volatile unsigned long *) (0xE000ED3C))));
+	printf("BFAR = %x\n", (*((unsigned int *) (0xE000ED38))));
+	printf("CFSR = %x\n", (*((unsigned int *) (0xE000ED28))));
+	printf("HFSR = %x\n", (*((unsigned int *) (0xE000ED2C))));
+	printf("DFSR = %x\n", (*((unsigned int *) (0xE000ED30))));
+	printf("AFSR = %x\n", (*((unsigned int *) (0xE000ED3C))));
 
 	while (1)
 		; // terminate
 }
-
-/*
- * Routine with a pointer to the actual Position of the Heap
- */
-//caddr_t _sbrk(int incr) {
-//	static unsigned char *heap = NULL;
-//	unsigned char *prev_heap;
-
-//  if (heap == NULL) {
-//		heap = (unsigned char *) &__HEAP_START;
-//	}
-//	prev_heap = heap;
-	/* check removed to show basic approach */
-
-//	heap += incr;
-
-//	return (caddr_t) prev_heap;
-//}
-/*-----------------------------------------------------------*/
