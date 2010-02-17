@@ -353,8 +353,9 @@ UARTStdioInit(unsigned long ulPortNum)
 	  //
 	  // Enable the UART interrupt.
 	  //
-	  IntEnable(INT_UART0);
-	  UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
+	  //ma :: readonly ::
+	  //ma IntEnable(INT_UART0);
+	  //ma UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
 
 #ifdef UART_BUFFERED
     //
