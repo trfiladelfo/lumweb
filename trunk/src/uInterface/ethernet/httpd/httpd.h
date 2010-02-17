@@ -40,13 +40,12 @@
  * \author Anziner, Hahn
  * \brief
  *
-*/
+ */
 
 #ifndef __HTTPD_H__
 #define __HTTPD_H__
 
 #include "ethernet/lwipopts.h"
-
 
 #include "ethernet/httpd/cgi/io.h"
 
@@ -84,20 +83,18 @@ void httpd_init(void);
  *
  */
 typedef char *(*tCGIHandler)(int iIndex, int iNumParams, char *pcParam[],
-                             char *pcValue[]);
+		char *pcValue[]);
 
 /*
  * Structure defining the base filename (URL) of a CGI and the associated
  * function which is to be called when that URL is requested.
  */
-typedef struct
-{
-    const char *pcCGIName;
-    tCGIHandler pfnCGIHandler;
+typedef struct {
+	const char *pcCGIName;
+	tCGIHandler pfnCGIHandler;
 } tCGI;
 
 void http_set_cgi_handlers(const tCGI *pCGIs, int iNumHandlers);
-
 
 /* The maximum number of parameters that the CGI handler can be sent. */
 #ifndef MAX_CGI_PARAMETERS
@@ -127,13 +124,14 @@ void http_set_cgi_handlers(const tCGI *pCGIs, int iNumHandlers);
  */
 
 #ifdef  INCLUDE_HTTPD_SSI_PARAMS
-typedef int (*tSSIHandler)(int iIndex, char *pcInsert, int iInsertLen, pSSIParam* params);
+typedef int (*tSSIHandler)(int iIndex, char *pcInsert, int iInsertLen,
+		pSSIParam* params);
 #else
 typedef int (*tSSIHandler)(int iIndex, char *pcInsert, int iInsertLen);
 #endif
 
 void http_set_ssi_handler(tSSIHandler pfnSSIHandler,
-                          const char **ppcTags, int iNumTags);
+		const char* const * ppcTags, int iNumTags);
 
 /* The maximum length of the string comprising the tag name */
 #ifndef MAX_TAG_NAME_LEN

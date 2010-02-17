@@ -14,6 +14,7 @@
 #include "setup.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "graphic/graphicLib.h"
 

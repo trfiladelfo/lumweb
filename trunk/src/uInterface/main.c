@@ -45,9 +45,9 @@ int main(void) {
 	prvSetupHardware();
 
 	// start Logging
-	// UARTprintf("Init log file: Status = %d\n", initLog());
-//	appendToLog("Starting Firmware");
-	//appendToLog("Universelles Interface von Anzinger Martin und Hahn Florian");
+	UARTprintf("Init log file: Status = %d\n", initLog());
+	appendToLog("Starting Firmware");
+	appendToLog("Universelles Interface von Anzinger Martin und Hahn Florian");
 
 	//printf("adresse von _etext: 0x%X\n", &_etext);
 	//printf("adresse von _data:  0x%X\n", &_data);
@@ -67,6 +67,7 @@ int main(void) {
 	xComQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xComMessage));
 	printf("\txHttpdQueue\n");
 	xHttpdQueue = xQueueCreate(HTTPD_QUEUE_SIZE, sizeof(xComMessage));
+	appendToLog("Queues created");
 	//printf("\txGraphQueue\n");
 	//xGraphQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xComMessage));
 
@@ -77,16 +78,19 @@ int main(void) {
 	printf("Starting RealTimeClock ... ");
 	xTaskCreate( vRealTimeClockTask, (const signed char * const)TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
 	printf("ok\n");
+	appendToLog("RealTimeClock started");
 
 	/* Communication Task */
 	printf("Starting Communication Task ... ");
 	xTaskCreate( vComTask, (const signed char * const)COM_TASK_NAME, COM_STACK_SIZE, NULL, COM_TASK_PRIORITY, &xComTaskHandle);
 	printf("ok\n");
+	appendToLog("ComTask started");
 
 	/* LWIP Task */
 	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
 		printf("Starting LWIP ...\n");
 		xTaskCreate( LWIPServiceTaskInit, (const signed char * const)LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
+		appendToLog("IP-Stack started");
 	}
 
 #ifdef ENABLE_GRAPHIC

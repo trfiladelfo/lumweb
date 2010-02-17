@@ -106,10 +106,10 @@ LDSCRIPT=standalone.ld
 LINKER_FLAGS= -Xlinker -o$(NAME).axf -Xlinker -M -Xlinker -Map=rtosdemo.map -T$(LDSCRIPT)
 #-nostartfiles -Xlinker  --no-gc-sections
 DEBUG=-g
-OPTIM=-O3
+OPTIM=-O1
 
 
-CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
+CFLAGS=-I $(SOURCE_DIR) \
 		-I external \
 		-I $(SOURCE_DIR)/ethernet \
 		-I $(LWIP_COMMON_DIR)/src/include \
@@ -121,7 +121,7 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		-I $(LUMINARY_DRIVER_DIR)/driverlib \
 		-I $(LUMINARY_DRIVER_DIR)/inc \
 		-D inline= -mthumb -mcpu=cortex-m3 \
-		$(OPTIM) \
+		$(OPTIM) $(DEBUG) \
 		-ffunction-sections \
 		-Wall \
 		-D sprintf=usprintf -D snprintf=usnprintf \
@@ -133,7 +133,6 @@ CFLAGS=$(DEBUG) -I $(SOURCE_DIR) \
 		
 	
 		# -D GCC_ARMCM3_LM3S102 \
-		-c \
 		 -fdata-sections 
 
 LIBS= $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a $(GRLIB_COMMON_DIR)/gcc/libgr.a  

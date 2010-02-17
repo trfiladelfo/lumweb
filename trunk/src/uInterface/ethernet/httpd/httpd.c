@@ -192,7 +192,7 @@ u16_t hdr_index; /* The index of the hdr string currently being sent. */
 /* SSI insert handler function pointer. */
 tSSIHandler g_pfnSSIHandler = NULL;
 int g_iNumTags = 0;
-const char **g_ppcTags = NULL;
+const char* const* g_ppcTags = NULL;
 
 #define LEN_TAG_LEAD_IN 5
 const char * const g_pcTagLeadIn = "<!--#";
@@ -1565,7 +1565,7 @@ void httpd_init(void) {
 
 #ifdef INCLUDE_HTTPD_SSI
 /*-----------------------------------------------------------------------------------*/
-void http_set_ssi_handler(tSSIHandler pfnSSIHandler, const char **ppcTags,
+void http_set_ssi_handler(tSSIHandler pfnSSIHandler, const char* const* ppcTags,
 		int iNumTags) {
 	DEBUG_PRINT
 		("http_set_ssi_handler\n");
