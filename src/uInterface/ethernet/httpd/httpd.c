@@ -1320,6 +1320,7 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 			uri = &data[4];
 			DEBUG_PRINT
 				("Request:\n%s\n", data);
+
 			if (strncmp(data, "GET ", 4) == 0) {
 				/*
 				 * We have a GET request. Find the end of the URI by looking for the
@@ -1391,6 +1392,10 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 #ifdef INCLUDE_HTTPD_CGI
 					/* First, isolate the base URI (without any parameters) */
 					params = strchr(uri, '?');
+
+					// fh : prints every request uri!
+					printf("HTTPD: get request: %s \n", uri);
+
 					if (params) {
 						*params = '\0';
 						params++;

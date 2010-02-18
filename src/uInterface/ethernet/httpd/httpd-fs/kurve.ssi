@@ -14,7 +14,7 @@
 							<td> <!--#Group label=Startzeit --> </td>
 						</tr>
 						<tr>
-							<td><!--#NumberInputField id=heizkurve label=Heizkurve max=0 min=1 decimal=0 increment=0.1 --></td>
+							<td><!--#FloatInputField id=heizkurve label=Heizkurve max=0 min=1 increment=0.1 --></td>
 						</tr>
 						<tr>
 							<td><!--#SubmitInputField label=Speichern form_id=kurve --> | <!--#Hyperlink label=Menue value=index.ssi --> </td>
