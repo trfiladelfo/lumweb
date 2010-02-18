@@ -39,10 +39,9 @@
 #include "../uart/uartstdio.h"
 
 /* TODO only testvalues */
-int day_hour = 10;
-int day_minute = 30;
-int night_hour = 23;
-int night_minute = 15;
+int day = 750;
+int night = 1155;
+
 int checkbox = 1;
 int heizkurve = 1;
 int norm_temp = 21;
@@ -54,14 +53,10 @@ xComMessage xMessage;
 int sendToMachine(char* id, int value){
 	int rc = 0;
 
-	if (strcmp(id, "day_hour") == 0) {
-		day_hour = xMessage.value;
-	} else if (strcmp(id, "day_minute") == 0) {
-		day_minute = value;
-	} else if (strcmp(id, "night_hour") == 0) {
-		night_hour = value;
-	} else if (strcmp(id, "night_minute") == 0) {
-		night_minute = value;
+	if (strcmp(id, "day") == 0) {
+		day = value;
+	} else if (strcmp(id, "night") == 0) {
+		night = value;
 	} else if (strcmp(id, "heizkurve") == 0) {
 		heizkurve = value;
 	} else if (strcmp(id, "led_ein") == 0) {
@@ -79,14 +74,10 @@ int sendToMachine(char* id, int value){
 
 int getFormMachine(char* id){
 	int value = -999; // error code
-	if (strcmp(id, "day_hour") == 0) {
-		value = day_hour;
-	} else if (strcmp(id, "day_minute") == 0) {
-		value = day_minute;
-	} else if (strcmp(id, "night_hour") == 0) {
-		value = night_hour;
-	} else if (strcmp(id, "night_minute") == 0) {
-		value = night_minute;
+	if (strcmp(id, "day") == 0) {
+		value = day;
+	} else if (strcmp(id, "night") == 0) {
+		value = night;
 	} else if (strcmp(id, "led_ein") == 0) {
 		value = checkbox;
 	} else if (strcmp(id, "norm_temp") == 0) {
