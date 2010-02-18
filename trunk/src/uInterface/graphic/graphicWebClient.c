@@ -131,7 +131,7 @@ void addHTMLToList(char* str, int len) {
 		int value = 0, min = 0, max = 0, decimal = 0, increment = 1;
 
 		getElementType(str, buffer);
-		if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_NUMBERINPUTFIELD]) == 0) {
+		if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_INTEGERINPUTFIELD]) == 0) {
 #ifdef DEBUG_GRAPHIC
 			printf("NumericInputField found\n");
 #endif
