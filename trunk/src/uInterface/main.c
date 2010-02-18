@@ -117,6 +117,7 @@ void vApplicationTickHook(void) {
 void vApplicationStackOverflowHook(xTaskHandle *pxTask,
 		signed portCHAR *pcTaskName) {
 	// Function that is called if there is any StackOverflow
+	printf("Task %s Stackoverflow\n", pcTaskName);
 	for (;;)
 		;
 }

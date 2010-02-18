@@ -34,6 +34,7 @@
  @return other RC    .... see return codes of f_open()
  */
 FRESULT initLog() {
+#ifdef ENABLE_LOG
 	FRESULT rc = FR_NO_FILE;
 	log_file = (FIL*) pvPortMalloc(sizeof(FIL));
 	fs_enable(400000);
@@ -46,10 +47,13 @@ FRESULT initLog() {
 
 		//goto end of file
 		if (rc == FR_OK)
-			f_lseek(log_file, log_file->fsize);
+		f_lseek(log_file, log_file->fsize);
 	}
 
 	return rc;
+#else
+	return -1;
+#endif
 }
 
 /**
@@ -64,6 +68,7 @@ FRESULT initLog() {
 
  */
 FRESULT appendToLog(char *msg) {
+#ifdef ENABLE_LOG
 	FRESULT rc = FR_NO_FILE;
 	unsigned int bw, i = 0;
 	char buf[128], time_buf[30];
@@ -83,11 +88,14 @@ FRESULT appendToLog(char *msg) {
 
 #ifdef DEBUG_LOG
 		if (rc == FR_OK)
-			printf("appendToLog: wrote msg %s", buf);
+		printf("appendToLog: wrote msg %s", buf);
 #endif
 		f_sync(log_file);
 		f_close(log_file);
 	}
 
 	return rc;
+#else
+	return -1;
+#endif
 }
