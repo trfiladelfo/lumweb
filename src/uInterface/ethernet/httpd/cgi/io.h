@@ -78,7 +78,7 @@ extern const char * const g_pcConfigSSITags[];
  * SSI tag indices for each entry in the g_pcSSITags array.
  */
 #define SSI_INDEX_DATEANDTIME  			(0)
-#define SSI_INDEX_NUMBERINPUTFIELD     	(1)
+#define SSI_INDEX_INTEGERINPUTFIELD    	(1)
 #define SSI_INDEX_SUBMITINPUTFIELD     	(2)
 #define SSI_INDEX_SAVEDPARAMS    		(3)
 #define SSI_INDEX_CHECKBOXINPUTFIELD    (4)

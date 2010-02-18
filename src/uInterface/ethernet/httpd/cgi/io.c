@@ -150,7 +150,7 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
  files that it serves. Max size is MAX_TAG_NAME_LEN
 */
 const char * const g_pcConfigSSITags[] = { "DateTime", /// SSI_INDEX_DATEANDTIME
-		"NumberInputField", /// SSI_INDEX_NUMBERINPUTFIELD
+		"IntegerInputField", /// SSI_INDEX_NUMBERINPUTFIELD
 		"SubmitInputField", /// SSI_INDEX_SUBMITINPUTFIELD
 		"SavedParams",		///SSI_INDEX_SAVEDPARAMS
 		"CheckboxInputField", /// SSI_INDEX_CHECKBOXINPUTFIELD
