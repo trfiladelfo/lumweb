@@ -85,6 +85,8 @@ extern const char * const g_pcConfigSSITags[];
 #define SSI_INDEX_HYPERLINK			    (5)
 #define SSI_INDEX_TITEL				    (6)
 #define SSI_INDEX_GROUP				    (7)
+#define SSI_INDEX_TIMEINPUTFIELD	    (8)
+#define SSI_INDEX_FLOATINPUTFIELD	    (9)
 
 #endif
 
@@ -105,6 +107,8 @@ void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_get_titel(char * pcBuf, int iBufLen, pSSIParam *params);
 void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params);
+void io_get_time_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
+void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
 
 int io_get_value_from_comtask(char* id);
 

@@ -150,13 +150,16 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
  files that it serves. Max size is MAX_TAG_NAME_LEN
 */
 const char * const g_pcConfigSSITags[] = { "DateTime", /// SSI_INDEX_DATEANDTIME
-		"IntegerInputField", /// SSI_INDEX_NUMBERINPUTFIELD
+		"IntegerInputField", /// SSI_INDEX_INTEGERINPUTFIELD
 		"SubmitInputField", /// SSI_INDEX_SUBMITINPUTFIELD
 		"SavedParams",		///SSI_INDEX_SAVEDPARAMS
 		"CheckboxInputField", /// SSI_INDEX_CHECKBOXINPUTFIELD
 		"Hyperlink", /// SSI_INDEX_HYPERLINK
 		"Titel", /// SSI_INDEX_TITLE
-		"Group" /// SSI_INDEX_GROUP
+		"Group", /// SSI_INDEX_GROUP
+		"TimeInputField", /// SSI_INDEX_TIMEINPUTFIELD
+		"FloatInputField" /// SSI_INDEX_FLOATINPUTFIELD
+
 };
 
 /**
@@ -195,8 +198,8 @@ int paramValueLen; /// number of params/values set last time - 1
 static char *
 SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	int i;
-	long value = 0, r_value;
-	char *name, save = 0;
+	long value = 0, r_value, decimal_place = 0, hour = 0, minute = 0;
+	char *name, save = 0, error = 0, *str_value = NULL, *str_decimal_place = NULL;
 
 	// TODO MEMORY HANDLING
 	if (paramsSet != NULL && valuesSet != NULL) {
@@ -221,9 +224,12 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 		valuesSet = pvPortMalloc(sizeof(char **) * 10);
 		paramValueLen = -1;
 	}
-	//printf("SetCGIHandler: %d Params\n", iNumParams);
+#ifdef DEBUG_CGI
+	printf("SetCGIHandler: new set.cgi request with %d Params\n", iNumParams);
+#endif
+	//test if set was success full
+	if (iNumParams > 0) {
 
-	if (iNumParams > 0) { //test if set was success full
 		for (i = 0; i < iNumParams; i++) {
 			name = pcParam[i];
 
@@ -237,20 +243,91 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 				xCom_msg.freeItem = pdFALSE;
 
 				xCom_msg.item = name;
-				/* check for checkbox value */
+			/* check for checkbox value */
 				if (strcmp(pcValue[i], "on") == 0) {
-					//printf("SetCGIHandler: Found Checkbox %s\n", name);
+#ifdef DEBUG_CGI
+					printf("SetCGIHandler: Found Checkbox %s\n", name);
+#endif
 					xCom_msg.value = 1;
 					save = 1;
 
-				} else if (CheckDecimalParam((const char*) pcValue[i], &value)
+				} else
+					/* check for float value */
+					if(name[0] == 'f' && name[1] == '_'){
+						 // Found float value
+						str_value = strtok(pcValue[i], ".");
+						str_decimal_place = strtok(NULL, ".");
+
+						if ((CheckDecimalParam((const char*) str_decimal_place, &decimal_place)
+											== pdTRUE) && (CheckDecimalParam((const char*) str_value, &value)
+											== pdTRUE)){
+
+							xCom_msg.value = value * 10 + decimal_place ; // zehntelschritte
+							xCom_msg.item += 2; // remove 'f_'
+							save = 1;
+#ifdef DEBUG_CGI
+							printf("SetCGIHandler: Found VALID float param: %s=%d.%d \n", name+2, value, decimal_place);
+#endif
+						}else{
+#ifdef DEBUG_CGI
+							printf("SetCGIHandler: Found INVALID float param: %s=%s \n", name+2, pcValue[i]);
+#endif
+							save = 0;
+							error = 1;
+						}
+				}else
+					/* check for time value */
+					if(pcParam[i][0] == 't' && pcParam[i][1] == '_'){
+							if (CheckDecimalParam((const char*) pcValue[i], &hour) == pdTRUE){
+#ifdef DEBUG_CGI
+							printf("SetCGIHandler: Found first VALID time param - hour: %s=%d \n", pcParam[i]+2, hour);
+#endif
+								//go to the next param , look for the minutes
+								i++;
+								if (i < iNumParams){
+									if(pcParam[i][0] == 't' && pcParam[i][1] == '_'){
+
+										if (CheckDecimalParam((const char*) pcValue[i] , &minute) == pdTRUE){
+#ifdef DEBUG_CGI
+											printf("SetCGIHandler: Found second VALID time param - minute: %s=%d \n", pcParam[i]+2, minute);
+#endif
+											xCom_msg.item = pcParam[i]+2;
+											xCom_msg.value = hour * 60 + minute;
+											save = 1;
+										}else{
+											printf("SetCGIHandler: Found second INVALID time param: %s=%s \n", pcParam[i]+2, pcValue[i]);
+
+											error = 1;
+										}
+								}else{
+#ifdef DEBUG_CGI
+									printf("SetCGIHandler: Found first INVALID time param: %s=%s \n", pcParam[i]+2, pcValue[i]);
+#endif
+									error = 1;
+								}
+							}
+					}
+				}else
+			/* check for standard integer value */
+					if (CheckDecimalParam((const char*) pcValue[i], &value)
 						== pdTRUE) {
-					//printf("SetCGIHandler: Found param: %s=%d \n", name, value);
+
+#ifdef DEBUG_CGI
+					printf("SetCGIHandler: Found integer param: %s=%d \n", name, value);
+#endif
+
+
 					xCom_msg.value = value;
 					save = 1;
 
-				} else {
-					//printf("SetCGIHandler: WARNING - Param: %s no number value(%s) \n", name, pcValue[i]);
+				}
+
+				/* no valid param found !  -> ERROR */
+				else{
+#ifdef DEBUG_CGI
+					printf("SetCGIHandler: ERROR invalid param %s=%s \n", name, pcValue[i]);
+#endif
+					error = 1;
 				}
 
 				if (save == 1) { // send value to comTask
@@ -266,7 +343,9 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 								!= NULL) {
 							strcpy(*(paramsSet + i), name);
 							strcpy(*(valuesSet + i), pcValue[i]);
-							//printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
+#ifdef DEBUG_CGI
+							printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
+#endif
 						}
 						paramValueLen = i;
 					}
@@ -275,10 +354,8 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 					// gesetzten parameter reuecklesen, zur ueberpruefung ob ok
 					r_value = io_get_value_from_comtask(name);
 
-					if(r_value == value){
-						return "/set_ok.ssi";
-					}else
-						return "/set_nok.htm";
+					if(r_value != value)
+						error = 1;
 				}
 
 			}
@@ -288,8 +365,16 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 		else
 			return "/set_oka.ssi";
 	} else {
-		return "/set_nok.htm";
+		error = 1;
 	}
+
+	if(error == 1)
+		if (FindCGIParameter("ajax", pcParam, iNumParams) == -1)
+			return "/set_ok.ssi";
+		else
+			return "/set_oka.ssi";
+	else
+			return "/set_nok.ssi";
 }
 
 #endif
@@ -326,7 +411,7 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 		get_dateandtime(pcInsert, iInsertLen);
 		break;
 
-	case SSI_INDEX_NUMBERINPUTFIELD:
+	case SSI_INDEX_INTEGERINPUTFIELD:
 		io_get_number_input_field(pcInsert, iInsertLen, params);
 		break;
 
@@ -353,6 +438,15 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 	case SSI_INDEX_GROUP:
 		io_get_group(pcInsert, iInsertLen, params);
 		break;
+
+	case SSI_INDEX_FLOATINPUTFIELD:
+		io_get_float_input_field(pcInsert, iInsertLen, params);
+		break;
+
+	case SSI_INDEX_TIMEINPUTFIELD:
+		io_get_time_input_field(pcInsert, iInsertLen, params);
+		break;
+
 	default:
 		snprintf(pcInsert, iInsertLen, "??");
 		break;
@@ -504,11 +598,6 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 
 		value = io_get_value_from_comtask(id);
 		if (value != -1) {
-			/*if (strcmp (decimal, "0") != 0) {
-				snprintf(strValue, 10, "%d,%d", value / 10, value % 10);
-			} else {
-				snprintf(strValue, 10, "%d", value / 10);
-			}*/
 			snprintf(
 					pcBuf,
 					iBufLen,
@@ -670,6 +759,113 @@ void io_get_titel(char * pcBuf, int iBufLen, pSSIParam *params) {
 	} else {
 		snprintf(pcBuf, iBufLen,
 				"SubmitInputField: ERROR - no param label found ");
+	}
+}
+/**
+ *
+ * creates a time input field
+ *
+ */
+void io_get_time_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
+	int value = 1, hour = 0, minute = 0;
+	char *id = NULL, *label = NULL;
+
+	label = SSIParamGetValue(*(params), "label");
+	id = SSIParamGetValue(*(params), "id");
+
+	SSIParamDeleteAll(params);
+
+	if (id != NULL && label != NULL) {
+		value = io_get_value_from_comtask(id);
+
+		// parse value (in minutes)
+		hour = value / 60;
+		minute = value - (hour*60);
+
+		// TODO Add buttons
+		if (value != -1) {
+			snprintf(
+					pcBuf,
+					iBufLen,
+					"<!-- $ NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" $ -->"
+						"%s <input type=\"text\" class=\"fi\" name=\"t_%s\" value=\"%d\" id=\"%s_1\" />"
+						":<input type=\"text\" class=\"fi\" name=\"t_%s\" value=\"%d\" id=\"%s_2\" />",
+						label, value, id,
+						label, id, hour, id, id, minute, id);
+
+#ifdef SSI_DEBUG
+			printf("io_get_number_input_field: done \n");
+#endif
+		} else {
+#ifdef SSI_DEBUG
+			printf("io_get_number_input_field: queu error \n");
+#endif
+			snprintf(pcBuf, iBufLen,
+					"NumberInputField: ERROR - NO DATA FROM QUEUE");
+		}
+	} else {
+#ifdef SSI_DEBUG
+		printf("io_get_number_input_field: error no id and/or name found\n");
+#endif
+		snprintf(pcBuf, iBufLen,
+				"NumberInputField: ERROR - error no id and/or name found");
+	}
+}
+
+/**
+ *
+ * creates a float input field
+ *
+ */
+void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
+	int value = 1, decimal_place = 0;
+	char *id = NULL, *label = NULL, *max = NULL, *min = NULL, *increment = NULL;
+
+	label = SSIParamGetValue(*(params), "label");
+	id = SSIParamGetValue(*(params), "id");
+	max = SSIParamGetValue(*(params), "max");
+	min = SSIParamGetValue(*(params), "min");
+	increment = SSIParamGetValue(*(params), "increment");
+
+	SSIParamDeleteAll(params);
+
+	if (id != NULL && label != NULL) {
+		if (min == NULL)
+			min = "null";
+		if (max == NULL)
+			max = "null";
+		if (increment == NULL)
+			increment = "null";
+
+		value = io_get_value_from_comtask(id);
+		if (value != -1) {
+			decimal_place = value % 10;
+			value = value / 10;
+
+			snprintf(
+					pcBuf,
+					iBufLen,
+					"<!-- $ NumberFloatField name=\"%s\" value=\"%d.%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
+						"%s <input type=\"text\" class=\"fi\" name=\"f_%s\" value=\"%d.%d\" id=\"%s\" />"
+						"<script>addB('%s',%s,%s,%s,%s);</script>", label, value, decimal_place, id,
+					max, min, increment, label, id, value, decimal_place, id, id, max, min, increment, 1);
+
+#ifdef SSI_DEBUG
+			printf("io_get_number_input_field: done \n");
+#endif
+		} else {
+#ifdef SSI_DEBUG
+			printf("io_get_number_input_field: queu error \n");
+#endif
+			snprintf(pcBuf, iBufLen,
+					"NumberInputField: ERROR - NO DATA FROM QUEUE");
+		}
+	} else {
+#ifdef SSI_DEBUG
+		printf("io_get_number_input_field: error no id and/or name found\n");
+#endif
+		snprintf(pcBuf, iBufLen,
+				"NumberInputField: ERROR - error no id and/or name found");
 	}
 }
 

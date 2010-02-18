@@ -36,6 +36,9 @@ input {
 	border: 1px solid #666666;
 	background-color:#EFEFEF;
 }
+input.fi{
+        width: 30px;
+}
 td {
 	font-size: 12px;
 }
