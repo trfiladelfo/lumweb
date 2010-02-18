@@ -30,6 +30,14 @@ to do:
    * Fehlerbehandlung HTTP (200)
    * Step by Step Anleitung für Erstellung einer einfachen Seite.
    * Fehlerbehandlung Tagparsen in getValueForParam im Grafiktask
+   * Time-, Float- und IntegerInputField
+   * Logo in der Präsentation
+   * Schreiben der Werte auf die SD Karte (comTask)
+   * ParamName overflow
+   
+nice to have:
+   * Cursorposition bei der Eingabe auf dem Touch
+   * Watchdog
 
 done:
 	* Geänderte Parameter zurücklesen und beim Client anzeigen
