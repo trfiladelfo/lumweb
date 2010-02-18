@@ -22,7 +22,7 @@
 //#define DEBUG_GRAPHIC 1
 //#define DEBUG_SSI 1
 //#define DEBUG_LOG 1
-
+#define DEBUG_CGI 1
 
 void prvSetupHardware(void);
 
