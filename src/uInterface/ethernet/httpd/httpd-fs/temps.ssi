@@ -30,9 +30,9 @@
 						</tr>
 					</table>
 				
-					<div id="container-times" class="answer">
-						<div id="last-update">Letzte Aktualisierung <!--#DateTime--></div>
-					</div>
+			<div id="container-temperaturen" class="answer">
+					<div id="last-update">Letzte Aktualisierung <!--#DateTime--></div>
+				</div>
 				</center>	
 			</form>
 		</div>

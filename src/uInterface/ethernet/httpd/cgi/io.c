@@ -861,8 +861,8 @@ void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 					iBufLen,
 					"<!-- $ NumberFloatField name=\"%s\" value=\"%d.%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"f_%s\" value=\"%d.%d\" id=\"%s\" />"
-						"<script>addB('%s',%s,%s,%s,%s);</script>", label, value, decimal_place, id,
-					max, min, increment, label, id, value, decimal_place, id, id, max, min, increment, 1);
+						"<script>addB('%s',%s,%s,%s);</script>", label, value, decimal_place, id,
+					max, min, increment, label, id, value, decimal_place, id, id, max, min, increment);
 
 #if DEBUG_SSI
 			printf("io_get_number_input_field: done \n");

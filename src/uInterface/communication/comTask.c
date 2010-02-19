@@ -45,6 +45,7 @@
 #include "../queueConfig.h"
 #include "../uart/uartstdio.h"
 
+#include "setup.h"
 
 #define PATH_TO_DATA	"data/"
 
