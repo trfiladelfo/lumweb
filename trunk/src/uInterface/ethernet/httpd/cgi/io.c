@@ -186,7 +186,7 @@ void io_init(void) {
 
 #ifdef INCLUDE_HTTPD_CGI
 
-char **paramsSet, **valuesSet;
+char **paramsSet = NULL, **valuesSet = NULL;
 int paramValueLen; /// number of params/values set last time - 1
 
 /**
@@ -201,6 +201,11 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	long value = 0, r_value, decimal_place = 0, hour = 0, minute = 0;
 	char *name, save = 0, error = 0, *str_value = NULL, *str_decimal_place = NULL;
 
+#ifdef DEBUG_CGI
+	printf("SetCGIHandler: new set.cgi request with %d Params\n", iNumParams);
+#endif
+
+	/*
 	// TODO MEMORY HANDLING
 	if (paramsSet != NULL && valuesSet != NULL) {
 		for (i = 0; i <= paramValueLen; i++) {
@@ -208,7 +213,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 			vPortFree(*(paramsSet + i));
 		}
 
-/*		 vPortFree(**(paramsSet));
+/		 vPortFree(**(paramsSet));
 		 #ifdef SSI_DEBUG
 		 printf("io_print_saved_params: freed paramsSet \n");
 		 #endif
@@ -217,16 +222,14 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 		 #ifdef SSI_DEBUG
 		 printf("io_print_saved_params: freed valuesSet \n");
 		 #endif
-*/
+
 	} else {
 		// TODO statische allokkierung dynamisch machen
 		paramsSet = pvPortMalloc(sizeof(char **) * 10);
 		valuesSet = pvPortMalloc(sizeof(char **) * 10);
 		paramValueLen = -1;
 	}
-#ifdef DEBUG_CGI
-	printf("SetCGIHandler: new set.cgi request with %d Params\n", iNumParams);
-#endif
+*/
 	//test if set was success full
 	if (iNumParams > 0) {
 
@@ -252,7 +255,8 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 					save = 1;
 
 				} else
-					/* check for float value */
+
+			/*------ check for float value ----------------------*/
 					if(name[0] == 'f' && name[1] == '_'){
 						 // Found float value
 						str_value = strtok(pcValue[i], ".");
@@ -262,8 +266,10 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 											== pdTRUE) && (CheckDecimalParam((const char*) str_value, &value)
 											== pdTRUE)){
 
+							name += 2; //remove 'f_'
+
 							xCom_msg.value = value * 10 + decimal_place ; // zehntelschritte
-							xCom_msg.item += 2; // remove 'f_'
+							xCom_msg.item = name;
 							save = 1;
 #ifdef DEBUG_CGI
 							printf("SetCGIHandler: Found VALID float param: %s=%d.%d \n", name+2, value, decimal_place);
@@ -276,7 +282,8 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 							error = 1;
 						}
 				}else
-					/* check for time value */
+
+			/*-----  check for time value ----------*/
 					if(pcParam[i][0] == 't' && pcParam[i][1] == '_'){
 							if (CheckDecimalParam((const char*) pcValue[i], &hour) == pdTRUE){
 #ifdef DEBUG_CGI
@@ -291,9 +298,13 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 #ifdef DEBUG_CGI
 											printf("SetCGIHandler: Found second VALID time param - minute: %s=%d \n", pcParam[i]+2, minute);
 #endif
-											xCom_msg.item = pcParam[i]+2;
+											name += 2; //remove t_
+
+											xCom_msg.item = name;
 											xCom_msg.value = hour * 60 + minute;
 											save = 1;
+											hour = 0;
+											minute = 0;
 										}else{
 											printf("SetCGIHandler: Found second INVALID time param: %s=%s \n", pcParam[i]+2, pcValue[i]);
 
@@ -308,7 +319,8 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 							}
 					}
 				}else
-			/* check for standard integer value */
+
+			/*------ check for standard integer value ---------*/
 					if (CheckDecimalParam((const char*) pcValue[i], &value)
 						== pdTRUE) {
 
@@ -322,7 +334,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 
 				}
 
-				/* no valid param found !  -> ERROR */
+			/*---------- no valid param found !  -> ERROR --------*/
 				else{
 #ifdef DEBUG_CGI
 					printf("SetCGIHandler: ERROR invalid param %s=%s \n", name, pcValue[i]);
@@ -335,6 +347,8 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 					xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 
 
+					/* Add params to global fields  for ssi tag SavedParams */
+					/*
 					if (paramsSet != NULL && valuesSet != NULL && i < 10) {
 						*(paramsSet + i) = pvPortMalloc(strlen(name) + 1);
 						*(valuesSet + i) = pvPortMalloc(strlen(pcValue[i]) + 1);
@@ -346,9 +360,9 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 #ifdef DEBUG_CGI
 							printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
 #endif
-						}
-						paramValueLen = i;
-					}
+						} */
+					paramValueLen = i;
+
 
 
 					// gesetzten parameter reuecklesen, zur ueberpruefung ob ok
@@ -658,13 +672,13 @@ void io_print_saved_params(char * pcBuf, int iBufLen) {
 	if (paramValueLen == -1) {
 		snprintf(pcBuf, iBufLen, "Keine Parameter gesetzt");
 	} else {
-		for (i = 0; i <= paramValueLen; i++) {
+	/*	for (i = 0; i <= paramValueLen; i++) {
 #ifdef SSI_DEBUG
 			printf("io_print_saved_params: valueSet=%s, paramSet=%s \n",
 					*(valuesSet + i), *(paramsSet + i));
 #endif
 		}
-
+*/
 		snprintf(pcBuf, iBufLen, "%d Parameter gesetzt", paramValueLen + 1);
 	}
 }
