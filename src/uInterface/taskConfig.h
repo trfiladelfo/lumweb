@@ -25,7 +25,7 @@ xTaskHandle xLwipTaskHandle;
 #define GRAPH_TASK_PRIORITY  (configMAX_PRIORITIES - 2)
 xTaskHandle xGraphTaskHandle;
 
-#define COM_STACK_SIZE		128
+#define COM_STACK_SIZE		128 * 2
 #define COM_TASK_NAME		"com"
 #define COM_TASK_PRIORITY  (configMAX_PRIORITIES - 2)
 xTaskHandle xComTaskHandle;
