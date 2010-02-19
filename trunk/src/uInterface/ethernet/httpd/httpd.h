@@ -140,7 +140,7 @@ void http_set_ssi_handler(tSSIHandler pfnSSIHandler,
 
 /* The maximum length of string that can be returned to replace any given tag */
 #ifndef MAX_TAG_INSERT_LEN
-#define MAX_TAG_INSERT_LEN 256*2
+#define MAX_TAG_INSERT_LEN 384
 #endif
 
 #endif

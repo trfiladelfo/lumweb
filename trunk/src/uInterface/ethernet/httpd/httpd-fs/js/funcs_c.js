@@ -1,49 +1,34 @@
 jx={getHTTPObject:function(){var A=false;if(typeof ActiveXObject!="undefined"){try{A=new ActiveXObject("Msxml2.XMLHTTP")}catch(C){try{A=new ActiveXObject("Microsoft.XMLHTTP")}catch(B){A=false}}}else{if(window.XMLHttpRequest){try{A=new XMLHttpRequest()}catch(C){A=false}}}return A},load:function(url,callback,format){var http=this.init();if(!http||!url){return }if(http.overrideMimeType){http.overrideMimeType("text/xml")}if(!format){var format="text"}format=format.toLowerCase();var now="uid="+new Date().getTime();url+=(url.indexOf("?")+1)?"&":"?";url+=now;http.open("GET",url,true);http.onreadystatechange=function(){if(http.readyState==4){if(http.status==200){var result="";if(http.responseText){result=http.responseText}if(format.charAt(0)=="j"){result=result.replace(/[\n\r]/g,"");result=eval("("+result+")")}if(callback){callback(result)}}else{if(error){error(http.status)}}}};http.send(null)},init:function(){return this.getHTTPObject()}}
 
-function valueOut (elementValue, value, decimal) {
-	/*if (decimal != 0) {
-		elementValue.value = parseFloat(value) / 10;
-	} else { 
-		elementValue.value = parseInt(value);
-	}*/
-
-	elementValue.value = value;
-}
-
-function inc(id, maxVal, minValm, increment, decimal){
+function inc(id, maxVal, minValm, increment){
 	var element = document.getElementById(id);
-	var n_value = parseInt(element.value) + increment;
+	var n_value = parseFloat(element.value) + parseFloat(increment);
 	
-	valueOut (element, n_value, decimal); 
-	if(maxVal != -1 && minVal != -1){
-		if(n_value > maxVal)
-			valueOut (element, minVal, decimal);
-	}
+
+	if(maxVal != null)
+		if(n_value <= maxVal)
+			element.value = n_value;
+	
 }
 
-function dec(id, maxVal, minVal, increment, decimal){
+function dec(id, maxVal, minVal, increment){
 	var element = document.getElementById(id);
-	var n_value = parseInt(element.value) - increment;
+	var n_value = parseFloat(element.value) - parseFloat(increment);
 	
-	valueOut (element, n_value, decimal); 
-	if(maxVal != -1 && minVal != -1){
-		if(n_value < minVal)
-			valueOut (element, maxVal, decimal);
-	}		
+
+	if(minVal != null)
+		if(n_value >= minVal)
+			element.value = n_value;
 }
 
-function addB(id, maxParam, minParam, incrementParam, decimal){
+function addB(id, maxParam, minParam, incrementParam){
 	
 	var maxVal = parseInt (maxParam);
 	var minVal = parseInt (minParam);
-	var increment =  parseInt (incrementParam);
-	/*if (decimal == 0) {
-		maxVal /= 10;
-		minVal /= 10;
-		increment /= 10;
-	}*/
-	document.write("<input type=\"button\" value=\"+\" onclick=\"inc('"+id+"',"+maxVal+","+minVal+", "+increment+", "+decimal+");\" />"+
-		       "<input type=\"button\" value=\"-\" onclick=\"dec('"+id+"',"+maxVal+","+minVal+", "+increment+", "+decimal+");\" />");
+	var increment =  parseFloat (incrementParam);
+
+	document.write("<input type=\"button\" value=\"+\" onclick=\"inc('"+id+"',"+maxVal+","+minVal+", "+increment+");\" />"+
+		       "<input type=\"button\" value=\"-\" onclick=\"dec('"+id+"',"+maxVal+","+minVal+", "+increment+");\" />");
 
 }
 
