@@ -201,7 +201,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 	long value = 0, r_value, decimal_place = 0, hour = 0, minute = 0;
 	char *name, save = 0, error = 0, *str_value = NULL, *str_decimal_place = NULL;
 
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 	printf("SetCGIHandler: new set.cgi request with %d Params\n", iNumParams);
 #endif
 
@@ -214,12 +214,12 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 		}
 
 /		 vPortFree(**(paramsSet));
-		 #ifdef SSI_DEBUG
+		 #if DEBUG_SSI
 		 printf("io_print_saved_params: freed paramsSet \n");
 		 #endif
 
 		 vPortFree(**(valuesSet));
-		 #ifdef SSI_DEBUG
+		 #if DEBUG_SSI
 		 printf("io_print_saved_params: freed valuesSet \n");
 		 #endif
 
@@ -248,7 +248,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 				xCom_msg.item = name;
 			/* check for checkbox value */
 				if (strcmp(pcValue[i], "on") == 0) {
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 					printf("SetCGIHandler: Found Checkbox %s\n", name);
 #endif
 					xCom_msg.value = 1;
@@ -271,11 +271,11 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 							xCom_msg.value = value * 10 + decimal_place ; // zehntelschritte
 							xCom_msg.item = name;
 							save = 1;
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 							printf("SetCGIHandler: Found VALID float param: %s=%d.%d \n", name+2, value, decimal_place);
 #endif
 						}else{
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 							printf("SetCGIHandler: Found INVALID float param: %s=%s \n", name+2, pcValue[i]);
 #endif
 							save = 0;
@@ -286,7 +286,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 			/*-----  check for time value ----------*/
 					if(pcParam[i][0] == 't' && pcParam[i][1] == '_'){
 							if (CheckDecimalParam((const char*) pcValue[i], &hour) == pdTRUE){
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 							printf("SetCGIHandler: Found first VALID time param - hour: %s=%d \n", pcParam[i]+2, hour);
 #endif
 								//go to the next param , look for the minutes
@@ -295,7 +295,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 									if(pcParam[i][0] == 't' && pcParam[i][1] == '_'){
 
 										if (CheckDecimalParam((const char*) pcValue[i] , &minute) == pdTRUE){
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 											printf("SetCGIHandler: Found second VALID time param - minute: %s=%d \n", pcParam[i]+2, minute);
 #endif
 											name += 2; //remove t_
@@ -311,7 +311,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 											error = 1;
 										}
 								}else{
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 									printf("SetCGIHandler: Found first INVALID time param: %s=%s \n", pcParam[i]+2, pcValue[i]);
 #endif
 									error = 1;
@@ -324,7 +324,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 					if (CheckDecimalParam((const char*) pcValue[i], &value)
 						== pdTRUE) {
 
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 					printf("SetCGIHandler: Found integer param: %s=%d \n", name, value);
 #endif
 
@@ -336,7 +336,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 
 			/*---------- no valid param found !  -> ERROR --------*/
 				else{
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 					printf("SetCGIHandler: ERROR invalid param %s=%s \n", name, pcValue[i]);
 #endif
 					error = 1;
@@ -357,7 +357,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 								!= NULL) {
 							strcpy(*(paramsSet + i), name);
 							strcpy(*(valuesSet + i), pcValue[i]);
-#ifdef DEBUG_CGI
+#if DEBUG_CGI
 							printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
 #endif
 						} */
@@ -414,7 +414,7 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 	pSSIParam *params = NULL;
 #endif
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 	printf("SSI HANDLER \n");
 #endif
 	//
@@ -554,7 +554,7 @@ char* strtrim(char *pszStr) {
  */
 int io_get_value_from_comtask(char* id) {
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 	printf("io_get_value_from_comtask: getting values \n");
 #endif
 	xCom_msg.cmd = GET;
@@ -565,16 +565,16 @@ int io_get_value_from_comtask(char* id) {
 
 	xCom_msg.item = id;
 	xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 	printf("io_get_value_from_comtask: sending req to com task \n");
 #endif
 	vTaskSuspend(xLwipTaskHandle);
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 	printf("io_get_value_from_comtask: suspend lwipTask \n");
 #endif
 
 	if (xQueueReceive(xHttpdQueue, &xCom_msg, ( portTickType ) 10 ) == pdTRUE) {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 		printf("io_get_value_from_comtask: got values %s=%d \n", id,
 				xCom_msg.value);
 #endif
@@ -620,18 +620,18 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 						"<script>addB('%s',%s,%s,%s,%s);</script>", label, value, id,
 					max, min, decimal, increment, label, id, value, id, id, max, min, increment, decimal);
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_get_number_input_field: done \n");
 #endif
 		} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_get_number_input_field: queu error \n");
 #endif
 			snprintf(pcBuf, iBufLen,
 					"NumberInputField: ERROR - NO DATA FROM QUEUE");
 		}
 	} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 		printf("io_get_number_input_field: error no id and/or name found\n");
 #endif
 		snprintf(pcBuf, iBufLen,
@@ -673,7 +673,7 @@ void io_print_saved_params(char * pcBuf, int iBufLen) {
 		snprintf(pcBuf, iBufLen, "Keine Parameter gesetzt");
 	} else {
 	/*	for (i = 0; i <= paramValueLen; i++) {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_print_saved_params: valueSet=%s, paramSet=%s \n",
 					*(valuesSet + i), *(paramsSet + i));
 #endif
@@ -706,18 +706,18 @@ void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 					"<!-- $ CheckboxInputField name=\"%s\" id=\"%s\" value=\"%d\" $ --> %s <input type=\"checkbox\" class=\"fi\" name=\"%s\" id=\"%s\" %s />",
 					label, id, ((value != 0) ? 1 : 0), label, id, id, ((value
 							!= 0) ? "checked=\"checked\"" : ""));
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_get_checkbox_input_field: done \n");
 #endif
 		} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_get_checkbox_input_field: queu error \n");
 #endif
 			snprintf(pcBuf, iBufLen,
 					"CheckboxInputField: ERROR - NO DATA FROM QUEUE");
 		}
 	} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 		printf("io_get_checkbox_input_field: error no id and/or name found\n");
 #endif
 		snprintf(pcBuf, iBufLen,
@@ -744,11 +744,11 @@ void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params) {
 				iBufLen,
 				"<!-- $ Hyperlink name=\"%s\" value=\"%s\" $ --> <a href=\"%s\">%s</a>",
 				label, value, value, label);
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 		printf("io_get_hyperlink: done \n");
 #endif
 	} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 		printf("io_get_hyperlink: error no id and/or value found\n");
 #endif
 		snprintf(pcBuf, iBufLen,
@@ -807,18 +807,18 @@ void io_get_time_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 						label, value, id,
 						label, id, hour, id, id, minute, id);
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_get_number_input_field: done \n");
 #endif
 		} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_get_number_input_field: queu error \n");
 #endif
 			snprintf(pcBuf, iBufLen,
 					"NumberInputField: ERROR - NO DATA FROM QUEUE");
 		}
 	} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 		printf("io_get_number_input_field: error no id and/or name found\n");
 #endif
 		snprintf(pcBuf, iBufLen,
@@ -864,18 +864,18 @@ void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 						"<script>addB('%s',%s,%s,%s,%s);</script>", label, value, decimal_place, id,
 					max, min, increment, label, id, value, decimal_place, id, id, max, min, increment, 1);
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_get_number_input_field: done \n");
 #endif
 		} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 			printf("io_get_number_input_field: queu error \n");
 #endif
 			snprintf(pcBuf, iBufLen,
 					"NumberInputField: ERROR - NO DATA FROM QUEUE");
 		}
 	} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 		printf("io_get_number_input_field: error no id and/or name found\n");
 #endif
 		snprintf(pcBuf, iBufLen,
@@ -915,7 +915,7 @@ int SSIParamAdd(pSSIParam *root, char *nameValue) {
 	char *value;
 	pSSIParam nParam, tmp = *(root);
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 	printf("SSIParamAdd: %s \n", nameValue);
 #endif
 
@@ -935,7 +935,7 @@ int SSIParamAdd(pSSIParam *root, char *nameValue) {
 		nParam->name = strtrim(nParam->name);
 		nParam->value = strtrim(nParam->value);
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI
 		printf("Werte getrimmt\n");
 #endif
 
@@ -943,19 +943,19 @@ int SSIParamAdd(pSSIParam *root, char *nameValue) {
 
 			nParam->next = tmp;
 			*(root) = nParam;
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 			printf("SSIParamAdd: added element name: '%s' value: '%s' \n",
 					nParam->name, nParam->value);
 #endif
 		} else {
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 			printf("SSIParamAdd: didnt insert element, name empty\n");
 #endif
 		}
 
 	} else {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 		printf(" ... fail\n");
 #endif
 		if (nParam->name != NULL) {
@@ -983,7 +983,7 @@ pSSIParam SSIParamGet(pSSIParam root, char *name) {
 	pSSIParam ret = NULL;
 
 	while (root != NULL) {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 		printf("SSIParamGet: element name: '%s' \n", root->name);
 #endif
 		if (strcmp(root->name, name) == 0)
@@ -1009,7 +1009,7 @@ char* SSIParamGetValue(pSSIParam root, char *name) {
 	p = SSIParamGet(root, name);
 	if (p != NULL) {
 		value = p->value;
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 		printf("SSIParamGetValue: found value '%s' for %s \n", value, name);
 #endif
 	}
@@ -1026,27 +1026,27 @@ void SSIParamDeleteAll(pSSIParam *root) {
 	pSSIParam p = (*root), del = NULL;
 
 	while (p != NULL) {
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 		printf("SSIParamDeleteAll: delete element : %s \n", p->name);
 #endif
 		del = p;
 		p = p->next;
 		vPortFree(del->name);
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 		printf("SSIParamDeleteAll: freed name \n");
 #endif
 
 		vPortFree(del->value);
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 		printf("SSIParamDeleteAll: freed value \n");
 #endif
 
 		vPortFree(del);
 	}
 
-#ifdef SSI_DEBUG
+#if DEBUG_SSI_PARAMS
 	printf("SSIParamDeleteAll: deleted all elements \n");
 #endif
 }
