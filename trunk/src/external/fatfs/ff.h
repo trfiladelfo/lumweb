@@ -60,7 +60,7 @@
 /  data transfer. This reduces memory consumption 512 bytes each file object. */
 
 
-#define	_USE_STRFUNC	0
+#define	_USE_STRFUNC	1
 /* To enable string functions, set _USE_STRFUNC to 1 or 2. */
 
 
