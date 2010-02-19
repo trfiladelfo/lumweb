@@ -15,15 +15,26 @@
 //
 //*****************************************************************************
 
-#include "FreeRTOS.h"
-#include "lmi_fs.h"
-#include "hw_types.h"
-
+/* std lib includes */
 #include <string.h>
 #include <stdio.h>
 
+/* FreeRTOS includes. */
+#include "FreeRTOS.h"
+#include "task.h"
+
+/* FatFs includes */
+#include "lmi_fs.h"
+#include "hw_types.h"
+
+
 #include "realtime.h"
 #include "log/logging.h"
+
+#include "setup.h"
+
+char buf[128], time_buf[30];
+
 
 /**
  Opens the log file (path defined as LOG_FILE_PATH) and
@@ -34,13 +45,16 @@
  @return other RC    .... see return codes of f_open()
  */
 FRESULT initLog() {
-#ifdef ENABLE_LOG
+#if ENABLE_LOG
 	FRESULT rc = FR_NO_FILE;
 	log_file = (FIL*) pvPortMalloc(sizeof(FIL));
+
+	vTaskSuspendAll();
+
 	fs_enable(400000);
 
 	if (log_file != NULL) {
-#ifdef DEBUG_LOG
+#if DEBUG_LOG
 		printf("Opening file, memory OK \n");
 #endif
 		rc = f_open(log_file, LOG_FILE_PATH, FA_WRITE);
@@ -49,6 +63,8 @@ FRESULT initLog() {
 		if (rc == FR_OK)
 		f_lseek(log_file, log_file->fsize);
 	}
+
+	xTaskResumeAll();
 
 	return rc;
 #else
@@ -68,31 +84,33 @@ FRESULT initLog() {
 
  */
 FRESULT appendToLog(char *msg) {
-#ifdef ENABLE_LOG
+#if ENABLE_LOG
 	FRESULT rc = FR_NO_FILE;
 	unsigned int bw, i = 0;
-	char buf[128], time_buf[30];
+
+	buf[0] = 0;
+	time_buf[0] = 0;
 
 	get_dateandtime(time_buf, sizeof(time_buf));
 	i = strlen(time_buf);
 	time_buf[i-1] = 0;
 
-	rc = f_open(log_file, LOG_FILE_PATH, FA_WRITE);
+	// suspend all other tasks
+	vTaskSuspendAll();
 
-	//goto end of file
-	if (rc == FR_OK) {
-		f_lseek(log_file, log_file->fsize);
 
-		snprintf(buf, 127, "%s : %s\n", time_buf, msg);
-		rc = f_write(log_file, buf, strlen(buf), &bw);
+	snprintf(buf, 127, "%s : %s\n", time_buf, msg);
+	rc = f_write(log_file, buf, strlen(buf), &bw);
 
-#ifdef DEBUG_LOG
-		if (rc == FR_OK)
-		printf("appendToLog: wrote msg %s", buf);
+	if (rc == FR_OK){
+#if DEBUG_LOG
+			printf("appendToLog: wrote msg %s", buf);
 #endif
 		f_sync(log_file);
-		f_close(log_file);
 	}
+
+	// resumes all tasks
+	xTaskResumeAll();
 
 	return rc;
 #else
