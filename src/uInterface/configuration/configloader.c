@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "graphic/graphicLib.h"
+#include "graphic/gui/dislpayBasics.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
