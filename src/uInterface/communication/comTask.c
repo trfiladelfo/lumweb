@@ -17,11 +17,12 @@
  *
  */
 
+/* std lib includes */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-/* queue includes. */
+/* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "task.h"
@@ -66,7 +67,9 @@ int sendToMachine(char* id, int value){
 	strcat(path_buf, PATH_TO_DATA);
 	strncat(path_buf, id, 8);
 
+#if DEBUG_COM
 	printf("SendToMachine: opening file: %s \n", path_buf);
+#endif
 
 	rc = f_open(&save_file, path_buf, FA_CREATE_NEW);
 
@@ -76,12 +79,17 @@ int sendToMachine(char* id, int value){
 	if(rc == FR_OK){
 		sprintf(buf, "%d", value);
 		rc = f_write(&save_file, &buf, strlen(buf), &bw);
-		printf("SendToMachine: rc: %d - wrote '%s' to file\n",rc, buf);
 		f_sync(&save_file);
 		f_close(&save_file);
-	}else
-		printf("SendToMachine: Error opening file, rc=%d\n", rc);
 
+#if DEBUG_COM
+		printf("SendToMachine: rc: %d - wrote '%s' to file\n",rc, buf);
+#endif
+	}else{
+#if DEBUG_COM
+		printf("SendToMachine: Error opening file, rc=%d\n", rc);
+#endif
+	}
 	path_buf[0] = 0;
 	buf[0] = 0;
 
@@ -119,16 +127,24 @@ int getFormMachine(char* id){
 	strcat(path_buf, PATH_TO_DATA);
 	strncat(path_buf, id, 8);
 
+#if DEBUG_COM
 	printf("getFormMachine: opening file: '%s' \n", path_buf);
+#endif
+
 	rc = f_open(&save_file, path_buf, FA_READ);
 
 	if(rc == FR_OK){
 		f_gets(&buf, 32, &save_file);
 		value = atoi(buf);
-		printf("getFormMachine: rc: %d - read '%d' from file\n",rc, value);
 		f_close(&save_file);
-	}else
+#if DEBUG_COM
+		printf("getFormMachine: rc: %d - read '%d' from file\n",rc, value);
+#endif
+	}else{
+#if DEBUG_COM
 		printf("getFormMachine: Error opening file, rc=%d\n", rc);
+#endif
+	}
 
 	path_buf[0] = 0;
 	buf[0] = 0;
@@ -146,7 +162,9 @@ void vComTask(void *pvParameters) {
 		if (xQueueReceive( xComQueue, &xMessage, ( portTickType ) 100 )
 				== pdTRUE) {
 
-			//printf("ComTask: Got Item from Queue \n");
+#if DEBUG_COM
+			printf("ComTask: Got Item from Queue \n");
+#endif
 
 			xMessage.errorDesc = NULL;
 
@@ -158,9 +176,10 @@ void vComTask(void *pvParameters) {
 				if(xMessage.value == -999)
 					sprintf(xMessage.errorDesc, "\"ERROR: %s\"", xMessage.item);
 
-
-				//printf("COMTASK: Sende wert zurueck (%s, %d)\n", xMessage.item,
-				//		xMessage.value);
+#if DEBUG_COM
+				printf("COMTASK: Sende wert zurueck (%s, %d)\n", xMessage.item,
+						xMessage.value);
+#endif
 				xQueueSend(xHttpdQueue, &xMessage, (portTickType) 0);
 				vTaskResume(xMessage.taskToResume);
 
@@ -169,8 +188,10 @@ void vComTask(void *pvParameters) {
 				if(sendToMachine(xMessage.item, xMessage.value) == -1)
 					sprintf(buffer, "FAIL: %s", xMessage.item);
 
-				//printf("COMTASK: Daten gespeichert (%s = %d)\n", xMessage.item,
-				//		xMessage.value);
+#if DEBUG_COM
+				printf("COMTASK: Daten gespeichert (%s = %d)\n", xMessage.item,
+						xMessage.value);
+#endif
 
 				if (xMessage.freeItem == pdTRUE) {
 					vPortFree(xMessage.item);

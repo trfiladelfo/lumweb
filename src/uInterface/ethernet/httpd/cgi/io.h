@@ -50,12 +50,6 @@ extern "C"
 
 #ifdef INCLUDE_HTTPD_SSI
 
-/// define for SSI debug messages
-#ifdef DEBUG_SSI
-	#define SSI_DEBUG 1
-#else
-	#undef SSI_DEBUG
-#endif
 
 
 /**

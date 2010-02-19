@@ -97,6 +97,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "setup.h" // custom debug defines
 
 #ifdef INCLUDE_HTTPD_DEBUG
 #define DEBUG_PRINT printf
@@ -894,7 +895,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 					hs->parsed++;
 
 				//	printf("SWITCH : TAG_FOUND: found space, next char: %c\n", *(hs->parsed));
-#ifdef INCLUDE_HTTPD_SSI_PARAMS
+#if INCLUDE_HTTPD_SSI_PARAMS
 					if (*(hs->parsed) != g_pcTagLeadOut[0] && *(hs->parsed) != ' ')
 						hs->tag_state = TAG_PARAM;
 #endif
@@ -941,7 +942,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 
 				/* we are looking for parameters */
 
-#ifdef INCLUDE_HTTPD_SSI_PARAMS
+#if INCLUDE_HTTPD_SSI_PARAMS
 			case TAG_PARAM:
 				/* Move on to the next character in the buffer */
 				/* Have we found the end of the tag name? This is signalled by
@@ -957,9 +958,9 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 					} else {
 
 						param_name[i] = '\0';
-
-						//printf("SSI param: %s\n", param_name);
-
+#if DEBUG_SSI_PARAMS
+						printf("SSI param: %s\n", param_name);
+#endif
 						if (strlen(param_name) > 0) {
 							SSIParamAdd(&(hs->ssi_params), param_name);
 						}
@@ -979,8 +980,9 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 					if (*hs->parsed != 0) {
 						c = *hs->parsed;
 						if (c == ' ') {
-							//printf("Add from space SSI param : %s\n",
-							//		param_name);
+#if DEBUG_SSI_PARAMS
+							printf("Add from space SSI param : %s\n", param_name);
+#endif
 							param_name[i] = '\0';
 							if (strlen(param_name) > 0) {
 								SSIParamAdd(&(hs->ssi_params), param_name);
