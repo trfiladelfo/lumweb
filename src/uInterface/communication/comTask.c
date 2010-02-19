@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 /* queue includes. */
 #include "FreeRTOS.h"
@@ -32,67 +33,62 @@
 #include "hw_can.h"
 #include "can.h"
 
+/* FatFs includes */
+#include "fatfs/ff.h"
+#include "lmi_fs.h"
+
+
 /* Include Queue staff */
 #include "comTask.h"
 #include "../taskConfig.h"
 #include "../queueConfig.h"
 #include "../uart/uartstdio.h"
 
-/* TODO only testvalues */
-int day = 750;
-int night = 1155;
 
-int checkbox = 1;
-int heizkurve = 1;
-int norm_temp = 21;
-int abs_temp = 17;
-
+#define PATH_TO_DATA	"data/"
 
 xComMessage xMessage;
 
+char path_buf[32], buf[32];
+FIL save_file;
+
+/* Testvalues are read from sd card ! */
+
 int sendToMachine(char* id, int value){
+	unsigned int bw;
 	int rc = 0;
 
-	if (strcmp(id, "day") == 0) {
-		day = value;
-	} else if (strcmp(id, "night") == 0) {
-		night = value;
-	} else if (strcmp(id, "heizkurve") == 0) {
-		heizkurve = value;
-	} else if (strcmp(id, "led_ein") == 0) {
-		checkbox = value;
-	} else if (strcmp(id, "norm_temp") == 0) {
-		norm_temp = value;
-	} else if (strcmp(id, "abs_temp") == 0) {
-		abs_temp = value;
-	} else {
-		rc = -1;
-	}
+	// suspend all other tasks
+	vTaskSuspendAll();
 
-	return rc;
-}
+	fs_enable(400000);
 
-int getFormMachine(char* id){
-	int value = -999; // error code
-	if (strcmp(id, "day") == 0) {
-		value = day;
-	} else if (strcmp(id, "night") == 0) {
-		value = night;
-	} else if (strcmp(id, "led_ein") == 0) {
-		value = checkbox;
-	} else if (strcmp(id, "norm_temp") == 0) {
-		value = norm_temp;
-	} else if (strcmp(id, "abs_temp") == 0) {
-		value = abs_temp;
-	}else if (strcmp(id, "heizkurve") == 0) {
-		value = heizkurve;
-	}
+	strcat(path_buf, PATH_TO_DATA);
+	strncat(path_buf, id, 8);
 
-	return value;
-}
+	printf("SendToMachine: opening file: %s \n", path_buf);
 
-void vComTask(void *pvParameters) {
-	char buffer[100];
+	rc = f_open(&save_file, path_buf, FA_CREATE_NEW);
+
+	if(rc = FR_EXIST)
+		rc = f_open(&save_file, path_buf, FA_WRITE);
+
+	if(rc == FR_OK){
+		sprintf(buf, "%d", value);
+		rc = f_write(&save_file, &buf, strlen(buf), &bw);
+		printf("SendToMachine: rc: %d - wrote '%s' to file\n",rc, buf);
+		f_sync(&save_file);
+		f_close(&save_file);
+	}else
+		printf("SendToMachine: Error opening file, rc=%d\n", rc);
+
+	path_buf[0] = 0;
+	buf[0] = 0;
+
+	// resumes all tasks
+	xTaskResumeAll();
+
+/* CAN Test Stuff
 	char ucBufferOut[8];
 	tCANMsgObject sMsgObjectTx;
 
@@ -106,7 +102,45 @@ void vComTask(void *pvParameters) {
 	sMsgObjectTx.ulMsgLen = 8;
 	sMsgObjectTx.pucMsgData = (unsigned char*) ucBufferOut;
 	CANMessageSet(CAN0_BASE, 2, &sMsgObjectTx, MSG_OBJ_TYPE_TX);
+*/
 
+	return rc;
+}
+
+int getFormMachine(char* id){
+	int value = -999; // error code
+	int rc;
+
+	// suspend all other tasks
+	vTaskSuspendAll();
+
+	fs_enable(400000);
+
+	strcat(path_buf, PATH_TO_DATA);
+	strncat(path_buf, id, 8);
+
+	printf("getFormMachine: opening file: '%s' \n", path_buf);
+	rc = f_open(&save_file, path_buf, FA_READ);
+
+	if(rc == FR_OK){
+		f_gets(&buf, 32, &save_file);
+		value = atoi(buf);
+		printf("getFormMachine: rc: %d - read '%d' from file\n",rc, value);
+		f_close(&save_file);
+	}else
+		printf("getFormMachine: Error opening file, rc=%d\n", rc);
+
+	path_buf[0] = 0;
+	buf[0] = 0;
+
+	// resumes all tasks
+	xTaskResumeAll();
+
+	return value;
+}
+
+void vComTask(void *pvParameters) {
+	char buffer[100];
 	for (;;) {
 		/* Wait for a message to arrive */
 		if (xQueueReceive( xComQueue, &xMessage, ( portTickType ) 100 )
@@ -144,6 +178,5 @@ void vComTask(void *pvParameters) {
 				vTaskResume(xMessage.taskToResume);
 			}
 		}
-		// send can bus message */
 	}
 }
