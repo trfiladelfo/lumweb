@@ -67,9 +67,8 @@
 
 #include "configuration/configloader.h"
 
-#include "graphic/graphicLib.h"
-#include "graphic/graphicWebClient.h"
-#include "graphic/graphicClientBuilder.h"
+#include "graphic/gui/dislpayBasics.h"
+#include "graphic/gui/displayDraw.h"
 
 #include "setup.h"
 
@@ -620,11 +619,6 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	}
 
 	printnetif(&lwip_netif);
-
-	remoteIP = getAddresFromConfig("REMOTE_IP");
-
-	printf("Remote IP: ");
-	printip(remoteIP);
 	printf("\n");
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_SERVER");
@@ -648,7 +642,6 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	if (strcmp(configLoad, "true") == 0) {
 		vShowBootText("loading menu ...");
 		vLoadMenu();
-
 	} else {
 		vShowBootText("ready for requests ...");
 	}
@@ -668,7 +661,6 @@ void LWIPServiceTaskInit(void *pvParameters) {
 				if (strcmp(configLoad, "true") == 0) {
 					vShowBootText("loading menu ...");
 					vLoadMenu();
-
 				} else {
 					vShowBootText("ready for requests ...");
 				}

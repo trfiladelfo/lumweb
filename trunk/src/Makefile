@@ -86,10 +86,11 @@ SOURCE=	syscall.c \
 		$(LUMINARY_DRIVER_DIR)/driverlib/ustdlib.c \
 		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
 		$(GRAPHIC_DIR)/graphicTask.c \
-		$(GRAPHIC_DIR)/graphicLib.c \
-		$(GRAPHIC_DIR)/graphicWebClient.c \
-		$(GRAPHIC_DIR)/graphicClientBuilder.c \
-		$(GRAPHIC_DIR)/touchActions.c \
+		$(GRAPHIC_DIR)/gui/touchActions.c \
+		$(GRAPHIC_DIR)/gui/displayBasics.c \
+		$(GRAPHIC_DIR)/gui/displayDraw.c \
+		$(GRAPHIC_DIR)/httpc/webClient.c \
+		$(GRAPHIC_DIR)/httpc/tags.c \
       	$(SOURCE_DIR)/log/logging.c
 
 SCRIPT_DIR=lm3s_scripts

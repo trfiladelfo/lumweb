@@ -35,7 +35,9 @@
  *
 */
 
+#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "utils.h"
 
@@ -141,26 +143,6 @@ static const tCGI g_psConfigCGIURIs[] = { { "/set.cgi", SetCGIHandler }, // CGI_
 //*****************************************************************************
 
 #endif
-
-/**
- This array holds all the strings that are to be recognized as SSI tag
- names by the HTTPD server.  The server will call SSIHandler to request a
- replacement string whenever the pattern <!--#tagname--> (where tagname
- appears in the following array) is found in ".ssi", ".shtml" or ".shtm"
- files that it serves. Max size is MAX_TAG_NAME_LEN
-*/
-const char * const g_pcConfigSSITags[] = { "DateTime", /// SSI_INDEX_DATEANDTIME
-		"IntegerInputField", /// SSI_INDEX_INTEGERINPUTFIELD
-		"SubmitInputField", /// SSI_INDEX_SUBMITINPUTFIELD
-		"SavedParams",		///SSI_INDEX_SAVEDPARAMS
-		"CheckboxInputField", /// SSI_INDEX_CHECKBOXINPUTFIELD
-		"Hyperlink", /// SSI_INDEX_HYPERLINK
-		"Titel", /// SSI_INDEX_TITLE
-		"Group", /// SSI_INDEX_GROUP
-		"TimeInputField", /// SSI_INDEX_TIMEINPUTFIELD
-		"FloatInputField" /// SSI_INDEX_FLOATINPUTFIELD
-
-};
 
 /**
  *
@@ -272,7 +254,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 							xCom_msg.item = name;
 							save = 1;
 #if DEBUG_CGI
-							printf("SetCGIHandler: Found VALID float param: %s=%d.%d \n", name+2, value, decimal_place);
+							printf("SetCGIHandler: Found VALID float param: %s=%d.%d \n", name+2, (int)value, (int)decimal_place);
 #endif
 						}else{
 #if DEBUG_CGI
@@ -287,7 +269,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 					if(pcParam[i][0] == 't' && pcParam[i][1] == '_'){
 							if (CheckDecimalParam((const char*) pcValue[i], &hour) == pdTRUE){
 #if DEBUG_CGI
-							printf("SetCGIHandler: Found first VALID time param - hour: %s=%d \n", pcParam[i]+2, hour);
+							printf("SetCGIHandler: Found first VALID time param - hour: %s=%d \n", pcParam[i]+2, (int)hour);
 #endif
 								//go to the next param , look for the minutes
 								i++;
@@ -296,7 +278,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 
 										if (CheckDecimalParam((const char*) pcValue[i] , &minute) == pdTRUE){
 #if DEBUG_CGI
-											printf("SetCGIHandler: Found second VALID time param - minute: %s=%d \n", pcParam[i]+2, minute);
+											printf("SetCGIHandler: Found second VALID time param - minute: %s=%d \n", pcParam[i]+2, (int)minute);
 #endif
 											name += 2; //remove t_
 
@@ -325,7 +307,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 						== pdTRUE) {
 
 #if DEBUG_CGI
-					printf("SetCGIHandler: Found integer param: %s=%d \n", name, value);
+					printf("SetCGIHandler: Found integer param: %s=%d \n", name, (int)value);
 #endif
 
 
@@ -490,7 +472,7 @@ char* strtrimr(char *pszStr) {
 
 	j = i = strlen(pszStr) - 1; /* Calculate the length of the string */
 
-	while (isspace(pszStr[i]) && (i >= 0))
+	while (iIsSpace(pszStr[i]) && (i >= 0))
 
 		/* WHILE string ends with a blank */
 		/*1994-01-08/Bac Even if all chars are blanks (= 0) */
@@ -516,7 +498,7 @@ char* strtriml(char *pszStr) {
 
 	j = strlen(pszStr) - 1; /* Calculate the length of the string */
 
-	while (isspace(pszStr[i]) && (i <= j))
+	while (iIsSpace(pszStr[i]) && (i <= j))
 
 		/* WHILE string starts with a blank */
 
@@ -615,7 +597,7 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			snprintf(
 					pcBuf,
 					iBufLen,
-					"<!-- $ NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" decimal=\"%s\" increment=\"%s\" $ -->"
+					"<!-- $ IntegerInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" decimal=\"%s\" increment=\"%s\" $ -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
 						"<script>addB('%s',%s,%s,%s,%s);</script>", label, value, id,
 					max, min, decimal, increment, label, id, value, id, id, max, min, increment, decimal);
@@ -801,7 +783,7 @@ void io_get_time_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			snprintf(
 					pcBuf,
 					iBufLen,
-					"<!-- $ NumberInputField name=\"%s\" value=\"%d\" id=\"%s\" $ -->"
+					"<!-- $ TimeInputField name=\"%s\" value=\"%d\" id=\"%s\" $ -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"t_%s\" value=\"%d\" id=\"%s_1\" />"
 						":<input type=\"text\" class=\"fi\" name=\"t_%s\" value=\"%d\" id=\"%s_2\" />",
 						label, value, id,
@@ -859,7 +841,7 @@ void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			snprintf(
 					pcBuf,
 					iBufLen,
-					"<!-- $ NumberFloatField name=\"%s\" value=\"%d.%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
+					"<!-- $ FloatInputField name=\"%s\" value=\"%d.%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"f_%s\" value=\"%d.%d\" id=\"%s\" />"
 						"<script>addB('%s',%s,%s,%s);</script>", label, value, decimal_place, id,
 					max, min, increment, label, id, value, decimal_place, id, id, max, min, increment);

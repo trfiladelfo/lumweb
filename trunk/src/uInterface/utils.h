@@ -15,6 +15,7 @@ void printaddr (struct ip_addr addr);
 void printip (struct ip_addr *addr);
 struct ip_addr* getAddresFromConfig (char* config);
 char* pcStrdup (char *src);
-//int isspace (char c);
+int iIsSpace (char c);
+char* pcStrstr (char* str, char* search);
 
 #endif /* UTILS_H_ */

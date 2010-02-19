@@ -16,6 +16,8 @@
 
 #include "configuration/configloader.h"
 
+#include "graphic/gui/dislpayBasics.h"
+
 #include "utils.h"
 
 void printaddr(struct ip_addr addr) {
@@ -47,6 +49,7 @@ struct ip_addr* getAddresFromConfig(char* config) {
 	char* configLoad = loadFromConfig(IP_CONFIG_FILE, config);
 
 	if (configLoad[0] < '0' && configLoad[0] > '9') {
+		vShowBootText("Remote IP is not Valid!");
 		retAddr = NULL;
 	} else {
 
@@ -89,10 +92,21 @@ char* pcStrdup(char *src) {
 	return ret;
 }
 
-/*int isspace (char c) {
+int iIsSpace (char c) {
 
 	if (c != 0x20 && c != 0x09 && c != 0x0a && c != 0x0b && c != 0x0c && c != 0x0d) {
 		return 0;
 	}
 	return c;
-}*/
+}
+
+char* pcStrstr (char* str, char* search) {
+
+	int i, len = strlen (str), searchlen = strlen (search);
+	for (i = 0; i < len; i++) {
+		if (strncmp (str + i, search, searchlen) == 0) {
+			return str + i;
+		}
+	}
+	return NULL;
+}
