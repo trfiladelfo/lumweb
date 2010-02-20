@@ -23,5 +23,6 @@ void vTouchStoreValues(tWidget *pWidget);
 void vPageUp(tWidget *pWidget) ;
 void vPageDown(tWidget *pWidget);
 void vHyperlinkAction (tWidget *pWidget);
+void vCheckboxAction (tWidget* pWidget, unsigned long status);
 
 #endif /* TOUCHACTIONS_H_ */

@@ -49,16 +49,19 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 	strcpy(buffer, "GET /");
 	strcat(buffer, page);
 	while (params != NULL) {
-		if (first == true) {
-			strcat(buffer, "?");
-			first = false;
-		} else {
-			strcat(buffer, "&");
+		if (params->id != NULL) {
+			if (first == true) {
+				strcat(buffer, "?");
+				first = false;
+			} else {
+				strcat(buffer, "&");
+			}
+			strcat(buffer, params->id);
+			snprintf(valBuffer, 8, "=%d", params->value);
+			strcat(buffer, valBuffer);
 		}
-		strcat(buffer, params->label);
-		snprintf(valBuffer, 8, "=%d", params->value);
-		strcat(buffer, valBuffer);
 		params = params->next;
+
 	}
 
 	vClearDisplay();
@@ -156,7 +159,6 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 
 	printf("\n");
 }
-
 
 /**
  * Parse the Special Komments for the GUI

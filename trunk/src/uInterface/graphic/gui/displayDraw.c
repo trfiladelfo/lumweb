@@ -11,6 +11,7 @@
 #include "stdio.h"
 
 #include "FreeRTOS.h"
+#include "task.h"
 #include "hw_types.h"
 #include "setup.h"
 
@@ -90,12 +91,6 @@ void vDrawElementsOnDisplay(void) {
 				WidgetAdd((tWidget*) &xParentWidget,
 						(tWidget*) toDraw->valueWidget);
 			}
-
-#if DEBUG_GRAPHIC
-			printf(
-					"vDrawElementsOnDisplay: new id=%s, label=%s, value=%d, strValue=%s\n",
-					toDraw->id, toDraw->label, toDraw->value, toDraw->strValue);
-#endif
 			toDraw = toDraw->next;
 		}
 
@@ -124,7 +119,12 @@ tWidget* xGetLabelWidget(basicDisplayLine *line, int row) {
 		vPortFree(line->labelWidget);
 	}
 	line->labelWidget = pvPortMalloc(sizeof(tCanvasWidget));
-	((tCanvasWidget*) line->labelWidget)->pFont = DISPLAY_LABEL_FONT;
+
+	if (line->type == SSI_INDEX_GROUP) {
+		((tCanvasWidget*) line->labelWidget)->pFont = DISPLAY_LABEL_GROUP_FONT;
+	} else {
+		((tCanvasWidget*) line->labelWidget)->pFont = DISPLAY_LABEL_FONT;
+	}
 	((tCanvasWidget*) line->labelWidget)->pcText = line->label;
 	((tCanvasWidget*) line->labelWidget)->pucImage = NULL;
 	((tCanvasWidget*) line->labelWidget)->ulFillColor
@@ -199,6 +199,44 @@ tWidget* xGetValueWidget(basicDisplayLine *line, int row) {
 				= DISPLAY_VALUE_LEFT + DISPLAY_VALUE_WIDTH - 1;
 		;
 		((tPushButtonWidget*) line->valueWidget)->sBase.sPosition.sYMax = (row
+				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
+				+ (DISPLAY_TOP_OFFSET) + DISPLAY_LINE_HEIGHT - 1;
+		break;
+	case SSI_INDEX_CHECKBOXINPUTFIELD:
+		line->valueWidget = pvPortMalloc(sizeof(tCheckBoxWidget));
+		((tCheckBoxWidget*) line->valueWidget)->ulFillColor
+				= DISPLAY_VALUE_CHECKBOX_BACKGROUND_COLOR;
+		((tCheckBoxWidget*) line->valueWidget)->pcText = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->pfnOnChange = vCheckboxAction;
+		((tCheckBoxWidget*) line->valueWidget)->pucImage = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->ulOutlineColor
+				= DISPLAY_VALUE_CHECKBOX_OUTLINE_COLOR;
+		((tCheckBoxWidget*) line->valueWidget)->ulTextColor
+				= DISPLAY_VALUE_COLOR;
+		((tCheckBoxWidget*) line->valueWidget)->usBoxSize = DISPLAY_LINE_HEIGHT;
+		((tCheckBoxWidget*) line->valueWidget)->usStyle
+				= DISPLAY_VALUE_STYLE_BOOLEAN;
+
+		if (line->value != 0) {
+			((tCheckBoxWidget*) line->valueWidget)->usStyle |= CB_STYLE_SELECTED;
+		}
+		((tCheckBoxWidget*) line->valueWidget)->sBase.lSize
+				= sizeof(tCheckBoxWidget);
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pChild = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pDisplay = DISPLAY_DRIVER;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pNext = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pParent = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pfnMsgProc
+				= CheckBoxMsgProc;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sXMin
+				= DISPLAY_VALUE_LEFT;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sYMin = (row
+				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
+				+ (DISPLAY_TOP_OFFSET);
+		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sXMax
+				= DISPLAY_VALUE_LEFT + DISPLAY_VALUE_WIDTH - 1;
+		;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sYMax = (row
 				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
 				+ (DISPLAY_TOP_OFFSET) + DISPLAY_LINE_HEIGHT - 1;
 		break;

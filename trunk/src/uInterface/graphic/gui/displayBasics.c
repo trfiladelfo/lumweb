@@ -108,16 +108,18 @@ void vInitDisplay(void) {
  */
 void vDeleteDisplayLines(basicDisplayLine *root) {
 	basicDisplayLine * akt;
-	while (root != NULL) {
-		akt = root;
-
+	if (xDisplayRoot.displayEntities == true) {
+		while (root != NULL) {
+			akt = root;
+			if (root->label != NULL) {
 #if DEBUG_GRAPHIC
-		printf("vDeleteDisplayLines: root->name = %s", root->label);
+				printf("vDeleteDisplayLines: root->name = %s", root->label);
 #endif
-		root = root->next;
-		vDeleteDisplayLine(akt);
+			}
+			root = root->next;
+			vDeleteDisplayLine(akt);
+		}
 	}
-
 	xDisplayRoot.displayEntities = false;
 	xDisplayRoot.save = false;
 	elementOffset = 0;
