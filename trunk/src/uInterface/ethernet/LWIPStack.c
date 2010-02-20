@@ -628,12 +628,21 @@ void LWIPServiceTaskInit(void *pvParameters) {
 		httpd_init();
 	}
 	vPortFree(configLoad);
+
+#if ENABLE_SNTP
 	printf("SNTP Starten ...\n");
 	sntp_init();
+#endif
+
+#if ENABLE_DNS
 	printf("DNS Starten ...\n");
 	dns_init();
-	//printf("NETBIOS Starten ...\n");
-	//netbios_init();
+#endif
+
+#if ENABLE_NET_BIOS
+	printf("NETBIOS Starten ...\n");
+	netbios_init();
+#endif
 
 	printf("Dienste gestartet ...\n");
 
