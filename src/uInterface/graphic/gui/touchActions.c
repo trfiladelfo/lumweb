@@ -38,8 +38,8 @@ void vTouchStoreValues(tWidget *pWidget) {
 	vInitDisplay();
 	vLoadWebPage(configLoad, xDisplayRoot.entities);
 	vPortFree(configLoad);
-
 	vDrawElementsOnDisplay();
+	vInitializeSaveButton();
 }
 
 void vPageUp(tWidget *pWidget) {
@@ -66,6 +66,17 @@ void vHyperlinkAction(tWidget *pWidget) {
 			vInitDisplay();
 			vLoadWebPage(root->strValue, NULL);
 			vDrawElementsOnDisplay();
+			break;
+		}
+		root = root->next;
+	}
+}
+
+void vCheckboxAction(tWidget* pWidget, unsigned long status) {
+	basicDisplayLine *root = xDisplayRoot.entities;
+	while (root != NULL) {
+		if (root->valueWidget == pWidget) {
+			root->value = (int) status;
 			break;
 		}
 		root = root->next;
