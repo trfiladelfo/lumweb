@@ -1,4 +1,0 @@
-/* TODO CHANGE */ //remoteIP = getAddresFromConfig("REMOTE_IP");
-
-	//printf("Remote IP: ");
-	//printip(remoteIP);

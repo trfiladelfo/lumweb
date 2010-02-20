@@ -12,7 +12,7 @@
 
 #include "FreeRTOS.h"
 #include "hw_types.h"
-#include "dislpayBasics.h"
+#include "displayBasics.h"
 #include "displayStyle.h"
 #include "displayDraw.h"
 
@@ -113,7 +113,7 @@ void vDeleteDisplayLines(basicDisplayLine *root) {
 			akt = root;
 			if (root->label != NULL) {
 #if DEBUG_GRAPHIC
-				printf("vDeleteDisplayLines: root->name = %s", root->label);
+				printf("vDeleteDisplayLines: root->name = %s\n", root->label);
 #endif
 			}
 			root = root->next;
@@ -146,10 +146,6 @@ void vDeleteDisplayLine(basicDisplayLine *toDelete) {
 
 		if (toDelete->id != NULL) {
 			vPortFree(toDelete->id);
-		}
-
-		if (toDelete->strValue != NULL) {
-			vPortFree(toDelete->strValue);
 		}
 
 		vPortFree(toDelete);

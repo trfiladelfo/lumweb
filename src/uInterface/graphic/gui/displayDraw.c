@@ -21,7 +21,6 @@
 #include "grlib/pushbutton.h"
 
 #include "displayDraw.h"
-#include "dislpayBasics.h"
 #include "displayStyle.h"
 #include "touchActions.h"
 
@@ -53,10 +52,6 @@ void vDrawElementsOnDisplay(void) {
 
 	WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xTitle);
 
-#if DEBUG_GRAPHIC
-	printf("vDrawElementsOnDisplay: %x\n", xDisplayRoot.displayEntities);
-#endif
-
 	if (xDisplayRoot.displayEntities == true) {
 
 #if DEBUG_GRAPHIC
@@ -65,29 +60,29 @@ void vDrawElementsOnDisplay(void) {
 #endif
 
 		toDraw = xDisplayRoot.entities;
-		for (i = 0; i < elementOffset && toDraw != NULL && toDraw->next != NULL; i++) {
-			toDraw = toDraw->next;
 
-#if DEBUG_GRAPHIC
-			printf("vDrawElementsOnDisplay: next Element\n");
-#endif
+		if (elementOffset > 0) {
+			for (i = 0; i < elementOffset && toDraw != NULL && toDraw->next
+					!= NULL; i++) {
+				toDraw = toDraw->next;
+			}
 		}
-
-
-#if DEBUG_GRAPHIC
-		printf("vDrawElementsOnDisplay: root = %x, todraw = %x\n",
-				(unsigned int) xDisplayRoot.entities, (unsigned int) toDraw);
-#endif
 
 		for (i = 0; toDraw != NULL && i < DISPLAY_LINES_PER_VIEW; i++) {
 			xGetLabelWidget(toDraw, i);
 			if (toDraw->labelWidget != NULL) {
+#if DEBUG_GRAPHIC
+				printf("vDrawElementsOnDisplay: addLabel\n");
+#endif
 				WidgetAdd((tWidget*) &xParentWidget,
 						(tWidget*) toDraw->labelWidget);
 			}
 
 			xGetValueWidget(toDraw, i);
 			if (toDraw->valueWidget != NULL) {
+#if DEBUG_GRAPHIC
+				printf("vDrawElementsOnDisplay: addValue\n");
+#endif
 				WidgetAdd((tWidget*) &xParentWidget,
 						(tWidget*) toDraw->valueWidget);
 			}
@@ -110,8 +105,13 @@ void vDrawElementsOnDisplay(void) {
 			WidgetRemove((tWidget*) &xDownButton);
 		}
 	}
-
+#if DEBUG_GRAPHIC
+	printf("vDrawElementsOnDisplay: draw Elements ... ");
+#endif
 	WidgetPaint((tWidget*) &xParentWidget);
+#if DEBUG_GRAPHIC
+	printf("finished\n");
+#endif
 }
 
 tWidget* xGetLabelWidget(basicDisplayLine *line, int row) {
@@ -154,17 +154,55 @@ tWidget* xGetLabelWidget(basicDisplayLine *line, int row) {
 }
 
 tWidget* xGetValueWidget(basicDisplayLine *line, int row) {
-
 	if (line->valueWidget != NULL) {
 		vPortFree(line->valueWidget);
 	}
 	switch (line->type) {
+	case SSI_INDEX_CHECKBOXINPUTFIELD:
+		line->valueWidget = pvPortMalloc(sizeof(tCheckBoxWidget));
+		((tCheckBoxWidget*) line->valueWidget)->ulFillColor
+				= DISPLAY_VALUE_CHECKBOX_BACKGROUND_COLOR;
+		((tCheckBoxWidget*) line->valueWidget)->pcText = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->pfnOnChange = vCheckboxAction;
+		((tCheckBoxWidget*) line->valueWidget)->pucImage = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->ulOutlineColor
+				= DISPLAY_VALUE_CHECKBOX_OUTLINE_COLOR;
+		((tCheckBoxWidget*) line->valueWidget)->ulTextColor
+				= DISPLAY_VALUE_COLOR;
+		((tCheckBoxWidget*) line->valueWidget)->usBoxSize = DISPLAY_LINE_HEIGHT;
+		((tCheckBoxWidget*) line->valueWidget)->usStyle
+				= DISPLAY_VALUE_STYLE_BOOLEAN;
+
+		if (line->value != 0) {
+			((tCheckBoxWidget*) line->valueWidget)->usStyle
+					|= CB_STYLE_SELECTED;
+		}
+		((tCheckBoxWidget*) line->valueWidget)->sBase.lSize
+				= sizeof(tCheckBoxWidget);
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pChild = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pDisplay = DISPLAY_DRIVER;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pNext = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pParent = NULL;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.pfnMsgProc
+				= CheckBoxMsgProc;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sXMin
+				= DISPLAY_VALUE_LEFT;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sYMin = (row
+				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
+				+ (DISPLAY_TOP_OFFSET);
+		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sXMax
+				= DISPLAY_VALUE_LEFT + DISPLAY_VALUE_WIDTH - 1;
+		;
+		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sYMax = (row
+				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
+				+ (DISPLAY_TOP_OFFSET) + DISPLAY_LINE_HEIGHT - 1;
+		break;
+	case SSI_INDEX_INTEGERINPUTFIELD:
+	case SSI_INDEX_FLOATINPUTFIELD:
+	case SSI_INDEX_TIMEINPUTFIELD:
 	case SSI_INDEX_HYPERLINK:
 		line->valueWidget = pvPortMalloc(sizeof(tPushButtonWidget));
 		((tPushButtonWidget*) line->valueWidget)->pFont = DISPLAY_VALUE_FONT;
-		((tPushButtonWidget*) line->valueWidget)->pcText
-				= DISPLAY_VALUE_TEXT_HYPERLINK;
-		((tPushButtonWidget*) line->valueWidget)->pfnOnClick = vHyperlinkAction;
 		((tPushButtonWidget*) line->valueWidget)->pucImage = NULL;
 		((tPushButtonWidget*) line->valueWidget)->pucPressImage = NULL;
 		((tPushButtonWidget*) line->valueWidget)->ulAutoRepeatCount = 0;
@@ -197,48 +235,28 @@ tWidget* xGetValueWidget(basicDisplayLine *line, int row) {
 				+ (DISPLAY_TOP_OFFSET);
 		((tPushButtonWidget*) line->valueWidget)->sBase.sPosition.sXMax
 				= DISPLAY_VALUE_LEFT + DISPLAY_VALUE_WIDTH - 1;
-		;
 		((tPushButtonWidget*) line->valueWidget)->sBase.sPosition.sYMax = (row
 				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
 				+ (DISPLAY_TOP_OFFSET) + DISPLAY_LINE_HEIGHT - 1;
-		break;
-	case SSI_INDEX_CHECKBOXINPUTFIELD:
-		line->valueWidget = pvPortMalloc(sizeof(tCheckBoxWidget));
-		((tCheckBoxWidget*) line->valueWidget)->ulFillColor
-				= DISPLAY_VALUE_CHECKBOX_BACKGROUND_COLOR;
-		((tCheckBoxWidget*) line->valueWidget)->pcText = NULL;
-		((tCheckBoxWidget*) line->valueWidget)->pfnOnChange = vCheckboxAction;
-		((tCheckBoxWidget*) line->valueWidget)->pucImage = NULL;
-		((tCheckBoxWidget*) line->valueWidget)->ulOutlineColor
-				= DISPLAY_VALUE_CHECKBOX_OUTLINE_COLOR;
-		((tCheckBoxWidget*) line->valueWidget)->ulTextColor
-				= DISPLAY_VALUE_COLOR;
-		((tCheckBoxWidget*) line->valueWidget)->usBoxSize = DISPLAY_LINE_HEIGHT;
-		((tCheckBoxWidget*) line->valueWidget)->usStyle
-				= DISPLAY_VALUE_STYLE_BOOLEAN;
 
-		if (line->value != 0) {
-			((tCheckBoxWidget*) line->valueWidget)->usStyle |= CB_STYLE_SELECTED;
+		if (line->type == SSI_INDEX_HYPERLINK) {
+			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
+					= vHyperlinkAction;
+			((tPushButtonWidget*) line->valueWidget)->pcText
+					= DISPLAY_VALUE_TEXT_HYPERLINK;
+		} else if (line->type == SSI_INDEX_INTEGERINPUTFIELD) {
+			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
+					= vIntegerEditorAction;
+			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;
+		} else if (line->type == SSI_INDEX_FLOATINPUTFIELD) {
+			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
+					= vFloatEditorAction;
+			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;
+		} else if (line->type == SSI_INDEX_TIMEINPUTFIELD) {
+			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
+					= vTimeEditorAction;
+			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;
 		}
-		((tCheckBoxWidget*) line->valueWidget)->sBase.lSize
-				= sizeof(tCheckBoxWidget);
-		((tCheckBoxWidget*) line->valueWidget)->sBase.pChild = NULL;
-		((tCheckBoxWidget*) line->valueWidget)->sBase.pDisplay = DISPLAY_DRIVER;
-		((tCheckBoxWidget*) line->valueWidget)->sBase.pNext = NULL;
-		((tCheckBoxWidget*) line->valueWidget)->sBase.pParent = NULL;
-		((tCheckBoxWidget*) line->valueWidget)->sBase.pfnMsgProc
-				= CheckBoxMsgProc;
-		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sXMin
-				= DISPLAY_VALUE_LEFT;
-		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sYMin = (row
-				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
-				+ (DISPLAY_TOP_OFFSET);
-		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sXMax
-				= DISPLAY_VALUE_LEFT + DISPLAY_VALUE_WIDTH - 1;
-		;
-		((tCheckBoxWidget*) line->valueWidget)->sBase.sPosition.sYMax = (row
-				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
-				+ (DISPLAY_TOP_OFFSET) + DISPLAY_LINE_HEIGHT - 1;
 		break;
 	default:
 

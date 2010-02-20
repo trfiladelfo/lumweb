@@ -16,7 +16,8 @@
 #include "hw_types.h"
 
 #include "tags.h"
-#include "graphic/gui/dislpayBasics.h"
+#include "graphic/gui/displayBasics.h"
+#include "graphic/gui/displayStyle.h"
 #include "ethernet/httpd/cgi/io.h"
 #include "configuration/configloader.h"
 
@@ -26,6 +27,9 @@ char* pcGetParamFromString(char*, char*);
 void vInserIntoList(basicDisplayLine*);
 void vCreateNewEntity(int type, char* id, char* label, char* strValue,
 		int value, int max, int min, int increment);
+char* pcFormatIntegerValue(basicDisplayLine *line);
+char* pcFormatFloatValue(basicDisplayLine *line);
+char* pcFormatTimeValue(basicDisplayLine *line);
 
 void vParseHyperlink(char* param, int len) {
 
@@ -305,13 +309,43 @@ void vCreateNewEntity(int type, char* id, char* label, char* strValue,
 	newLine->type = type;
 	newLine->id = id;
 	newLine->label = label;
-	newLine->strValue = strValue;
 	newLine->value = value;
 	newLine->max = max;
 	newLine->min = min;
 	newLine->increment = increment;
+	switch (type) {
+	case SSI_INDEX_INTEGERINPUTFIELD:
+		pcFormatIntegerValue(newLine);
+		break;
+	case SSI_INDEX_FLOATINPUTFIELD:
+		pcFormatFloatValue(newLine);
+		break;
+	case SSI_INDEX_TIMEINPUTFIELD:
+		pcFormatTimeValue(newLine);
+		break;
+	default:
+		strcpy(newLine->strValue, strValue);
+		break;
+	}
 	newLine->next = NULL;
 	newLine->labelWidget = NULL;
 	newLine->valueWidget = NULL;
 	vInserIntoList(newLine);
+}
+
+char* pcFormatIntegerValue(basicDisplayLine *line) {
+	snprintf(line->strValue, DISPLAY_VALUE_TEXT_LEN, "%d", line->value);
+	return line->strValue;
+}
+
+char* pcFormatFloatValue(basicDisplayLine *line) {
+	snprintf(line->strValue, DISPLAY_VALUE_TEXT_LEN, "%d,%d",
+			(line->value / 10), (line->value % 10));
+	return line->strValue;
+}
+
+char* pcFormatTimeValue(basicDisplayLine *line) {
+	snprintf(line->strValue, DISPLAY_VALUE_TEXT_LEN, "%02d:%02d", line->value
+			/ 60, line->value - ((line->value / 60) * 60));
+	return line->strValue;
 }

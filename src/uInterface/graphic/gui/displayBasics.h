@@ -17,6 +17,8 @@
 #include "grlib/pushbutton.h"
 #include "grlib/canvas.h"
 
+#include "graphic/gui/displayStyle.h"
+
 #define DISPLAY_DRIVER	&g_sKitronix320x240x16_SSD2119
 
 /* Context Structure */
@@ -39,7 +41,7 @@ typedef struct __basicDisplayLine {
 	int increment;
 	char* label;
 	char* id;
-	char* strValue;
+	char strValue[DISPLAY_VALUE_TEXT_LEN];
 	tWidget *labelWidget;
 	tWidget *valueWidget;
 

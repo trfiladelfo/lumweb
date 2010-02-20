@@ -8,15 +8,16 @@
  *
 */
 
-
-#include "lmi_fs.h"
-#include "hw_types.h"
-#include "setup.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "graphic/gui/dislpayBasics.h"
+
+#include "lmi_fs.h"
+#include "hw_types.h"
+#include "setup.h"
+
+#include "graphic/gui/displayBasics.h"
 
 #include "FreeRTOS.h"
 #include "task.h"

@@ -12,7 +12,7 @@
 #include "FreeRTOS.h"
 #include "setup.h"
 #include "touchActions.h"
-#include "dislpayBasics.h"
+#include "displayBasics.h"
 #include "displayDraw.h"
 
 #include "graphic/httpc/webClient.h"
@@ -77,6 +77,39 @@ void vCheckboxAction(tWidget* pWidget, unsigned long status) {
 	while (root != NULL) {
 		if (root->valueWidget == pWidget) {
 			root->value = (int) status;
+			break;
+		}
+		root = root->next;
+	}
+}
+
+void vIntegerEditorAction(tWidget *pWidget) {
+	basicDisplayLine *root = xDisplayRoot.entities;
+	while (root != NULL) {
+		if (root->valueWidget == pWidget) {
+			printf("vIntegerEditorAction: open Editor\n");
+			break;
+		}
+		root = root->next;
+	}
+}
+
+void vFloatEditorAction(tWidget *pWidget) {
+	basicDisplayLine *root = xDisplayRoot.entities;
+	while (root != NULL) {
+		if (root->valueWidget == pWidget) {
+			printf("vFloatEditorAction: open Editor\n");
+			break;
+		}
+		root = root->next;
+	}
+}
+
+void vTimeEditorAction(tWidget *pWidget) {
+	basicDisplayLine *root = xDisplayRoot.entities;
+	while (root != NULL) {
+		if (root->valueWidget == pWidget) {
+			printf("vTimeEditorAction: open Editor\n");
 			break;
 		}
 		root = root->next;

@@ -22,7 +22,7 @@
 #include "lwip/ip_addr.h"
 #include "lwip/netbuf.h"
 
-#include "graphic/gui/dislpayBasics.h"
+#include "graphic/gui/displayBasics.h"
 #include "ethernet/httpd/cgi/io.h"
 
 #include "setup.h"
@@ -63,10 +63,12 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 		params = params->next;
 
 	}
+	strcat(buffer, " HTTP1.0\r\n\r\n");
+#if DEBUG_HTTPC
+	printf(buffer);
+#endif
 
 	vClearDisplay();
-
-	strcat(buffer, " HTTP1.0\r\n\r\n");
 
 	if (remoteIP == NULL) {
 		remoteIP = getAddresFromConfig("REMOTE_IP");

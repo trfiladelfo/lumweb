@@ -12,7 +12,7 @@
 #ifndef WEBCLIENT_H_
 #define WEBCLIENT_H_
 
-#include "graphic/gui/dislpayBasics.h"
+#include "graphic/gui/displayBasics.h"
 
 #define HTTPC_BUFFER_LEN 255
 

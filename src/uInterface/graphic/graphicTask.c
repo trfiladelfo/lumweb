@@ -12,7 +12,7 @@
 #include "task.h"
 
 #include "graphic/graphicTask.h"
-#include "graphic/gui/dislpayBasics.h"
+#include "graphic/gui/displayBasics.h"
 
 //*****************************************************************************
 //
