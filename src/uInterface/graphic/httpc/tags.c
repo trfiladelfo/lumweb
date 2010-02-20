@@ -20,6 +20,8 @@
 #include "ethernet/httpd/cgi/io.h"
 #include "configuration/configloader.h"
 
+#include "setup.h"
+
 char* pcGetParamFromString(char*, char*);
 void vInserIntoList(basicDisplayLine*);
 void vCreateNewEntity(int type, char* id, char* label, char* strValue,
@@ -39,10 +41,14 @@ void vParseHyperlink(char* param, int len) {
 				vCreateNewEntity(SSI_INDEX_HYPERLINK, NULL, name, value, -1,
 						-1, -1, -1);
 			} else {
+#if DEBUG_HTTPC
 				printf("vParseHyperlink: value NULL\n");
+#endif
 			}
 		} else {
+#if DEBUG_HTTPC
 			printf("vParseHyperlink: name NULL\n");
+#endif
 		}
 	} else {
 		xDisplayRoot.menue = true;
@@ -58,7 +64,9 @@ void vParseTitle(char* param, int len) {
 		xDisplayRoot.title = label;
 		vSetTitle(label);
 	} else {
+#if DEBUG_HTTPC
 		printf("vParseTitle: label NULL\n");
+#endif
 	}
 }
 
@@ -70,7 +78,9 @@ void vParseGroup(char* param, int len) {
 	if (label != NULL) {
 		vCreateNewEntity(SSI_INDEX_GROUP, NULL, label, NULL, -1, -1, -1, -1);
 	} else {
+#if DEBUG_HTTPC
 		printf("vParseIntegerInputField: label NULL\n");
+#endif
 	}
 
 }
@@ -108,13 +118,19 @@ void vParseIntegerInputField(char* param, int len) {
 				vCreateNewEntity(SSI_INDEX_INTEGERINPUTFIELD, id, name, NULL,
 						atoi(value), max, min, incr);
 			} else {
+#if DEBUG_HTTPC
 				printf("vParseIntegerInputField: value NULL\n");
+#endif
 			}
 		} else {
+#if DEBUG_HTTPC
 			printf("vParseIntegerInputField: name NULL\n");
+#endif
 		}
 	} else {
+#if DEBUG_HTTPC
 		printf("vParseIntegerInputField: id NULL\n");
+#endif
 	}
 }
 
@@ -150,13 +166,19 @@ void vParseFloatInputField(char* param, int len) {
 				vCreateNewEntity(SSI_INDEX_FLOATINPUTFIELD, id, name, NULL,
 						atoi(value), max, min, incr);
 			} else {
+#if DEBUG_HTTPC
 				printf("vParseFloatInputField: value NULL\n");
+#endif
 			}
 		} else {
+#if DEBUG_HTTPC
 			printf("vParseFloatInputField: name NULL\n");
+#endif
 		}
 	} else {
+#if DEBUG_HTTPC
 		printf("vParseFloatInputField: id NULL\n");
+#endif
 	}
 }
 void vParseTimeInputField(char* param, int len) {
@@ -172,13 +194,19 @@ void vParseTimeInputField(char* param, int len) {
 				vCreateNewEntity(SSI_INDEX_TIMEINPUTFIELD, id, name, NULL,
 						atoi(value), -1, -1, -1);
 			} else {
+#if DEBUG_HTTPC
 				printf("vParseTimeInputField: value NULL\n");
+#endif
 			}
 		} else {
+#if DEBUG_HTTPC
 			printf("vParseTimeInputField: name NULL\n");
+#endif
 		}
 	} else {
+#if DEBUG_HTTPC
 		printf("vParseTimeInputField: id NULL\n");
+#endif
 	}
 }
 
@@ -201,20 +229,30 @@ void vParseCheckboxInputField(char* param, int len) {
 				vCreateNewEntity(SSI_INDEX_CHECKBOXINPUTFIELD, id, name, NULL,
 						iValue, -1, -1, -1);
 			} else {
+#if DEBUG_HTTPC
 				printf("vParseCheckboxInputField: value NULL\n");
+#endif
 			}
 		} else {
+#if DEBUG_HTTPC
 			printf("vParseCheckboxInputField: name NULL\n");
+#endif
 		}
 	} else {
+#if DEBUG_HTTPC
 		printf("vParseCheckboxInputField: id NULL\n");
+#endif
 	}
 }
 
 char* pcGetParamFromString(char* str, char* search) {
 	char *buffer, *retValue = NULL;
 	int i, j, len;
+
+#if DEBUG_HTTPC
 	printf("pcGetParamFromString str=%s, search=%s,\n", str, search);
+#endif
+
 	buffer = pcStrstr(str, search);
 	if (buffer != NULL) {
 
@@ -243,13 +281,20 @@ void vInserIntoList(basicDisplayLine *toInsert) {
 	if (akt == NULL || xDisplayRoot.displayEntities == false) {
 		xDisplayRoot.entities = toInsert;
 		xDisplayRoot.displayEntities = true;
+
+#if DEBUG_HTTPC
 		printf("vInsertIntoList: root\n");
+#endif
 	} else {
 		while (akt->next != NULL) {
 			akt = akt->next;
 		}
 		akt->next = toInsert;
+
+#if DEBUG_HTTPC
 		printf("vInsertIntoList: at the End\n");
+#endif
+
 		xDisplayRoot.displayEntities = true;
 	}
 }

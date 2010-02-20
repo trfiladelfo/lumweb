@@ -20,15 +20,22 @@
 #include "configuration/configloader.h"
 
 void vTouchLoadMenu(tWidget *pWidget) {
+#if DEBUG_GRAPHIC
 	printf("vTouchLoadMenu: lade Menu\n");
+#endif
+
 	vLoadMenu();
 	vInitializeMenuButton();
+
+#if DEBUG_GRAPHIC
 	printf("vTouchLoadMenu: menu loaded\n");
+#endif
 }
 
 void vTouchStoreValues(tWidget *pWidget) {
-	vInitDisplay();
 	char* configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_SET_PAGE");
+
+	vInitDisplay();
 	vLoadWebPage(configLoad, xDisplayRoot.entities);
 	vPortFree(configLoad);
 

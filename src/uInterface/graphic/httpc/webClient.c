@@ -25,6 +25,8 @@
 #include "graphic/gui/dislpayBasics.h"
 #include "ethernet/httpd/cgi/io.h"
 
+#include "setup.h"
+
 #define DELIMITOR_CHAR '$'
 
 struct ip_addr *remoteIP = NULL;
@@ -69,9 +71,12 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 			vShowBootText("RemoteIP is NULL!");
 			return;
 		}
+
+#if DEBUG_HTTPC
 		printf("RemoteIP: ");
 		printip(remoteIP);
 		printf("\n");
+#endif
 	}
 
 	// create new connection
@@ -161,7 +166,9 @@ void vParseParameter(char* html, u16_t len) {
 
 	char* buffer = (char*) pvPortMalloc(len * sizeof(char));
 
+#if DEBUG_HTTPC
 	printf("vParseParameter\n");
+#endif
 
 	for (i = 0; i < len; i++) {
 		if (!iIsSpace(html[i])) {
@@ -174,7 +181,10 @@ void vParseParameter(char* html, u16_t len) {
 		bufferpos++;
 	}
 	buffer[bufferpos] = 0;
+
+#if DEBUG_HTTPC
 	printf("vParseParameter: Found Type: %s\n", buffer);
+#endif
 
 	// Typ feststellen
 	if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_INTEGERINPUTFIELD]) == 0) {
@@ -211,40 +221,58 @@ void vParseParameter(char* html, u16_t len) {
 	// Typ verarbeiten
 	switch (type) {
 	case SSI_INDEX_CHECKBOXINPUTFIELD:
+#if DEBUG_HTTPC
 		printf("vParseParameter: Checkbox\n");
+#endif
 		vParseCheckboxInputField(html, len);
 		break;
 	case SSI_INDEX_FLOATINPUTFIELD:
+#if DEBUG_HTTPC
 		printf("vParseParameter: Floatinput\n");
+#endif
 		vParseFloatInputField(html, len);
 		break;
 	case SSI_INDEX_GROUP:
+#if DEBUG_HTTPC
 		printf("vParseParameter: Group\n");
+#endif
 		vParseGroup(html, len);
 		break;
 	case SSI_INDEX_HYPERLINK:
+#if DEBUG_HTTPC
 		printf("vParseParameter: Hyperlink\n");
+#endif
 		vParseHyperlink(html, len);
 		break;
 	case SSI_INDEX_INTEGERINPUTFIELD:
+#if DEBUG_HTTPC
 		printf("vParseParameter: Integer\n");
+#endif
 		vParseIntegerInputField(html, len);
 		break;
 	case SSI_INDEX_SUBMITINPUTFIELD:
+#if DEBUG_HTTPC
 		printf("vParseParameter: Submit\n");
+#endif
 		xDisplayRoot.save = true;
 		break;
 	case SSI_INDEX_TIMEINPUTFIELD:
+#if DEBUG_HTTPC
 		printf("vParseParameter: Timeinput\n");
+#endif
 		vParseTimeInputField(html, len);
 		break;
 	case SSI_INDEX_TITEL:
+#if DEBUG_HTTPC
 		printf("vParseParameter: Titel\n");
+#endif
 		vParseTitle(html, len);
 		break;
 	case -1:
 	default:
+#if DEBUG_HTTPC
 		printf("vParseParameter: ignore Param %s", buffer);
+#endif
 		break;
 	}
 

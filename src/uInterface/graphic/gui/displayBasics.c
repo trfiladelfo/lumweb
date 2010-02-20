@@ -28,6 +28,9 @@
 
 #include "configuration/configloader.h"
 
+#include "setup.h"
+
+
 tBoolean displayInitialized = false;
 
 // Objects
@@ -36,7 +39,6 @@ basicDisplay xDisplayRoot;
 tCanvasWidget xParentWidget;
 tCanvasWidget xTitle;
 tCanvasWidget xStatusMessage;
-
 tPushButtonWidget xMenuButton;
 tPushButtonWidget xSaveButton;
 tPushButtonWidget xDownButton;
@@ -108,7 +110,10 @@ void vDeleteDisplayLines(basicDisplayLine *root) {
 	basicDisplayLine * akt;
 	while (root != NULL) {
 		akt = root;
+
+#if DEBUG_GRAPHIC
 		printf("vDeleteDisplayLines: root->name = %s", root->label);
+#endif
 		root = root->next;
 		vDeleteDisplayLine(akt);
 	}
@@ -154,9 +159,14 @@ void vDeleteDisplayLine(basicDisplayLine *toDelete) {
  * Load the Menue Page form the Web
  */
 void vLoadMenu(void) {
-	vInitDisplay();
-	printf("vLoadMenu: Display deleted\nLoad new Page\n");
 	char* configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_MENU_PAGE");
+
+	vInitDisplay();
+
+#if DEBUG_GRAPHIC
+	printf("vLoadMenu: Display deleted\nLoad new Page\n");
+#endif
+
 	vLoadWebPage(configLoad, NULL);
 	vPortFree(configLoad);
 	xDisplayRoot.menue = false;

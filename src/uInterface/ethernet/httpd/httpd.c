@@ -407,9 +407,7 @@ static void get_tag_insert(struct http_state *hs) {
 
 		/* Find this tag in the list we have been provided. */
 		for (loop = 0; loop < g_iNumTags; loop++) {
-			//printf("tag name: %s - tagnames[%d] : %s\n", hs->tag_name, loop, g_ppcTags[loop]);
 			if (strcmp(hs->tag_name, g_ppcTags[loop]) == 0) {
-				//printf("TAG FOUND in array\n");
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
 				hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
 						MAX_TAG_INSERT_LEN, &(hs->ssi_params));
@@ -896,8 +894,9 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 					/* Move on to the next character in the buffer */
 					hs->parse_left--;
 					hs->parsed++;
-
-				//	printf("SWITCH : TAG_FOUND: found space, next char: %c\n", *(hs->parsed));
+#if DEBUG_SSI_PARAMS
+					printf("HTTPD - SWITCH : TAG_FOUND: found space, next char: %c\n", *(hs->parsed));
+#endif
 #if INCLUDE_HTTPD_SSI_PARAMS
 					if (*(hs->parsed) != g_pcTagLeadOut[0] && *(hs->parsed) != ' ')
 						hs->tag_state = TAG_PARAM;
@@ -1041,7 +1040,6 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 						 */
 						get_tag_insert(hs);
 
-						//printf("RETURNed FROM TAG_INSERT \n");
 						/* Next time through, we are going to be sending data
 						 * immediately, either the end of the block we start
 						 * sending here or the insert string.
@@ -1054,7 +1052,6 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 						 * tag, we need to send it now.
 						 */
 						if (hs->tag_end > hs->file) {
-							//printf("SEND UNSENT DATA\n");
 							/* How much of the data can we send? */
 							if (len > hs->tag_end - hs->file) {
 								len = hs->tag_end - hs->file;
@@ -1063,13 +1060,10 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 							do {
 								DEBUG_PRINT
 									("Sending %d bytes\n", len);
-							//	printf("BEFORE TCP WRITE\n");
 								err = tcp_write(pcb, hs->file, len, 0);
-							//	printf("AFTER TCP WRITE\n");
 								if (err == ERR_MEM) {
 									len /= 2;
 								}
-								//printf("Sending %d bytes\n", len);
 							} while (err == ERR_MEM && (len > 1));
 
 							if (err == ERR_OK) {
@@ -1077,9 +1071,7 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 								hs->file += len;
 								hs->left -= len;
 							}
-						//	printf("SENDING DONE\n");
 						}
-					//	printf("GOTO TAG SENDING \n");
 					} else {
 						hs->tag_index++;
 					}
@@ -1163,7 +1155,6 @@ static void send_data(struct tcp_pcb *pcb, struct http_state *hs) {
 					}
 				}
 
-				//printf("TAG SENT \n");
 			}
 		}
 
@@ -1224,9 +1215,7 @@ static err_t http_poll(void *arg, struct tcp_pcb *pcb) {
 	DEBUG_PRINT
 		("http_poll 0x%08x\n", pcb);
 
-	/*  printf("Polll\n");*/
 	if ((hs == NULL) && (pcb->state == ESTABLISHED)) {
-		/*    printf("Null, close\n");*/
 		tcp_abort(pcb);
 		return ERR_ABRT;
 	} else {
@@ -1305,6 +1294,9 @@ get_404_file(char **ppURI) {
 			*ppURI = NULL;
 		}
 	}
+
+	// fh : prints every request uri!
+	printf("HTTPD: Opening uri '%s' - file: '%s' \n", *ppURI, path_to_file);
 
 	path_to_file[0] = 0; /* clean path */
 
@@ -1392,9 +1384,13 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 						DEBUG_PRINT
 							("Looking for %s...\n",
 									g_psDefaultFilenames[loop].name);
+
 						strcat(path_to_file, (char *) g_psDefaultFilenames[loop].name);
+
 						file = fs_open(path_to_file);
 						uri = (char *) g_psDefaultFilenames[loop].name;
+
+
 						if (file != NULL) {
 							DEBUG_PRINT
 								("Opened.\n");
@@ -1416,9 +1412,6 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 #ifdef INCLUDE_HTTPD_CGI
 					/* First, isolate the base URI (without any parameters) */
 					params = strchr(uri, '?');
-
-					// fh : prints every request uri!
-					printf("HTTPD: get request: %s \n", uri);
 
 					if (params) {
 						*params = '\0';
@@ -1456,7 +1449,7 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 						("Opening %s\n", uri);
 
 					strcat(path_to_file, uri);
-					printf("HTTPD: Opening uri '%s' - file: '%s' \n", uri, path_to_file);
+
 					file = fs_open(path_to_file);
 					if (file == NULL) {
 						file = get_404_file(&uri);
@@ -1524,6 +1517,9 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 	if ((err == ERR_OK) && (p == NULL)) {
 		close_conn(pcb, hs);
 	}
+
+	// fh : prints every request uri!
+	printf("HTTPD: Opening uri '%s' - file: '%s' \n", uri, path_to_file);
 
 	path_to_file[0] = 0; /* clean path */
 
