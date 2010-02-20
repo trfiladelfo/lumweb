@@ -67,7 +67,7 @@
 
 #include "configuration/configloader.h"
 
-#include "graphic/gui/dislpayBasics.h"
+#include "graphic/gui/displayBasics.h"
 #include "graphic/gui/displayDraw.h"
 
 #include "setup.h"

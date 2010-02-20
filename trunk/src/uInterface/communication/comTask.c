@@ -1,11 +1,3 @@
-/*
- * $Rev: 146 $ $Author: martin.anzinger $
- * $LastChangedDate: 2009-11-11 11:52:35 +0100 (Mi, 11 Nov 2009) $
- *
- * GPV v3  (c) 2009
- *
- */
-
 /**
  * \addtogroup comTask
  * @{
@@ -41,9 +33,8 @@
 
 /* Include Queue staff */
 #include "comTask.h"
-#include "../taskConfig.h"
-#include "../queueConfig.h"
-#include "../uart/uartstdio.h"
+#include "taskConfig.h"
+#include "queueConfig.h"
 
 #include "setup.h"
 

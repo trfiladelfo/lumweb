@@ -11,7 +11,7 @@
 
 NAME = Luminary_Webinterface
 
-LUMINARY_DRIVER_DIR=external/drivers/lm3s9b96
+LUMINARY_DRIVER_DIR=external/lm3s9b96
 RTOS_SOURCE_DIR=external/freeRTOS/Source
 LWIP_COMMON_DIR=external/ethernet/lwip131
 FATFS_COMMON_DIR=external/fatfs
@@ -79,12 +79,12 @@ SOURCE=	syscall.c \
 		$(FATFS_COMMON_DIR)/ff.c \
 		$(FATFS_COMMON_DIR)/mmc-dk-lm3s9b96.c \
 		$(FATFS_COMMON_DIR)/SDcard.c \
-		$(LUMINARY_DRIVER_DIR)/sound.c \
-		$(LUMINARY_DRIVER_DIR)/touch.c \
-		$(LUMINARY_DRIVER_DIR)/tlv320aic23b.c \
-		$(LUMINARY_DRIVER_DIR)/kitronix320x240x16_ssd2119_8bit.c \
+		$(LUMINARY_DRIVER_DIR)/drivers/sound.c \
+		$(LUMINARY_DRIVER_DIR)/drivers/touch.c \
+		$(LUMINARY_DRIVER_DIR)/drivers/tlv320aic23b.c \
+		$(LUMINARY_DRIVER_DIR)/drivers/kitronix320x240x16_ssd2119_8bit.c \
 		$(LUMINARY_DRIVER_DIR)/driverlib/ustdlib.c \
-		$(LUMINARY_DRIVER_DIR)/set_pinout.c \
+		$(LUMINARY_DRIVER_DIR)/drivers/set_pinout.c \
 		$(GRAPHIC_DIR)/graphicTask.c \
 		$(GRAPHIC_DIR)/gui/touchActions.c \
 		$(GRAPHIC_DIR)/gui/displayBasics.c \
@@ -119,6 +119,7 @@ CFLAGS=-I $(SOURCE_DIR) \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 \
 		-I $(LUMINARY_DRIVER_DIR) \
+		-I $(LUMINARY_DRIVER_DIR)/drivers \
 		-I $(LUMINARY_DRIVER_DIR)/driverlib \
 		-I $(LUMINARY_DRIVER_DIR)/inc \
 		-D inline= -mthumb -mcpu=cortex-m3 \
