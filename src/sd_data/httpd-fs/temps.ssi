@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<title>Temperaturen</title>
+		<link rel="stylesheet" type="text/css" href="css/design.css" />
+		<script type="text/javascript" language="javascript" src="js/funcs_c.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<center><!--#Titel label=Temperaturen --></center>
+
+			<form method="get" action="set.cgi" name="temperaturen" id="form-temperaturen" onsubmit="return submit_form(this)">
+				<center>
+					<table style="width: 75%; border:1px solid black;" border="0">
+
+						<tr>
+							<td><!--#FloatInputField id=norm_temp label=Normaltemperatur min=0 max=35 increment=0.1--></td>
+						</tr>
+
+						<tr>
+							<td><!--#FloatInputField id=abs_temp label=Absenktemperatur min=0 max=35 increment=0.1--></td>
+						</tr>
+			
+						<tr>
+							<td><!--#SubmitInputField label=Speichern form_id=temperaturen --> | <!--#Hyperlink label=Menue value=index.ssi --> </td>
+						</tr>
+					</table>
+				
+					<div id="container-temperaturen" class="answer">
+						<div id="last-update">Letzte Aktualisierung <!--#DateTime--></div>
+					</div>
+				</center>	
+			</form>
+		</div>
+		<div id="footer">
+			<nobr><font style="font-size: 12px">&copy; 2009 - 2010 Anzinger und Hahn in Zusammenarbeit mit <b>Hainzl Industriesysteme</b></font><nobr>
+		</div>
+	</body>
+</html>

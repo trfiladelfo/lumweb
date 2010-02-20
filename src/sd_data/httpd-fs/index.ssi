@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<title>Zeiteinstellung</title>
+		<link rel="stylesheet" type="text/css" href="css/design.css" />
+	</head>
+	<body>
+		<div id="container">
+			<center>
+				<h1>Men&uuml;</h1>
+				<!--#Hyperlink label=Temperaturen value=temps.ssi --> <br/>
+				<!--#Hyperlink label=Absenkzeiten value=times.ssi --><br/>
+				<!--#Hyperlink label=Heizkurve value=kurve.ssi --> <br/>
+				&nbsp;
+			</center>
+		</div>
+		<div id="footer">
+			<nobr><font style="font-size: 12px">&copy; 2009 - 2010 Anzinger und Hahn in Zusammenarbeit mit <b>Hainzl Industriesysteme</b></font><nobr>
+		</div>
+	</body>
+</html>
