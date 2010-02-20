@@ -21,8 +21,10 @@
 #define ENABLE_SNTP			0
 #define ENABLE_DNS			0
 #define	ENABLE_NET_BIOS 	0
+
 //#define DEBUG_MEMORY 1
-//#define DEBUG_GRAPHIC 1
+#define DEBUG_GRAPHIC 		0
+#define DEBUG_HTTPC			0
 #define DEBUG_SSI 			0
 #define DEBUG_SSI_PARAMS	0
 #define DEBUG_LOG 			0

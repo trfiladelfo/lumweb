@@ -52,19 +52,31 @@ void vDrawElementsOnDisplay(void) {
 
 	WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xTitle);
 
+#if DEBUG_GRAPHIC
 	printf("vDrawElementsOnDisplay: %x\n", xDisplayRoot.displayEntities);
+#endif
+
 	if (xDisplayRoot.displayEntities == true) {
+
+#if DEBUG_GRAPHIC
 		printf("vDrawElementsOnDisplay: Draw Elements offset %d\n",
 				elementOffset);
+#endif
 
 		toDraw = xDisplayRoot.entities;
 		for (i = 0; i < elementOffset && toDraw != NULL && toDraw->next != NULL; i++) {
-			printf("vDrawElementsOnDisplay: next Element\n");
 			toDraw = toDraw->next;
+
+#if DEBUG_GRAPHIC
+			printf("vDrawElementsOnDisplay: next Element\n");
+#endif
 		}
 
+
+#if DEBUG_GRAPHIC
 		printf("vDrawElementsOnDisplay: root = %x, todraw = %x\n",
 				(unsigned int) xDisplayRoot.entities, (unsigned int) toDraw);
+#endif
 
 		for (i = 0; toDraw != NULL && i < DISPLAY_LINES_PER_VIEW; i++) {
 			xGetLabelWidget(toDraw, i);
@@ -79,9 +91,11 @@ void vDrawElementsOnDisplay(void) {
 						(tWidget*) toDraw->valueWidget);
 			}
 
+#if DEBUG_GRAPHIC
 			printf(
 					"vDrawElementsOnDisplay: new id=%s, label=%s, value=%d, strValue=%s\n",
 					toDraw->id, toDraw->label, toDraw->value, toDraw->strValue);
+#endif
 			toDraw = toDraw->next;
 		}
 
@@ -189,7 +203,11 @@ tWidget* xGetValueWidget(basicDisplayLine *line, int row) {
 				+ (DISPLAY_TOP_OFFSET) + DISPLAY_LINE_HEIGHT - 1;
 		break;
 	default:
+
+#if DEBUG_GRAPHIC
 		printf("xGetValueWidget: Not Implemented for %d\n", line->type);
+#endif
+
 		break;
 	}
 	return line->labelWidget;
