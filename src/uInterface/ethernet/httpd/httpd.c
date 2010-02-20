@@ -116,6 +116,9 @@
 #define false ((u8_t)0)
 #endif
 
+/** Root folder for httpd */
+#define	HTTPD_ROOT	"httpd-fs"
+
 typedef struct {
 	const char *name;
 	u8_t shtml;
@@ -142,15 +145,14 @@ static const char *g_pcSSIExtensions[] = { ".shtml", ".shtm", ".ssi", ".xml" };
 #define NUM_SHTML_EXTENSIONS (sizeof(g_pcSSIExtensions) / sizeof(const char *))
 
 enum tag_check_state {
-	TAG_NONE, /* Not processing an SSI tag */
-	TAG_LEADIN, /* Tag lead in "<!--#" being processed */
-	TAG_FOUND, /* Tag name being read, looking for lead-out start */
+	TAG_NONE, /** Not processing an SSI tag */
+	TAG_LEADIN, /** Tag lead in "<!--#" being processed */
+	TAG_FOUND, /** Tag name being read, looking for lead-out start */
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
-	TAG_PARAM, /* process parameters */
+	TAG_PARAM, /** process parameters */
 #endif
-	TAG_LEADOUT, /* Tag lead out "-->" being processed */
-	TAG_SENDING
-/* Sending tag replacement string */
+	TAG_LEADOUT, /* *Tag lead out "-->" being processed */
+	TAG_SENDING /** Sending tag replacement string */
 };
 #endif /* INCLUDE_HTTPD_SSI */
 
@@ -1276,13 +1278,26 @@ static err_t http_sent(void *arg, struct tcp_pcb *pcb, u16_t len) {
 static struct fs_file *
 get_404_file(char **ppURI) {
 	struct fs_file *file;
+	char path_to_file[64];
 
+	path_to_file[0] = 0; /* clean path */
+
+	strcat(path_to_file, HTTPD_ROOT);
 	*ppURI = "/404.html";
-	file = fs_open(*ppURI);
+
+	strcat(path_to_file, *ppURI);
+
+	file = fs_open(path_to_file);
 	if (file == NULL) {
+		path_to_file[0] = 0;
+		strcat(path_to_file, HTTPD_ROOT);
+
 		/* 404.html doesn't exist. Try 404.htm instead. */
 		*ppURI = "/404.htm";
-		file = fs_open(*ppURI);
+
+		strcat(path_to_file, *ppURI);
+
+		file = fs_open(path_to_file);
 		if (file == NULL) {
 			/* 404.htm doesn't exist either. Indicate to the caller that it should
 			 * send back a default 404 page.
@@ -1290,6 +1305,8 @@ get_404_file(char **ppURI) {
 			*ppURI = NULL;
 		}
 	}
+
+	path_to_file[0] = 0; /* clean path */
 
 	return (file);
 }
@@ -1307,6 +1324,11 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 	int count;
 	char *params;
 #endif
+	char path_to_file[64]; /** Max path + file length = 64 chars */
+
+	path_to_file[0] = 0; /* clean path */
+
+	strcat(path_to_file, HTTPD_ROOT);
 
 	DEBUG_PRINT
 		("http_recv 0x%08x\n", pcb);
@@ -1370,9 +1392,8 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 						DEBUG_PRINT
 							("Looking for %s...\n",
 									g_psDefaultFilenames[loop].name);
-						file
-								= fs_open(
-										(char *) g_psDefaultFilenames[loop].name);
+						strcat(path_to_file, (char *) g_psDefaultFilenames[loop].name);
+						file = fs_open(path_to_file);
 						uri = (char *) g_psDefaultFilenames[loop].name;
 						if (file != NULL) {
 							DEBUG_PRINT
@@ -1434,7 +1455,9 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 					DEBUG_PRINT
 						("Opening %s\n", uri);
 
-					file = fs_open(uri);
+					strcat(path_to_file, uri);
+					printf("HTTPD: Opening uri '%s' - file: '%s' \n", uri, path_to_file);
+					file = fs_open(path_to_file);
 					if (file == NULL) {
 						file = get_404_file(&uri);
 					}
@@ -1501,6 +1524,9 @@ static err_t http_recv(void *arg, struct tcp_pcb *pcb, struct pbuf *p,
 	if ((err == ERR_OK) && (p == NULL)) {
 		close_conn(pcb, hs);
 	}
+
+	path_to_file[0] = 0; /* clean path */
+
 	return ERR_OK;
 }
 /*-----------------------------------------------------------------------------------*/
