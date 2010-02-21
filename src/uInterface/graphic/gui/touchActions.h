@@ -22,8 +22,6 @@ void vPageUp(tWidget *pWidget);
 void vPageDown(tWidget *pWidget);
 void vHyperlinkAction(tWidget *pWidget);
 void vCheckboxAction(tWidget* pWidget, unsigned long status);
-void vIntegerEditorAction(tWidget *pWidget);
-void vFloatEditorAction(tWidget *pWidget);
-void vTimeEditorAction(tWidget *pWidget);
+void vOpenEditorAction(tWidget *pWidget);
 
 #endif /* TOUCHACTIONS_H_ */

@@ -15,7 +15,12 @@
 
 #include "lmi_fs.h"
 #include "hw_types.h"
+#include "hw_memmap.h"
 #include "setup.h"
+
+#include "interrupt.h"
+#include "hw_watchdog.h"
+#include "watchdog.h"
 
 #include "graphic/gui/displayBasics.h"
 

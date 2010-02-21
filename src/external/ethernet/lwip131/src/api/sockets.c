@@ -1131,7 +1131,7 @@ lwip_shutdown(int s, int how)
 {
   LWIP_UNUSED_ARG(how);
   LWIP_DEBUGF(SOCKETS_DEBUG, ("lwip_shutdown(%d, how=%d)\n", s, how));
-  return lwip_close(s); /* XXX temporary hack until proper implementation */
+  return lwip_close(s); /* X XX temporary hack until proper implementation */
 }
 
 static int

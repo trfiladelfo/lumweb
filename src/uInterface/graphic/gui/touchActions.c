@@ -16,6 +16,7 @@
 #include "displayDraw.h"
 
 #include "graphic/httpc/webClient.h"
+#include "graphic/gui/valueEditor.h"
 
 #include "configuration/configloader.h"
 
@@ -83,33 +84,13 @@ void vCheckboxAction(tWidget* pWidget, unsigned long status) {
 	}
 }
 
-void vIntegerEditorAction(tWidget *pWidget) {
-	basicDisplayLine *root = xDisplayRoot.entities;
-	while (root != NULL) {
-		if (root->valueWidget == pWidget) {
-			printf("vIntegerEditorAction: open Editor\n");
-			break;
-		}
-		root = root->next;
-	}
-}
-
-void vFloatEditorAction(tWidget *pWidget) {
-	basicDisplayLine *root = xDisplayRoot.entities;
-	while (root != NULL) {
-		if (root->valueWidget == pWidget) {
-			printf("vFloatEditorAction: open Editor\n");
-			break;
-		}
-		root = root->next;
-	}
-}
-
-void vTimeEditorAction(tWidget *pWidget) {
+void vOpenEditorAction(tWidget *pWidget) {
 	basicDisplayLine *root = xDisplayRoot.entities;
 	while (root != NULL) {
 		if (root->valueWidget == pWidget) {
 			printf("vTimeEditorAction: open Editor\n");
+			((tPushButtonWidget*) pWidget)->ulStyle &= (~PB_STYLE_PRESSED);
+			vOpenEditor(root);
 			break;
 		}
 		root = root->next;

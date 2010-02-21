@@ -650,7 +650,7 @@ void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
  *
 */
 void io_print_saved_params(char * pcBuf, int iBufLen) {
-	int i;
+	//int i;
 	if (paramValueLen == -1) {
 		snprintf(pcBuf, iBufLen, "Keine Parameter gesetzt");
 	} else {
@@ -841,9 +841,9 @@ void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			snprintf(
 					pcBuf,
 					iBufLen,
-					"<!-- $ FloatInputField name=\"%s\" value=\"%d.%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
+					"<!-- $ FloatInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"f_%s\" value=\"%d.%d\" id=\"%s\" />"
-						"<script>addB('%s',%s,%s,%s);</script>", label, value, decimal_place, id,
+						"<script>addB('%s',%s,%s,%s);</script>", label, (value * 10 + decimal_place), id,
 					max, min, increment, label, id, value, decimal_place, id, id, max, min, increment);
 
 #if DEBUG_SSI

@@ -58,7 +58,7 @@
  *   currently, overlapping or duplicate fragments are thrown away
  *   if IP_REASS_CHECK_OVERLAP=1 (the default)!
  *
- * @todo: work with IP header options
+ * @to do: work with IP header options
  */
 
 /** Setting this to 0, you can turn off checking the fragments for overlapping
@@ -213,7 +213,7 @@ ip_reass_free_complete_datagram(struct ip_reassdata *ipr, struct ip_reassdata *p
 static int
 ip_reass_remove_oldest_datagram(struct ip_hdr *fraghdr, int pbufs_needed)
 {
-  /* @todo Can't we simply remove the last datagram in the
+  /* @to do Can't we simply remove the last datagram in the
    *       linked list behind reassdatagrams?
    */
   struct ip_reassdata *r, *oldest, *prev;
@@ -284,7 +284,7 @@ ip_reass_enqueue_new_datagram(struct ip_hdr *fraghdr, int clen)
   ipr->next = reassdatagrams;
   reassdatagrams = ipr;
   /* copy the ip header for later tests and input */
-  /* @todo: no ip options supported? */
+  /* @to do: no ip options supported? */
   SMEMCPY(&(ipr->iphdr), fraghdr, IP_HLEN);
   return ipr;
 }
@@ -502,7 +502,7 @@ ip_reass(struct pbuf *p)
       LWIP_DEBUGF(IP_REASS_DEBUG,("ip_reass: Overflow condition: pbufct=%d, clen=%d, MAX=%d\n",
         ip_reass_pbufcount, clen, IP_REASS_MAX_PBUFS));
       IPFRAG_STATS_INC(ip_frag.memerr);
-      /* @todo: send ICMP time exceeded here? */
+      /* @to do: send ICMP time exceeded here? */
       /* drop this pbuf */
       goto nullreturn;
     }
@@ -556,7 +556,7 @@ ip_reass(struct pbuf *p)
       ipr->datagram_len));
   }
   /* find the right place to insert this pbuf */
-  /* @todo: trim pbufs if fragments are overlapping */
+  /* @to do: trim pbufs if fragments are overlapping */
   if (ip_reass_chain_frag_into_datagram_and_validate(ipr, p)) {
     /* the totally last fragment (flag more fragments = 0) was received at least
      * once AND all fragments are received */
@@ -571,7 +571,7 @@ ip_reass(struct pbuf *p)
     IPH_LEN_SET(fraghdr, htons(ipr->datagram_len));
     IPH_OFFSET_SET(fraghdr, 0);
     IPH_CHKSUM_SET(fraghdr, 0);
-    /* @todo: do we need to set calculate the correct checksum? */
+    /* @to do: do we need to set calculate the correct checksum? */
     IPH_CHKSUM_SET(fraghdr, inet_chksum(fraghdr, IP_HLEN));
 
     p = ipr->p;

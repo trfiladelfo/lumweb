@@ -14,6 +14,8 @@
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 #include "interrupt.h"
 #include "hw_ints.h"
+#include "hw_watchdog.h"
+#include "watchdog.h"
 
 #include "hw_can.h"
 #include "can.h"
@@ -23,7 +25,6 @@
 #include "setup.h"
 #include "uart/uartstdio.h"
 #include "ethernet/ETHIsr.h"
-
 
 void prvSetupHardware(void) {
 
@@ -102,5 +103,29 @@ void prvSetupHardware(void) {
 	//
 	CANEnable(CAN0_BASE);
 
+	//
+	// Enable the peripherals used by this example.
+	//
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_WDOG0);
+
+	//
+	// Enable the watchdog interrupt.
+	//
+	IntEnable(INT_WATCHDOG);
+
+	//
+	// Set the period of the watchdog timer.
+	//
+	WatchdogReloadSet(WATCHDOG0_BASE, SysCtlClockGet());
+
+	//
+	// Enable reset generation from the watchdog timer.
+	//
+	WatchdogResetEnable(WATCHDOG0_BASE);
+
+	//
+	// Enable the watchdog timer.
+	//
+	WatchdogEnable(WATCHDOG0_BASE);
 
 }

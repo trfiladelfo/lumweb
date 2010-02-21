@@ -111,10 +111,10 @@ avChurnRand(char *randData, u32_t randLen)
  *
  * Ref: Applied Cryptography 2nd Ed. by Bruce Schneier p. 427
  *
- * XXX Why does he not just call churnRand() for each block?  Probably
+ * X XX Why does he not just call churnRand() for each block?  Probably
  *  so that you don't ever publish the seed which could possibly help
  *  predict future values.
- * XXX Why don't we preserve md5 between blocks and just update it with
+ * X XX Why don't we preserve md5 between blocks and just update it with
  *  randCount each time?  Probably there is a weakness but I wish that
  *  it was documented.
  */
@@ -198,7 +198,7 @@ avRandomInit()
   avRandomSeed += *(u32_t *)clockBuf + *lptr1 + OSIdleCtr
            + ppp_mtime() + ((u32_t)TM1 << 16) + TM1;
 #else
-  avRandomSeed += sys_jiffies(); /* XXX */
+  avRandomSeed += sys_jiffies(); /* X XX */
 #endif
 
   /* Initialize the Borland random number generator. */
@@ -223,7 +223,7 @@ avRandomize(void)
     /* The initialization function also updates the seed. */
   } else {
     /* avRandomSeed += (avRandomSeed << 16) + TM1; */
-    avRandomSeed += (sys_jiffies() - last_jiffies); /* XXX */
+    avRandomSeed += (sys_jiffies() - last_jiffies); /* X XX */
   }
   last_jiffies = sys_jiffies();
 }

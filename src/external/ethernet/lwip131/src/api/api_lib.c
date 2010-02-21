@@ -202,7 +202,7 @@ netconn_connect(struct netconn *conn, struct ip_addr *addr, u16_t port)
  * Disconnect a netconn from its current peer (only valid for UDP netconns).
  *
  * @param conn the netconn to disconnect
- * @return TODO: return value is not set here...
+ * @return TO DO: return value is not set here...
  */
 err_t
 netconn_disconnect(struct netconn *conn)
@@ -300,7 +300,7 @@ netconn_recv(struct netconn *conn)
   LWIP_ERROR("netconn_recv: invalid conn",  (conn != NULL), return NULL;);
 
   if (conn->recvmbox == SYS_MBOX_NULL) {
-    /* @todo: should calling netconn_recv on a TCP listen conn be fatal (ERR_CONN)?? */
+    /* @to do: should calling netconn_recv on a TCP listen conn be fatal (ERR_CONN)?? */
     /* TCP listen conns don't have a recvmbox! */
     conn->err = ERR_CONN;
     return NULL;
@@ -313,7 +313,7 @@ netconn_recv(struct netconn *conn)
   if (conn->type == NETCONN_TCP) {
 #if LWIP_TCP
     if (conn->state == NETCONN_LISTEN) {
-      /* @todo: should calling netconn_recv on a TCP listen conn be fatal?? */
+      /* @to do: should calling netconn_recv on a TCP listen conn be fatal?? */
       conn->err = ERR_CONN;
       return NULL;
     }

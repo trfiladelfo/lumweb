@@ -592,7 +592,7 @@ etharp_ip_input(struct netif *netif, struct pbuf *p)
 
   LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_ip_input: updating ETHARP table.\n"));
   /* update ARP table */
-  /* @todo We could use ETHARP_TRY_HARD if we think we are going to talk
+  /* @to do We could use ETHARP_TRY_HARD if we think we are going to talk
    * back soon (for example, if the destination IP address is ours. */
   update_arp_entry(netif, &(hdr->ip.src), &(hdr->eth.src), 0);
 }
@@ -749,7 +749,7 @@ etharp_arp_input(struct netif *netif, struct eth_addr *ethaddr, struct pbuf *p)
     /* DHCP wants to know about ARP replies from any host with an
      * IP address also offered to us by the DHCP server. We do not
      * want to take a duplicate IP address on a single network.
-     * @todo How should we handle redundant (fail-over) interfaces? */
+     * @to do How should we handle redundant (fail-over) interfaces? */
     dhcp_arp_reply(netif, &sipaddr);
 #endif
     break;

@@ -172,13 +172,13 @@ snmp_send_response(struct snmp_msg_pstat *m_stat)
     snmp_inc_snmpoutgetresponses();
     snmp_inc_snmpoutpkts();
 
-    /** @todo do we need separate rx and tx pcbs for threaded case? */
+    /** @to do do we need separate rx and tx pcbs for threaded case? */
     /** connect to the originating source */
     udp_connect(m_stat->pcb, &m_stat->sip, m_stat->sp);
     err = udp_send(m_stat->pcb, p);
     if (err == ERR_MEM)
     {
-      /** @todo release some memory, retry and return tooBig? tooMuchHassle? */
+      /** @to do release some memory, retry and return tooBig? tooMuchHassle? */
       err = ERR_MEM;
     }
     else

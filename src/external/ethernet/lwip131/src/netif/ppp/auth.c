@@ -213,7 +213,7 @@ link_down(int unit)
   
   AUTHDEBUG((LOG_INFO, "link_down: %d\n", unit));
   if (did_authup) {
-    /* XXX Do link down processing. */
+    /* X XX Do link down processing. */
     did_authup = 0;
   }
   for (i = 0; (protp = ppp_protocols[i]) != NULL; ++i) {
@@ -389,7 +389,7 @@ auth_withpeer_fail(int unit, u16_t protocol)
     BZERO(ppp_settings.passwd, MAXSECRETLEN);
   }
   /* 
-   * XXX Warning: the unit number indicates the interface which is
+   * X XX Warning: the unit number indicates the interface which is
    * not necessarily the PPP connection.  It works here as long
    * as we are only supporting PPP interfaces.
    */
@@ -548,7 +548,7 @@ check_passwd( int unit, char *auser, int userlen, char *apasswd, int passwdlen, 
   LWIP_UNUSED_ARG(passwdlen);
   LWIP_UNUSED_ARG(msglen);
   *msg = (char *) 0;
-  return UPAP_AUTHACK;     /* XXX Assume all entries OK. */
+  return UPAP_AUTHACK;     /* X XX Assume all entries OK. */
 #else
   int ret = 0;
   struct wordlist *addrs = NULL;
@@ -565,8 +565,8 @@ check_passwd( int unit, char *auser, int userlen, char *apasswd, int passwdlen, 
   user[userlen] = '\0';
   *msg = (char *) 0;
 
-  /* XXX Validate user name and password. */
-  ret = UPAP_AUTHACK;     /* XXX Assume all entries OK. */
+  /* X XX Validate user name and password. */
+  ret = UPAP_AUTHACK;     /* X XX Assume all entries OK. */
       
   if (ret == UPAP_AUTHNAK) {
     if (*msg == (char *) 0) {
@@ -670,7 +670,7 @@ int get_secret( int unit, char *client, char *server, char *secret, int *secret_
   addrs = NULL;
   secbuf[0] = 0;
 
-  /* XXX Find secret. */
+  /* X XX Find secret. */
   if (ret < 0) {
     return 0;
   }
@@ -756,7 +756,7 @@ network_phase(int unit)
    * If the peer had to authenticate, run the auth-up script now.
    */
   if ((go->neg_chap || go->neg_upap) && !did_authup) {
-    /* XXX Do setup for peer authentication. */
+    /* X XX Do setup for peer authentication. */
     did_authup = 1;
   }
 
@@ -836,7 +836,7 @@ connect_time_expired(void *arg)
 static int
 login(char *user, char *passwd, char **msg, int *msglen)
 {
-  /* XXX Fail until we decide that we want to support logins. */
+  /* X XX Fail until we decide that we want to support logins. */
   return (UPAP_AUTHNAK);
 }
 #endif
@@ -859,7 +859,7 @@ static int
 null_login(int unit)
 {
   LWIP_UNUSED_ARG(unit);
-  /* XXX Fail until we decide that we want to support logins. */
+  /* X XX Fail until we decide that we want to support logins. */
   return 0;
 }
 
@@ -893,7 +893,7 @@ get_pap_passwd(int unit, char *user, char *passwd)
 static int
 have_pap_secret(void)
 {
-  /* XXX Fail until we set up our passwords. */
+  /* X XX Fail until we set up our passwords. */
   return 0;
 }
 
@@ -909,7 +909,7 @@ have_chap_secret(char *client, char *server, u32_t remote)
   LWIP_UNUSED_ARG(client);
   LWIP_UNUSED_ARG(server);
   LWIP_UNUSED_ARG(remote);
-  /* XXX Fail until we set up our passwords. */
+  /* X XX Fail until we set up our passwords. */
   return 0;
 }
 
@@ -964,7 +964,7 @@ ip_addr_check(u32_t addr, struct wordlist *addrs)
     return !ppp_settings.auth_required; /* no addresses authorized */
   }
 
-  /* XXX All other addresses allowed. */
+  /* X XX All other addresses allowed. */
   return 1;
 }
 

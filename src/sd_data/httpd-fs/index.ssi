@@ -6,7 +6,7 @@
 	<body>
 		<div id="container">
 			<center>
-				<h1>Men&uuml;</h1>
+				<!--#Titel label=Menu -->
 				<!--#Hyperlink label=Temperaturen value=temps.ssi --> <br/>
 				<!--#Hyperlink label=Absenkzeiten value=times.ssi --><br/>
 				<!--#Hyperlink label=Heizkurve value=kurve.ssi --> <br/>

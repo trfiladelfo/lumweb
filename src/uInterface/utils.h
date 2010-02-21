@@ -18,4 +18,5 @@ char* pcStrdup (char *src);
 int iIsSpace (char c);
 char* pcStrstr (char* str, char* search);
 
+int iAbs (int i);
 #endif /* UTILS_H_ */

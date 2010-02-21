@@ -414,7 +414,7 @@ pppInit(void)
   }
 
 #if LINK_STATS
-  /** @todo already done in stats_init (in fact, zeroed at boot). So, remove it? */
+  /** @to do already done in stats_init (in fact, zeroed at boot). So, remove it? */
   /* Clear the statistics. */
   memset(&lwip_stats.link, 0, sizeof(lwip_stats.link));
 #endif /* LINK_STATS */
@@ -1218,7 +1218,7 @@ ppp_recv_config( int unit, int mru, u32_t asyncmap, int pcomp, int accomp)
 int
 ccp_test( int unit, int opt_len,  int for_transmit, u_char *opt_ptr)
 {
-  return 0; /* XXX Currently no compression. */
+  return 0; /* X XX Currently no compression. */
 }
 
 /*
@@ -1227,7 +1227,7 @@ ccp_test( int unit, int opt_len,  int for_transmit, u_char *opt_ptr)
 void
 ccp_flags_set(int unit, int isopen, int isup)
 {
-  /* XXX */
+  /* X XX */
 }
 
 /*
@@ -1238,7 +1238,7 @@ ccp_flags_set(int unit, int isopen, int isup)
 int
 ccp_fatal_error(int unit)
 {
-  /* XXX */
+  /* X XX */
   return 0;
 }
 #endif
@@ -1249,7 +1249,7 @@ ccp_fatal_error(int unit)
 int
 get_idle_time(int u, struct ppp_idle *ip)
 {
-  /* XXX */
+  /* X XX */
   LWIP_UNUSED_ARG(u);
   LWIP_UNUSED_ARG(ip);
 
@@ -1282,7 +1282,7 @@ GetMask(u32_t addr)
   /* class D nets are disallowed by bad_ip_adrs */
   mask = subnetMask | htonl(nmask);
   
-  /* XXX
+  /* X XX
    * Scan through the system's network interfaces.
    * Get each netmask and OR them into our mask.
    */
@@ -1465,7 +1465,7 @@ sifdefaultroute(int pd, u32_t l, u32_t g)
     netif_set_default(&pc->netif);
   }
 
-  /* TODO: check how PPP handled the netMask, previously not set by ipSetDefault */
+  /* TO DO: check how PPP handled the netMask, previously not set by ipSetDefault */
 
   return st;
 }
@@ -1787,7 +1787,7 @@ pppInProc(int pd, u_char *s, int l)
     /* Handle special characters. */
     if (ESCAPE_P(pc->inACCM, curChar)) {
       /* Check for escape sequences. */
-      /* XXX Note that this does not handle an escaped 0x5d character which
+      /* X XX Note that this does not handle an escaped 0x5d character which
        * would appear as an escape character.  Since this is an ASCII ']'
        * and there is no reason that I know of to escape it, I won't complicate
        * the code to handle this case. GLL */

@@ -89,6 +89,7 @@ SOURCE=	syscall.c \
 		$(GRAPHIC_DIR)/gui/touchActions.c \
 		$(GRAPHIC_DIR)/gui/displayBasics.c \
 		$(GRAPHIC_DIR)/gui/displayDraw.c \
+		$(GRAPHIC_DIR)/gui/valueEditor.c \
 		$(GRAPHIC_DIR)/httpc/webClient.c \
 		$(GRAPHIC_DIR)/httpc/tags.c \
       	$(SOURCE_DIR)/log/logging.c

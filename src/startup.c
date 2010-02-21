@@ -32,12 +32,18 @@
 //*****************************************************************************
 
 #include <stdio.h>
+#include "hw_types.h"
+#include "hw_memmap.h"
+#include "hw_watchdog.h"
+#include "watchdog.h"
+
 
 void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
 static void IntEmptyHandler (void);
+static void WatchdogIntHandler(void);
 
 //*****************************************************************************
 //
@@ -114,7 +120,7 @@ void (* const g_pfnVectors[])(void) = {
 		IntDefaultHandler, // ADC Sequence 1
 		IntDefaultHandler, // ADC Sequence 2
 		TouchScreenIntHandler, // ADC Sequence 3
-		IntDefaultHandler, // Watchdog timer
+		WatchdogIntHandler, // Watchdog timer
 		Timer0IntHandler, // Timer 0 subtimer A
 		IntDefaultHandler, // Timer 0 subtimer B
 		IntDefaultHandler, // Timer 1 subtimer A
@@ -268,4 +274,18 @@ static void IntDefaultHandler(void) {
 
 static void IntEmptyHandler (void) {
 
+}
+
+//*****************************************************************************
+//
+// The interrupt handler for the watchdog.  This feeds the dog (so that the
+// processor does not get reset) and winks the LED connected to GPIO B3.
+//
+//*****************************************************************************
+static void WatchdogIntHandler(void)
+{
+    //
+    // Clear the watchdog interrupt.
+    //
+    WatchdogIntClear(WATCHDOG0_BASE);
 }

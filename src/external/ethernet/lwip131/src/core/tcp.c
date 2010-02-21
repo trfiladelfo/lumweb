@@ -179,7 +179,7 @@ tcp_close(struct tcp_pcb *pcb)
        Since we don't really have to ensure all data has been sent when tcp_close
        returns (unsent data is sent from tcp timer functions, also), we don't care
        for the return value of tcp_output for now. */
-    /* @todo: When implementing SO_LINGER, this must be changed somehow:
+    /* @to do: When implementing SO_LINGER, this must be changed somehow:
        If SOF_LINGER is set, the data should be sent when tcp_close returns. */
     tcp_output(pcb);
   }
@@ -300,7 +300,7 @@ tcp_bind(struct tcp_pcb *pcb, struct ip_addr *ipaddr, u16_t port)
       }
     }
   }
-  /* @todo: until SO_REUSEADDR is implemented (see task #6995 on savannah),
+  /* @to do: until SO_REUSEADDR is implemented (see task #6995 on savannah),
    * we have to check the pcbs in TIME-WAIT state, also: */
   for(cpcb = tcp_tw_pcbs; cpcb != NULL; cpcb = cpcb->next) {
     if (cpcb->local_port == port) {
@@ -1258,7 +1258,7 @@ tcp_next_iss(void)
 {
   static u32_t iss = 6510;
   
-  iss += tcp_ticks;       /* XXX */
+  iss += tcp_ticks;       /* X XX */
   return iss;
 }
 

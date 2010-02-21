@@ -439,7 +439,7 @@ mem_realloc(void *rmem, mem_size_t newsize)
      * at least MIN_SIZE_ALIGNED of data.
      * Old size ('size') must be big enough to contain at least 'newsize' plus a struct mem
      * ('SIZEOF_STRUCT_MEM') with some data ('MIN_SIZE_ALIGNED').
-     * @todo we could leave out MIN_SIZE_ALIGNED. We would create an empty
+     * @to do we could leave out MIN_SIZE_ALIGNED. We would create an empty
      *       region that couldn't hold data, but when mem->next gets freed,
      *       the 2 regions would be combined, resulting in more free memory */
     ptr2 = ptr + SIZEOF_STRUCT_MEM + newsize;
@@ -543,7 +543,7 @@ mem_malloc(mem_size_t size)
            * remainder must be large enough to contain MIN_SIZE_ALIGNED data: if
            * mem->next - (ptr + (2*SIZEOF_STRUCT_MEM)) == size,
            * struct mem would fit in but no data between mem2 and mem2->next
-           * @todo we could leave out MIN_SIZE_ALIGNED. We would create an empty
+           * @to do we could leave out MIN_SIZE_ALIGNED. We would create an empty
            *       region that couldn't hold data, but when mem->next gets freed,
            *       the 2 regions would be combined, resulting in more free memory
            */

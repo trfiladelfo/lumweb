@@ -11,10 +11,10 @@
 				<center>
 					<table style="width: 75%; border:1px solid black;" border="0">
 						<tr>
-							<td> <!--#Group label=Startzeit --> </td>
+							<td><!--#FloatInputField id=kurve label=Heizkurve max=2 min=1 increment=1 --></td>
 						</tr>
 						<tr>
-							<td><!--#FloatInputField id=heizkurve label=Heizkurve max=1 min=2 increment=0.1 --></td>
+							<td> <!--#CheckboxInputField label=Raumeinfluss id=kurve_ro --> </td>
 						</tr>
 						<tr>
 							<td><!--#SubmitInputField label=Speichern form_id=kurve --> | <!--#Hyperlink label=Menue value=index.ssi --> </td>
