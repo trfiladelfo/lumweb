@@ -64,9 +64,9 @@
  * RFC 2181 - Clarifications to the DNS Specification
  *----------------------------------------------------------------------------*/
 
-/** @todo: define good default values (rfc compliance) */
-/** @todo: improve answer parsing, more checkings... */
-/** @todo: check RFC1035 - 7.3. Processing responses */
+/** @to do: define good default values (rfc compliance) */
+/** @to do: improve answer parsing, more checkings... */
+/** @to do: check RFC1035 - 7.3. Processing responses */
 
 /*-----------------------------------------------------------------------------
  * Includes

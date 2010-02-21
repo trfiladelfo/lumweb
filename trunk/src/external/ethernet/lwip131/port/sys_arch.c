@@ -86,7 +86,7 @@ void sys_mbox_free(sys_mbox_t mbox)
 	    lwip_stats.sys.mbox.err++;
 #endif /* SYS_STATS */
 			
-		// TODO notify the user of failure.
+		// TO DO notify the user of failure.
 	}
 
 	vQueueDelete( mbox );
@@ -177,7 +177,7 @@ portTickType StartTime, EndTime, Elapsed;
 		EndTime = xTaskGetTickCount();
 		Elapsed = (EndTime - StartTime) * portTICK_RATE_MS;
 		
-		return ( Elapsed ); // return time blocked TODO test	
+		return ( Elapsed ); // return time blocked TO DO test
 	}
 }
 
@@ -221,7 +221,7 @@ sys_sem_t sys_sem_new(u8_t count)
       ++lwip_stats.sys.sem.err;
 #endif /* SYS_STATS */
 			
-		return SYS_SEM_NULL;	// TODO need assert
+		return SYS_SEM_NULL;	// TO DO need assert
 	}
 	
 	if(count == 0)	// Means it can't be taken
@@ -268,7 +268,7 @@ portTickType StartTime, EndTime, Elapsed;
 			EndTime = xTaskGetTickCount();
 			Elapsed = (EndTime - StartTime) * portTICK_RATE_MS;
 			
-			return (Elapsed); // return time blocked TODO test	
+			return (Elapsed); // return time blocked TO DO test
 		}
 		else
 		{
@@ -357,7 +357,7 @@ struct timeoutlist *tl;
 
 /*-----------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------*/
-// TODO
+// T O D O
 /*-----------------------------------------------------------------------------------*/
 /*
   Starts a new thread with priority "prio" that will begin its execution in the

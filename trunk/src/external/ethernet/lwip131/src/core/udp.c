@@ -43,7 +43,7 @@
  *
  */
 
-/* @todo Check the use of '(struct udp_pcb).chksum_len_rx'!
+/* @to do Check the use of '(struct udp_pcb).chksum_len_rx'!
  */
 
 #include "lwip/opt.h"
@@ -540,7 +540,7 @@ udp_sendto_if(struct udp_pcb *pcb, struct pbuf *p,
     netif->addr_hint = NULL;
 #endif /* LWIP_NETIF_HWADDRHINT*/
   }
-  /* TODO: must this be increased even if error occured? */
+  /* TO DO: must this be increased even if error occured? */
   snmp_inc_udpoutdatagrams();
 
   /* did we chain a separate header pbuf earlier? */
@@ -597,7 +597,7 @@ udp_bind(struct udp_pcb *pcb, struct ip_addr *ipaddr, u16_t port)
 
     /* this code does not allow upper layer to share a UDP port for
        listening to broadcast or multicast traffic (See SO_REUSE_ADDR and
-       SO_REUSE_PORT under *BSD). TODO: See where it fits instead, OR
+       SO_REUSE_PORT under *BSD). TO DO: See where it fits instead, OR
        combine with implementation of UDP PCB flags. Leon Woestenberg. */
 #ifdef LWIP_UDP_TODO
     /* port matches that of PCB in list? */
@@ -688,7 +688,7 @@ udp_connect(struct udp_pcb *pcb, struct ip_addr *ipaddr, u16_t port)
   ip_addr_set(&pcb->remote_ip, ipaddr);
   pcb->remote_port = port;
   pcb->flags |= UDP_FLAGS_CONNECTED;
-/** TODO: this functionality belongs in upper layers */
+/** TO DO: this functionality belongs in upper layers */
 #ifdef LWIP_UDP_TODO
   /* Nail down local IP for netconn_addr()/getsockname() */
   if (ip_addr_isany(&pcb->local_ip) && !ip_addr_isany(&pcb->remote_ip)) {
@@ -699,7 +699,7 @@ udp_connect(struct udp_pcb *pcb, struct ip_addr *ipaddr, u16_t port)
       UDP_STATS_INC(udp.rterr);
       return ERR_RTE;
     }
-    /** TODO: this will bind the udp pcb locally, to the interface which
+    /** TO DO: this will bind the udp pcb locally, to the interface which
         is used to route output packets to the remote address. However, we
         might want to accept incoming packets on any interface! */
     pcb->local_ip = netif->ip_addr;

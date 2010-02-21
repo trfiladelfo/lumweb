@@ -53,7 +53,7 @@ icmp_input(struct pbuf *p, struct netif *inp)
 
   ICMP_STATS_INC(icmp.recv);
 
-  /* TODO: check length before accessing payload! */
+  /* TO DO: check length before accessing payload! */
 
   type = ((u8_t *)p->payload)[0];
 
@@ -109,7 +109,7 @@ icmp_dest_unreach(struct pbuf *p, enum icmp_dur_type t)
   struct ip_hdr *iphdr;
   struct icmp_dur_hdr *idur;
 
-  /* @todo: can this be PBUF_LINK instead of PBUF_IP? */
+  /* @to do: can this be PBUF_LINK instead of PBUF_IP? */
   q = pbuf_alloc(PBUF_IP, 8 + IP_HLEN + 8, PBUF_RAM);
   /* ICMP header + IP header + 8 bytes of data */
   if (q == NULL) {
@@ -147,7 +147,7 @@ icmp_time_exceeded(struct pbuf *p, enum icmp_te_type t)
 
   LWIP_DEBUGF(ICMP_DEBUG, ("icmp_time_exceeded\n"));
 
-  /* @todo: can this be PBUF_LINK instead of PBUF_IP? */
+  /* @to do: can this be PBUF_LINK instead of PBUF_IP? */
   q = pbuf_alloc(PBUF_IP, 8 + IP_HLEN + 8, PBUF_RAM);
   /* ICMP header + IP header + 8 bytes of data */
   if (q == NULL) {

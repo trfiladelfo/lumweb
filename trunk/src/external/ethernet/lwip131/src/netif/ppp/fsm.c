@@ -50,7 +50,7 @@
  */
 
 /*
- * TODO:
+ * T O D O:
  * Randomize fsm id on link/init.
  * Deal with variable outgoing MTU.
  */
@@ -131,7 +131,7 @@ fsm_init(fsm *f)
 {
   f->state = LS_INITIAL;
   f->flags = 0;
-  f->id = 0;        /* XXX Start with random id? */
+  f->id = 0;        /* X XX Start with random id? */
   f->timeouttime = FSM_DEFTIMEOUT;
   f->maxconfreqtransmits = FSM_DEFMAXCONFREQS;
   f->maxtermtransmits = FSM_DEFMAXTERMREQS;

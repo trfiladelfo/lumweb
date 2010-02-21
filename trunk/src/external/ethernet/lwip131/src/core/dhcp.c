@@ -42,7 +42,7 @@
  * This is a DHCP client for the lwIP TCP/IP stack. It aims to conform
  * with RFC 2131 and RFC 2132.
  *
- * TODO:
+ * T O D O:
  * - Proper parsing of DHCP messages exploiting file/sname field overloading.
  * - Add JavaDoc style documentation (API, internals).
  * - Support for interfaces other than Ethernet (SLIP, PPP, ...)
@@ -287,7 +287,7 @@ dhcp_select(struct netif *netif)
     /* shrink the pbuf to the actual content length */
     pbuf_realloc(dhcp->p_out, sizeof(struct dhcp_msg) - DHCP_OPTIONS_LEN + dhcp->options_out_len);
 
-    /* TODO: we really should bind to a specific local interface here
+    /* TO DO: we really should bind to a specific local interface here
        but we cannot specify an unconfigured netif as it is addressless */
     /* send broadcast to any DHCP server */
     udp_sendto_if(dhcp->pcb, dhcp->p_out, IP_ADDR_BROADCAST, DHCP_SERVER_PORT, netif);
@@ -506,7 +506,7 @@ dhcp_handle_ack(struct netif *netif)
 
 /**
  * Patch #1308
- * TODO: we must check if the file field is not overloaded by DHCP options!
+ * TO DO: we must check if the file field is not overloaded by DHCP options!
  */
 #if 0
   /* boot server address */
@@ -760,7 +760,7 @@ dhcp_decline(struct netif *netif)
     /* resize pbuf to reflect true size of options */
     pbuf_realloc(dhcp->p_out, sizeof(struct dhcp_msg) - DHCP_OPTIONS_LEN + dhcp->options_out_len);
 
-    /* @todo: should we really connect here? we are performing sendto() */
+    /* @to do: should we really connect here? we are performing sendto() */
     udp_connect(dhcp->pcb, IP_ADDR_ANY, DHCP_SERVER_PORT);
     /* per section 4.4.4, broadcast DECLINE messages */
     udp_sendto_if(dhcp->pcb, dhcp->p_out, IP_ADDR_BROADCAST, DHCP_SERVER_PORT, netif);
@@ -883,7 +883,7 @@ dhcp_bind(struct netif *netif)
   ip_addr_set(&sn_mask, &dhcp->offered_sn_mask);
 
   /* subnet mask not given? */
-  /* TODO: this is not a valid check. what if the network mask is 0? */
+  /* TO DO: this is not a valid check. what if the network mask is 0? */
   if (sn_mask.addr == 0) {
     /* choose a safe subnet mask given the network class */
     u8_t first_octet = ip4_addr1(&sn_mask);
@@ -1105,7 +1105,7 @@ dhcp_release(struct netif *netif)
   netif_set_gw(netif, IP_ADDR_ANY);
   netif_set_netmask(netif, IP_ADDR_ANY);
   
-  /* TODO: netif_down(netif); */
+  /* TO DO: netif_down(netif); */
   return result;
 }
 
@@ -1152,7 +1152,7 @@ dhcp_stop(struct netif *netif)
  *
  * If the state changed, reset the number of tries.
  *
- * TODO: we might also want to reset the timeout here?
+ * TO DO: we might also want to reset the timeout here?
  */
 static void
 dhcp_set_state(struct dhcp *dhcp, u8_t new_state)
@@ -1297,7 +1297,7 @@ static void dhcp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, struct ip_
   LWIP_UNUSED_ARG(addr);
   LWIP_UNUSED_ARG(port);
   dhcp->p = p;
-  /* TODO: check packet length before reading them */
+  /* TO DO: check packet length before reading them */
   if (reply_msg->op != DHCP_BOOTREPLY) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | 1, ("not a DHCP reply message, but type %"U16_F"\n", (u16_t)reply_msg->op));
     goto free_pbuf_and_return;
@@ -1420,9 +1420,9 @@ dhcp_create_request(struct netif *netif)
   dhcp->msg_out = (struct dhcp_msg *)dhcp->p_out->payload;
 
   dhcp->msg_out->op = DHCP_BOOTREQUEST;
-  /* TODO: make link layer independent */
+  /* TO DO: make link layer independent */
   dhcp->msg_out->htype = DHCP_HTYPE_ETH;
-  /* TODO: make link layer independent */
+  /* TO DO: make link layer independent */
   dhcp->msg_out->hlen = DHCP_HLEN_ETH;
   dhcp->msg_out->hops = 0;
   dhcp->msg_out->xid = htonl(dhcp->xid);
@@ -1551,7 +1551,7 @@ static u8_t *dhcp_get_option_ptr(struct dhcp *dhcp, u8_t option_type)
         LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | 1, ("overloaded sname field\n"));
         options = (u8_t *)&dhcp->msg_in->sname;
         field_len = DHCP_SNAME_LEN;
-      /* TODO: check if else if () is necessary */
+      /* TO DO: check if else if () is necessary */
       } else {
         LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | 1, ("overloaded sname and file field\n"));
         options = (u8_t *)&dhcp->msg_in->sname;

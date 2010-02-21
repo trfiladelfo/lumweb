@@ -83,7 +83,7 @@
 #include <string.h>
 #include <stdio.h>
 
-/** @todo Replace this part with a simple list like other lwIP lists */
+/** @to do Replace this part with a simple list like other lwIP lists */
 #ifndef _SYS_QUEUE_H_
 #define _SYS_QUEUE_H_
 
@@ -783,7 +783,7 @@ pppoe_send_padi(struct pppoe_softc *sc)
 {
   struct pbuf *pb;
   u8_t *p;
-  int len, l1 = 0, l2 = 0; /* XXX: gcc */
+  int len, l1 = 0, l2 = 0; /* X XX: gcc */
 
   if (sc->sc_state >PPPOE_STATE_PADI_SENT) {
     PPPDEBUG((LOG_ERR, "ERROR: pppoe_send_padi in state %d", sc->sc_state));
@@ -995,7 +995,7 @@ pppoe_send_padr(struct pppoe_softc *sc)
 {
   struct pbuf *pb;
   u8_t *p;
-  size_t len, l1 = 0; /* XXX: gcc */
+  size_t len, l1 = 0; /* X XX: gcc */
 
   if (sc->sc_state != PPPOE_STATE_PADR_SENT) {
     return ERR_CONN;
@@ -1104,7 +1104,7 @@ pppoe_send_pads(struct pppoe_softc *sc)
 {
   struct pbuf *pb;
   u8_t *p;
-  size_t len, l1 = 0;  /* XXX: gcc */
+  size_t len, l1 = 0;  /* X XX: gcc */
 
   if (sc->sc_state != PPPOE_STATE_PADO_SENT) {
     return ERR_CONN;

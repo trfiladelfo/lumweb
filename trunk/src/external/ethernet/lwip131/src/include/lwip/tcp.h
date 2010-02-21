@@ -262,7 +262,7 @@ enum tcp_state {
   /* Function to call when a listener has been connected.
    * @param arg user-supplied argument (tcp_pcb.callback_arg)
    * @param pcb a new tcp_pcb that now is connected
-   * @param err an error argument (TODO: that is current always ERR_OK?)
+   * @param err an error argument (TO DO: that is current always ERR_OK?)
    * @return ERR_OK: accept the new connection,
    *                 any other err_t abortsthe new connection
    */
@@ -324,7 +324,7 @@ struct tcp_pcb {
   /* RTT (round trip time) estimation variables */
   u32_t rttest; /* RTT estimate in 500ms ticks */
   u32_t rtseq;  /* sequence number being timed */
-  s16_t sa, sv; /* @todo document this */
+  s16_t sa, sv; /* @to do document this */
 
   s16_t rto;    /* retransmission time-out */
   u8_t nrtx;    /* number of retransmissions */
@@ -373,7 +373,7 @@ struct tcp_pcb {
    * @param arg user-supplied argument (tcp_pcb.callback_arg)
    * @param pcb the tcp_pcb for which data has arrived
    * @param p the packet buffer which arrived
-   * @param err an error argument (TODO: that is current always ERR_OK?)
+   * @param err an error argument (TO DO: that is current always ERR_OK?)
    * @return ERR_OK: try to send some data by calling tcp_output
    */
   err_t (* recv)(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err);
@@ -381,7 +381,7 @@ struct tcp_pcb {
   /* Function to be called when a connection has been set up.
    * @param arg user-supplied argument (tcp_pcb.callback_arg)
    * @param pcb the tcp_pcb that now is connected
-   * @param err an error argument (TODO: that is current always ERR_OK?)
+   * @param err an error argument (TO DO: that is current always ERR_OK?)
    * @return value is currently ignored
    */
   err_t (* connected)(void *arg, struct tcp_pcb *pcb, err_t err);

@@ -2,7 +2,7 @@
  * @file
  * Abstract Syntax Notation One (ISO 8824, 8825) encoding
  *
- * @todo not optimised (yet), favor correctness over speed, favor speed over size
+ * @to do not optimised (yet), favor correctness over speed, favor speed over size
  */
 
 /*

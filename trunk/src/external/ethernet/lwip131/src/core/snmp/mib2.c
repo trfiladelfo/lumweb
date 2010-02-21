@@ -267,7 +267,7 @@ struct mib_ram_array_node tcpconntable = {
   &noleafs_set_test,
   &noleafs_set_value,
   MIB_NODE_RA,
-/** @todo update maxlength when inserting / deleting from table
+/** @to do update maxlength when inserting / deleting from table
    0 when table is empty, 1 when more than one entry */
   0,
   &tcpconntable_id,
@@ -1437,7 +1437,7 @@ void snmp_delete_ipaddridx_tree(struct netif *ni)
  * @param dflt non-zero for the default rte, zero for network rte
  * @param ni points to network interface for this rte
  *
- * @todo record sysuptime for _this_ route when it is installed
+ * @to do record sysuptime for _this_ route when it is installed
  *   (needed for ipRouteAge) in the netif.
  */
 void snmp_insert_iprteidx_tree(u8_t dflt, struct netif *ni)
@@ -2377,7 +2377,7 @@ ifentry_get_object_def(u8_t ident_len, s32_t *ident, struct obj_def *od)
         od->instance = MIB_OBJECT_TAB;
         od->access = MIB_OBJECT_READ_ONLY;
         od->asn_type = (SNMP_ASN1_UNIV | SNMP_ASN1_PRIMIT | SNMP_ASN1_OC_STR);
-        /** @todo this should be some sort of sizeof(struct netif.name) */
+        /** @to do this should be some sort of sizeof(struct netif.name) */
         od->v_len = 2;
         break;
       case 5: /* ifSpeed */
@@ -2561,7 +2561,7 @@ ifentry_get_value(struct obj_def *od, u16_t len, void *value)
       break;
     case 14: /* ifInErrors */
     case 15: /* ifInUnkownProtos */
-      /** @todo add these counters! */
+      /** @to do add these counters! */
       {
         u32_t *uint_ptr = value;
         *uint_ptr = 0;
@@ -2592,14 +2592,14 @@ ifentry_get_value(struct obj_def *od, u16_t len, void *value)
       }
       break;
     case 20: /* ifOutErrors */
-       /** @todo add this counter! */
+       /** @to do add this counter! */
       {
         u32_t *uint_ptr = value;
         *uint_ptr = 0;
       }
       break;
     case 21: /* ifOutQLen */
-      /** @todo figure out if this must be 0 (no queue) or 1? */
+      /** @to do figure out if this must be 0 (no queue) or 1? */
       {
         u32_t *uint_ptr = value;
         *uint_ptr = 0;
@@ -2692,7 +2692,7 @@ atentry_get_object_def(u8_t ident_len, s32_t *ident, struct obj_def *od)
         od->instance = MIB_OBJECT_TAB;
         od->access = MIB_OBJECT_READ_WRITE;
         od->asn_type = (SNMP_ASN1_UNIV | SNMP_ASN1_PRIMIT | SNMP_ASN1_OC_STR);
-        od->v_len = 6; /** @todo try to use netif::hwaddr_len */
+        od->v_len = 6; /** @to do try to use netif::hwaddr_len */
         break;
       case 3: /* atNetAddress */
         od->instance = MIB_OBJECT_TAB;
@@ -2730,7 +2730,7 @@ atentry_get_value(struct obj_def *od, u16_t len, void *value)
   snmp_oidtoip(&od->id_inst_ptr[2], &ip);
   ip.addr = htonl(ip.addr);
 
-#if LWIP_ARP /** @todo implement a netif_find_addr */
+#if LWIP_ARP /** @to do implement a netif_find_addr */
   if (etharp_find_addr(netif, &ip, &ethaddr_ret, &ipaddr_ret) > -1)
   {
     id = od->id_inst_ptr[0];
@@ -2960,7 +2960,7 @@ ip_get_value(struct obj_def *od, u16_t len, void *value)
       }
       break;
     case 23: /* ipRoutingDiscards */
-      /** @todo can lwIP discard routes at all?? hardwire this to 0?? */
+      /** @to do can lwIP discard routes at all?? hardwire this to 0?? */
       {
         u32_t *uint_ptr = value;
         *uint_ptr = iproutingdiscards;
@@ -3111,14 +3111,14 @@ ip_addrentry_get_value(struct obj_def *od, u16_t len, void *value)
         {
           s32_t *sint_ptr = value;
 #if IP_REASSEMBLY
-          /* @todo The theoretical maximum is IP_REASS_MAX_PBUFS * size of the pbufs,
+          /* @to do The theoretical maximum is IP_REASS_MAX_PBUFS * size of the pbufs,
            * but only if receiving one fragmented packet at a time.
            * The current solution is to calculate for 2 simultaneous packets...
            */
           *sint_ptr = (IP_HLEN + ((IP_REASS_MAX_PBUFS/2) *
             (PBUF_POOL_BUFSIZE - PBUF_LINK_HLEN - IP_HLEN)));
 #else
-          /** @todo returning MTU would be a bad thing and
+          /** @to do returning MTU would be a bad thing and
              returning a wild guess like '576' isn't good either */
           *sint_ptr = 0;
 #endif
@@ -3320,7 +3320,7 @@ ip_rteentry_get_value(struct obj_def *od, u16_t len, void *value)
       case 10: /* ipRouteAge */
         {
           s32_t *sint_ptr = value;
-          /** @todo (sysuptime - timestamp last change) / 100
+          /** @to do (sysuptime - timestamp last change) / 100
               @see snmp_insert_iprteidx_tree() */
           *sint_ptr = 0;
         }
@@ -3376,7 +3376,7 @@ ip_ntomentry_get_object_def(u8_t ident_len, s32_t *ident, struct obj_def *od)
         od->instance = MIB_OBJECT_TAB;
         od->access = MIB_OBJECT_READ_WRITE;
         od->asn_type = (SNMP_ASN1_UNIV | SNMP_ASN1_PRIMIT | SNMP_ASN1_OC_STR);
-        od->v_len = 6; /** @todo try to use netif::hwaddr_len */
+        od->v_len = 6; /** @to do try to use netif::hwaddr_len */
         break;
       case 3: /* ipNetToMediaNetAddress */
         od->instance = MIB_OBJECT_TAB;
@@ -3414,7 +3414,7 @@ ip_ntomentry_get_value(struct obj_def *od, u16_t len, void *value)
   snmp_oidtoip(&od->id_inst_ptr[2], &ip);
   ip.addr = htonl(ip.addr);
 
-#if LWIP_ARP /** @todo implement a netif_find_addr */
+#if LWIP_ARP /** @to do implement a netif_find_addr */
   if (etharp_find_addr(netif, &ip, &ethaddr_ret, &ipaddr_ret) > -1)
   {
     id = od->id_inst_ptr[0];
@@ -3568,7 +3568,7 @@ icmp_get_value(struct obj_def *od, u16_t len, void *value)
 }
 
 #if LWIP_TCP
-/** @todo tcp grp */
+/** @to do tcp grp */
 static void
 tcp_get_object_def(u8_t ident_len, s32_t *ident, struct obj_def *od)
 {
@@ -3644,12 +3644,12 @@ tcp_get_value(struct obj_def *od, u16_t len, void *value)
       *sint_ptr = 4;
       break;
     case 2: /* tcpRtoMin */
-      /* @todo not the actual value, a guess,
+      /* @to do not the actual value, a guess,
           needs to be calculated */
       *sint_ptr = 1000;
       break;
     case 3: /* tcpRtoMax */
-      /* @todo not the actual value, a guess,
+      /* @to do not the actual value, a guess,
          needs to be calculated */
       *sint_ptr = 60000;
       break;
@@ -3769,7 +3769,7 @@ tcpconnentry_get_value(struct obj_def *od, u16_t len, void *value)
   rip.addr = htonl(rip.addr);
   rport = ident[10];
 
-  /** @todo find matching PCB */
+  /** @to do find matching PCB */
 }
 #endif /* if 0 */
 #endif

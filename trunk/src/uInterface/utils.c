@@ -110,3 +110,11 @@ char* pcStrstr (char* str, char* search) {
 	}
 	return NULL;
 }
+
+
+int iAbs (int i) {
+	if (i < 0) {
+		return i * -1;
+	}
+	return i;
+}

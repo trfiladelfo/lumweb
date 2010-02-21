@@ -60,6 +60,7 @@
  * management pages of http://www.FreeRTOS.org for more information.
  */
 #include <stdlib.h>
+#include <stdio.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
 all the API functions to use the MPU wrappers.  That should only be done when
@@ -228,7 +229,7 @@ void *pvReturn = NULL;
 			}
 		}
 	}
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
 	printf("-- malloc -- %d (%d)\n", xWantedSize, xFreeBytesRemaining);
 #endif
 	xTaskResumeAll();
@@ -267,7 +268,7 @@ xBlockLink *pxLink;
 			prvInsertBlockIntoFreeList( ( ( xBlockLink * ) pxLink ) );
 			xFreeBytesRemaining += pxLink->xBlockSize;
 		}
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
 		printf("-- free -- %d (%d)\n", pxLink->xBlockSize, xFreeBytesRemaining);
 #endif
 		xTaskResumeAll();

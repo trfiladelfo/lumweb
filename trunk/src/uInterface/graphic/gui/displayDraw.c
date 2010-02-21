@@ -38,6 +38,8 @@ void vDrawElementsOnDisplay(void) {
 	int i;
 	basicDisplayLine *toDraw;
 
+	vTaskSuspendAll(); {
+
 	if (xDisplayRoot.menue == true) {
 		WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xMenuButton);
 	} else if (xMenuButton.sBase.pParent != NULL) {
@@ -112,6 +114,7 @@ void vDrawElementsOnDisplay(void) {
 #if DEBUG_GRAPHIC
 	printf("finished\n");
 #endif
+	} xTaskResumeAll();
 }
 
 tWidget* xGetLabelWidget(basicDisplayLine *line, int row) {
@@ -246,15 +249,15 @@ tWidget* xGetValueWidget(basicDisplayLine *line, int row) {
 					= DISPLAY_VALUE_TEXT_HYPERLINK;
 		} else if (line->type == SSI_INDEX_INTEGERINPUTFIELD) {
 			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
-					= vIntegerEditorAction;
+					= vOpenEditorAction;
 			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;
 		} else if (line->type == SSI_INDEX_FLOATINPUTFIELD) {
 			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
-					= vFloatEditorAction;
+					= vOpenEditorAction;
 			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;
 		} else if (line->type == SSI_INDEX_TIMEINPUTFIELD) {
 			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
-					= vTimeEditorAction;
+					= vOpenEditorAction;
 			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;
 		}
 		break;

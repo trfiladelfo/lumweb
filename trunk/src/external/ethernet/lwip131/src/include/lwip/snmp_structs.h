@@ -2,7 +2,7 @@
  * @file
  * Generic MIB tree structures.
  *
- * @todo namespace prefixes
+ * @to do namespace prefixes
  */
 
 /*

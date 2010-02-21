@@ -507,7 +507,7 @@ igmp_joingroup(struct ip_addr *ifaddr, struct ip_addr *groupaddr)
         err = ERR_OK;
       } else {
         /* Return an error even if some network interfaces are joined */
-        /** @todo undo any other netif already joined */
+        /** @to do undo any other netif already joined */
         LWIP_DEBUGF(IGMP_DEBUG, ("igmp_joingroup: Not enought memory to join to group\n"));
         return ERR_MEM;
       }
@@ -642,7 +642,7 @@ void
 igmp_start_timer(struct igmp_group *group, u8_t max_time)
 {
   /**
-   * @todo Important !! this should be random 0 -> max_time. Find out how to do this
+   * @to do Important !! this should be random 0 -> max_time. Find out how to do this
    */
   group->timer = max_time;
 }

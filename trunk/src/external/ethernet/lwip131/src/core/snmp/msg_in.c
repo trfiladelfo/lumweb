@@ -594,7 +594,7 @@ snmp_msg_set_event(u8_t request_id, struct snmp_msg_pstat *msg_ps)
     en->set_value_a(request_id, &msg_ps->ext_object_def,
       msg_ps->vb_ptr->value_len, msg_ps->vb_ptr->value);
 
-    /** @todo use set_value_pc() if toobig */
+    /** @to do use set_value_pc() if toobig */
     msg_ps->state = SNMP_MSG_INTERNAL_SET_VALUE;
     msg_ps->vb_idx += 1;
   }
@@ -745,7 +745,7 @@ snmp_msg_set_event(u8_t request_id, struct snmp_msg_pstat *msg_ps)
       (msg_ps->vb_idx == msg_ps->invb.count))
   {
     /* simply echo the input if we can set it
-       @todo do we need to return the actual value?
+       @to do do we need to return the actual value?
        e.g. if value is silently modified or behaves sticky? */
     msg_ps->outvb = msg_ps->invb;
     msg_ps->invb.head = NULL;
@@ -981,7 +981,7 @@ snmp_pdu_header_check(struct pbuf *p, u16_t ofs, u16_t pdu_len, u16_t *ofs_ret, 
   m_stat->com_strlen = len;
   if (strncmp(snmp_publiccommunity, (const char*)m_stat->community, SNMP_COMMUNITY_STR_LEN) != 0)
   {
-    /** @todo: move this if we need to check more names */
+    /** @to do: move this if we need to check more names */
     snmp_inc_snmpinbadcommunitynames();
     snmp_authfail_trap();
     return ERR_ARG;

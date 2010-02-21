@@ -285,7 +285,7 @@ lwip_getaddrinfo(const char *nodename, const char *servname,
 
   if (servname != NULL) {
     /* service name specified: convert to port number
-     * @todo?: currently, only ASCII integers (port numbers) are supported! */
+     * @ t o d o?: currently, only ASCII integers (port numbers) are supported! */
     port_nr = atoi(servname);
     if ((port_nr <= 0) || (port_nr > 0xffff)) {
       return EAI_SERVICE;

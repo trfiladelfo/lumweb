@@ -105,7 +105,7 @@ typedef struct {
 /*** LOCAL FUNCTION DECLARATIONS ***/
 /***********************************/
 
-/* XXX Don't know what to do with these. */
+/* X XX Don't know what to do with these. */
 extern void setkey(const char *);
 extern void encrypt(char *, int);
 

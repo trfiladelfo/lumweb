@@ -376,7 +376,7 @@ upap_input(int unit, u_char *inpacket, int l)
       upap_rauthnak(u, inp, id, len);
       break;
 
-    default:        /* XXX Need code reject */
+    default:        /* X XX Need code reject */
       break;
   }
 }
@@ -470,7 +470,7 @@ upap_rauthack(upap_state *u, u_char *inp, int id, int len)
 
   UPAPDEBUG((LOG_INFO, "pap_rauthack: Rcvd id %d s=%d\n", id, u->us_clientstate));
 
-  if (u->us_clientstate != UPAPCS_AUTHREQ) { /* XXX */
+  if (u->us_clientstate != UPAPCS_AUTHREQ) { /* X XX */
     return;
   }
 
@@ -509,7 +509,7 @@ upap_rauthnak(upap_state *u, u_char *inp, int id, int len)
 
   UPAPDEBUG((LOG_INFO, "pap_rauthnak: Rcvd id %d s=%d\n", id, u->us_clientstate));
 
-  if (u->us_clientstate != UPAPCS_AUTHREQ) { /* XXX */
+  if (u->us_clientstate != UPAPCS_AUTHREQ) { /* X XX */
     return;
   }
 

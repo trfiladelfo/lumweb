@@ -899,7 +899,7 @@ lcp_nakci(fsm *f, u_char *p, int len)
   /*
    * If they can't cope with our link quality protocol, we'll have
    * to stop asking for LQR.  We haven't got any other protocol.
-   * If they Nak the reporting period, take their value XXX ?
+   * If they Nak the reporting period, take their value X XX ?
    */
   NAKCILQR(CI_QUALITY, neg_lqr,
     if (cishort != PPP_LQR) {
@@ -1438,7 +1438,7 @@ lcp_reqci(fsm *f,
         
         /*
          * Check the protocol and the reporting period.
-         * XXX When should we Nak this, and what with?
+         * X XX When should we Nak this, and what with?
          */
         if (cishort != PPP_LQR) {
           orc = CONFNAK;

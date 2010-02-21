@@ -19,6 +19,8 @@
 
 #include "graphic/gui/displayStyle.h"
 
+#include "kitronix320x240x16_ssd2119_8bit.h"
+
 #define DISPLAY_DRIVER	&g_sKitronix320x240x16_SSD2119
 
 /* Context Structure */

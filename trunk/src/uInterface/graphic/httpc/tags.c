@@ -150,20 +150,22 @@ void vParseFloatInputField(char* param, int len) {
 	if (maxStr == NULL) {
 		max = -1;
 	} else {
-		max = atoi(maxStr);
+		max = atoi(maxStr)*10;
 	}
 	minStr = pcGetParamFromString(param, "min");
 	if (minStr == NULL) {
 		min = -1;
 	} else {
-		min = atoi(minStr);
+		min = atoi(minStr)*10;
 	}
-	incrementStr = pcGetParamFromString(param, "increment");
-	if (incrementStr == NULL) {
+
+	// TO DO IMOLEMENT PARSE INCREMENT WITH DECIMAL POINT!
+	//incrementStr = pcGetParamFromString(param, "increment");
+	//if (incrementStr == NULL) {
 		incr = 1;
-	} else {
-		incr = atoi(incrementStr);
-	}
+	//} else {
+	//	incr = atoi(incrementStr);
+	//}
 	if (id != NULL) {
 		if (name != NULL) {
 			if (value != NULL) {
@@ -340,7 +342,7 @@ char* pcFormatIntegerValue(basicDisplayLine *line) {
 
 char* pcFormatFloatValue(basicDisplayLine *line) {
 	snprintf(line->strValue, DISPLAY_VALUE_TEXT_LEN, "%d,%d",
-			(line->value / 10), (line->value % 10));
+			(line->value / 10), iAbs((line->value % 10)));
 	return line->strValue;
 }
 

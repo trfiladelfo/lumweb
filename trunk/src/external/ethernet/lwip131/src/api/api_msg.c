@@ -853,7 +853,7 @@ do_listen(struct api_msg_msg *msg)
           } else {
             /* delete the recvmbox and allocate the acceptmbox */
             if (msg->conn->recvmbox != SYS_MBOX_NULL) {
-              /** @todo: should we drain the recvmbox here? */
+              /** @to do: should we drain the recvmbox here? */
               sys_mbox_free(msg->conn->recvmbox);
               msg->conn->recvmbox = SYS_MBOX_NULL;
             }

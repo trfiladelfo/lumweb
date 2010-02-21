@@ -886,7 +886,7 @@ pbuf_coalesce(struct pbuf *p, pbuf_layer layer)
   }
   q = pbuf_alloc(layer, p->tot_len, PBUF_RAM);
   if (q == NULL) {
-    /* @todo: what do we do now? */
+    /* @to do: what do we do now? */
     return p;
   }
   err = pbuf_copy(q, p);

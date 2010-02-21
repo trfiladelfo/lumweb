@@ -2,7 +2,7 @@
  * @file
  * Abstract Syntax Notation One (ISO 8824, 8825) decoding
  *
- * @todo not optimised (yet), favor correctness over speed, favor speed over size
+ * @to do not optimised (yet), favor correctness over speed, favor speed over size
  */
 
 /*
@@ -211,7 +211,7 @@ snmp_asn1_dec_length(struct pbuf *p, u16_t ofs, u8_t *octets_used, u16_t *length
       else
       {
         /* constructed definite length format 3..127 octets, this is too big (>64k) */
-        /**  @todo: do we need to accept inefficient codings with many leading zero's? */
+        /**  @to do: do we need to accept inefficient codings with many leading zero's? */
         *octets_used = 1 + ((*msg_ptr) & 0x7f);
         return ERR_ARG;
       }

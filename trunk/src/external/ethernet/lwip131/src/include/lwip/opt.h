@@ -972,7 +972,7 @@
  * Beware that this might involve CPU-memcpy before transmitting that would not
  * be needed without this flag! Use this only if you need to!
  *
- * @todo: TCP and IP-frag do not work with this, yet:
+ * @to do: TCP and IP-frag do not work with this, yet:
  */
 #ifndef LWIP_NETIF_TX_SINGLE_PBUF
 #define LWIP_NETIF_TX_SINGLE_PBUF             0
@@ -1495,7 +1495,7 @@
  *
  * Note - lcp shouldn't be allowed to negotiate stuff outside these
  *    limits.  See lcp.h in the pppd directory.
- * (XXX - these constants should simply be shared by lcp.c instead
+ * (X XX - these constants should simply be shared by lcp.c instead
  *    of living in lcp.h)
  */
 #define PPP_MTU                         1500     /* Default MTU (size of Info field) */
