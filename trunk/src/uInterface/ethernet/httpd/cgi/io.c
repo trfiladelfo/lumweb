@@ -249,8 +249,8 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 											== pdTRUE)){
 
 							name += 2; //remove 'f_'
-
-							xCom_msg.value = value * 10 + decimal_place ; // zehntelschritte
+							value = value * 10 + decimal_place;
+							xCom_msg.value = value; // zehntelschritte
 							xCom_msg.item = name;
 							save = 1;
 #if DEBUG_CGI
@@ -261,7 +261,7 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 							printf("SetCGIHandler: Found INVALID float param: %s=%s \n", name+2, pcValue[i]);
 #endif
 							save = 0;
-							error = 1;
+							return "/set_nok.htm";
 						}
 				}else
 
@@ -283,20 +283,20 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 											name += 2; //remove t_
 
 											xCom_msg.item = name;
-											xCom_msg.value = hour * 60 + minute;
+											value = hour * 60 + minute;
+											xCom_msg.value = value;
 											save = 1;
 											hour = 0;
 											minute = 0;
 										}else{
 											printf("SetCGIHandler: Found second INVALID time param: %s=%s \n", pcParam[i]+2, pcValue[i]);
-
-											error = 1;
+											return "/set_nok.htm";
 										}
 								}else{
 #if DEBUG_CGI
 									printf("SetCGIHandler: Found first INVALID time param: %s=%s \n", pcParam[i]+2, pcValue[i]);
 #endif
-									error = 1;
+									return "/set_nok.htm";
 								}
 							}
 					}
@@ -321,7 +321,6 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 #if DEBUG_CGI
 					printf("SetCGIHandler: ERROR invalid param %s=%s \n", name, pcValue[i]);
 #endif
-					error = 1;
 				}
 
 				if (save == 1) { // send value to comTask
@@ -350,27 +349,28 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
 					// gesetzten parameter reuecklesen, zur ueberpruefung ob ok
 					r_value = io_get_value_from_comtask(name);
 
-					if(r_value != value)
-						error = 1;
+					if(r_value != value){
+						printf("SetCGIHandler: error rereading the value with id '%s'\n", name);
+						return "/set_nok.htm";
+					}
 				}
 
 			}
 		}
-		if (FindCGIParameter("ajax", pcParam, iNumParams) == -1)
-			return "/set_ok.ssi";
-		else
-			return "/set_oka.ssi";
+			if (FindCGIParameter("ajax", pcParam, iNumParams) == -1)
+				return "/set_ok.ssi";
+			else
+				return "/set_oka.ssi";
+
 	} else {
 		error = 1;
 	}
 
-	if(error == 1)
 		if (FindCGIParameter("ajax", pcParam, iNumParams) == -1)
 			return "/set_ok.ssi";
 		else
 			return "/set_oka.ssi";
-	else
-			return "/set_nok.ssi";
+
 }
 
 #endif
@@ -597,10 +597,10 @@ void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 			snprintf(
 					pcBuf,
 					iBufLen,
-					"<!-- $ IntegerInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" decimal=\"%s\" increment=\"%s\" $ -->"
+					"<!-- $ IntegerInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
 						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
-						"<script>addB('%s',%s,%s,%s,%s);</script>", label, value, id,
-					max, min, decimal, increment, label, id, value, id, id, max, min, increment, decimal);
+						"<script>addB('%s',%s,%s,%s);</script>", label, value, id,
+					max, min, increment, label, id, value, id, id, max, min, increment);
 
 #if DEBUG_SSI
 			printf("io_get_number_input_field: done \n");
@@ -784,10 +784,11 @@ void io_get_time_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 					pcBuf,
 					iBufLen,
 					"<!-- $ TimeInputField name=\"%s\" value=\"%d\" id=\"%s\" $ -->"
-						"%s <input type=\"text\" class=\"fi\" name=\"t_%s\" value=\"%d\" id=\"%s_1\" />"
-						":<input type=\"text\" class=\"fi\" name=\"t_%s\" value=\"%d\" id=\"%s_2\" />",
+						"%s <input type=\"text\" class=\"fi h\" name=\"t_%s\" value=\"%d\" id=\"%s_1\" />"
+						":<input type=\"text\" class=\"fi m\" name=\"t_%s\" value=\"%d\" id=\"%s_2\" />"
+						"<br><script>addBH('%s')</script>",
 						label, value, id,
-						label, id, hour, id, id, minute, id);
+						label, id, hour, id, id, minute, id, id);
 
 #if DEBUG_SSI
 			printf("io_get_number_input_field: done \n");

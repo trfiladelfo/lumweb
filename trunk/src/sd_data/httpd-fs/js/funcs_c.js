@@ -4,10 +4,10 @@ function inc(id, maxVal, minValm, increment){
 	var element = document.getElementById(id);
 	var n_value = parseFloat(element.value) + parseFloat(increment);
 	
-
+	
 	if(maxVal != null)
 		if(n_value <= maxVal)
-			element.value = n_value;
+			element.value = n_value.toFixed(1);
 	
 }
 
@@ -21,6 +21,10 @@ function dec(id, maxVal, minVal, increment){
 			element.value = n_value;
 }
 
+function addBH(id){
+	addB(id+"_1", 24, 0, 1);
+	addB(id+"_2", 24, 0, 1);
+}
 function addB(id, maxParam, minParam, incrementParam){
 	
 	var maxVal = parseInt (maxParam);

@@ -39,6 +39,13 @@ input {
 input.fi {
 	width: 30px;
 }
+
+input.h {
+	text-align: right;
+}
+input.m {
+	text-align: left;
+}
 td {
 	font-size: 12px;
 }

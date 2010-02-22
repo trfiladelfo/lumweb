@@ -13,11 +13,11 @@
 					<table style="width: 75%; border:1px solid black;" border="0">
 
 						<tr>
-							<td><!--#FloatInputField id=normtemp label=Normal min=0 max=35 increment=1--></td>
+							<td><!--#FloatInputField id=normtemp label=Normalbetrieb min=0 max=35 increment=0.1--></td>
 						</tr>
 
 						<tr>
-							<td><!--#FloatInputField id=abs_temp label=Absenk min=0 max=35 increment=1--></td>
+							<td><!--#FloatInputField id=abs_temp label=Absenkbetrieb min=0 max=35 increment=0.11--></td>
 						</tr>
 			
 						<tr>

@@ -29,8 +29,8 @@
 #define DEBUG_SSI 			 0 // default 0
 #define DEBUG_SSI_PARAMS	 0 // default 0
 #define DEBUG_LOG 			 0 // default 0
-#define DEBUG_CGI 			 0 // default 0
-#define DEBUG_COM			 0 // default 0
+#define DEBUG_CGI 			 1 // default 0
+#define DEBUG_COM			 1 // default 0
 
 void prvSetupHardware(void);
 
