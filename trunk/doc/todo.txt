@@ -44,3 +44,7 @@ done:
 	* Schematische Darstellung 
 	* Schreiben der Werte auf die SD Karte (comTask)	
    	* Time-, Float- und IntegerInputField
+   	
+   	
+   	
+   	Sortieren nach Typ
