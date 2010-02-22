@@ -88,7 +88,6 @@ void vOpenEditorAction(tWidget *pWidget) {
 	basicDisplayLine *root = xDisplayRoot.entities;
 	while (root != NULL) {
 		if (root->valueWidget == pWidget) {
-			printf("vTimeEditorAction: open Editor\n");
 			((tPushButtonWidget*) pWidget)->ulStyle &= (~PB_STYLE_PRESSED);
 			vOpenEditor(root);
 			break;

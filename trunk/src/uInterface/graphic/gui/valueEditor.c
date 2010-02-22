@@ -323,15 +323,17 @@ void vIncreaseValue(tWidget *pWidget) {
 	case SSI_INDEX_INTEGERINPUTFIELD:
 		aktElement->value += aktElement->increment;
 
-		if (aktElement->min != aktElement->max) {
-		aktElement->value = aktElement->value % (aktElement->max + 1 - aktElement->min) + aktElement->min;
+		if (aktElement->min != aktElement->max && aktElement->value
+						> aktElement->max) {
+			aktElement->value = aktElement->min + (aktElement->value - aktElement->max) - 1;
 		}
 		xValueWidget.pcText = pcFormatIntegerValue(aktElement);
 		break;
 	case SSI_INDEX_FLOATINPUTFIELD:
 		aktElement->value += aktElement->increment;
-		if (aktElement->min != aktElement->max) {
-		aktElement->value = aktElement->value % (aktElement->max + 1 - aktElement->min) + aktElement->min;
+		if (aktElement->min != aktElement->max && aktElement->value
+				> aktElement->max) {
+			aktElement->value = aktElement->min + (aktElement->value - aktElement->max) - 1;
 		}
 		xValueWidget.pcText = pcFormatFloatValue(aktElement);
 		break;
@@ -357,16 +359,20 @@ void vDecreaseValue(tWidget *pWidget) {
 
 	case SSI_INDEX_INTEGERINPUTFIELD:
 		aktElement->value -= aktElement->increment;
-		if (aktElement->min != aktElement->max && aktElement->value < aktElement->min) {
-			aktElement->value = aktElement->max + (aktElement->value - aktElement->min) + 1;
+		if (aktElement->min != aktElement->max && aktElement->value
+				< aktElement->min) {
+			aktElement->value = aktElement->max + (aktElement->value
+					- aktElement->min) + 1;
 		}
 
 		xValueWidget.pcText = pcFormatIntegerValue(aktElement);
 		break;
 	case SSI_INDEX_FLOATINPUTFIELD:
 		aktElement->value -= aktElement->increment;
-		if (aktElement->min != aktElement->max && aktElement->value < aktElement->min) {
-			aktElement->value = aktElement->max + (aktElement->value - aktElement->min) + 1;
+		if (aktElement->min != aktElement->max && aktElement->value
+				< aktElement->min) {
+			aktElement->value = aktElement->max + (aktElement->value
+					- aktElement->min) + 1;
 		}
 		xValueWidget.pcText = pcFormatFloatValue(aktElement);
 		break;
