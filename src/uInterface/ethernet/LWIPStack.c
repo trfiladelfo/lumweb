@@ -619,7 +619,6 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	}
 
 	printnetif(&lwip_netif);
-	printf("\n");
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_SERVER");
 	if (strcmp(configLoad, "true") == 0) {

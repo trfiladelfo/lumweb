@@ -139,7 +139,7 @@ void vParseIntegerInputField(char* param, int len) {
 }
 
 void vParseFloatInputField(char* param, int len) {
-	char *name, *value, *id, *maxStr, *minStr, *incrementStr;
+	char *name, *value, *id, *maxStr, *minStr; // *incrementStr;
 
 	int max, min, incr;
 

@@ -110,7 +110,6 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 							if (pageData[i] == DELIMITOR_CHAR) {
 								if (output == true) {
 									output = false;
-									//printf("\n");
 									buffer[bufferpos] = 0;
 									vParseParameter(buffer, bufferpos);
 								} else {
@@ -121,7 +120,6 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 							}
 
 							if (output == true) {
-								//printf("%c", pageData[i]);
 								buffer[bufferpos] = pageData[i];
 								bufferpos++;
 							}
@@ -158,8 +156,9 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 			vTaskDelay(1);
 		}
 	}
-
+#if DEBUG_HTTPC
 	printf("\n");
+#endif
 }
 
 /**

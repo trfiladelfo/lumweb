@@ -23,9 +23,9 @@
 #define	ENABLE_NET_BIOS 	 0 // default 0
 
 #define DEBUG_MEMORY 		 0 // default 0
-#define DEBUG_GRAPHIC 		 1 // default 0
-#define DEBUG_HTTPC			 1 // default 0
-#define DEBUG_GRAPHIC_EDITOR 1 // default 0
+#define DEBUG_GRAPHIC 		 0 // default 0
+#define DEBUG_HTTPC			 0 // default 0
+#define DEBUG_GRAPHIC_EDITOR 0 // default 0
 #define DEBUG_SSI 			 0 // default 0
 #define DEBUG_SSI_PARAMS	 0 // default 0
 #define DEBUG_LOG 			 0 // default 0
