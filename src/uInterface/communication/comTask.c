@@ -49,7 +49,7 @@ FIL save_file;
 
 int sendToMachine(char* id, int value){
 	unsigned int bw;
-	int rc = 0;
+	int rc = 0, error = 0;
 
 	// suspend all other tasks
 	vTaskSuspendAll();
@@ -63,20 +63,31 @@ int sendToMachine(char* id, int value){
 	printf("SendToMachine: opening file: %s \n", path_buf);
 #endif
 
+	if(strcmp(id, "kurve") == 0){
+		if(value < 10 || value > 20){
+			error = 1;
+		}
+	}
+
+
 	rc = f_open(&save_file, path_buf, FA_CREATE_NEW);
 
 	if(rc = FR_EXIST)
 		rc = f_open(&save_file, path_buf, FA_WRITE);
 
 	if(rc == FR_OK){
-		sprintf(buf, "%d", value);
-		rc = f_write(&save_file, &buf, strlen(buf), &bw);
-		f_sync(&save_file);
-		f_close(&save_file);
 
+		sprintf(buf, "%d", value);
+		if(error == 0){
+			rc = f_write(&save_file, &buf, strlen(buf), &bw);
 #if DEBUG_COM
 		printf("SendToMachine: rc: %d - wrote '%s' to file\n",rc, buf);
 #endif
+		}
+		f_sync(&save_file);
+		f_close(&save_file);
+
+
 	}else{
 #if DEBUG_COM
 		printf("SendToMachine: Error opening file, rc=%d\n", rc);
