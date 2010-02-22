@@ -1,38 +1,41 @@
 jx={getHTTPObject:function(){var A=false;if(typeof ActiveXObject!="undefined"){try{A=new ActiveXObject("Msxml2.XMLHTTP")}catch(C){try{A=new ActiveXObject("Microsoft.XMLHTTP")}catch(B){A=false}}}else{if(window.XMLHttpRequest){try{A=new XMLHttpRequest()}catch(C){A=false}}}return A},load:function(url,callback,format){var http=this.init();if(!http||!url){return }if(http.overrideMimeType){http.overrideMimeType("text/xml")}if(!format){var format="text"}format=format.toLowerCase();var now="uid="+new Date().getTime();url+=(url.indexOf("?")+1)?"&":"?";url+=now;http.open("GET",url,true);http.onreadystatechange=function(){if(http.readyState==4){if(http.status==200){var result="";if(http.responseText){result=http.responseText}if(format.charAt(0)=="j"){result=result.replace(/[\n\r]/g,"");result=eval("("+result+")")}if(callback){callback(result)}}else{if(error){error(http.status)}}}};http.send(null)},init:function(){return this.getHTTPObject()}}
 
-function inc(id, maxVal, minValm, increment){
+function inc(id, maxVal, minValm, increment, fixed){
 	var element = document.getElementById(id);
 	var n_value = parseFloat(element.value) + parseFloat(increment);
 	
 	
 	if(maxVal != null)
 		if(n_value <= maxVal)
-			element.value = n_value.toFixed(1);
+			element.value = n_value.toFixed(fixed);
 	
 }
 
-function dec(id, maxVal, minVal, increment){
+function dec(id, maxVal, minVal, increment, fixed){
 	var element = document.getElementById(id);
 	var n_value = parseFloat(element.value) - parseFloat(increment);
 	
 
 	if(minVal != null)
 		if(n_value >= minVal)
-			element.value = n_value;
+			element.value = n_value.toFixed(fixed);
 }
 
 function addBH(id){
 	addB(id+"_1", 24, 0, 1);
-	addB(id+"_2", 24, 0, 1);
+	addB(id+"_2", 59, 0, 1);
 }
 function addB(id, maxParam, minParam, incrementParam){
 	
 	var maxVal = parseInt (maxParam);
 	var minVal = parseInt (minParam);
 	var increment =  parseFloat (incrementParam);
+	var fixed = 0;
 
-	document.write("<input type=\"button\" value=\"+\" onclick=\"inc('"+id+"',"+maxVal+","+minVal+", "+increment+");\" />"+
-		       "<input type=\"button\" value=\"-\" onclick=\"dec('"+id+"',"+maxVal+","+minVal+", "+increment+");\" />");
+	if(id[0] == 'f' && id[1] == '_')
+		fixed = 1;
+	document.write("<input type=\"button\" value=\"+\" onclick=\"inc('"+id+"',"+maxVal+","+minVal+", "+increment+","+fixed+");\" />"+
+		       "<input type=\"button\" value=\"-\" onclick=\"dec('"+id+"',"+maxVal+","+minVal+", "+increment+","+fixed+");\" />");
 
 }
 
