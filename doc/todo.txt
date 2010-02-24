@@ -1,17 +1,41 @@
 Tasks:
-	- Maschinenkommunikation							50% - Bis jetzt nur eine Testklasse implementiert
+	- Maschinenkommunikation							100% - Bis jetzt nur eine Testklasse mit SD-Card implementiert
 	
-	- Touchinterface									90%
-		- Webanbindung								    90% - Web ist zwar in ordnung, jedoch manchmal fehler beim Aufbauen
-		- Objeke bauen und anzeigen 					90% - Vermutlich speicherprobleme
+	- Touchinterface									 95%
+		- Webanbindung								    100% - Manchmal fehler beim Aufbauen - GRLIB Fehler
+		- Objeke bauen und anzeigen 					 90% - Sortieren Nach Typ und config vom Server Nachladen
 		
-	- Webinterface										96%
-		- SSI											99% - Fehler beim Freigeben vom Speicher
-		- CGI											90% - Interface in arbeit
-		- HTML										   100%	- Ansicht erfolgt automatisch im Browser
-		
-		
-Vorschlag:
+	- Webinterface										 99%
+		- SSI											 99% - Overflow bei Langen Zahlen
+		- CGI											100%
+		- HTML											100%
+
+	22.2.2010 ##########################################################################
+
+to do:
+	* ParamName overflow
+	* Quellcode Sortieren nach Typen mit Indirekten FunctionCall
+   
+nice to have:
+	* Cursorposition bei der Eingabe auf dem Touch
+	* Fehlerbehandlung HTTP (200)
+	* Step by Step Anleitung für Erstellung einer einfachen Seite.
+	
+done:
+	* Geänderte Parameter zurücklesen und beim Client anzeigen
+	* Titel Tag und Gruppen (titel, group)  
+	* 3 Typische Seiten (Normal, Absenkbetrieb (Zeit und Temperatur); Heizkuve; Menü)	
+	* Schematische Darstellung 
+	* Schreiben der Werte auf die SD Karte (comTask)	
+   	* Time-, Float- und IntegerInputField
+   	* Watchdog
+   	* Fehlerbehandlung Tagparsen in getValueForParam im Grafiktask
+	* Logo in der Präsentation
+   	
+   	
+   	Ideensammlung ########################################################################
+   	
+   	Vorschlag CAN Kommunikation:
 
 CAN-Kommunikation: 
 	Bitmuster
@@ -23,28 +47,6 @@ CAN-Kommunikation:
 	W ... Werte (4Byte = Int32)	
 	
 	
-	
-	8.2.2010 ##########################################################################
+   	
+   	
 
-to do:
-   * Fehlerbehandlung HTTP (200)
-   * Step by Step Anleitung für Erstellung einer einfachen Seite.
-   * Fehlerbehandlung Tagparsen in getValueForParam im Grafiktask
-   * Logo in der Präsentation
-   * ParamName overflow
-   
-nice to have:
-   * Cursorposition bei der Eingabe auf dem Touch
-   * Watchdog
-
-done:
-	* Geänderte Parameter zurücklesen und beim Client anzeigen
-	* Titel Tag und Gruppen (titel, group)  
-	* 3 Typische Seiten (Normal, Absenkbetrieb (Zeit und Temperatur); Heizkuve; Menü)	
-	* Schematische Darstellung 
-	* Schreiben der Werte auf die SD Karte (comTask)	
-   	* Time-, Float- und IntegerInputField
-   	
-   	
-   	
-   	Sortieren nach Typ
