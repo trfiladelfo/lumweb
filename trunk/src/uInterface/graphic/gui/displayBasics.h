@@ -10,7 +10,8 @@
 
 #include "FreeRTOS.h"
 #include "hw_types.h"
-#include "ethernet/httpd/cgi/io.h"
+
+#include "taglib/taglib.h"
 
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
@@ -36,7 +37,7 @@ extern tPushButtonWidget xUpButton;
 
 // Basic Entity on the LCD
 typedef struct __basicDisplayLine {
-	int type; // SSI_INDEX_* Defines from io.h
+	taglib* type;
 	int value;
 	int max;
 	int min;

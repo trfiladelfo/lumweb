@@ -8,7 +8,7 @@
 #include "FreeRTOS.h"
 #include "valueEditor.h"
 
-#include "ethernet/httpd/cgi/io.h"
+#include "taglib/taglib.h"
 
 #include "graphic/gui/displayBasics.h"
 #include "graphic/gui/editorStyle.h"
@@ -17,8 +17,6 @@
 #include "grlib/pushbutton.h"
 #include "grlib/widget.h"
 #include "grlib/canvas.h"
-
-#include "graphic/httpc/tags.h"
 
 tPushButtonWidget xIncrease1;
 tPushButtonWidget xDecrease1;
@@ -54,7 +52,7 @@ void vOpenEditor(basicDisplayLine* akt) {
 
 	aktElement = akt;
 
-	if (akt->type != SSI_INDEX_TIMEINPUTFIELD) {
+	if (akt->type->tagindex != TAG_INDEX_TIMEINPUTFIELD) {
 		iNumChangeButton = 1;
 	} else {
 		iNumChangeButton = 2;
@@ -318,26 +316,28 @@ void vExitEditor(tWidget *pWidget) {
 }
 
 void vIncreaseValue(tWidget *pWidget) {
-	switch (aktElement->type) {
+	switch (aktElement->type->tagindex) {
 
-	case SSI_INDEX_INTEGERINPUTFIELD:
+	case TAG_INDEX_INTEGERINPUTFIELD:
 		aktElement->value += aktElement->increment;
 
 		if (aktElement->min != aktElement->max && aktElement->value
-						> aktElement->max) {
-			aktElement->value = aktElement->min + (aktElement->value - aktElement->max) - 1;
+				> aktElement->max) {
+			aktElement->value = aktElement->min + (aktElement->value
+					- aktElement->max) - 1;
 		}
-		xValueWidget.pcText = pcFormatIntegerValue(aktElement);
+		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
 		break;
-	case SSI_INDEX_FLOATINPUTFIELD:
+	case TAG_INDEX_FLOATINPUTFIELD:
 		aktElement->value += aktElement->increment;
 		if (aktElement->min != aktElement->max && aktElement->value
 				> aktElement->max) {
-			aktElement->value = aktElement->min + (aktElement->value - aktElement->max) - 1;
+			aktElement->value = aktElement->min + (aktElement->value
+					- aktElement->max) - 1;
 		}
-		xValueWidget.pcText = pcFormatFloatValue(aktElement);
+		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
 		break;
-	case SSI_INDEX_TIMEINPUTFIELD:
+	case TAG_INDEX_TIMEINPUTFIELD:
 		if (pWidget == (tWidget *) &xIncrease1) {
 			aktElement->value += 60;
 		} else if (pWidget == (tWidget *) &xIncrease2) {
@@ -345,7 +345,7 @@ void vIncreaseValue(tWidget *pWidget) {
 		}
 
 		aktElement->value = aktElement->value % 1440;
-		xValueWidget.pcText = pcFormatTimeValue(aktElement);
+		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
 		break;
 	default:
 		break;
@@ -355,9 +355,9 @@ void vIncreaseValue(tWidget *pWidget) {
 }
 
 void vDecreaseValue(tWidget *pWidget) {
-	switch (aktElement->type) {
+	switch (aktElement->type->tagindex) {
 
-	case SSI_INDEX_INTEGERINPUTFIELD:
+	case TAG_INDEX_INTEGERINPUTFIELD:
 		aktElement->value -= aktElement->increment;
 		if (aktElement->min != aktElement->max && aktElement->value
 				< aktElement->min) {
@@ -365,18 +365,18 @@ void vDecreaseValue(tWidget *pWidget) {
 					- aktElement->min) + 1;
 		}
 
-		xValueWidget.pcText = pcFormatIntegerValue(aktElement);
+		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
 		break;
-	case SSI_INDEX_FLOATINPUTFIELD:
+	case TAG_INDEX_FLOATINPUTFIELD:
 		aktElement->value -= aktElement->increment;
 		if (aktElement->min != aktElement->max && aktElement->value
 				< aktElement->min) {
 			aktElement->value = aktElement->max + (aktElement->value
 					- aktElement->min) + 1;
 		}
-		xValueWidget.pcText = pcFormatFloatValue(aktElement);
+		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
 		break;
-	case SSI_INDEX_TIMEINPUTFIELD:
+	case TAG_INDEX_TIMEINPUTFIELD:
 		if (pWidget == (tWidget *) &xDecrease1) {
 			aktElement->value -= 60;
 		} else if (pWidget == (tWidget *) &xDecrease2) {
@@ -386,7 +386,7 @@ void vDecreaseValue(tWidget *pWidget) {
 		if (aktElement->value < 0) {
 			aktElement->value = 1440 + (aktElement->value);
 		}
-		xValueWidget.pcText = pcFormatTimeValue(aktElement);
+		xValueWidget.pcText =(const char*)  aktElement->type->strFormatter(aktElement);
 		break;
 	default:
 		break;

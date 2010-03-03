@@ -11,21 +11,22 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "webClient.h"
-#include "tags.h"
-
 #include "FreeRTOS.h"
 
 #include "utils.h"
+#include "setup.h"
+
+#include "graphic/gui/displayBasics.h"
+#include "graphic/httpc/webClient.h"
 
 #include "lwip/api.h"
 #include "lwip/ip_addr.h"
 #include "lwip/netbuf.h"
 
-#include "graphic/gui/displayBasics.h"
-#include "ethernet/httpd/cgi/io.h"
+#include "taglib/taglib.h"
+#include "taglib/tags.h"
 
-#include "setup.h"
+
 
 #define DELIMITOR_CHAR '$'
 
@@ -165,7 +166,10 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
  * Parse the Special Komments for the GUI
  */
 void vParseParameter(char* html, u16_t len) {
-	int i, bufferpos = 0, type;
+	int i, bufferpos = 0, nrOfTags, tagPos;
+
+	nrOfTags = NUM_CONFIG_TAGS;
+	basicDisplayLine* newLine = NULL;
 
 	char* buffer = (char*) pvPortMalloc(len * sizeof(char));
 
@@ -189,94 +193,12 @@ void vParseParameter(char* html, u16_t len) {
 	printf("vParseParameter: Found Type: %s\n", buffer);
 #endif
 
-	// Typ feststellen
-	if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_INTEGERINPUTFIELD]) == 0) {
-		type = SSI_INDEX_INTEGERINPUTFIELD;
-
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_SUBMITINPUTFIELD])
-			== 0) {
-		type = SSI_INDEX_SUBMITINPUTFIELD;
-
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_CHECKBOXINPUTFIELD])
-			== 0) {
-		type = SSI_INDEX_CHECKBOXINPUTFIELD;
-
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_HYPERLINK]) == 0) {
-		type = SSI_INDEX_HYPERLINK;
-
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_TITEL]) == 0) {
-		type = SSI_INDEX_TITEL;
-
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_TIMEINPUTFIELD]) == 0) {
-		type = SSI_INDEX_TIMEINPUTFIELD;
-
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_GROUP]) == 0) {
-		type = SSI_INDEX_GROUP;
-
-	} else if (strcmp(buffer, g_pcConfigSSITags[SSI_INDEX_FLOATINPUTFIELD])
-			== 0) {
-		type = SSI_INDEX_FLOATINPUTFIELD;
-
-	} else {
-		type = -1;
+	for (tagPos = 0; tagPos < nrOfTags && strcmp(buffer, g_pcConfigTags[tagPos]) != 0; tagPos++) {
+			;
 	}
 
-	// Typ verarbeiten
-	switch (type) {
-	case SSI_INDEX_CHECKBOXINPUTFIELD:
-#if DEBUG_HTTPC
-		printf("vParseParameter: Checkbox\n");
-#endif
-		vParseCheckboxInputField(html, len);
-		break;
-	case SSI_INDEX_FLOATINPUTFIELD:
-#if DEBUG_HTTPC
-		printf("vParseParameter: Floatinput\n");
-#endif
-		vParseFloatInputField(html, len);
-		break;
-	case SSI_INDEX_GROUP:
-#if DEBUG_HTTPC
-		printf("vParseParameter: Group\n");
-#endif
-		vParseGroup(html, len);
-		break;
-	case SSI_INDEX_HYPERLINK:
-#if DEBUG_HTTPC
-		printf("vParseParameter: Hyperlink\n");
-#endif
-		vParseHyperlink(html, len);
-		break;
-	case SSI_INDEX_INTEGERINPUTFIELD:
-#if DEBUG_HTTPC
-		printf("vParseParameter: Integer\n");
-#endif
-		vParseIntegerInputField(html, len);
-		break;
-	case SSI_INDEX_SUBMITINPUTFIELD:
-#if DEBUG_HTTPC
-		printf("vParseParameter: Submit\n");
-#endif
-		xDisplayRoot.save = true;
-		break;
-	case SSI_INDEX_TIMEINPUTFIELD:
-#if DEBUG_HTTPC
-		printf("vParseParameter: Timeinput\n");
-#endif
-		vParseTimeInputField(html, len);
-		break;
-	case SSI_INDEX_TITEL:
-#if DEBUG_HTTPC
-		printf("vParseParameter: Titel\n");
-#endif
-		vParseTitle(html, len);
-		break;
-	case -1:
-	default:
-#if DEBUG_HTTPC
-		printf("vParseParameter: ignore Param %s", buffer);
-#endif
-		break;
+	if (tagPos >= 0 && tagPos < nrOfTags) {
+		xTagList[tagPos]->onLoad(html, len, newLine);
 	}
 
 	vPortFree(buffer);
