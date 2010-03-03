@@ -21,6 +21,7 @@ BGET_COMMON_DIR=external/bget
 SOURCE_DIR=./uInterface
 ETHERNET_DIR=$(SOURCE_DIR)/ethernet
 GRAPHIC_DIR=$(SOURCE_DIR)/graphic
+TAGLIB_DIR=$(SOURCE_DIR)/taglib
 UART_DIR=$(SOURCE_DIR)/uart
 COMM_DIR=$(SOURCE_DIR)/communication
 CONF_DIR=$(SOURCE_DIR)/configuration
@@ -91,8 +92,19 @@ SOURCE=	syscall.c \
 		$(GRAPHIC_DIR)/gui/displayDraw.c \
 		$(GRAPHIC_DIR)/gui/valueEditor.c \
 		$(GRAPHIC_DIR)/httpc/webClient.c \
-		$(GRAPHIC_DIR)/httpc/tags.c \
-      	$(SOURCE_DIR)/log/logging.c
+      	$(SOURCE_DIR)/log/logging.c \
+      	$(TAGLIB_DIR)/taglib.c \
+      	$(TAGLIB_DIR)/tags/CheckboxInputField.c \
+      	$(TAGLIB_DIR)/tags/DateTime.c \
+      	$(TAGLIB_DIR)/tags/FloatInputField.c \
+      	$(TAGLIB_DIR)/tags/Group.c \
+      	$(TAGLIB_DIR)/tags/Hyperlink.c \
+      	$(TAGLIB_DIR)/tags/IntegerInputField.c \
+      	$(TAGLIB_DIR)/tags/SavedParams.c \
+      	$(TAGLIB_DIR)/tags/SubmitInputField.c \
+      	$(TAGLIB_DIR)/tags/TimeInputField.c \
+      	$(TAGLIB_DIR)/tags/Titel.c \
+      	$(TAGLIB_DIR)/tags/DefaultTags.c
 
 SCRIPT_DIR=lm3s_scripts
 

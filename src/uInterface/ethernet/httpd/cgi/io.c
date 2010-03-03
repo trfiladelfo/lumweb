@@ -62,6 +62,7 @@
 #include "taskConfig.h"
 
 #include "ethernet/lwipopts.h"
+#include "taglib/taglib.h"
 
 
 /// Message for the Comm-Task
@@ -155,7 +156,7 @@ void io_init(void) {
 	//
 	// Pass our tag information to the HTTP server.
 	//
-	http_set_ssi_handler(SSIHandler, g_pcConfigSSITags, NUM_CONFIG_SSI_TAGS);
+	http_set_ssi_handler(SSIHandler, g_pcConfigTags, NUM_CONFIG_TAGS);
 #endif
 
 #ifdef INCLUDE_HTTPD_CGI
@@ -403,43 +404,43 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 	// Which SSI tag have we been passed?
 	//
 	switch (iIndex) {
-	case SSI_INDEX_DATEANDTIME:
+	case TAG_INDEX_DATEANDTIME:
 		get_dateandtime(pcInsert, iInsertLen);
 		break;
 
-	case SSI_INDEX_INTEGERINPUTFIELD:
+	case TAG_INDEX_INTEGERINPUTFIELD:
 		io_get_number_input_field(pcInsert, iInsertLen, params);
 		break;
 
-	case SSI_INDEX_SUBMITINPUTFIELD:
+	case TAG_INDEX_SUBMITINPUTFIELD:
 		io_get_submit_input_button(pcInsert, iInsertLen, params);
 		break;
 
-	case SSI_INDEX_SAVEDPARAMS:
+	case TAG_INDEX_SAVEDPARAMS:
 		io_print_saved_params(pcInsert, iInsertLen);
 		break;
 
-	case SSI_INDEX_CHECKBOXINPUTFIELD:
+	case TAG_INDEX_CHECKBOXINPUTFIELD:
 		io_get_checkbox_input_field(pcInsert, iInsertLen, params);
 		break;
 
-	case SSI_INDEX_HYPERLINK:
+	case TAG_INDEX_HYPERLINK:
 		io_get_hyperlink(pcInsert, iInsertLen, params);
 		break;
 
-	case SSI_INDEX_TITEL:
+	case TAG_INDEX_TITEL:
 		io_get_titel(pcInsert, iInsertLen, params);
 		break;
 
-	case SSI_INDEX_GROUP:
+	case TAG_INDEX_GROUP:
 		io_get_group(pcInsert, iInsertLen, params);
 		break;
 
-	case SSI_INDEX_FLOATINPUTFIELD:
+	case TAG_INDEX_FLOATINPUTFIELD:
 		io_get_float_input_field(pcInsert, iInsertLen, params);
 		break;
 
-	case SSI_INDEX_TIMEINPUTFIELD:
+	case TAG_INDEX_TIMEINPUTFIELD:
 		io_get_time_input_field(pcInsert, iInsertLen, params);
 		break;
 

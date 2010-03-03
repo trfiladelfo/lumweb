@@ -55,41 +55,7 @@ extern "C"
  The number of individual SSI tags that the HTTPD server can expect to
  find in our configuration pages.
 */
-
-#define NUM_CONFIG_SSI_TAGS     (sizeof(g_pcConfigSSITags) / sizeof (char *))
-
-/**
- This array holds all the strings that are to be recognized as SSI tag
- names by the HTTPD server.  The server will call SSIHandler to request a
- replacement string whenever the pattern <!--#tagname--> (where tagname
- appears in the following array) is found in ".ssi", ".shtml" or ".shtm"
- files that it serves. Max size is MAX_TAG_NAME_LEN
-*/
-static const char * const g_pcConfigSSITags[] = { "DateTime", /// SSI_INDEX_DATEANDTIME
-		"IntegerInputField", /// SSI_INDEX_INTEGERINPUTFIELD
-		"SubmitInputField", /// SSI_INDEX_SUBMITINPUTFIELD
-		"SavedParams",		///SSI_INDEX_SAVEDPARAMS
-		"CheckboxInputField", /// SSI_INDEX_CHECKBOXINPUTFIELD
-		"Hyperlink", /// SSI_INDEX_HYPERLINK
-		"Titel", /// SSI_INDEX_TITLE
-		"Group", /// SSI_INDEX_GROUP
-		"TimeInputField", /// SSI_INDEX_TIMEINPUTFIELD
-		"FloatInputField" /// SSI_INDEX_FLOATINPUTFIELD
-
-};
-/**
- * SSI tag indices for each entry in the g_pcSSITags array.
- */
-#define SSI_INDEX_DATEANDTIME  			(0)
-#define SSI_INDEX_INTEGERINPUTFIELD    	(1)
-#define SSI_INDEX_SUBMITINPUTFIELD     	(2)
-#define SSI_INDEX_SAVEDPARAMS    		(3)
-#define SSI_INDEX_CHECKBOXINPUTFIELD    (4)
-#define SSI_INDEX_HYPERLINK			    (5)
-#define SSI_INDEX_TITEL				    (6)
-#define SSI_INDEX_GROUP				    (7)
-#define SSI_INDEX_TIMEINPUTFIELD	    (8)
-#define SSI_INDEX_FLOATINPUTFIELD	    (9)
+#include "taglib/taglib.h" // Definition of Strings
 
 #endif
 

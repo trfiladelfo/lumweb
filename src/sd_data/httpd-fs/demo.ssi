@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<title>Demo</title>
+		<!-- <link rel="stylesheet" type="text/css" href="css/design.css" /> -->
+		<script type="text/javascript" language="javascript" src="js/funcs_c.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<center>
+			<form method="get" action="set.cgi" name="demo" id="form-demo" onsubmit="return submit_form(this)">
+				<!--#Titel label=Demo --><br/>
+				<!--#IntegerInputField id=d1 name=DemoName min=5 max=10 increment=1 --><br/>
+				
+				<!--#SubmitInputField label=Speichern form_id=demo -->  
+			</form>
+			</center>
+		</div>
+		<div id="footer">
+			<nobr><font style="font-size: 12px">&copy; 2009 - 2010 Anzinger und Hahn in Zusammenarbeit mit <b>Hainzl Industriesysteme</b></font><nobr>
+		</div>
+	</body>
+</html>
