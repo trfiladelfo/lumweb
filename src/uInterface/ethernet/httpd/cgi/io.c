@@ -52,6 +52,7 @@
 #include "hw_types.h"
 #include "gpio.h"
 #include "sysctl.h"
+
 #include "io.h"
 #include "lwip/opt.h"
 #include "../httpd.h"
@@ -63,6 +64,10 @@
 
 #include "ethernet/lwipopts.h"
 #include "taglib/taglib.h"
+
+#include "taglib/tags/CheckboxInputField.h"
+#include "taglib/tags/IntegerInputField.h"
+
 
 
 /// Message for the Comm-Task
@@ -409,7 +414,7 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 		break;
 
 	case TAG_INDEX_INTEGERINPUTFIELD:
-		io_get_number_input_field(pcInsert, iInsertLen, params);
+		io_get_integer_input_field(pcInsert, iInsertLen, params);
 		break;
 
 	case TAG_INDEX_SUBMITINPUTFIELD:
@@ -570,57 +575,6 @@ int io_get_value_from_comtask(char* id) {
  * creates number input field  and +/- buttons
  *
  */
-void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
-	int value = 1;
-	char *id = NULL, *label = NULL, *max = NULL, *min = NULL, *decimal = NULL, *increment = NULL;
-
-	label = SSIParamGetValue(*(params), "label");
-	id = SSIParamGetValue(*(params), "id");
-	max = SSIParamGetValue(*(params), "max");
-	min = SSIParamGetValue(*(params), "min");
-	decimal = SSIParamGetValue(*(params), "decimal");
-	increment = SSIParamGetValue(*(params), "increment");
-
-	SSIParamDeleteAll(params);
-
-	if (id != NULL && label != NULL) {
-		if (min == NULL)
-			min = "-1";
-		if (max == NULL)
-			max = "-1";
-		if (decimal == NULL)
-			decimal = "0";
-		if (increment == NULL)
-			increment = "1";
-
-		value = io_get_value_from_comtask(id);
-		if (value != -1) {
-			snprintf(
-					pcBuf,
-					iBufLen,
-					"<!-- $ IntegerInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
-						"%s <input type=\"text\" class=\"fi\" name=\"%s\" value=\"%d\" id=\"%s\" />"
-						"<script>addB('%s',%s,%s,%s);</script>", label, value, id,
-					max, min, increment, label, id, value, id, id, max, min, increment);
-
-#if DEBUG_SSI
-			printf("io_get_number_input_field: done \n");
-#endif
-		} else {
-#if DEBUG_SSI
-			printf("io_get_number_input_field: queu error \n");
-#endif
-			snprintf(pcBuf, iBufLen,
-					"NumberInputField: ERROR - NO DATA FROM QUEUE");
-		}
-	} else {
-#if DEBUG_SSI
-		printf("io_get_number_input_field: error no id and/or name found\n");
-#endif
-		snprintf(pcBuf, iBufLen,
-				"NumberInputField: ERROR - error no id and/or name found");
-	}
-}
 /**
  *
  * creates submit input button
@@ -666,47 +620,7 @@ void io_print_saved_params(char * pcBuf, int iBufLen) {
 	}
 }
 
-//*****************************************************************************
-//
-//
-//
-//*****************************************************************************
-void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
-	int value = 1;
-	char *id = NULL, *label = NULL;
 
-	label = SSIParamGetValue(*(params), "label");
-	id = SSIParamGetValue(*(params), "id");
-
-	SSIParamDeleteAll(params);
-
-	if (label != NULL && id != NULL) {
-		value = io_get_value_from_comtask(id);
-		if (value != -1) {
-			snprintf(
-					pcBuf,
-					iBufLen,
-					"<!-- $ CheckboxInputField name=\"%s\" id=\"%s\" value=\"%d\" $ --> %s <input type=\"checkbox\" class=\"fi\" name=\"%s\" id=\"%s\" %s />",
-					label, id, ((value != 0) ? 1 : 0), label, id, id, ((value
-							!= 0) ? "checked=\"checked\"" : ""));
-#if DEBUG_SSI
-			printf("io_get_checkbox_input_field: done \n");
-#endif
-		} else {
-#if DEBUG_SSI
-			printf("io_get_checkbox_input_field: queu error \n");
-#endif
-			snprintf(pcBuf, iBufLen,
-					"CheckboxInputField: ERROR - NO DATA FROM QUEUE");
-		}
-	} else {
-#if DEBUG_SSI
-		printf("io_get_checkbox_input_field: error no id and/or name found\n");
-#endif
-		snprintf(pcBuf, iBufLen,
-				"CheckboxInputField: ERROR - error no id and/or name found");
-	}
-}
 
 //*****************************************************************************
 //
@@ -885,152 +799,4 @@ void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params) {
 		snprintf(pcBuf, iBufLen,
 				"SubmitInputField: ERROR - no param label found ");
 	}
-}
-
-/**
- adds a new element to the list
-
- @param *root 		pointer to root element of list
- @param *nameValue	pointer to name-value string ($name=$value)
-
- @return 0	element not added
-*/
-int SSIParamAdd(pSSIParam *root, char *nameValue) {
-	char *value;
-	pSSIParam nParam, tmp = *(root);
-
-#if DEBUG_SSI_PARAMS
-	printf("SSIParamAdd: %s \n", nameValue);
-#endif
-
-	value = strstr(nameValue, "=");
-	value++;
-
-	nParam = pvPortMalloc(sizeof(SSIParam));
-	nParam->name = pvPortMalloc(strlen(nameValue) - strlen(value) + 1);
-	nParam->value = pvPortMalloc(strlen(value) + 1);
-
-	if (nParam != NULL && nParam->name != NULL && nParam->value != NULL) {
-
-		snprintf(nParam->name, (strlen(nameValue) - strlen(value)), "%s",
-				nameValue);
-		sprintf(nParam->value, "%s", value);
-
-		nParam->name = strtrim(nParam->name);
-		nParam->value = strtrim(nParam->value);
-
-#if DEBUG_SSI
-		printf("Werte getrimmt\n");
-#endif
-
-		if (strlen(nParam->name) > 0) {
-
-			nParam->next = tmp;
-			*(root) = nParam;
-#if DEBUG_SSI_PARAMS
-			printf("SSIParamAdd: added element name: '%s' value: '%s' \n",
-					nParam->name, nParam->value);
-#endif
-		} else {
-
-#if DEBUG_SSI_PARAMS
-			printf("SSIParamAdd: didnt insert element, name empty\n");
-#endif
-		}
-
-	} else {
-#if DEBUG_SSI_PARAMS
-		printf(" ... fail\n");
-#endif
-		if (nParam->name != NULL) {
-			vPortFree(nParam->name);
-		}
-		if (nParam->value != NULL) {
-			vPortFree(nParam->value);
-		}
-		if (nParam != NULL) {
-			vPortFree(nParam);
-		}
-	}
-	return 0;
-}
-/**
- gets an element with $name from the list
-
- @param  root	root element of list
- @param  *name	pointer to name of the element
-
- @return element with $name .... element found
- @return NULL .... element not found
-*/
-pSSIParam SSIParamGet(pSSIParam root, char *name) {
-	pSSIParam ret = NULL;
-
-	while (root != NULL) {
-#if DEBUG_SSI_PARAMS
-		printf("SSIParamGet: element name: '%s' \n", root->name);
-#endif
-		if (strcmp(root->name, name) == 0)
-			return root;
-		root = root->next;
-	}
-
-	return ret;
-}
-/**
- gets a value of an element with $name from the list
-
- @param root	root element of list
- @param *name	pointer to name of the element
-
- @return string with the value .... element found
- @return NULL .... element not found
-*/
-char* SSIParamGetValue(pSSIParam root, char *name) {
-	pSSIParam p;
-	char* value = NULL;
-
-	p = SSIParamGet(root, name);
-	if (p != NULL) {
-		value = p->value;
-#if DEBUG_SSI_PARAMS
-		printf("SSIParamGetValue: found value '%s' for %s \n", value, name);
-#endif
-	}
-
-	return value;
-}
-/**
- * deletes and frees all elements ot the list
- *
- * @param *root	pointer to root element of list
- *
-*/
-void SSIParamDeleteAll(pSSIParam *root) {
-	pSSIParam p = (*root), del = NULL;
-
-	while (p != NULL) {
-#if DEBUG_SSI_PARAMS
-		printf("SSIParamDeleteAll: delete element : %s \n", p->name);
-#endif
-		del = p;
-		p = p->next;
-		vPortFree(del->name);
-
-#if DEBUG_SSI_PARAMS
-		printf("SSIParamDeleteAll: freed name \n");
-#endif
-
-		vPortFree(del->value);
-
-#if DEBUG_SSI_PARAMS
-		printf("SSIParamDeleteAll: freed value \n");
-#endif
-
-		vPortFree(del);
-	}
-
-#if DEBUG_SSI_PARAMS
-	printf("SSIParamDeleteAll: deleted all elements \n");
-#endif
 }
