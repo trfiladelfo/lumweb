@@ -36,6 +36,7 @@ SOURCE=	syscall.c \
 		$(CONF_DIR)/configloader.c \
 		$(ETHERNET_DIR)/httpd/httpd.c \
 		$(ETHERNET_DIR)/httpd/cgi/cgifuncs.c \
+		$(ETHERNET_DIR)/httpd/cgi/ssiparams.c \
 		$(ETHERNET_DIR)/httpd/cgi/io.c \
 		$(ETHERNET_DIR)/LWIPStack.c \
 		$(ETHERNET_DIR)/ETHIsr.c \

@@ -212,6 +212,10 @@ int g_iNumCGIs = 0;
 #include "ethernet/httpd/cgi/io.h"
 #endif /* INCLUDE_HTTPD_CGI */
 
+#ifdef INCLUDE_HTTPD_SSI_PARAMS
+#include "ethernet/httpd/cgi/ssiparams.h"
+#endif
+
 #ifdef DYNAMIC_HTTP_HEADERS
 //*****************************************************************************
 //

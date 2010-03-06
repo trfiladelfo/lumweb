@@ -59,14 +59,8 @@ extern "C"
 
 #endif
 
-/** represents an SSI Parameter */
-typedef struct SSIParam {
-	char *name;
-	char *value;
-	struct SSIParam* next;
-} SSIParam;
+#include "ethernet/httpd/cgi/ssiparams.h"
 
-typedef SSIParam * pSSIParam;
 
 void io_init(void);
 void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
@@ -84,17 +78,5 @@ int io_get_value_from_comtask(char* id);
 #ifdef __cplusplus
 }
 #endif
-
-///  gets an element with $name from the list
-int SSIParamAdd(pSSIParam* root, char* nameValue);
-
-///  gets an element with $name from the list
-pSSIParam SSIParamGet(pSSIParam root, char* name);
-
-/// deletes and frees all elements ot the list
-void SSIParamDeleteAll(pSSIParam* root);
-
-/// gets a value of an element with $name from the list
-char* SSIParamGetValue(pSSIParam root, char* name);
 
 #endif // __IO_H__
