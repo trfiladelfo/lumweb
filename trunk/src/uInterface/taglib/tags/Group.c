@@ -5,6 +5,8 @@
 #include "taglib/taglib.h"
 #include "taglib/tags.h"
 
+#include "taglib/tags/Group.h"
+
 void vParseGroup(char* param, int len) {
 	char *label;
 
@@ -19,4 +21,25 @@ void vParseGroup(char* param, int len) {
 	}
 
 }
+
+/**
+ *
+ * creates a group line
+ *
+ */
+void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params) {
+	char *label = NULL;
+	label = SSIParamGetValue(*(params), "label");
+
+	SSIParamDeleteAll(params);
+
+	if (label != NULL) {
+		snprintf(pcBuf, iBufLen, "<!-- $ Group label=\"%s\" $ -->"
+			"<h3>%s</h3>", label, label);
+	} else {
+		snprintf(pcBuf, iBufLen,
+				"SubmitInputField: ERROR - no param label found ");
+	}
+}
+
 

@@ -67,7 +67,11 @@ char* pcFormatIntegerValue(basicDisplayLine *line) {
 	return line->strValue;
 }
 
-
+/**
+ *
+ * creates number input field  and +/- buttons
+ *
+ */
 void io_get_integer_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 	int value = 1;
 	char *id = NULL, *label = NULL, *max = NULL, *min = NULL, *decimal = NULL, *increment = NULL;

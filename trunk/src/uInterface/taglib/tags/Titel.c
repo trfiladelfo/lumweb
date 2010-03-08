@@ -5,6 +5,8 @@
 #include "taglib/taglib.h"
 #include "taglib/tags.h"
 
+#include "taglib/tags/Titel.h"
+
 void vParseTitle(char* param, int len) {
 	char *label;
 	label = pcGetParamFromString(param, "label");
@@ -16,5 +18,25 @@ void vParseTitle(char* param, int len) {
 #if DEBUG_HTTPC
 		printf("vParseTitle: label NULL\n");
 #endif
+	}
+}
+
+/**
+ *
+ * creates a titel line
+ *
+ */
+void io_get_titel(char * pcBuf, int iBufLen, pSSIParam *params) {
+	char *label = NULL;
+	label = SSIParamGetValue(*(params), "label");
+
+	SSIParamDeleteAll(params);
+
+	if (label != NULL) {
+		snprintf(pcBuf, iBufLen, "<!-- $ Titel label=\"%s\" $ -->"
+			"<h1>%s</h1>", label, label);
+	} else {
+		snprintf(pcBuf, iBufLen,
+				"SubmitInputField: ERROR - no param label found ");
 	}
 }
