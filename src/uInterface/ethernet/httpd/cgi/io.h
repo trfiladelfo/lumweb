@@ -61,6 +61,8 @@ extern "C"
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
+//char **paramsSet = NULL, **valuesSet = NULL;
+int paramValueLen; /// number of params/values set last time - 1
 
 void io_init(void);
 void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params);

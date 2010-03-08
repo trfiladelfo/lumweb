@@ -5,6 +5,8 @@
 #include "taglib/taglib.h"
 #include "taglib/tags.h"
 
+#include "taglib/tags/Hyperlink.h"
+
 #include "configuration/configloader.h"
 
 void vParseHyperlink(char* param, int len) {
@@ -34,4 +36,35 @@ void vParseHyperlink(char* param, int len) {
 		xDisplayRoot.menue = true;
 	}
 	vPortFree(configLoad);
+}
+
+//*****************************************************************************
+//
+//
+//
+//*****************************************************************************
+void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params) {
+	char *value = NULL, *label = NULL;
+
+	label = SSIParamGetValue(*(params), "label");
+	value = SSIParamGetValue(*(params), "value");
+
+	SSIParamDeleteAll(params);
+
+	if (label != NULL && value != NULL) {
+		snprintf(
+				pcBuf,
+				iBufLen,
+				"<!-- $ Hyperlink name=\"%s\" value=\"%s\" $ --> <a href=\"%s\">%s</a>",
+				label, value, value, label);
+#if DEBUG_SSI
+		printf("io_get_hyperlink: done \n");
+#endif
+	} else {
+#if DEBUG_SSI
+		printf("io_get_hyperlink: error no id and/or value found\n");
+#endif
+		snprintf(pcBuf, iBufLen,
+				"Hyperlink: ERROR - error no id and/or value found");
+	}
 }

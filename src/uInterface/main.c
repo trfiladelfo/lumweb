@@ -93,7 +93,7 @@ int main(void) {
 		appendToLog("IP-Stack started");
 	}
 
-#ifdef ENABLE_GRAPHIC
+#if ENABLE_GRAPHIC
 	/* Graphic Task */
 	printf("Starting Graphic Task ... ");
 	xTaskCreate( vGraphicTask, (const signed char * const)GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );

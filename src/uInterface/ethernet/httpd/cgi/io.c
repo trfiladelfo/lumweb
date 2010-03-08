@@ -53,9 +53,9 @@
 #include "gpio.h"
 #include "sysctl.h"
 
-#include "io.h"
+#include "ethernet/httpd/cgi/io.h"
 #include "lwip/opt.h"
-#include "../httpd.h"
+#include "ethernet/httpd/httpd.h"
 #include "cgifuncs.h"
 
 #include "communication/comTask.h"
@@ -67,6 +67,13 @@
 
 #include "taglib/tags/CheckboxInputField.h"
 #include "taglib/tags/IntegerInputField.h"
+#include "taglib/tags/FloatInputField.h"
+#include "taglib/tags/SubmitInputField.h"
+#include "taglib/tags/TimeInputField.h"
+#include "taglib/tags/Hyperlink.h"
+#include "taglib/tags/Titel.h"
+#include "taglib/tags/Group.h"
+#include "taglib/tags/SavedParams.h"
 
 
 
@@ -174,8 +181,7 @@ void io_init(void) {
 
 #ifdef INCLUDE_HTTPD_CGI
 
-char **paramsSet = NULL, **valuesSet = NULL;
-int paramValueLen; /// number of params/values set last time - 1
+
 
 /**
  *
@@ -570,233 +576,12 @@ int io_get_value_from_comtask(char* id) {
 	} else
 		return -1;
 }
-/**
- *
- * creates number input field  and +/- buttons
- *
- */
-/**
- *
- * creates submit input button
- *
- */
-void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params) {
-	char *label = NULL;
-	label = SSIParamGetValue(*(params), "label");
-
-	SSIParamDeleteAll(params);
-
-	if (label != NULL) {
-		//if(ajax_id != NULL) // AJAX
-		snprintf(pcBuf, iBufLen, "<!-- $ SubmitInputField label=\"%s\" $ -->"
-			"<input type=\"submit\" value=\"%s\"/>", label, label);
-		//else
-		//	snprintf(pcBuf, iBufLen, "<!-- $ SubmitInputField label=%s $ -->"
-		//			"<input type=\"submit\" name=\"%s\" value=\"%s\" />", label, label, label);
-	} else {
-		snprintf(pcBuf, iBufLen,
-				"SubmitInputField: ERROR - no param label found ");
-	}
-}
-
-/**
- *
- * prints the last set values/params
- *
-*/
-void io_print_saved_params(char * pcBuf, int iBufLen) {
-	//int i;
-	if (paramValueLen == -1) {
-		snprintf(pcBuf, iBufLen, "Keine Parameter gesetzt");
-	} else {
-	/*	for (i = 0; i <= paramValueLen; i++) {
-#if DEBUG_SSI
-			printf("io_print_saved_params: valueSet=%s, paramSet=%s \n",
-					*(valuesSet + i), *(paramsSet + i));
-#endif
-		}
-*/
-		snprintf(pcBuf, iBufLen, "%d Parameter gesetzt", paramValueLen + 1);
-	}
-}
 
 
 
-//*****************************************************************************
-//
-//
-//
-//*****************************************************************************
-void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params) {
-	char *value = NULL, *label = NULL;
 
-	label = SSIParamGetValue(*(params), "label");
-	value = SSIParamGetValue(*(params), "value");
 
-	SSIParamDeleteAll(params);
 
-	if (label != NULL && value != NULL) {
-		snprintf(
-				pcBuf,
-				iBufLen,
-				"<!-- $ Hyperlink name=\"%s\" value=\"%s\" $ --> <a href=\"%s\">%s</a>",
-				label, value, value, label);
-#if DEBUG_SSI
-		printf("io_get_hyperlink: done \n");
-#endif
-	} else {
-#if DEBUG_SSI
-		printf("io_get_hyperlink: error no id and/or value found\n");
-#endif
-		snprintf(pcBuf, iBufLen,
-				"Hyperlink: ERROR - error no id and/or value found");
-	}
-}
 
-/**
- *
- * creates a titel line
- *
- */
-void io_get_titel(char * pcBuf, int iBufLen, pSSIParam *params) {
-	char *label = NULL;
-	label = SSIParamGetValue(*(params), "label");
 
-	SSIParamDeleteAll(params);
 
-	if (label != NULL) {
-		snprintf(pcBuf, iBufLen, "<!-- $ Titel label=\"%s\" $ -->"
-			"<h1>%s</h1>", label, label);
-	} else {
-		snprintf(pcBuf, iBufLen,
-				"SubmitInputField: ERROR - no param label found ");
-	}
-}
-/**
- *
- * creates a time input field
- *
- */
-void io_get_time_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
-	int value = 1, hour = 0, minute = 0;
-	char *id = NULL, *label = NULL;
-
-	label = SSIParamGetValue(*(params), "label");
-	id = SSIParamGetValue(*(params), "id");
-
-	SSIParamDeleteAll(params);
-
-	if (id != NULL && label != NULL) {
-		value = io_get_value_from_comtask(id);
-
-		// parse value (in minutes)
-		hour = value / 60;
-		minute = value - (hour*60);
-
-		// TODO Add buttons
-		if (value != -1) {
-			snprintf(
-					pcBuf,
-					iBufLen,
-					"<!-- $ TimeInputField name=\"%s\" value=\"%d\" id=\"%s\" $ -->"
-						"%s <input type=\"text\" class=\"fi h\" name=\"t_%s\" value=\"%d\" id=\"%s_1\" />"
-						":<input type=\"text\" class=\"fi m\" name=\"t_%s\" value=\"%d\" id=\"%s_2\" />"
-						"<br><script>addBH('%s')</script>",
-						label, value, id,
-						label, id, hour, id, id, minute, id, id);
-
-#if DEBUG_SSI
-			printf("io_get_number_input_field: done \n");
-#endif
-		} else {
-#if DEBUG_SSI
-			printf("io_get_number_input_field: queu error \n");
-#endif
-			snprintf(pcBuf, iBufLen,
-					"NumberInputField: ERROR - NO DATA FROM QUEUE");
-		}
-	} else {
-#if DEBUG_SSI
-		printf("io_get_number_input_field: error no id and/or name found\n");
-#endif
-		snprintf(pcBuf, iBufLen,
-				"NumberInputField: ERROR - error no id and/or name found");
-	}
-}
-
-/**
- *
- * creates a float input field
- *
- */
-void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
-	int value = 1, decimal_place = 0;
-	char *id = NULL, *label = NULL, *max = NULL, *min = NULL, *increment = NULL;
-
-	label = SSIParamGetValue(*(params), "label");
-	id = SSIParamGetValue(*(params), "id");
-	max = SSIParamGetValue(*(params), "max");
-	min = SSIParamGetValue(*(params), "min");
-	increment = SSIParamGetValue(*(params), "increment");
-
-	SSIParamDeleteAll(params);
-
-	if (id != NULL && label != NULL) {
-		if (min == NULL)
-			min = "null";
-		if (max == NULL)
-			max = "null";
-		if (increment == NULL)
-			increment = "null";
-
-		value = io_get_value_from_comtask(id);
-		if (value != -1) {
-			decimal_place = value % 10;
-			value = value / 10;
-
-			snprintf(
-					pcBuf,
-					iBufLen,
-					"<!-- $ FloatInputField name=\"%s\" value=\"%d\" id=\"%s\" max=\"%s\" min=\"%s\" increment=\"%s\" $ -->"
-						"%s <input type=\"text\" class=\"fi\" name=\"f_%s\" value=\"%d.%d\" id=\"%s\" />"
-						"<script>addB('%s',%s,%s,%s);</script>", label, (value * 10 + decimal_place), id,
-					max, min, increment, label, id, value, decimal_place, id, id, max, min, increment);
-
-#if DEBUG_SSI
-			printf("io_get_number_input_field: done \n");
-#endif
-		} else {
-#if DEBUG_SSI
-			printf("io_get_number_input_field: queu error \n");
-#endif
-			snprintf(pcBuf, iBufLen,
-					"NumberInputField: ERROR - NO DATA FROM QUEUE");
-		}
-	} else {
-#if DEBUG_SSI
-		printf("io_get_number_input_field: error no id and/or name found\n");
-#endif
-		snprintf(pcBuf, iBufLen,
-				"NumberInputField: ERROR - error no id and/or name found");
-	}
-}
-
-/**
- *
- * creates a group line
- *
- */
-void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params) {
-	char *label = NULL;
-	label = SSIParamGetValue(*(params), "label");
-
-	SSIParamDeleteAll(params);
-
-	if (label != NULL) {
-		snprintf(pcBuf, iBufLen, "<!-- $ Group label=\"%s\" $ -->"
-			"<h3>%s</h3>", label, label);
-	} else {
-		snprintf(pcBuf, iBufLen,
-				"SubmitInputField: ERROR - no param label found ");
-	}
-}
