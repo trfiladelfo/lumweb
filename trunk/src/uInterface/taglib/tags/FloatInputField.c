@@ -1,9 +1,12 @@
-/*
- * FloatInputField.c
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: 02.03.2010
- *      Author: root
- */
+ * \file FloatInputField.c
+ * \author Anziner, Hahn
+ * \brief Routines for the FloatInputField tag
+ *
+*/
 
 #include <stdlib.h>
 #include <stdio.h>

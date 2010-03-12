@@ -1,10 +1,12 @@
-/*
- * FloatInputField.h
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: Mar 8, 2010
- *      Author: d3f3nd3r
- */
-
+ * \file FloatInputField.h
+ * \author Anziner, Hahn
+ * \brief Protorypes for the FloatInputField tag
+ *
+*/
 #ifndef FLOATINPUTFIELD_H_
 #define FLOATINPUTFIELD_H_
 

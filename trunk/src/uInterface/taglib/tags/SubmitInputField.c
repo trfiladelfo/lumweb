@@ -1,9 +1,12 @@
-/*
- * FloatInputField.c
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: 02.03.2010
- *      Author: root
- */
+ * \file SubmitInputField.c
+ * \author Anziner, Hahn
+ * \brief Routines for the SubmitInputField tag
+ *
+*/
 
 
 #include <string.h>
