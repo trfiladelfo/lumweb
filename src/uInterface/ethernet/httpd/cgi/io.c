@@ -576,12 +576,3 @@ int io_get_value_from_comtask(char* id) {
 	} else
 		return -1;
 }
-
-
-
-
-
-
-
-
-

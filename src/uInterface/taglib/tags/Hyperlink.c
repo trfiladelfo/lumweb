@@ -30,7 +30,7 @@ void vParseHyperlink(char* param, int len) {
 	if (strcmp(configLoad, value) != 0) {
 		if (name != NULL) {
 			if (value != NULL) {
-				vCreateNewEntity(xTagList[TAG_INDEX_HYPERLINK], NULL, name, value, -1,
+				vCreateNewEntity(xTagList + TAG_INDEX_HYPERLINK, NULL, name, value, -1,
 						-1, -1, -1);
 			} else {
 #if DEBUG_HTTPC

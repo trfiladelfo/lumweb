@@ -53,7 +53,7 @@ void vParseIntegerInputField(char* param, int len) {
 	if (id != NULL) {
 		if (name != NULL) {
 			if (value != NULL) {
-				vCreateNewEntity(xTagList[TAG_INDEX_INTEGERINPUTFIELD], id, name, NULL,
+				vCreateNewEntity(xTagList + TAG_INDEX_INTEGERINPUTFIELD, id, name, NULL,
 						atoi(value), max, min, incr);
 			} else {
 #if DEBUG_HTTPC

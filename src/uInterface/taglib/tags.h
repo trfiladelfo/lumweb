@@ -19,7 +19,7 @@ char* vDummyStrFormatter (void* this);
 
 // PRODUCTIVE FUNCTIONS
 
-static const taglib* xTagList[] = {
+static const taglib xTagList[] = {
 		{0,	vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr, vDummyOnDestroyPtr, vDummyStrFormatter, NULL}, // DATETIME
 		{1, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr, vDummyOnDestroyPtr, vDummyStrFormatter, NULL}, // INTEGERINPUT
 		{2, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr, vDummyOnDestroyPtr, vDummyStrFormatter, NULL}, // SUBMIT

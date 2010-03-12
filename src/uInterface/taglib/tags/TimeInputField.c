@@ -27,7 +27,7 @@ void vParseTimeInputField(char* param, int len) {
 	if (id != NULL) {
 		if (name != NULL) {
 			if (value != NULL) {
-				vCreateNewEntity(xTagList[TAG_INDEX_TIMEINPUTFIELD], id, name, NULL,
+				vCreateNewEntity(xTagList + TAG_INDEX_TIMEINPUTFIELD, id, name, NULL,
 						atoi(value), -1, -1, -1);
 			} else {
 #if DEBUG_HTTPC

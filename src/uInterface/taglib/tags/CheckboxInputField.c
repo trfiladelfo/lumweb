@@ -35,7 +35,7 @@ void vParseCheckboxInputField(char* param, int len) {
 	if (id != NULL) {
 		if (name != NULL) {
 			if (value != NULL) {
-				vCreateNewEntity(xTagList[TAG_INDEX_CHECKBOXINPUTFIELD], id, name, NULL, iValue, -1, -1, -1);
+				vCreateNewEntity(xTagList + TAG_INDEX_CHECKBOXINPUTFIELD, id, name, NULL, iValue, -1, -1, -1);
 			} else {
 #if DEBUG_HTTPC
 				printf("vParseCheckboxInputField: value NULL\n");
