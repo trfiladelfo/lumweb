@@ -1,9 +1,12 @@
-/*
- * CheckboxInputField.h
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: Mar 6, 2010
- *      Author: d3f3nd3r
- */
+ * \file CheckboxInputField.h
+ * \author Anziner, Hahn
+ * \brief Prototypes for the CheckboxInputField tag
+ *
+*/
 
 #ifndef CHECKBOXINPUTFIELD_H_
 #define CHECKBOXINPUTFIELD_H_

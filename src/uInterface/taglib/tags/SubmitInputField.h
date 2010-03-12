@@ -1,9 +1,12 @@
-/*
- * SubmitInputField.h
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: Mar 8, 2010
- *      Author: d3f3nd3r
- */
+ * \file SubmitInputField.h
+ * \author Anziner, Hahn
+ * \brief Prototypes for the SubmitInputField tag
+ *
+*/
 
 #ifndef SUBMITINPUTFIELD_H_
 #define SUBMITINPUTFIELD_H_

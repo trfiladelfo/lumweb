@@ -1,9 +1,12 @@
-/*
- * TimeInputField.h
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: Mar 8, 2010
- *      Author: d3f3nd3r
- */
+ * \file TimeInputField.h
+ * \author Anziner, Hahn
+ * \brief Prototypes for the TimeInputField tag
+ *
+*/
 
 #ifndef TIMEINPUTFIELD_H_
 #define TIMEINPUTFIELD_H_

@@ -1,3 +1,12 @@
+/**
+ * \addtogroup Tags
+ * @{
+ *
+ * \file TimeInputField.c
+ * \author Anziner, Hahn
+ * \brief Routines for the TimeInputField tag
+ *
+*/
 
 #include <string.h>
 

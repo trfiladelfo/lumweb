@@ -1,9 +1,12 @@
-/*
- * Titel.h
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: Mar 8, 2010
- *      Author: d3f3nd3r
- */
+ * \file Titel.h
+ * \author Anziner, Hahn
+ * \brief Prototypes for the Titel tag
+ *
+*/
 
 #ifndef TITEL_H_
 #define TITEL_H_

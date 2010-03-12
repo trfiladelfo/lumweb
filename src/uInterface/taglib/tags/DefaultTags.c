@@ -1,9 +1,12 @@
-/*
- * DefaultTags.c
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: 02.03.2010
- *      Author: root
- */
+ * \file DefaultTags.c
+ * \author Anziner, Hahn
+ * \brief Routines for dummy default tag
+ *
+*/
 
 #include <string.h>
 

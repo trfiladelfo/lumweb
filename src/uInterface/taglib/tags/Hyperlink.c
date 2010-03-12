@@ -1,3 +1,13 @@
+/**
+ * \addtogroup Tags
+ * @{
+ *
+ * \file Hyperlink.c
+ * \author Anziner, Hahn
+ * \brief Routines for the Hyperlink tag
+ *
+*/
+
 
 #include <string.h>
 
