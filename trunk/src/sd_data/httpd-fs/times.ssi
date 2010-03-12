@@ -11,20 +11,20 @@
 				<center><table style="width: 75%; border:1px solid black;" border="0">
 
 					<tr>
-						<td align="center"><!--#TimeInputField id=day label=Startzeit--></td> 
+						<td align="center"><!--#TimeInputField id=day label=Start--></td> 
 					</tr>	
 
 					<tr>
-						<td align="center"><!--#TimeInputField id=night label=Endzeit--></td> 
+						<td align="center"><!--#TimeInputField id=night label=Ende--></td> 
 					</tr>	
 					<tr>
 						<td align="right" colspan="4">
 							<input type="reset" name="test" value="Zur&uuml;cksetzen" />
-							<!--#SubmitInputField label=Speichern form_id=times -->
+							<!--#SubmitInputField label=Speichern form_id=times-->
 						</td>
 					</tr>
 					<tr>
-						<td align="right" colspan="4"><!--#Hyperlink label=Menue value=index.ssi --></td>
+						<td align="right" colspan="4"><!--#Hyperlink label=Menue value=index.ssi--></td>
 					</tr>
 				</table>
 				<div id="container-times" class="answer">
