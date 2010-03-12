@@ -409,7 +409,7 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 #endif
 
 #if DEBUG_SSI
-	printf("SSI HANDLER \n");
+	printf("SSI HANDLER: index: %d\n", iIndex);
 #endif
 	//
 	// Which SSI tag have we been passed?
