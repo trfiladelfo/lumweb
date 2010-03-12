@@ -133,7 +133,7 @@ tWidget* xGetLabelWidget(void *akt, int row) {
 	}
 	line->labelWidget = pvPortMalloc(sizeof(tCanvasWidget));
 
-	if (line->type == xTagList[TAG_INDEX_GROUP]) {
+	if (line->type == xTagList + TAG_INDEX_GROUP) {
 		((tCanvasWidget*) line->labelWidget)->pFont = DISPLAY_LABEL_GROUP_FONT;
 	} else {
 		((tCanvasWidget*) line->labelWidget)->pFont = DISPLAY_LABEL_FONT;
