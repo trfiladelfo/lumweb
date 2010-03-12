@@ -58,6 +58,8 @@ void io_get_time_input_field(char * pcBuf, int iBufLen, pSSIParam *params) {
 
 	SSIParamDeleteAll(params);
 
+	printf("io_get_time_inpute_field: label=%s id=%s\n", label, id);
+
 	if (id != NULL && label != NULL) {
 		value = io_get_value_from_comtask(id);
 

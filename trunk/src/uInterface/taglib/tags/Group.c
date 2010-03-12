@@ -1,3 +1,12 @@
+/**
+ * \addtogroup Tags
+ * @{
+ *
+ * \file Group.c
+ * \author Anziner, Hahn
+ * \brief Routines for the Group tag
+ *
+*/
 
 #include <string.h>
 

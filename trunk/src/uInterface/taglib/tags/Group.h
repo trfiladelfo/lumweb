@@ -1,9 +1,12 @@
-/*
- * Group.h
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: Mar 8, 2010
- *      Author: d3f3nd3r
- */
+ * \file Group.h
+ * \author Anziner, Hahn
+ * \brief Prototypes for the Group tag
+ *
+*/
 
 #ifndef GROUP_H_
 #define GROUP_H_
