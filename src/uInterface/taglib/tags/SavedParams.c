@@ -1,9 +1,12 @@
-/*
- * FloatInputField.c
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: 02.03.2010
- *      Author: root
- */
+ * \file SavedParams.c
+ * \author Anziner, Hahn
+ * \brief Routines for the SavedParams tag
+ *
+*/
 
 
 #include <stdio.h>

@@ -1,9 +1,12 @@
-/*
- * SavedParams.h
+/**
+ * \addtogroup Tags
+ * @{
  *
- *  Created on: Mar 8, 2010
- *      Author: d3f3nd3r
- */
+ * \file SavedParams.h
+ * \author Anziner, Hahn
+ * \brief Prototypes for the SavedParams tag
+ *
+*/
 
 #ifndef SAVEDPARAMS_H_
 #define SAVEDPARAMS_H_
