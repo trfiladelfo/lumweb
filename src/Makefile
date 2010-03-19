@@ -18,6 +18,8 @@ FATFS_COMMON_DIR=external/fatfs
 GRLIB_COMMON_DIR=external/grlib
 BGET_COMMON_DIR=external/bget
 
+DOC_DIR=../doc
+
 SOURCE_DIR=./uInterface
 ETHERNET_DIR=$(SOURCE_DIR)/ethernet
 GRAPHIC_DIR=$(SOURCE_DIR)/graphic
@@ -25,6 +27,8 @@ TAGLIB_DIR=$(SOURCE_DIR)/taglib
 UART_DIR=$(SOURCE_DIR)/uart
 COMM_DIR=$(SOURCE_DIR)/communication
 CONF_DIR=$(SOURCE_DIR)/configuration
+
+DOXYFILE=$(DOC_DIR)/product/code/DoxyFile
 
 SOURCE=	syscall.c \
 		$(SOURCE_DIR)/main.c \
@@ -182,7 +186,7 @@ flash : all
 	openocd -f $(SCRIPT_DIR)/lm3s_flash_start.cfg -c "flash write_bank 0 ./$(NAME).bin 0" -f $(SCRIPT_DIR)/lm3s_flash_end.cfg 
 
 doc : 
-	doxygen ../doc/code/DoxyFile
+	doxygen $(DOXYFILE)
 	
 cleanflash : clean flash
 	
