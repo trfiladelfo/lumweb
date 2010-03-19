@@ -6,34 +6,13 @@
 #include "hw_types.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
+#include "ethernet/httpd/cgi/ssiparams.h"
 
-static const char * const g_pcConfigTags[] = { "DateTime", /// SSI_INDEX_DATEANDTIME
-		"IntegerInputField", /// SSI_INDEX_INTEGERINPUTFIELD
-		"SubmitInputField", /// SSI_INDEX_SUBMITINPUTFIELD
-		"SavedParams",		///SSI_INDEX_SAVEDPARAMS
-		"CheckboxInputField", /// SSI_INDEX_CHECKBOXINPUTFIELD
-		"Hyperlink", /// SSI_INDEX_HYPERLINK
-		"Titel", /// SSI_INDEX_TITLE
-		"Group", /// SSI_INDEX_GROUP
-		"TimeInputField", /// SSI_INDEX_TIMEINPUTFIELD
-		"FloatInputField" /// SSI_INDEX_FLOATINPUTFIELD
-
-};
-
-#define TAG_INDEX_DATEANDTIME  			0
-#define TAG_INDEX_INTEGERINPUTFIELD    	        1
-#define TAG_INDEX_SUBMITINPUTFIELD     	        2
-#define TAG_INDEX_SAVEDPARAMS    		3
-#define TAG_INDEX_CHECKBOXINPUTFIELD            4
-#define TAG_INDEX_HYPERLINK			5
-#define TAG_INDEX_TITEL				6
-#define TAG_INDEX_GROUP				7
-#define TAG_INDEX_TIMEINPUTFIELD	        8
-#define TAG_INDEX_FLOATINPUTFIELD	        9
-
-#define NUM_CONFIG_TAGS     (sizeof(g_pcConfigTags) / sizeof (char *))
-
+/**
+ * Structure for the TAG-Definition
+ */
 typedef struct __taglibStruct {
+        int   tagindex;
 	char* tagname;
 
 	void (* renderSSI )(char * pcBuf, int iBufLen, pSSIParam *params);
@@ -47,10 +26,36 @@ typedef struct __taglibStruct {
 	void* userSpace;
 } taglib;
 
+/**
+ * Parse a Value String out of the SSI Param
+ *
+ * @param str           The Complete SSI String
+ * @param search        Name from the searched Value
+ */
+
 char* pcGetParamFromString(char* str, char* search);
-void vInserIntoList(void* basicDisplayLine);
+
+/**
+ * Create new Entity on the Display.
+ *
+ * @param type          Pointer to the Taglib-Structure
+ * @param id            Com-Task ID of the Element
+ * @param label         Display Label for the Menu
+ * @param strValue      Value as String, NULL if not available
+ * @param value         Integer Value
+ * @param max           Maximum Value
+ * @param min           Minimum Value
+ * @param increment     Increment Value
+ */
 void vCreateNewEntity(taglib *type, char* id, char* label, char* strValue,
 		int value, int max, int min, int increment);
+/**
+ * Insert a DisplayLine into the List for Building the GUI
+ *
+ * @param basicDisplayLine Structure with all Display Information
+ */
+void vInserIntoList(void* basicDisplayLine);
+
 
 
 

@@ -99,6 +99,7 @@ SOURCE=	syscall.c \
 		$(GRAPHIC_DIR)/httpc/webClient.c \
       	$(SOURCE_DIR)/log/logging.c \
       	$(TAGLIB_DIR)/taglib.c \
+      	$(TAGLIB_DIR)/tags.c \
       	$(TAGLIB_DIR)/tags/CheckboxInputField.c \
       	$(TAGLIB_DIR)/tags/DateTime.c \
       	$(TAGLIB_DIR)/tags/FloatInputField.c \

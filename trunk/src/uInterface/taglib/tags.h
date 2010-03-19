@@ -9,47 +9,36 @@
 #define TAGS_H_
 
 #include "graphic/gui/displayBasics.h"
+#include "taglib.h"
 
-// DUMMY FUNCTIONS
-void
-vDummyOnLoadPtr(char*, int, void* this);
+#include "taglib/tags/CheckboxInputField.h"
+#include "taglib/tags/FloatInputField.h"
+#include "taglib/tags/Group.h"
+#include "taglib/tags/Hyperlink.h"
+#include "taglib/tags/IntegerInputField.h"
+#include "taglib/tags/SavedParams.h"
+#include "taglib/tags/SubmitInputField.h"
+#include "taglib/tags/TimeInputField.h"
+#include "taglib/tags/Titel.h"
+#include "taglib/tags/DefaultTags.h"
 
-tWidget*
-vDummyOnDisplayPtr(void* this, int);
 
-void
-vDummyOnEditValuePtr(void* this);
+#define NUM_CONFIG_TAGS    10
 
-void
-vDummyOnDestroyPtr(void* this);
+taglib xTagList[NUM_CONFIG_TAGS];
 
-char*
-vDummyStrFormatter(void* this);
+#define TAG_INDEX_DATEANDTIME                   0
+#define TAG_INDEX_INTEGERINPUTFIELD             1
+#define TAG_INDEX_SUBMITINPUTFIELD              2
+#define TAG_INDEX_SAVEDPARAMS                   3
+#define TAG_INDEX_CHECKBOXINPUTFIELD            4
+#define TAG_INDEX_HYPERLINK                     5
+#define TAG_INDEX_TITEL                         6
+#define TAG_INDEX_GROUP                         7
+#define TAG_INDEX_TIMEINPUTFIELD                8
+#define TAG_INDEX_FLOATINPUTFIELD               9
 
-// PRODUCTIVE FUNCTIONS
+void vInitTagLibrary(void);
 
-static const taglib xTagList[] =
-  {
-    { 0, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-        vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // DATETIME
-        { 1, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // INTEGERINPUT
-        { 2, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // SUBMIT
-        { 3, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // SAVED PARAMS
-        { 4, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // CHECKBOX
-        { 5, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // HYPERLINK
-        { 6, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // TITLE
-        { 7, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // GROUP
-        { 8, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL }, // TIMEINPUT
-        { 9, vDummyOnLoadPtr, vDummyOnDisplayPtr, vDummyOnEditValuePtr,
-            vDummyOnDestroyPtr, vDummyStrFormatter, NULL } // FLOATINPUT
-  };
 
 #endif /* TAGS_H_ */

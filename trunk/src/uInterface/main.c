@@ -30,6 +30,8 @@
 #include "graphic/graphicTask.h"
 #include "log/logging.h"
 
+#include "taglib/tags.h"
+
 
 /* Globals */
 //extern int __HEAP_START; // used for _sbrk defined in standalone.ld
@@ -59,8 +61,9 @@ int main(void) {
 	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
 
 	printf("Starting Firmware ...\n");
-
-
+	printf("Initialisiere Taglib ...");
+	vInitTagLibrary();
+	printf (" done\n");
 	// Queue Definition
 	/* The main Communication between COMM-, GRAPH and HTTPD Task */
 	printf("Initialize Queues ...\n\txComQueue\n");

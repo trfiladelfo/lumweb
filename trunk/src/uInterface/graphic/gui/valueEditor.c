@@ -9,6 +9,7 @@
 #include "valueEditor.h"
 
 #include "taglib/taglib.h"
+#include "taglib/tags.h"
 
 #include "graphic/gui/displayBasics.h"
 #include "graphic/gui/editorStyle.h"
