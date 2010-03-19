@@ -26,7 +26,7 @@
  * prints the last set values/params
  *
 */
-void io_print_saved_params(char * pcBuf, int iBufLen) {
+void io_print_saved_params(char * pcBuf, int iBufLen, SSIParam *param) {
 	//int i;
 	if (paramValueLen == -1) {
 		snprintf(pcBuf, iBufLen, "Keine Parameter gesetzt");

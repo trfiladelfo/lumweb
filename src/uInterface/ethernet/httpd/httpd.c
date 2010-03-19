@@ -100,6 +100,8 @@
 
 #include "setup.h" // custom debug defines
 
+#include "taglib/tags.h"
+
 #ifdef INCLUDE_HTTPD_DEBUG
 #define DEBUG_PRINT printf
 #else
@@ -196,7 +198,7 @@ u16_t hdr_index; /* The index of the hdr string currently being sent. */
 /* SSI insert handler function pointer. */
 tSSIHandler g_pfnSSIHandler = NULL;
 int g_iNumTags = 0;
-const char* const* g_ppcTags = NULL;
+taglib* g_ppcTags = NULL;
 
 #define LEN_TAG_LEAD_IN 5
 const char * const g_pcTagLeadIn = "<!--#";
@@ -407,11 +409,14 @@ static int extract_uri_parameters(struct http_state *hs, char *params) {
 static void get_tag_insert(struct http_state *hs) {
 	int loop;
 
-	if (g_pfnSSIHandler && g_ppcTags && g_iNumTags) {
+	printf("get_tag_insert %x %x\n", (unsigned int) g_pfnSSIHandler, (unsigned int)xTagList);
+	if (g_pfnSSIHandler != NULL && xTagList != NULL && g_iNumTags > 0) {
 
+                printf("get_tag_insert - tags vorhanden\n");
 		/* Find this tag in the list we have been provided. */
 		for (loop = 0; loop < g_iNumTags; loop++) {
-			if (strcmp(hs->tag_name, g_ppcTags[loop]) == 0) {
+                      printf("get_tag_insert: TagName %s\n",  xTagList[loop].tagname);
+			if (strcmp(hs->tag_name,  xTagList[loop].tagname) == 0) {
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
 				hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
 						MAX_TAG_INSERT_LEN, &(hs->ssi_params));
@@ -1599,14 +1604,12 @@ void httpd_init(void) {
 
 #ifdef INCLUDE_HTTPD_SSI
 /*-----------------------------------------------------------------------------------*/
-void http_set_ssi_handler(tSSIHandler pfnSSIHandler, const char* const* ppcTags,
-		int iNumTags) {
+void http_set_ssi_handler(tSSIHandler pfnSSIHandler) {
 	DEBUG_PRINT
 		("http_set_ssi_handler\n");
 
 	g_pfnSSIHandler = pfnSSIHandler;
-	g_ppcTags = ppcTags;
-	g_iNumTags = iNumTags;
+	g_iNumTags = NUM_CONFIG_TAGS;
 }
 #endif
 

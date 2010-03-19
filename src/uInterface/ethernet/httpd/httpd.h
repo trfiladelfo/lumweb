@@ -130,8 +130,7 @@ typedef int (*tSSIHandler)(int iIndex, char *pcInsert, int iInsertLen,
 typedef int (*tSSIHandler)(int iIndex, char *pcInsert, int iInsertLen);
 #endif
 
-void http_set_ssi_handler(tSSIHandler pfnSSIHandler,
-		const char* const * ppcTags, int iNumTags);
+void http_set_ssi_handler(tSSIHandler pfnSSIHandler);
 
 /* The maximum length of the string comprising the tag name */
 #ifndef MAX_TAG_NAME_LEN

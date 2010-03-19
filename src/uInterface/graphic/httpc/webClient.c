@@ -193,7 +193,7 @@ void vParseParameter(char* html, u16_t len) {
 	printf("vParseParameter: Found Type: %s\n", buffer);
 #endif
 
-	for (tagPos = 0; tagPos < nrOfTags && strcmp(buffer, g_pcConfigTags[tagPos]) != 0; tagPos++) {
+	for (tagPos = 0; tagPos < nrOfTags && strcmp(buffer, xTagList[tagPos].tagname) != 0; tagPos++) {
 			;
 	}
 

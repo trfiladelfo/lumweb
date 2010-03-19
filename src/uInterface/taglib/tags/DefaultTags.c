@@ -9,6 +9,7 @@
 */
 
 #include <string.h>
+#include <stdio.h>
 
 #include "FreeRTOS.h"
 #include "taglib/taglib.h"
@@ -138,7 +139,9 @@ tWidget* vDummyOnDisplayPtr(void* this, int row) {
 		break;
 	}
 
+	return NULL;
 }
+
 void vDummyOnEditValuePtr(void* this) {
 	;
 }
