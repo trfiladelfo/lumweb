@@ -14,10 +14,14 @@
 
 #include "FreeRTOSConfig.h"
 
+/// Stack size for the LWIP Task (also the Webserver)
 #define LWIP_STACK_SIZE		512*2
+/// Task name for the LWIP Task
 #define LWIP_TASK_NAME		"lwip"
+/// Priority for LWIP Task
 #define LWIP_TASK_PRIORITY  (configMAX_PRIORITIES - 2)
 #define LWIP_USE_DHCP		0
+/// Task handle for LWIP, used for suspending and resuming tasks
 xTaskHandle xLwipTaskHandle;
 
 #define GRAPH_STACK_SIZE	512
