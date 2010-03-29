@@ -8,8 +8,10 @@
  *
 */
 
-
+#include <stdio.h>
 #include <string.h>
+
+#include "setup.h"
 
 #include "FreeRTOS.h"
 #include "taglib/taglib.h"
@@ -19,7 +21,7 @@
 
 #include "configuration/configloader.h"
 
-void vParseHyperlink(char* param, int len) {
+void vParseHyperlink(char* param, int len, void* this) {
 
 	char *name, *value;
 
@@ -30,15 +32,18 @@ void vParseHyperlink(char* param, int len) {
 	if (strcmp(configLoad, value) != 0) {
 		if (name != NULL) {
 			if (value != NULL) {
+#if DEBUG_TAGS
+				printf("vParseHyperlink: create new Hyperlink\n");
+#endif
 				vCreateNewEntity(xTagList + TAG_INDEX_HYPERLINK, NULL, name, value, -1,
 						-1, -1, -1);
 			} else {
-#if DEBUG_HTTPC
+#if DEBUG_TAGS
 				printf("vParseHyperlink: value NULL\n");
 #endif
 			}
 		} else {
-#if DEBUG_HTTPC
+#if DEBUG_TAGS
 			printf("vParseHyperlink: name NULL\n");
 #endif
 		}
@@ -77,4 +82,8 @@ void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params) {
 		snprintf(pcBuf, iBufLen,
 				"Hyperlink: ERROR - error no id and/or value found");
 	}
+}
+
+char* vHyperlinkStrFormatter (void* this) {
+	return ((basicDisplayLine*)this)->strValue;
 }

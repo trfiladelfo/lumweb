@@ -49,13 +49,17 @@ void vInitializeValueWidget(void);
 void vIncreaseValue(tWidget *pWidget);
 void vDecreaseValue(tWidget *pWidget);
 
-void vOpenEditor(basicDisplayLine* akt) {
+void vOpenEditor(basicDisplayLine* akt)
+{
 
 	aktElement = akt;
 
-	if (akt->type->tagindex != TAG_INDEX_TIMEINPUTFIELD) {
+	if (((taglib*) akt->type)->tagindex != TAG_INDEX_TIMEINPUTFIELD)
+	{
 		iNumChangeButton = 1;
-	} else {
+	}
+	else
+	{
 		iNumChangeButton = 2;
 	}
 
@@ -68,20 +72,27 @@ void vOpenEditor(basicDisplayLine* akt) {
 	vInitializeValueWidget();
 	vInitializeLabel();
 
-	if (akt->label != NULL) {
+	if (akt->label != NULL)
+	{
 		xLabel.pcText = akt->label;
 	}
 
-	if (akt->strValue != NULL) {
+	if (akt->strValue != NULL)
+	{
 		xValueWidget.pcText = akt->strValue;
-	} else {
+	}
+	else
+	{
 		xValueWidget.pcText = "undefined";
 	}
 
-	if (iNumChangeButton == 2) {
+	if (iNumChangeButton == 2)
+	{
 		WidgetAdd((tWidget*) &xEditorWidget, (tWidget*) &xIncrease1);
 		WidgetAdd((tWidget*) &xEditorWidget, (tWidget*) &xDecrease1);
-	} else {
+	}
+	else
+	{
 		WidgetRemove((tWidget*) &xIncrease1);
 		WidgetRemove((tWidget*) &xDecrease1);
 	}
@@ -103,7 +114,8 @@ void vOpenEditor(basicDisplayLine* akt) {
 /**
  * Initialize the ParentWidget (=root for Drawing) with the Definitions of displayStyle.h
  */
-void vInitializeEditorWidget(void) {
+void vInitializeEditorWidget(void)
+{
 	xEditorWidget.pFont = NULL;
 	xEditorWidget.pcText = NULL;
 	xEditorWidget.pucImage = NULL;
@@ -123,7 +135,8 @@ void vInitializeEditorWidget(void) {
 	xEditorWidget.ulTextColor = ClrBlack;
 }
 
-void vInitializeIncreaseButton1(void) {
+void vInitializeIncreaseButton1(void)
+{
 	xIncrease1.pFont = EDITOR_INC_1_BUTTON_FONT;
 	xIncrease1.pcText = EDITOR_INC_1_BUTTON_TEXT;
 	xIncrease1.pfnOnClick = EDITOR_INC_1_BUTTON_ACTION;
@@ -151,7 +164,8 @@ void vInitializeIncreaseButton1(void) {
 	xIncrease1.usAutoRepeatRate = 20;
 }
 
-void vInitializeIncreaseButton2(void) {
+void vInitializeIncreaseButton2(void)
+{
 	xIncrease2.pFont = EDITOR_INC_2_BUTTON_FONT;
 	xIncrease2.pcText = EDITOR_INC_2_BUTTON_TEXT;
 	xIncrease2.pfnOnClick = EDITOR_INC_2_BUTTON_ACTION;
@@ -179,7 +193,8 @@ void vInitializeIncreaseButton2(void) {
 	xIncrease2.usAutoRepeatRate = 20;
 }
 
-void vInitializeDecreaseButton1(void) {
+void vInitializeDecreaseButton1(void)
+{
 	xDecrease1.pFont = EDITOR_DEC_1_BUTTON_FONT;
 	xDecrease1.pcText = EDITOR_DEC_1_BUTTON_TEXT;
 	xDecrease1.pfnOnClick = EDITOR_DEC_1_BUTTON_ACTION;
@@ -207,7 +222,8 @@ void vInitializeDecreaseButton1(void) {
 	xDecrease1.usAutoRepeatRate = 20;
 }
 
-void vInitializeDecreaseButton2(void) {
+void vInitializeDecreaseButton2(void)
+{
 	xDecrease2.pFont = EDITOR_DEC_2_BUTTON_FONT;
 	xDecrease2.pcText = EDITOR_DEC_2_BUTTON_TEXT;
 	xDecrease2.pfnOnClick = EDITOR_DEC_2_BUTTON_ACTION;
@@ -235,7 +251,8 @@ void vInitializeDecreaseButton2(void) {
 	xDecrease2.usAutoRepeatRate = 20;
 }
 
-void vInitializeSubmitButton(void) {
+void vInitializeSubmitButton(void)
+{
 	xSubmit.pFont = EDITOR_SUBMIT_BUTTON_FONT;
 	xSubmit.pcText = EDITOR_SUBMIT_BUTTON_TEXT;
 	xSubmit.pfnOnClick = EDITOR_SUBMIT_BUTTON_ACTION;
@@ -266,7 +283,8 @@ void vInitializeSubmitButton(void) {
 /**
  * Initialize the Title with the Definitions of displayStyle.h
  */
-void vInitializeLabel(void) {
+void vInitializeLabel(void)
+{
 	xLabel.pFont = DISPLAY_TITLE_FONT;
 	xLabel.pcText = DISPLAY_TITLE_TEXT;
 	xLabel.pucImage = NULL;
@@ -289,7 +307,8 @@ void vInitializeLabel(void) {
 /**
  * Initialize the Title with the Definitions of displayStyle.h
  */
-void vInitializeValueWidget(void) {
+void vInitializeValueWidget(void)
+{
 	xValueWidget.pFont = EDITOR_VALUE_FONT;
 	xValueWidget.pucImage = NULL;
 	xValueWidget.sBase.lSize = sizeof(tPushButtonWidget);
@@ -310,43 +329,66 @@ void vInitializeValueWidget(void) {
 	xValueWidget.ulTextColor = EDITOR_VALUE_COLOR;
 }
 
-void vExitEditor(tWidget *pWidget) {
+void vExitEditor(tWidget *pWidget)
+{
 	WidgetRemove((tWidget*) &xEditorWidget);
 	WidgetAdd(WIDGET_ROOT, (tWidget*) &xParentWidget);
 	WidgetPaint((tWidget*) &xParentWidget);
 }
 
-void vIncreaseValue(tWidget *pWidget) {
-	switch (aktElement->type->tagindex) {
+void vIncreaseValue(tWidget *pWidget)
+{
+	switch (((taglib*) aktElement->type)->tagindex)
+	{
 
 	case TAG_INDEX_INTEGERINPUTFIELD:
 		aktElement->value += aktElement->increment;
 
 		if (aktElement->min != aktElement->max && aktElement->value
-				> aktElement->max) {
+				> aktElement->max)
+		{
 			aktElement->value = aktElement->min + (aktElement->value
 					- aktElement->max) - 1;
 		}
-		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
+		if (((taglib*) aktElement->type)->strFormatter != NULL)
+		{
+			xValueWidget.pcText
+					= (const char*) ((taglib*) aktElement->type)->strFormatter(
+							aktElement);
+		}
 		break;
 	case TAG_INDEX_FLOATINPUTFIELD:
 		aktElement->value += aktElement->increment;
 		if (aktElement->min != aktElement->max && aktElement->value
-				> aktElement->max) {
+				> aktElement->max)
+		{
 			aktElement->value = aktElement->min + (aktElement->value
 					- aktElement->max) - 1;
 		}
-		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
+		if (((taglib*) aktElement->type)->strFormatter != NULL)
+		{
+			xValueWidget.pcText
+					= (const char*) ((taglib*) aktElement->type)->strFormatter(
+							aktElement);
+		}
 		break;
 	case TAG_INDEX_TIMEINPUTFIELD:
-		if (pWidget == (tWidget *) &xIncrease1) {
+		if (pWidget == (tWidget *) &xIncrease1)
+		{
 			aktElement->value += 60;
-		} else if (pWidget == (tWidget *) &xIncrease2) {
+		}
+		else if (pWidget == (tWidget *) &xIncrease2)
+		{
 			aktElement->value++;
 		}
 
 		aktElement->value = aktElement->value % 1440;
-		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
+		if (((taglib*) aktElement->type)->strFormatter != NULL)
+		{
+			xValueWidget.pcText
+					= (const char*) ((taglib*) aktElement->type)->strFormatter(
+							aktElement);
+		}
 		break;
 	default:
 		break;
@@ -355,39 +397,62 @@ void vIncreaseValue(tWidget *pWidget) {
 	WidgetPaint((tWidget*) &xValueWidget);
 }
 
-void vDecreaseValue(tWidget *pWidget) {
-	switch (aktElement->type->tagindex) {
+void vDecreaseValue(tWidget *pWidget)
+{
+	switch (((taglib*) aktElement->type)->tagindex)
+	{
 
 	case TAG_INDEX_INTEGERINPUTFIELD:
 		aktElement->value -= aktElement->increment;
 		if (aktElement->min != aktElement->max && aktElement->value
-				< aktElement->min) {
+				< aktElement->min)
+		{
 			aktElement->value = aktElement->max + (aktElement->value
 					- aktElement->min) + 1;
 		}
 
-		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
+		if (((taglib*) aktElement->type)->strFormatter != NULL)
+		{
+			xValueWidget.pcText
+					= (const char*) ((taglib*) aktElement->type)->strFormatter(
+							aktElement);
+		}
 		break;
 	case TAG_INDEX_FLOATINPUTFIELD:
 		aktElement->value -= aktElement->increment;
 		if (aktElement->min != aktElement->max && aktElement->value
-				< aktElement->min) {
+				< aktElement->min)
+		{
 			aktElement->value = aktElement->max + (aktElement->value
 					- aktElement->min) + 1;
 		}
-		xValueWidget.pcText = (const char*) aktElement->type->strFormatter(aktElement);
+		if (((taglib*) aktElement->type)->strFormatter != NULL)
+		{
+			xValueWidget.pcText
+					= (const char*) ((taglib*) aktElement->type)->strFormatter(
+							aktElement);
+		}
 		break;
 	case TAG_INDEX_TIMEINPUTFIELD:
-		if (pWidget == (tWidget *) &xDecrease1) {
+		if (pWidget == (tWidget *) &xDecrease1)
+		{
 			aktElement->value -= 60;
-		} else if (pWidget == (tWidget *) &xDecrease2) {
+		}
+		else if (pWidget == (tWidget *) &xDecrease2)
+		{
 			aktElement->value--;
 		}
 
-		if (aktElement->value < 0) {
+		if (aktElement->value < 0)
+		{
 			aktElement->value = 1440 + (aktElement->value);
 		}
-		xValueWidget.pcText =(const char*)  aktElement->type->strFormatter(aktElement);
+		if (((taglib*) aktElement->type)->strFormatter != NULL)
+		{
+			xValueWidget.pcText
+					= (const char*) ((taglib*) aktElement->type)->strFormatter(
+							aktElement);
+		}
 		break;
 	default:
 		break;

@@ -9,6 +9,7 @@
 */
 
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -23,7 +24,7 @@
 
 
 
-void vParseIntegerInputField(char* param, int len) {
+void vParseIntegerInputField(char* param, int len, void* this) {
 	char *name, *value, *id, *maxStr, *minStr, *incrementStr;
 
 	int max, min, incr;
@@ -72,9 +73,9 @@ void vParseIntegerInputField(char* param, int len) {
 	}
 }
 
-char* pcFormatIntegerValue(basicDisplayLine *line) {
-	snprintf(line->strValue, DISPLAY_VALUE_TEXT_LEN, "%d", line->value);
-	return line->strValue;
+char* pcFormatIntegerValue(void* line) {
+	snprintf(((basicDisplayLine*)line)->strValue, DISPLAY_VALUE_TEXT_LEN, "%d", ((basicDisplayLine*)line)->value);
+	return ((basicDisplayLine*)line)->strValue;
 }
 
 /**

@@ -18,8 +18,8 @@
 #include "ethernet/httpd/cgi/ssiparams.h"
 
 
-void vParseIntegerInputField(char* param, int len);
-char* pcFormatIntegerValue(basicDisplayLine *line);
+void vParseIntegerInputField(char* param, int len, void* this);
+char* pcFormatIntegerValue(void*line);
 void io_get_integer_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
 
 #endif /* INTEGERINPUTFIELD_H_ */

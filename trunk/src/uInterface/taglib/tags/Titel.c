@@ -8,6 +8,7 @@
  *
 */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "FreeRTOS.h"
@@ -16,7 +17,7 @@
 
 #include "taglib/tags/Titel.h"
 
-void vParseTitle(char* param, int len) {
+void vParseTitle(char* param, int len, void* this) {
 	char *label;
 	label = pcGetParamFromString(param, "label");
 

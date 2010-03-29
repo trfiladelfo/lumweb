@@ -9,6 +9,7 @@
 */
 
 #include <string.h>
+#include <stdio.h>
 
 #include "FreeRTOS.h"
 #include "taglib/taglib.h"
@@ -19,7 +20,7 @@
 #include "ethernet/httpd/cgi/io.h"
 
 
-void vParseCheckboxInputField(char* param, int len) {
+void vParseCheckboxInputField(char* param, int len, void* this) {
 	char *name, *value, *id;
 	int iValue = 1;
 

@@ -65,15 +65,6 @@ extern "C"
 int paramValueLen; /// number of params/values set last time - 1
 
 void io_init(void);
-/*void io_get_number_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
-void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params);
-void io_print_saved_params(char * pcBuf, int iBufLen);
-void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
-void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params);
-void io_get_titel(char * pcBuf, int iBufLen, pSSIParam *params);
-void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params);
-void io_get_time_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
-void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params);*/
 
 int io_get_value_from_comtask(char* id);
 

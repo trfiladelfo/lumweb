@@ -8,6 +8,7 @@
  *
 */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "FreeRTOS.h"
@@ -16,7 +17,7 @@
 
 #include "taglib/tags/Group.h"
 
-void vParseGroup(char* param, int len) {
+void vParseGroup(char* param, int len, void* this) {
 	char *label;
 
 	label = pcGetParamFromString(param, "label");

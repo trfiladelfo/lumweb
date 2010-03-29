@@ -11,8 +11,6 @@
 #include "FreeRTOS.h"
 #include "hw_types.h"
 
-#include "taglib/taglib.h"
-
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
 #include "grlib/pushbutton.h"
@@ -37,7 +35,7 @@ extern tPushButtonWidget xUpButton;
 
 // Basic Entity on the LCD
 typedef struct __basicDisplayLine {
-	taglib* type;
+	void* type;
 	int value;
 	int max;
 	int min;

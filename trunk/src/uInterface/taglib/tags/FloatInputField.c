@@ -21,9 +21,10 @@
 #include "taglib/tags.h"
 
 #include "taglib/tags/FloatInputField.h"
+#include "ethernet/httpd/cgi/io.h"
 
 
-void vParseFloatInputField(char* param, int len) {
+void vParseFloatInputField(char* param, int len, void* this) {
 	char *name, *value, *id, *maxStr, *minStr; // *incrementStr;
 
 	int max, min, incr;

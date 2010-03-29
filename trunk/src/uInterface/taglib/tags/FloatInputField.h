@@ -15,7 +15,7 @@
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
-void vParseFloatInputField(char* param, int len);
+void vParseFloatInputField(char* param, int len, void* this);
 char* pcFormatFloatValue(basicDisplayLine *line);
 void io_get_float_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
 
