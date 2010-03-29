@@ -198,7 +198,7 @@ void vParseParameter(char* html, u16_t len) {
 	}
 
 	if (tagPos >= 0 && tagPos < nrOfTags) {
-		(xTagList + tagPos)->onLoad(html, len, newLine);
+		xTagList[tagPos].onLoad(html, len, newLine);
 	}
 
 	vPortFree(buffer);

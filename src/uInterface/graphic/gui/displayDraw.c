@@ -8,7 +8,7 @@
  *
  */
 
-#include "stdio.h"
+#include <stdio.h>
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -82,8 +82,11 @@ void vDrawElementsOnDisplay(void) {
 							(tWidget*) toDraw->labelWidget);
 				}
 
-				if (toDraw->type->onDisplay != NULL) {
-					toDraw->type->onDisplay(toDraw, i);
+				if (((taglib*)toDraw->type)->onDisplay != NULL) {
+#if DEBUG_GRAPHIC
+					printf("vDrawElementsOnDisplay: toDraw = %X\n", (unsigned int) toDraw);
+#endif
+					((taglib*)toDraw->type)->onDisplay(toDraw, i);
 				} else {
 					toDraw->valueWidget = NULL;
 				}

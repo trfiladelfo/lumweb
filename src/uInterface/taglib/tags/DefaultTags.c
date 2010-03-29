@@ -11,8 +11,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "setup.h"
+
 #include "FreeRTOS.h"
-#include "taglib/taglib.h"
 #include "taglib/tags.h"
 
 #include "grlib/grlib.h"
@@ -21,19 +22,43 @@
 #include "grlib/pushbutton.h"
 
 #include "graphic/gui/touchActions.h"
+#include "graphic/gui/displayBasics.h"
 
 
 void vDummyOnLoadPtr(char* param, int len, void* this) {
-	;
+	basicDisplayLine *line = (basicDisplayLine*) pvPortMalloc(sizeof (basicDisplayLine));
+	line->id = NULL;
+	line->increment = 0;
+	line->label = NULL;
+	line->labelWidget = NULL;
+	line->max = 0;
+	line->min = 0;
+	line->next = NULL;
+	line->strValue[0] = 0;
+	line->type = NULL;
+	line->value = 0;
+	line->valueWidget = NULL;
+	this = line;
+
 }
 tWidget* vDummyOnDisplayPtr(void* this, int row) {
 
+#if DEBUG_TAGS
+	printf("vDummyOnDisplayPtr\n");
+#endif
 	basicDisplayLine* line = (basicDisplayLine*) this;
 
+#if DEBUG_TAGS
+	printf("vDummyOnDisplayPtr valueWidget 0x%x\n", (unsigned int) line);
+#endif
 	if (line->valueWidget != NULL) {
 		vPortFree(line->valueWidget);
+		line->valueWidget = NULL;
 	}
-	switch (line->type->tagindex) {
+#if DEBUG_TAGS
+	printf("vDummyOnDisplayPtr tagindex %d\n", ((taglib*)line->type)->tagindex);
+#endif
+	switch (((taglib*)line->type)->tagindex) {
 	case TAG_INDEX_CHECKBOXINPUTFIELD:
 		line->valueWidget = pvPortMalloc(sizeof(tCheckBoxWidget));
 		((tCheckBoxWidget*) line->valueWidget)->ulFillColor
@@ -115,20 +140,20 @@ tWidget* vDummyOnDisplayPtr(void* this, int row) {
 				* (DISPLAY_LINE_HEIGHT + DISPLAY_LINE_MARGIN))
 				+ (DISPLAY_TOP_OFFSET) + DISPLAY_LINE_HEIGHT - 1;
 
-		if (line->type->tagindex == TAG_INDEX_HYPERLINK) {
+		if (((taglib*)line->type)->tagindex == TAG_INDEX_HYPERLINK) {
 			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
 					= vHyperlinkAction;
 			((tPushButtonWidget*) line->valueWidget)->pcText
 					= DISPLAY_VALUE_TEXT_HYPERLINK;
-		} else if (line->type->tagindex == TAG_INDEX_INTEGERINPUTFIELD) {
+		} else if (((taglib*)line->type)->tagindex == TAG_INDEX_INTEGERINPUTFIELD) {
 			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
 					= vOpenEditorAction;
 			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;
-		} else if (line->type->tagindex == TAG_INDEX_FLOATINPUTFIELD) {
+		} else if (((taglib*)line->type)->tagindex == TAG_INDEX_FLOATINPUTFIELD) {
 			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
 					= vOpenEditorAction;
 			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;
-		} else if (line->type->tagindex == TAG_INDEX_TIMEINPUTFIELD) {
+		} else if (((taglib*)line->type)->tagindex == TAG_INDEX_TIMEINPUTFIELD) {
 			((tPushButtonWidget*) line->valueWidget)->pfnOnClick
 					= vOpenEditorAction;
 			((tPushButtonWidget*) line->valueWidget)->pcText = line->strValue;

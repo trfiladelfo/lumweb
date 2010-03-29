@@ -18,10 +18,10 @@ typedef struct __taglibStruct {
 	void (* renderSSI )(char * pcBuf, int iBufLen, pSSIParam *params);
 
 	void (* onLoad)(char*, int, void* basicDisplayLine);
-	tWidget (* onDisplay) (void* basicDisplayLine, int);
+	tWidget* (* onDisplay) (void* basicDisplayLine, int);
 	void (* onEditValue) (void* basicDisplayLine);
 	void (* onDestroy) (void* basicDisplayLine);
-	char (* strFormatter) (void* basicDisplayLine);
+	char* (* strFormatter) (void* basicDisplayLine);
 
 	void* userSpace;
 } taglib;

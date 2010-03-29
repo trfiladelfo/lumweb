@@ -8,16 +8,23 @@
  *
 */
 
+#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+
+#include "taglib/tags/TimeInputField.h"
 
 #include "FreeRTOS.h"
 #include "taglib/taglib.h"
 #include "taglib/tags.h"
 
-#include "taglib/tags/TimeInputField.h"
+#include "ethernet/httpd/cgi/io.h"
 
 
-void vParseTimeInputField(char* param, int len) {
+
+
+void vParseTimeInputField(char* param, int len, void* this) {
 	char *name, *value, *id;
 
 	id = pcGetParamFromString(param, "id");
@@ -47,10 +54,10 @@ void vParseTimeInputField(char* param, int len) {
 }
 
 
-char* pcFormatTimeValue(basicDisplayLine *line) {
-	snprintf(line->strValue, DISPLAY_VALUE_TEXT_LEN, "%02d:%02d", line->value
-			/ 60, line->value - ((line->value / 60) * 60));
-	return line->strValue;
+char* pcFormatTimeValue(void*line) {
+	snprintf(((basicDisplayLine*)line)->strValue, DISPLAY_VALUE_TEXT_LEN, "%02d:%02d", ((basicDisplayLine*)line)->value
+			/ 60, ((basicDisplayLine*)line)->value - ((((basicDisplayLine*)line)->value / 60) * 60));
+	return ((basicDisplayLine*)line)->strValue;
 }
 
 /**

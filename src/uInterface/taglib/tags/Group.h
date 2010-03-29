@@ -16,7 +16,7 @@
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
-void vParseGroup(char* param, int len);
+void vParseGroup(char* param, int len, void* this);
 void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params);
 
 #endif /* GROUP_H_ */

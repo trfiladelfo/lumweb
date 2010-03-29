@@ -78,7 +78,11 @@ void vCreateNewEntity(taglib *type, char* id, char* label, char* strValue,
 	newLine->min = min;
 	newLine->increment = increment;
 
-	newLine->type->strFormatter(newLine);
+	strcpy (newLine->strValue, strValue);
+
+	if (((taglib*)newLine->type)->strFormatter != NULL) {
+		((taglib*)newLine->type)->strFormatter(newLine);
+	}
 
 	newLine->next = NULL;
 	newLine->labelWidget = NULL;
