@@ -16,6 +16,6 @@
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
-void io_print_saved_params(char * pcBuf, int iBufLen, SSIParam *param);
+void vSavedParamsRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
 
 #endif /* SAVEDPARAMS_H_ */

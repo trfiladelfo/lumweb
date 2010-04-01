@@ -14,7 +14,8 @@
 #include "ethernet/httpd/cgi/ssiparams.h"
 
 
-void vParseCheckboxInputField(char* param, int len, void* this);
-void io_get_checkbox_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
+void vCheckboxOnLoad(char* param, int len, void* this);
+void vCheckboxRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
+tWidget* xCheckboxOnDisplay(void* this, int row);
 
 #endif /* CHECKBOXINPUTFIELD_H_ */

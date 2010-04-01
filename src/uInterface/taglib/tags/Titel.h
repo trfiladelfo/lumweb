@@ -6,7 +6,7 @@
  * \author Anziner, Hahn
  * \brief Prototypes for the Titel tag
  *
-*/
+ */
 
 #ifndef TITEL_H_
 #define TITEL_H_
@@ -16,7 +16,7 @@
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
-void vParseTitle(char* param, int len, void* this);
-void io_get_titel(char * pcBuf, int iBufLen, pSSIParam *params);
+void vTitleOnLoad(char* param, int len, void* this);
+void vTitleRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
 
 #endif /* TITEL_H_ */

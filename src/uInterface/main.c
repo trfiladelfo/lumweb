@@ -50,12 +50,6 @@ int main(void) {
 	UARTprintf("Init log file: Status = %d\n", initLog());
 	appendToLog("Starting Firmware");
 	appendToLog("Universelles Interface von Anzinger Martin und Hahn Florian");
-
-	//printf("adresse von _etext: 0x%X\n", &_etext);
-	//printf("adresse von _data:  0x%X\n", &_data);
-	//printf("adresse von _edata: 0x%X\n", &_edata);
-	//printf("adresse von _bss:   0x%X\n", &_bss);
-	//printf("adresse von _ebss:  0x%X\n", &_ebss);
 	
     printf("\n\n\nStarte Programm ...\n");
 	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
@@ -64,6 +58,7 @@ int main(void) {
 	printf("Initialisiere Taglib ...");
 	vInitTagLibrary();
 	printf (" done\n");
+
 	// Queue Definition
 	/* The main Communication between COMM-, GRAPH and HTTPD Task */
 	printf("Initialize Queues ...\n\txComQueue\n");
@@ -71,9 +66,6 @@ int main(void) {
 	printf("\txHttpdQueue\n");
 	xHttpdQueue = xQueueCreate(HTTPD_QUEUE_SIZE, sizeof(xComMessage));
 	appendToLog("Queues created");
-	//printf("\txGraphQueue\n");
-	//xGraphQueue = xQueueCreate(GRAPH_QUEUE_SIZE, sizeof(xComMessage));
-
 
 	// Tasks
 

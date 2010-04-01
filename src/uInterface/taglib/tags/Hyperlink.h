@@ -16,8 +16,9 @@
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
-void vParseHyperlink(char* param, int len, void* this);
-void io_get_hyperlink(char * pcBuf, int iBufLen, pSSIParam *params);
-char* vHyperlinkStrFormatter (void* this);
+void vHyperlinkOnLoad(char* param, int len, void* this);
+void vHyperlinkRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
+char* pcHyperlinkStrFormatter (void* this);
+tWidget* xHyperlinkOnDisplay (void* this, int row);
 
 #endif /* HYPERLINK_H_ */

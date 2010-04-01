@@ -16,6 +16,7 @@
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
-void io_get_submit_input_button(char * pcBuf, int iBufLen, pSSIParam *params);
+void vSubmitButtonRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
+void vSubmitButtonOnLoad(char* param, int len, void* this);
 
 #endif /* SUBMITINPUTFIELD_H_ */
