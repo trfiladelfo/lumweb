@@ -12,7 +12,7 @@
  * Structure for the TAG-Definition
  */
 typedef struct __taglibStruct {
-        int   tagindex;
+    int   tagindex;
 	char* tagname;
 
 	void (* renderSSI )(char * pcBuf, int iBufLen, pSSIParam *params);

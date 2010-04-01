@@ -101,7 +101,6 @@ SOURCE=	syscall.c \
       	$(TAGLIB_DIR)/taglib.c \
       	$(TAGLIB_DIR)/tags.c \
       	$(TAGLIB_DIR)/tags/CheckboxInputField.c \
-      	$(TAGLIB_DIR)/tags/DateTime.c \
       	$(TAGLIB_DIR)/tags/FloatInputField.c \
       	$(TAGLIB_DIR)/tags/Group.c \
       	$(TAGLIB_DIR)/tags/Hyperlink.c \

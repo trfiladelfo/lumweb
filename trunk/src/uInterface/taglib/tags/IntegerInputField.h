@@ -6,8 +6,7 @@
  * \author Anziner, Hahn
  * \brief Prototypes for the IntegerInputField tag
  *
-*/
-
+ */
 
 #ifndef INTEGERINPUTFIELD_H_
 #define INTEGERINPUTFIELD_H_
@@ -17,9 +16,9 @@
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
-
-void vParseIntegerInputField(char* param, int len, void* this);
-char* pcFormatIntegerValue(void*line);
-void io_get_integer_input_field(char * pcBuf, int iBufLen, pSSIParam *params);
+void vIntegerOnLoad(char* param, int len, void* this);
+char* pcIntegerStrFormatter(void*line);
+void vIntegerRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
+tWidget* xIntegerOnDisplay(void* this, int row);
 
 #endif /* INTEGERINPUTFIELD_H_ */

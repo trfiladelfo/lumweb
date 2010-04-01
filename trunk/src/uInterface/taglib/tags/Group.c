@@ -12,12 +12,15 @@
 #include <string.h>
 
 #include "FreeRTOS.h"
+
+#include "setup.h"
+
 #include "taglib/taglib.h"
 #include "taglib/tags.h"
 
 #include "taglib/tags/Group.h"
 
-void vParseGroup(char* param, int len, void* this) {
+void vGroupOnLoad(char* param, int len, void* this) {
 	char *label;
 
 	label = pcGetParamFromString(param, "label");
@@ -25,8 +28,8 @@ void vParseGroup(char* param, int len, void* this) {
 	if (label != NULL) {
 		vCreateNewEntity(xTagList + TAG_INDEX_GROUP, NULL, label, NULL, -1, -1, -1, -1);
 	} else {
-#if DEBUG_HTTPC
-		printf("vParseIntegerInputField: label NULL\n");
+#if DEBUG_TAGS
+		printf("vGroupOnLoad: label NULL\n");
 #endif
 	}
 
@@ -37,7 +40,7 @@ void vParseGroup(char* param, int len, void* this) {
  * creates a group line
  *
  */
-void io_get_group(char * pcBuf, int iBufLen, pSSIParam *params) {
+void vGroupRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params) {
 	char *label = NULL;
 	label = SSIParamGetValue(*(params), "label");
 

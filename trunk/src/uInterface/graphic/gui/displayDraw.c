@@ -82,9 +82,13 @@ void vDrawElementsOnDisplay(void) {
 							(tWidget*) toDraw->labelWidget);
 				}
 
+#if DEBUG_GRAPHIC
+					printf("vDrawElementsOnDisplay: check onDisplay\n");
+#endif
+
 				if (((taglib*)toDraw->type)->onDisplay != NULL) {
 #if DEBUG_GRAPHIC
-					printf("vDrawElementsOnDisplay: toDraw = %X\n", (unsigned int) toDraw);
+					printf("vDrawElementsOnDisplay: toDraw = %X ElementType= %s\n", (unsigned int) toDraw, ((taglib*)toDraw->type)->tagname);
 #endif
 					((taglib*)toDraw->type)->onDisplay(toDraw, i);
 				} else {
