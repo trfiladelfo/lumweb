@@ -131,7 +131,7 @@ void vDeleteDisplayLines(basicDisplayLine *root) {
 void vDeleteDisplayLine(basicDisplayLine *toDelete) {
 	if (toDelete != NULL) {
 		if (toDelete->type->onDestroy != NULL) {
-			toDelete->type->onDestroy();
+			toDelete->type->onDestroy(toDelete);
 		}
 
 		if (toDelete->labelWidget != NULL) {

@@ -1,9 +1,12 @@
-/*
- * utils.c
+/**
+ * \addtogroup System
+ * @{
  *
- *  Created on: 26.01.2010
- *      Author: root
- */
+ * \file utils.c
+ * \author Anziner, Hahn
+ * \brief Contains some useful Functions
+ *
+*/
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,18 +16,27 @@
 #include "lwip/netif.h"
 
 #include "ethernet/LWIPStack.h"
-
 #include "configuration/configloader.h"
-
 #include "graphic/gui/displayBasics.h"
 
 #include "utils.h"
 
+
+///****************************************************************************
+///
+/// <code>printaddr</code> converts a ip_addr structure to a string and
+/// writes it to the debug console
+///
+///****************************************************************************
 void printaddr(struct ip_addr addr) {
 	printf("%d.%d.%d.%d", (unsigned int) ((addr.addr) & 0xFF), (unsigned int) ((addr.addr >> 8) & 0xFF),
 			(unsigned int) ((addr.addr >> 16) & 0xFF), (unsigned int) ((addr.addr >> 24) & 0xFF));
 }
 
+///****************************************************************************
+///
+///
+///****************************************************************************
 void printip(struct ip_addr *addr) {
 	printf("%d.%d.%d.%d", (unsigned int) ((addr->addr) & 0xFF), (unsigned int) ((addr->addr >> 8) & 0xFF),
 			(unsigned int) ((addr->addr >> 16) & 0xFF), (unsigned int) ((addr->addr >> 24) & 0xFF));

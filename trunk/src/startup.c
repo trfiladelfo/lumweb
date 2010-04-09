@@ -37,12 +37,11 @@
 #include "hw_watchdog.h"
 #include "watchdog.h"
 
-
 void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
-static void IntEmptyHandler (void);
+static void IntEmptyHandler(void);
 static void WatchdogIntHandler(void);
 
 //*****************************************************************************
@@ -84,9 +83,9 @@ static unsigned long pulStack[STACK_SIZE];
 //
 //*****************************************************************************
 __attribute__ ((section(".isr_vector")))
-void (* const g_pfnVectors[])(void) = {
-		(void(*)(void)) ((unsigned long) pulStack + sizeof(pulStack)),
-		// The initial stack pointer
+void (* const g_pfnVectors[])(void) =
+{ (void(*)(void)) ((unsigned long) pulStack + sizeof(pulStack)),
+// The initial stack pointer
 		ResetISR, // The reset handler
 		NmiSR, // The NMI handler
 		FaultISR, // The hard fault handler
@@ -187,42 +186,40 @@ extern unsigned long _ebss;
 // application.
 //
 //*****************************************************************************
-void
-ResetISR(void)
+void ResetISR(void)
 {
-    unsigned long *pulSrc, *pulDest;
-    //
-    // Fill the stack with a known value.
-    //
-    for(pulDest = pulStack; pulDest < pulStack + STACK_SIZE; )
-    {
-       *pulDest++ = 0xABCD;
-    }
-    //
-    // Copy the data segment initializers from flash to SRAM.
-    //
-    pulSrc = &_flash_data;
-    for(pulDest = &_data; pulDest < &_edata; )
-    {
-       *pulDest++ = *pulSrc++;
-    }
-    //
-    // Zero fill the bss segment.
-    //
-    for(pulDest = &_bss; pulDest < &_ebss; )
-    {
-       *pulDest++ = 0;
-    }
-    //
-    //Call the global objets constructors
-    //
-  //ma  __libc_init_array();
-    //
-    // Call the application's entry point.
-    //
-    main();
+	unsigned long *pulSrc, *pulDest;
+	//
+	// Fill the stack with a known value.
+	//
+	for (pulDest = pulStack; pulDest < pulStack + STACK_SIZE;)
+	{
+		*pulDest++ = 0xABCD;
+	}
+	//
+	// Copy the data segment initializers from flash to SRAM.
+	//
+	pulSrc = &_flash_data;
+	for (pulDest = &_data; pulDest < &_edata;)
+	{
+		*pulDest++ = *pulSrc++;
+	}
+	//
+	// Zero fill the bss segment.
+	//
+	for (pulDest = &_bss; pulDest < &_ebss;)
+	{
+		*pulDest++ = 0;
+	}
+	//
+	//Call the global objets constructors
+	//
+	//ma  __libc_init_array();
+	//
+	// Call the application's entry point.
+	//
+	main();
 }
-
 
 //*****************************************************************************
 //
@@ -231,12 +228,14 @@ ResetISR(void)
 // by a debugger.
 //
 //*****************************************************************************
-static void NmiSR(void) {
+static void NmiSR(void)
+{
 	//
 	// Enter an infinite loop.
 	//
 	printf("FATAL ERROR: NmiSR()");
-	while (1) {
+	while (1)
+	{
 	}
 }
 
@@ -247,12 +246,14 @@ static void NmiSR(void) {
 // for examination by a debugger.
 //
 //*****************************************************************************
-static void FaultISR(void) {
+static void FaultISR(void)
+{
 	//
 	// Enter an infinite loop.
 	//
 	printf("FATAL ERROR: FaultISR()");
-	while (1) {
+	while (1)
+	{
 	}
 }
 
@@ -263,16 +264,19 @@ static void FaultISR(void) {
 // for examination by a debugger.
 //
 //*****************************************************************************
-static void IntDefaultHandler(void) {
+static void IntDefaultHandler(void)
+{
 	//
 	// Go into an infinite loop.
 	//
 	printf("FATAL ERROR: IntDefaultHandler()");
-	while (1) {
+	while (1)
+	{
 	}
 }
 
-static void IntEmptyHandler (void) {
+static void IntEmptyHandler(void)
+{
 
 }
 
@@ -284,8 +288,8 @@ static void IntEmptyHandler (void) {
 //*****************************************************************************
 static void WatchdogIntHandler(void)
 {
-    //
-    // Clear the watchdog interrupt.
-    //
-    WatchdogIntClear(WATCHDOG0_BASE);
+	//
+	// Clear the watchdog interrupt.
+	//
+	WatchdogIntClear(WATCHDOG0_BASE);
 }

@@ -187,6 +187,7 @@ flash : all
 
 doc : 
 	doxygen $(DOXYFILE)
+	@echo "Output fertig erstellt"
 	
 cleanflash : clean flash
 	
