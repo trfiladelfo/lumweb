@@ -32,11 +32,15 @@
 #ifndef __FS_H__
 #define __FS_H__
 
-struct fs_file {
-  char *data;
-  int len;
-  int index;
-  void *pextension;
+/**
+ * Structure for opening a file
+ */
+struct fs_file
+{
+	char *data;
+	int len;
+	int index;
+	void *pextension;
 };
 
 /* file will be allocated and filled in by the fs_open function. file will

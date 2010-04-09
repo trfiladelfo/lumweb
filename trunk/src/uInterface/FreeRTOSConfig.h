@@ -1,10 +1,11 @@
-/*
- * freeRTOSConfig.h
+/**
+ * \addtogroup Configuration
+ * @{
  *
- * File for the Configuration of FreeRTOS
+ * \file FreeRTOSConfig.h
+ * \author Anziner, Hahn
+ * \brief User defines for the RTOS system
  *
- *  Created on: 14.11.2009
- *      Author: root
  */
 
 #ifndef FREERTOSCONFIG_H_

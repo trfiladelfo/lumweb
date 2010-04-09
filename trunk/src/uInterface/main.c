@@ -6,7 +6,8 @@
  * \author Anziner, Hahn
  * \brief Contains the starting point for the application
  *
-*/
+ */
+
 /* Standard includes. */
 #include <stdio.h>
 #include <time.h>
@@ -37,117 +38,144 @@
 
 #include "taglib/tags.h"
 
-
-/* Globals */
-//extern int __HEAP_START; // used for _sbrk defined in standalone.ld
-extern unsigned long _etext;
-extern unsigned long _data;
-extern unsigned long _edata;
-extern unsigned long _bss;
-extern unsigned long _ebss;
-
-//*****************************************************************************
-//
-// The entry point for the application.
-// It is responsible for creating queues, starting tasks and running the
-// main scheduler
-//
-//*****************************************************************************
-int main(void) {
+/**
+ *
+ * The entry point for the application.
+ * It is responsible for creating queues, starting tasks and running the
+ * main scheduler
+ *
+ */
+int main(void)
+{
+	//
 	// Setup the Hardware
+	//
 	prvSetupHardware();
 
+	//
 	// start Logging
+	//
 	UARTprintf("Init log file: Status = %d\n", initLog());
 	appendToLog("Starting Firmware");
 	appendToLog("Universelles Interface von Anzinger Martin und Hahn Florian");
-	
-    printf("\n\n\nStarte Programm ...\n");
+
+	//
+	// write welcome text to the debug console
+	//
+	printf("\n\n\nStarte Programm ...\n");
 	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
 	printf("Starting Firmware ...\n");
 
+	//
 	// initialize Taglibrary
+	//
 	printf("Initialisiere Taglib ...");
 	vInitTagLibrary();
-	printf (" done\n");
+	printf(" done\n");
 
+	//
 	// Queue Definition
-	/* The main Communication between COMM-, GRAPH and HTTPD Task */
+	// The main Communication between COMM-, GRAPH and HTTPD Task
+	//
 	printf("Initialize Queues ...\n\txComQueue\n");
 	xComQueue = xQueueCreate(COM_QUEUE_SIZE, sizeof(xComMessage));
 	printf("\txHttpdQueue\n");
 	xHttpdQueue = xQueueCreate(HTTPD_QUEUE_SIZE, sizeof(xComMessage));
 	appendToLog("Queues created");
 
-	// Tasks
+	//
+	// start Tasks
+	//
 
-	/* Real Time Clock Task */
+	//
+	//Real Time Clock Task
+	//
 	printf("Starting RealTimeClock ... ");
 	xTaskCreate( vRealTimeClockTask, (const signed char * const)TIME_TASK_NAME, TIME_STACK_SIZE, NULL, TIME_TASK_PRIORITY, &xRealtimeTaskHandle );
 	printf("ok\n");
 	appendToLog("RealTimeClock started");
 
-	/* Communication Task */
+	//
+	// Communication Task
+	//
 	printf("Starting Communication Task ... ");
 	xTaskCreate( vComTask, (const signed char * const)COM_TASK_NAME, COM_STACK_SIZE, NULL, COM_TASK_PRIORITY, &xComTaskHandle);
 	printf("ok\n");
 	appendToLog("ComTask started");
 
-	/* LWIP Task */
-	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH)) {
+	//
+	// Check if an Ethernet Port is available
+	//
+	if (SysCtlPeripheralPresent(SYSCTL_PERIPH_ETH))
+	{
+		//
+		// LWIP Task
+		//
 		printf("Starting LWIP ...\n");
 		xTaskCreate( LWIPServiceTaskInit, (const signed char * const)LWIP_TASK_NAME, LWIP_STACK_SIZE, NULL, LWIP_TASK_PRIORITY, &xLwipTaskHandle );
 		appendToLog("IP-Stack started");
 	}
 
 #if ENABLE_GRAPHIC
-	/* Graphic Task */
+	//
+	// Graphic Task
+	//
 	printf("Starting Graphic Task ... ");
 	xTaskCreate( vGraphicTask, (const signed char * const)GRAPH_TASK_NAME, GRAPH_STACK_SIZE, NULL, GRAPH_TASK_PRIORITY, &xGraphTaskHandle );
 	printf("ok\n");
 #endif
 
-	/* Start the scheduler. */
+	//
+	// Starting the scheduler.
+	//
 	vTaskStartScheduler();
 
-	// Loop only used if Scheduler Fails
+	//
+	// Fallbackloop if Scheduler Fails
+	//
 	while (1)
 		;
 	return 0;
 }
 
 /*-------------EXTERN ROTS ROUTINES--------------------------*/
-//*****************************************************************************
-//
-// Callbackfunction for FreeRTOS.
-// It's called every Schedule Circle
-//
-//*****************************************************************************
-void vApplicationTickHook(void) {
+/**
+ * Callbackfunction for FreeRTOS.
+ * It's called every Schedule Circle
+ */
+void vApplicationTickHook(void)
+{
+	//
 	// Function that is called every Schedule Circle
+	//
 }
 
-//*****************************************************************************
-//
-// Callbackfunction for FreeRTOS
-// It's called if a Task has a Stack Overflow
-//
-//*****************************************************************************
+/**
+ * Callbackfunction for FreeRTOS
+ * It's called if a Task has a Stack Overflow
+ *
+ * @param pxTask taskhandler for the task with the overflow
+ * @param pcTaskName name of the task
+ */
 void vApplicationStackOverflowHook(xTaskHandle *pxTask,
-		signed portCHAR *pcTaskName) {
+		signed portCHAR *pcTaskName)
+{
+	//
 	// Function that is called if there is any StackOverflow
+	//
 	printf("Task %s Stackoverflow\n", pcTaskName);
 	for (;;)
 		;
 }
 
-//*****************************************************************************
-//
-// hard fault handler in C,
-// with stack frame location as input parameter
-//
-//*****************************************************************************
-void hard_fault_handler_c(unsigned int * hardfault_args) {
+/**
+ * hard fault handler in C,
+ * with stack frame location as input parameter
+ *
+ * @param hardfault_args stack frame location
+ */
+void hard_fault_handler_c(unsigned int * hardfault_args)
+{
 	unsigned int stacked_r0;
 	unsigned int stacked_r1;
 	unsigned int stacked_r2;
@@ -183,5 +211,5 @@ void hard_fault_handler_c(unsigned int * hardfault_args) {
 	printf("AFSR = %x\n", (*((unsigned int *) (0xE000ED3C))));
 
 	while (1)
-		; // terminate
+		;
 }
