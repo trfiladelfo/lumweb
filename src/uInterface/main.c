@@ -1,7 +1,12 @@
 /**
- * Main File to Start the Application
- */
-
+ * \addtogroup System
+ * @{
+ *
+ * \file main.c
+ * \author Anziner, Hahn
+ * \brief Contains the starting point for the application
+ *
+*/
 /* Standard includes. */
 #include <stdio.h>
 #include <time.h>
@@ -41,7 +46,13 @@ extern unsigned long _edata;
 extern unsigned long _bss;
 extern unsigned long _ebss;
 
-/*-------- MAIN ---------------------------------------------*/
+//*****************************************************************************
+//
+// The entry point for the application.
+// It is responsible for creating queues, starting tasks and running the
+// main scheduler
+//
+//*****************************************************************************
 int main(void) {
 	// Setup the Hardware
 	prvSetupHardware();
@@ -53,8 +64,9 @@ int main(void) {
 	
     printf("\n\n\nStarte Programm ...\n");
 	printf("Universelles Interface von Anzinger Martin und Hahn Florian\n");
-
 	printf("Starting Firmware ...\n");
+
+	// initialize Taglibrary
 	printf("Initialisiere Taglib ...");
 	vInitTagLibrary();
 	printf (" done\n");
@@ -105,10 +117,22 @@ int main(void) {
 }
 
 /*-------------EXTERN ROTS ROUTINES--------------------------*/
+//*****************************************************************************
+//
+// Callbackfunction for FreeRTOS.
+// It's called every Schedule Circle
+//
+//*****************************************************************************
 void vApplicationTickHook(void) {
 	// Function that is called every Schedule Circle
 }
 
+//*****************************************************************************
+//
+// Callbackfunction for FreeRTOS
+// It's called if a Task has a Stack Overflow
+//
+//*****************************************************************************
 void vApplicationStackOverflowHook(xTaskHandle *pxTask,
 		signed portCHAR *pcTaskName) {
 	// Function that is called if there is any StackOverflow
@@ -117,8 +141,12 @@ void vApplicationStackOverflowHook(xTaskHandle *pxTask,
 		;
 }
 
+//*****************************************************************************
+//
 // hard fault handler in C,
 // with stack frame location as input parameter
+//
+//*****************************************************************************
 void hard_fault_handler_c(unsigned int * hardfault_args) {
 	unsigned int stacked_r0;
 	unsigned int stacked_r1;
