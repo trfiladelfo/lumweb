@@ -62,35 +62,38 @@
 #include "sysctl.h"
 #include "timer.h"
 
-/* The set frequency of the interrupt.  Deviations from this are measured as
+/** The set frequency of the interrupt.  Deviations from this are measured as
 the jitter. */
 #define timerINTERRUPT_FREQUENCY		( 20000UL )
 
-/* The expected time between each of the timer interrupts - if the jitter was
+/** The expected time between each of the timer interrupts - if the jitter was
 zero. */
 #define timerEXPECTED_DIFFERENCE_VALUE	( configCPU_CLOCK_HZ / timerINTERRUPT_FREQUENCY )
 
-/* The highest available interrupt priority. */
+/** The highest available interrupt priority. */
 #define timerHIGHEST_PRIORITY			( 0 )
 
-/* Misc defines. */
+/** Misc defines. */
 #define timerMAX_32BIT_VALUE			( 0xffffffffUL )
 #define timerTIMER_1_COUNT_VALUE		( * ( ( unsigned long * ) ( TIMER1_BASE + 0x48 ) ) )
 
 /*-----------------------------------------------------------*/
 
-/* Interrupt handler in which the jitter is measured. */
+/** Interrupt handler in which the jitter is measured. */
 void Timer0IntHandler( void );
 
-/* Stores the value of the maximum recorded jitter between interrupts. */
+/** Stores the value of the maximum recorded jitter between interrupts. */
 volatile unsigned portLONG ulMaxJitter = 0UL;
 
-/* Counts the total number of times that the high frequency timer has 'ticked'.
+/** Counts the total number of times that the high frequency timer has 'ticked'.
 This value is used by the run time stats function to work out what percentage
 of CPU time each task is taking. */
 volatile unsigned portLONG ulHighFrequencyTimerTicks = 0UL;
 /*-----------------------------------------------------------*/
 
+/**
+ * Setup function for the Timer
+ */
 void vSetupHighFrequencyTimer( void )
 {
 unsigned long ulFrequency;
@@ -123,6 +126,9 @@ unsigned long ulFrequency;
 }
 /*-----------------------------------------------------------*/
 
+/**
+ * Interrupt Handler for Timer0
+ */
 void Timer0IntHandler( void )
 {
 unsigned portLONG ulDifference;
