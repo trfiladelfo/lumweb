@@ -2,7 +2,7 @@
  * \addtogroup Graphic
  * @{
  *
- * \file touchAction.c
+ * \file touchActions.c
  * \author Anziner, Hahn
  * \brief
  *
@@ -95,3 +95,10 @@ void vOpenEditorAction(tWidget *pWidget) {
 		root = root->next;
 	}
 }
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

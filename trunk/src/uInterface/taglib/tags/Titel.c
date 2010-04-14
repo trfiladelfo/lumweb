@@ -15,7 +15,6 @@
 
 #include "setup.h"
 
-#include "taglib/taglib.h"
 #include "taglib/tags.h"
 
 #include "taglib/tags/Titel.h"
@@ -61,3 +60,10 @@ void vTitleRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params)
 				"SubmitInputField: ERROR - no param label found ");
 	}
 }
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

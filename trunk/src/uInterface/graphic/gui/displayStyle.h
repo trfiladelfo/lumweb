@@ -8,9 +8,6 @@
 #ifndef DISPLAYSTYLE_H_
 #define DISPLAYSTYLE_H_
 
-#include "grlib/grlib.h"
-#include "grlib/checkbox.h"
-
 #define DISPLAY_LINES_PER_VIEW						5
 #define DISPLAY_TOP_OFFSET							27
 #define DISPLAY_LINE_HEIGHT							30
@@ -126,3 +123,11 @@
 #define DISPLAY_VALUE_TEXT_HYPERLINK				"open"
 #define DISPLAY_VALUE_TEXT_LEN						16
 #endif /* DISPLAYSTYLE_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

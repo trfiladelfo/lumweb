@@ -16,7 +16,6 @@
 
 #include "graphic/gui/displayBasics.h"
 
-#include "taglib/taglib.h"
 #include "taglib/tags.h"
 #include "taglib/tags/SubmitInputField.h"
 
@@ -48,3 +47,10 @@ void vSubmitButtonOnLoad(char* param, int len, void* this)
 {
 	xDisplayRoot.save = true;
 }
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

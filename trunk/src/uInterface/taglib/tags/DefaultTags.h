@@ -21,3 +21,10 @@ char* pcDummyStrFormatter(void* this);
 void vDummyRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
 
 #endif /* DEFAULTTAGS_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

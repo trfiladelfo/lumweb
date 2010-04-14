@@ -15,7 +15,6 @@
 
 #include "setup.h"
 
-#include "taglib/taglib.h"
 #include "taglib/tags.h"
 #include "taglib/tags/Hyperlink.h"
 
@@ -150,3 +149,10 @@ tWidget* xHyperlinkOnDisplay(void* this, int row)
 
 	return (tWidget*) line->valueWidget;
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

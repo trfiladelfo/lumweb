@@ -19,3 +19,9 @@ void vCheckboxRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
 tWidget* xCheckboxOnDisplay(void* this, int row);
 
 #endif /* CHECKBOXINPUTFIELD_H_ */
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

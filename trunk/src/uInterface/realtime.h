@@ -1,8 +1,12 @@
-/*
- * realtime.h
+/**
+ * \addtogroup System
+ * @{
  *
- *  Created on: 15.11.2009
- *      Author: root
+ * \file realtime.h
+ * \author Anziner, Hahn
+ * \brief Functions for the System Clock
+ *
+ *
  */
 
 #ifndef REALTIME_H_
@@ -41,3 +45,11 @@ void vSetRealTimeClock(time_t t_new);
 char* get_dateandtime(char * pcBuf, int iBufLen);
 
 #endif /* REALTIME_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

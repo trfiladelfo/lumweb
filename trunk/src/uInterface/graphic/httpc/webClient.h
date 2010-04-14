@@ -2,7 +2,7 @@
  * \addtogroup Graphic
  * @{
  *
- * \file graphicWebClient.h
+ * \file webClient.h
  * \author Anziner, Hahn
  * \brief
  *
@@ -19,3 +19,10 @@
 void vLoadWebPage (char* page, basicDisplayLine* params);
 
 #endif /* WEBCLIENT_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

@@ -24,8 +24,6 @@
 #include "hw_watchdog.h"
 #include "watchdog.h"
 
-#include "hw_can.h"
-#include "can.h"
 #include "drivers/touch.h"
 #include "lmi_fs.h"
 
@@ -114,3 +112,11 @@ void prvSetupHardware(void) {
 	WatchdogEnable(WATCHDOG0_BASE);
 
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

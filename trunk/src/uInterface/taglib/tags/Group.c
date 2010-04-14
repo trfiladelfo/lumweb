@@ -15,7 +15,6 @@
 
 #include "setup.h"
 
-#include "taglib/taglib.h"
 #include "taglib/tags.h"
 
 #include "taglib/tags/Group.h"
@@ -54,5 +53,13 @@ void vGroupRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params) {
 				"SubmitInputField: ERROR - no param label found ");
 	}
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+
 
 

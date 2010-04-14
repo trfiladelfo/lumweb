@@ -45,6 +45,9 @@ typedef struct
 	xTaskHandle taskToResume; /// If not null the specific task will be resumed
 } xComMessage;
 
+/** Implementation for a init Routine */
+void vComTaskInitImpl (void);
+
 /** Prototype for the CommTask */
 void vComTask( void *pvParameters );
 
