@@ -14,7 +14,7 @@
 
 #include "FreeRTOS.h"
 #include "setup.h"
-#include "taglib/taglib.h"
+
 #include "taglib/tags.h"
 
 #include "ethernet/httpd/cgi/io.h"
@@ -37,4 +37,11 @@ void vSavedParamsRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params)
 		snprintf(pcBuf, iBufLen, "%d Parameter gesetzt", paramValueLen + 1);
 	}
 }
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+
 

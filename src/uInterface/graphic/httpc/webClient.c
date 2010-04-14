@@ -2,7 +2,7 @@
  * \addtogroup Graphic
  * @{
  *
- * \file graphicWebClient.c
+ * \file webClient.c
  * \author Anziner, Hahn
  * \brief
  *
@@ -203,3 +203,11 @@ void vParseParameter(char* html, u16_t len) {
 
 	vPortFree(buffer);
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

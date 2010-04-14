@@ -58,3 +58,11 @@ to exclude the API function. */
 #define SET_SYSCALL_INTERRUPT_PRIORITY(X) (((X) << 5)&0xE0)
 
 #endif /* FREERTOSCONFIG_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

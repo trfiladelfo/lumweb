@@ -16,7 +16,6 @@
 
 #include "setup.h"
 
-#include "taglib/taglib.h"
 #include "taglib/tags.h"
 #include "taglib/tags/IntegerInputField.h"
 
@@ -217,3 +216,10 @@ tWidget* xIntegerOnDisplay(void* this, int row)
 
 	return (tWidget*) line->valueWidget;
 }
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

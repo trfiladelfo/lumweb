@@ -11,9 +11,6 @@
 #ifndef TIMEINPUTFIELD_H_
 #define TIMEINPUTFIELD_H_
 
-#include "taglib/taglib.h"
-#include "graphic/gui/displayBasics.h"
-
 #include "ethernet/httpd/cgi/ssiparams.h"
 
 void vTimeOnLoad(char* param, int len, void* this);
@@ -22,3 +19,9 @@ void vTimeRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
 tWidget* xTimeOnDisplay(void* this, int row);
 
 #endif /* TIMEINPUTFIELD_H_ */
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

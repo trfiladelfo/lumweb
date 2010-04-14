@@ -1,9 +1,14 @@
-/*
- * realtime.c
+/**
+ * \addtogroup System
+ * @{
  *
- *  Created on: 15.11.2009
- *      Author: root
+ * \file realtime.c
+ * \author Anziner, Hahn
+ * \brief Functions for the System Clock
+ *
+ *
  */
+
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -125,3 +130,11 @@ char* get_dateandtime(char * pcBuf, int iBufLen)
 	//
 	return pcBuf;
 }
+
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

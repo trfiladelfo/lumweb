@@ -15,7 +15,10 @@
 
 #include "setup.h"
 
-#include "taglib/taglib.h"
+#include "grlib/grlib.h"
+#include "grlib/widget.h"
+#include "grlib/checkbox.h"
+
 #include "taglib/tags.h"
 #include "taglib/tags/CheckboxInputField.h"
 
@@ -168,3 +171,11 @@ tWidget* xCheckboxOnDisplay(void* this, int row)
 
 	return line->valueWidget;
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

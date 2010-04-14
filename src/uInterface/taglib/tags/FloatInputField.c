@@ -18,7 +18,6 @@
 #include "setup.h"
 #include "utils.h"
 
-#include "taglib/taglib.h"
 #include "taglib/tags.h"
 #include "taglib/tags/FloatInputField.h"
 
@@ -216,3 +215,11 @@ tWidget* xFloatOnDisplay(void* this, int row)
 
 	return (tWidget*) line->valueWidget;
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

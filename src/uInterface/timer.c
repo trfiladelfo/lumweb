@@ -49,7 +49,15 @@
 	licensing and training services.
 */
 
-/* High speed timer test as described in main.c. */
+/**
+ * \addtogroup System
+ * @{
+ *
+ * \file timer.c
+ * \author Anziner, Hahn
+ * \brief Contains the setup for the HighFrequencyTimer to run the scheduler
+ *
+ */
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
@@ -162,6 +170,12 @@ static unsigned portLONG ulMaxDifference = 0, ulLastCount = 0;
 	ulHighFrequencyTimerTicks++;
 }
 
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
 
 
 

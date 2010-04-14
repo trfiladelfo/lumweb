@@ -79,4 +79,12 @@ xTaskHandle xSdCardTaskHandle;
 /// Task handler for the Clock Task
 xTaskHandle xRealtimeTaskHandle;
 
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+
+
 #endif /* TASKCONFIG_H_ */

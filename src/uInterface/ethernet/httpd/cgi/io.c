@@ -57,6 +57,7 @@
 #include "lwip/opt.h"
 #include "ethernet/httpd/httpd.h"
 #include "cgifuncs.h"
+#include "realtime.h"
 
 #include "communication/comTask.h"
 #include "queueConfig.h"
@@ -102,15 +103,6 @@ static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen );
 #endif
 
 #endif
-
-/**
- * gets current date and time
- *
- * @param *pcBuf	pointer to char buffer for the date and time
- * @param iBufLen	length of buffer
- */
-extern void
-get_dateandtime(char * pcBuf, int iBufLen);
 
 #ifdef INCLUDE_HTTPD_CGI
 //*****************************************************************************
