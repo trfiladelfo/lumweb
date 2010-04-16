@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file DefaultTags.c
  * \author Anziner, Hahn
  * \brief Routines for dummy default tag
  *

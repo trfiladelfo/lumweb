@@ -2,7 +2,6 @@
  * \addtogroup Configuration
  * @{
  *
- * \file queueConfig.h
  * \author Anziner, Hahn
  * \brief Configfile for tasks
  *

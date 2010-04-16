@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file Titel.c
  * \author Anziner, Hahn
  * \brief Routines for the Titel tag
  *

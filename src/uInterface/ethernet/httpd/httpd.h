@@ -36,7 +36,6 @@
  * \addtogroup httpd
  * @{
  *
- * \file httpd.h
  * \author Anziner, Hahn
  * \brief
  *
@@ -89,7 +88,8 @@ typedef char *(*tCGIHandler)(int iIndex, int iNumParams, char *pcParam[],
  * Structure defining the base filename (URL) of a CGI and the associated
  * function which is to be called when that URL is requested.
  */
-typedef struct {
+typedef struct
+{
 	const char *pcCGIName;
 	tCGIHandler pfnCGIHandler;
 } tCGI;
@@ -145,3 +145,11 @@ void http_set_ssi_handler(tSSIHandler pfnSSIHandler);
 #endif
 
 #endif /* __HTTPD_H__ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

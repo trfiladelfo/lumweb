@@ -1,8 +1,10 @@
-/*
- * valueEditor.c
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 20.02.2010
- *      Author: root
+ * \author Anziner, Hahn
+ * \brief
+ *
  */
 
 #include "FreeRTOS.h"
@@ -459,3 +461,11 @@ void vDecreaseValue(tWidget *pWidget)
 	}
 	WidgetPaint((tWidget*) &xValueWidget);
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

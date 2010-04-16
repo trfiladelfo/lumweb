@@ -2,7 +2,6 @@
  * \addtogroup Graphic
  * @{
  *
- * \file displayBasics.c
  * \author Anziner, Hahn
  * \brief
  *
@@ -29,7 +28,6 @@
 #include "configuration/configloader.h"
 
 #include "setup.h"
-
 
 tBoolean displayInitialized = false;
 
@@ -61,21 +59,27 @@ void vInitializeTitle(void);
 /**
  * Initializes the Display
  */
-void vInitDisplay(void) {
+void vInitDisplay(void)
+{
 
 	//
 	// Initialize the graphics context.
 	//
-	if (g_sContext.pDisplay == NULL) {
+	if (g_sContext.pDisplay == NULL)
+	{
 		GrContextInit(&g_sContext, DISPLAY_DRIVER);
 	}
 
-	if (displayInitialized == false) {
-		if (xDisplayRoot.titleIsAllocated == true) {
+	if (displayInitialized == false)
+	{
+		if (xDisplayRoot.titleIsAllocated == true)
+		{
 			vPortFree(xDisplayRoot.title);
 			xDisplayRoot.title = NULL;
 			xDisplayRoot.titleIsAllocated = false;
-		} else {
+		}
+		else
+		{
 			xDisplayRoot.title = NULL;
 		}
 
@@ -106,12 +110,16 @@ void vInitDisplay(void) {
 /**
  * Deletes all Lines from the Screen
  */
-void vDeleteDisplayLines(basicDisplayLine *root) {
+void vDeleteDisplayLines(basicDisplayLine *root)
+{
 	basicDisplayLine * akt;
-	if (xDisplayRoot.displayEntities == true) {
-		while (root != NULL) {
+	if (xDisplayRoot.displayEntities == true)
+	{
+		while (root != NULL)
+		{
 			akt = root;
-			if (root->label != NULL) {
+			if (root->label != NULL)
+			{
 #if DEBUG_GRAPHIC
 				printf("vDeleteDisplayLines: root->name = %s\n", root->label);
 #endif
@@ -128,27 +136,34 @@ void vDeleteDisplayLines(basicDisplayLine *root) {
 /**
  * Deletes one Line from the Screen and sets the Pointer to the Next one
  */
-void vDeleteDisplayLine(basicDisplayLine *toDelete) {
-	if (toDelete != NULL) {
-		if (toDelete->type->onDestroy != NULL) {
+void vDeleteDisplayLine(basicDisplayLine *toDelete)
+{
+	if (toDelete != NULL)
+	{
+		if (toDelete->type->onDestroy != NULL)
+		{
 			toDelete->type->onDestroy(toDelete);
 		}
 
-		if (toDelete->labelWidget != NULL) {
+		if (toDelete->labelWidget != NULL)
+		{
 			WidgetRemove(toDelete->labelWidget);
 			vPortFree(toDelete->labelWidget);
 		}
 
-		if (toDelete->valueWidget != NULL) {
+		if (toDelete->valueWidget != NULL)
+		{
 			WidgetRemove(toDelete->valueWidget);
 			vPortFree(toDelete->valueWidget);
 		}
 
-		if (toDelete->label != NULL) {
+		if (toDelete->label != NULL)
+		{
 			vPortFree(toDelete->label);
 		}
 
-		if (toDelete->id != NULL) {
+		if (toDelete->id != NULL)
+		{
 			vPortFree(toDelete->id);
 		}
 
@@ -160,7 +175,8 @@ void vDeleteDisplayLine(basicDisplayLine *toDelete) {
 /**
  * Load the Menue Page form the Web
  */
-void vLoadMenu(void) {
+void vLoadMenu(void)
+{
 	char* configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_MENU_PAGE");
 
 	vInitDisplay();
@@ -178,19 +194,22 @@ void vLoadMenu(void) {
 /**
  * Clear all Elements on the Screen (no Redrawing, use vDrawElementsOnDisplay to redraw)
  */
-void vClearDisplay(void) {
+void vClearDisplay(void)
+{
 	vDeleteDisplayLines(xDisplayRoot.entities);
 }
 
 /**
  * Show the Text for the Bootscreen
  */
-void vShowBootText(char* text) {
+void vShowBootText(char* text)
+{
 
 	/* Header Rectangle */
 	tRectangle sRect;
 
-	if (g_sContext.pDisplay == 0) {
+	if (g_sContext.pDisplay == 0)
+	{
 		GrContextInit(&g_sContext, DISPLAY_DRIVER);
 	}
 
@@ -223,7 +242,8 @@ void vShowBootText(char* text) {
 /**
  * Initialize the Menue Button with the Definitions of displayStyle.h
  */
-void vInitializeMenuButton(void) {
+void vInitializeMenuButton(void)
+{
 	xMenuButton.pFont = DISPLAY_MENU_BUTTON_FONT;
 	xMenuButton.pcText = DISPLAY_MENU_BUTTON_TEXT;
 	xMenuButton.pfnOnClick = DISPLAY_MENU_BUTTON_ACTION;
@@ -254,7 +274,8 @@ void vInitializeMenuButton(void) {
 /**
  * Initialize the Save Button with the Definitions of displayStyle.h
  */
-void vInitializeSaveButton(void) {
+void vInitializeSaveButton(void)
+{
 	xSaveButton.pFont = DISPLAY_SAVE_BUTTON_FONT;
 	xSaveButton.pcText = DISPLAY_SAVE_BUTTON_TEXT;
 	xSaveButton.pfnOnClick = DISPLAY_SAVE_BUTTON_ACTION;
@@ -285,7 +306,8 @@ void vInitializeSaveButton(void) {
 /**
  * Initialize the Up Button with the Definitions of displayStyle.h
  */
-void vInitializeUpButton(void) {
+void vInitializeUpButton(void)
+{
 	xUpButton.pFont = DISPLAY_UP_BUTTON_FONT;
 	xUpButton.pcText = DISPLAY_UP_BUTTON_TEXT;
 	xUpButton.pfnOnClick = DISPLAY_UP_BUTTON_ACTION;
@@ -318,7 +340,8 @@ void vInitializeUpButton(void) {
 /**
  * Initialize the Down Button with the Definitions of displayStyle.h
  */
-void vInitializeDownButton(void) {
+void vInitializeDownButton(void)
+{
 	xDownButton.pFont = DISPLAY_DOWN_BUTTON_FONT;
 	xDownButton.pcText = DISPLAY_DOWN_BUTTON_TEXT;
 	xDownButton.pfnOnClick = DISPLAY_DOWN_BUTTON_ACTION;
@@ -351,7 +374,8 @@ void vInitializeDownButton(void) {
 /**
  * Initialize the ParentWidget (=root for Drawing) with the Definitions of displayStyle.h
  */
-void vInitializeParentWidget(void) {
+void vInitializeParentWidget(void)
+{
 	xParentWidget.pFont = NULL;
 	xParentWidget.pcText = NULL;
 	xParentWidget.pucImage = NULL;
@@ -374,7 +398,8 @@ void vInitializeParentWidget(void) {
 /**
  * Initialize the Title with the Definitions of displayStyle.h
  */
-void vInitializeTitle(void) {
+void vInitializeTitle(void)
+{
 	xTitle.pFont = DISPLAY_TITLE_FONT;
 	xTitle.pcText = DISPLAY_TITLE_TEXT;
 	xTitle.pucImage = NULL;
@@ -397,7 +422,8 @@ void vInitializeTitle(void) {
 /**
  * Initialize the Title with the Definitions of displayStyle.h
  */
-void vInitializeStatusMessage(void) {
+void vInitializeStatusMessage(void)
+{
 	xStatusMessage.pFont = DISPLAY_STATUS_MESSAGE_FONT;
 	xStatusMessage.pcText = DISPLAY_STATUS_MESSAGE_TEXT;
 	xStatusMessage.pucImage = NULL;
@@ -419,16 +445,19 @@ void vInitializeStatusMessage(void) {
 	xStatusMessage.ulTextColor = DISPLAY_TITLE_COLOR;
 }
 
-void vShowStatusMessage(char* text) {
+void vShowStatusMessage(char* text)
+{
 	vInitializeStatusMessage();
 	xStatusMessage.pcText = text;
 	WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xStatusMessage);
 	WidgetPaint((tWidget*) &xParentWidget);
 }
 
-void vRemoveStatusMessage(tBoolean bRefresh) {
+void vRemoveStatusMessage(tBoolean bRefresh)
+{
 	WidgetRemove((tWidget*) &xStatusMessage);
-	if (bRefresh == true) {
+	if (bRefresh == true)
+	{
 		WidgetPaint((tWidget*)&xParentWidget);
 	}
 }
@@ -436,11 +465,23 @@ void vRemoveStatusMessage(tBoolean bRefresh) {
 /**
  * Set the Title Text, if NULL, the default from displayStyle.h will be used
  */
-void vSetTitle(char* title) {
-	if (title == NULL) {
+void vSetTitle(char* title)
+{
+	if (title == NULL)
+	{
 		xDisplayRoot.title = DISPLAY_TITLE_TEXT;
-	} else {
+	}
+	else
+	{
 		xDisplayRoot.title = title;
 	}
 	xTitle.pcText = xDisplayRoot.title;
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

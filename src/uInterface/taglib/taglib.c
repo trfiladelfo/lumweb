@@ -1,3 +1,12 @@
+/**
+ * \addtogroup TagLib
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
+
 #include <stdio.h>
 #include <string.h>
 
@@ -9,7 +18,8 @@
 
 #include "graphic/gui/displayBasics.h"
 
-char* pcGetParamFromString(char* str, char* search) {
+char* pcGetParamFromString(char* str, char* search)
+{
 	char *buffer, *retValue = NULL;
 	int i, j, len;
 
@@ -18,7 +28,8 @@ char* pcGetParamFromString(char* str, char* search) {
 #endif
 
 	buffer = pcStrstr(str, search);
-	if (buffer != NULL) {
+	if (buffer != NULL)
+	{
 
 		buffer = pcStrstr(buffer, "=\"");
 		buffer += 2;
@@ -29,7 +40,8 @@ char* pcGetParamFromString(char* str, char* search) {
 		retValue = pvPortMalloc((len + 1) * sizeof(char));
 
 		j = 0;
-		for (i = 0; i < len; i++) {
+		for (i = 0; i < len; i++)
+		{
 			retValue[j] = buffer[i];
 			j++;
 		}
@@ -39,21 +51,27 @@ char* pcGetParamFromString(char* str, char* search) {
 	return retValue;
 }
 
-void vInserIntoList(void *toInsert) {
+void vInserIntoList(void *toInsert)
+{
 
 	basicDisplayLine *akt = xDisplayRoot.entities;
 
-	if (toInsert != NULL) {
+	if (toInsert != NULL)
+	{
 
-		if (akt == NULL || xDisplayRoot.displayEntities == false) {
+		if (akt == NULL || xDisplayRoot.displayEntities == false)
+		{
 			xDisplayRoot.entities = toInsert;
 			xDisplayRoot.displayEntities = true;
 
 #if DEBUG_HTTPC
 			printf("vInsertIntoList: root\n");
 #endif
-		} else {
-			while (akt->next != NULL) {
+		}
+		else
+		{
+			while (akt->next != NULL)
+			{
 				akt = akt->next;
 			}
 			akt->next = toInsert;
@@ -68,7 +86,8 @@ void vInserIntoList(void *toInsert) {
 }
 
 void vCreateNewEntity(taglib *type, char* id, char* label, char* strValue,
-		int value, int max, int min, int increment) {
+		int value, int max, int min, int increment)
+{
 	basicDisplayLine *newLine = pvPortMalloc(sizeof(basicDisplayLine));
 	newLine->type = type;
 	newLine->id = id;
@@ -78,10 +97,11 @@ void vCreateNewEntity(taglib *type, char* id, char* label, char* strValue,
 	newLine->min = min;
 	newLine->increment = increment;
 
-	strcpy (newLine->strValue, strValue);
+	strcpy(newLine->strValue, strValue);
 
-	if (((taglib*)newLine->type)->strFormatter != NULL) {
-		((taglib*)newLine->type)->strFormatter(newLine);
+	if (((taglib*) newLine->type)->strFormatter != NULL)
+	{
+		((taglib*) newLine->type)->strFormatter(newLine);
 	}
 
 	newLine->next = NULL;
@@ -89,5 +109,12 @@ void vCreateNewEntity(taglib *type, char* id, char* label, char* strValue,
 	newLine->valueWidget = NULL;
 	vInserIntoList(newLine);
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
 
 

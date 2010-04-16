@@ -2,7 +2,6 @@
  * \addtogroup System
  * @{
  *
- * \file utils.h
  * \author Anziner, Hahn
  * \brief Contains some useful Functions
  *
@@ -71,7 +70,6 @@ int iIsSpace(char c);
  * @return A pointer to the first occurrence in <b>str</b> of any of the entire sequence of characters specified in <b>search</b>, or a null pointer if the sequence is not present in <b>str</b>.
  */
 char* pcStrstr(char* str, char* search);
-
 
 /**
  * Calculates the absolute value of <b>i</b>

@@ -2,7 +2,6 @@
  * \addtogroup Graphic
  * @{
  *
- * \file displayDraw.c
  * \author Anziner, Hahn
  * \brief Implementation of the Draw Methods
  *
@@ -34,7 +33,8 @@ int elementOffset = 0;
 tWidget* xGetLabelWidget(void*line, int row);
 tWidget* xGetValueWidget(void*line, int row);
 
-void vDrawElementsOnDisplay(void) {
+void vDrawElementsOnDisplay(void)
+{
 
 	int i;
 	basicDisplayLine *toDraw;
@@ -42,21 +42,28 @@ void vDrawElementsOnDisplay(void) {
 	vTaskSuspendAll();
 	{
 
-		if (xDisplayRoot.menue == true) {
+		if (xDisplayRoot.menue == true)
+		{
 			WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xMenuButton);
-		} else if (xMenuButton.sBase.pParent != NULL) {
+		}
+		else if (xMenuButton.sBase.pParent != NULL)
+		{
 			WidgetRemove((tWidget*) &xMenuButton);
 		}
 
-		if (xDisplayRoot.save == true) {
+		if (xDisplayRoot.save == true)
+		{
 			WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xSaveButton);
-		} else {
+		}
+		else
+		{
 			WidgetRemove((tWidget*) &xSaveButton);
 		}
 
 		WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xTitle);
 
-		if (xDisplayRoot.displayEntities == true) {
+		if (xDisplayRoot.displayEntities == true)
+		{
 
 #if DEBUG_GRAPHIC
 			printf("vDrawElementsOnDisplay: Draw Elements offset %d\n",
@@ -65,16 +72,20 @@ void vDrawElementsOnDisplay(void) {
 
 			toDraw = xDisplayRoot.entities;
 
-			if (elementOffset > 0) {
+			if (elementOffset > 0)
+			{
 				for (i = 0; i < elementOffset && toDraw != NULL && toDraw->next
-						!= NULL; i++) {
+						!= NULL; i++)
+				{
 					toDraw = toDraw->next;
 				}
 			}
 
-			for (i = 0; toDraw != NULL && i < DISPLAY_LINES_PER_VIEW; i++) {
+			for (i = 0; toDraw != NULL && i < DISPLAY_LINES_PER_VIEW; i++)
+			{
 				xGetLabelWidget(toDraw, i);
-				if (toDraw->labelWidget != NULL) {
+				if (toDraw->labelWidget != NULL)
+				{
 #if DEBUG_GRAPHIC
 					printf("vDrawElementsOnDisplay: addLabel\n");
 #endif
@@ -83,19 +94,26 @@ void vDrawElementsOnDisplay(void) {
 				}
 
 #if DEBUG_GRAPHIC
-					printf("vDrawElementsOnDisplay: check onDisplay\n");
+				printf("vDrawElementsOnDisplay: check onDisplay\n");
 #endif
 
-				if (((taglib*)toDraw->type)->onDisplay != NULL) {
+				if (((taglib*) toDraw->type)->onDisplay != NULL)
+				{
 #if DEBUG_GRAPHIC
-					printf("vDrawElementsOnDisplay: toDraw = %X ElementType= %s\n", (unsigned int) toDraw, ((taglib*)toDraw->type)->tagname);
+					printf(
+							"vDrawElementsOnDisplay: toDraw = %X ElementType= %s\n",
+							(unsigned int) toDraw,
+							((taglib*) toDraw->type)->tagname);
 #endif
-					((taglib*)toDraw->type)->onDisplay(toDraw, i);
-				} else {
+					((taglib*) toDraw->type)->onDisplay(toDraw, i);
+				}
+				else
+				{
 					toDraw->valueWidget = NULL;
 				}
 
-				if (toDraw->valueWidget != NULL) {
+				if (toDraw->valueWidget != NULL)
+				{
 #if DEBUG_GRAPHIC
 					printf("vDrawElementsOnDisplay: addValue\n");
 #endif
@@ -105,18 +123,24 @@ void vDrawElementsOnDisplay(void) {
 				toDraw = toDraw->next;
 			}
 
-			if (elementOffset > 0) {
+			if (elementOffset > 0)
+			{
 				WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xUpButton);
 				xDisplayRoot.up = true;
-			} else {
+			}
+			else
+			{
 				WidgetRemove((tWidget*) &xUpButton);
 				xDisplayRoot.up = false;
 			}
 
-			if (toDraw != NULL) {
+			if (toDraw != NULL)
+			{
 				xDisplayRoot.down = true;
 				WidgetAdd((tWidget*) &xParentWidget, (tWidget*) &xDownButton);
-			} else {
+			}
+			else
+			{
 				xDisplayRoot.down = false;
 				WidgetRemove((tWidget*) &xDownButton);
 			}
@@ -132,17 +156,22 @@ void vDrawElementsOnDisplay(void) {
 	xTaskResumeAll();
 }
 
-tWidget* xGetLabelWidget(void *akt, int row) {
+tWidget* xGetLabelWidget(void *akt, int row)
+{
 
 	basicDisplayLine *line = (basicDisplayLine*) akt;
-	if (line->labelWidget != NULL) {
+	if (line->labelWidget != NULL)
+	{
 		vPortFree(line->labelWidget);
 	}
 	line->labelWidget = pvPortMalloc(sizeof(tCanvasWidget));
 
-	if (line->type == xTagList + TAG_INDEX_GROUP) {
+	if (line->type == xTagList + TAG_INDEX_GROUP)
+	{
 		((tCanvasWidget*) line->labelWidget)->pFont = DISPLAY_LABEL_GROUP_FONT;
-	} else {
+	}
+	else
+	{
 		((tCanvasWidget*) line->labelWidget)->pFont = DISPLAY_LABEL_FONT;
 	}
 	((tCanvasWidget*) line->labelWidget)->pcText = line->label;
@@ -172,4 +201,11 @@ tWidget* xGetLabelWidget(void *akt, int row) {
 
 	return line->labelWidget;
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
 

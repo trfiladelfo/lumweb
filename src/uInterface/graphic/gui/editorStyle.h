@@ -1,8 +1,10 @@
-/*
- * displayStyle.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 19.02.2010
- *      Author: root
+ * \author Anziner, Hahn
+ * \brief
+ *
  */
 
 #ifndef EDITORSTYLE_H_
@@ -96,7 +98,6 @@
 #define EDITOR_DEC_2_BUTTON_TEXT					"-"
 #define EDITOR_DEC_2_BUTTON_ACTION					vDecreaseValue
 
-
 // Value
 #define EDITOR_VALUE_TOP							100
 #define EDITOR_VALUE_LEFT							0
@@ -109,3 +110,11 @@
 #define EDITOR_VALUE_STYLE							(CANVAS_STYLE_TEXT | CANVAS_STYLE_FILL)
 
 #endif /* EDITORSTYLE_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

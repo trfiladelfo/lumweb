@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file IntegerInputField.c
  * \author Anziner, Hahn
  * \brief Routines for the IntegerInputField tag
  *

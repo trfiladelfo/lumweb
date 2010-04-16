@@ -2,12 +2,10 @@
  * \addtogroup Graphic
  * @{
  *
- * \file webClient.h
  * \author Anziner, Hahn
  * \brief
  *
-*/
-
+ */
 
 #ifndef WEBCLIENT_H_
 #define WEBCLIENT_H_
@@ -16,7 +14,7 @@
 
 #define HTTPC_BUFFER_LEN 255
 
-void vLoadWebPage (char* page, basicDisplayLine* params);
+void vLoadWebPage(char* page, basicDisplayLine* params);
 
 #endif /* WEBCLIENT_H_ */
 

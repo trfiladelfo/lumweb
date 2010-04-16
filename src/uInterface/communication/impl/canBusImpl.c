@@ -2,7 +2,6 @@
  * \addtogroup comTask
  * @{
  *
- * \file sdCardImpl.c
  * \author Anziner, Hahn
  * \brief implements a simple testroutine to store and read the values from/to the SD-Card
  *
@@ -48,11 +47,6 @@ int CANReceiveFIFO(unsigned char *pucData, unsigned long ulSize);
 // Message object used by the receive message FIFO.
 //
 #define RECEIVE_MESSAGE_ID      11
-
-//
-// The number of FIFO transfers that cause a toggle of the LED.
-//
-#define TOGGLE_RATE             100
 
 //
 // The CAN bit rate.
@@ -424,5 +418,10 @@ int CANReceiveFIFO(unsigned char *pucData, unsigned long ulSize)
 	}
 	return (0);
 }
-
+//*****************************************************************************
+//
+// Close the Doxygen group.
 //! @}
+//
+//*****************************************************************************
+

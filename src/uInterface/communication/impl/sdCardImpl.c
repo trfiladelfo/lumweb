@@ -2,7 +2,6 @@
  * \addtogroup comTask
  * @{
  *
- * \file sdCardImpl.c
  * \author Anziner, Hahn
  * \brief implements a simple testroutine to store and read the values from/to the SD-Card
  *
@@ -141,4 +140,10 @@ int getFormMachine(char* id)
 	return value;
 }
 
+//*****************************************************************************
+//
+// Close the Doxygen group.
 //! @}
+//
+//*****************************************************************************
+

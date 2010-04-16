@@ -1,8 +1,10 @@
-/*
- * valueEditor.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 20.02.2010
- *      Author: root
+ * \author Anziner, Hahn
+ * \brief
+ *
  */
 
 #ifndef VALUEEDITOR_H_
@@ -10,6 +12,13 @@
 
 #include "graphic/gui/displayBasics.h"
 
-void vOpenEditor (basicDisplayLine* akt);
+void vOpenEditor(basicDisplayLine* akt);
 
 #endif /* VALUEEDITOR_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

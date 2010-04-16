@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file TimeInputField.h
  * \author Anziner, Hahn
  * \brief Prototypes for the TimeInputField tag
  *

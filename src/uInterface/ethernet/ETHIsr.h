@@ -1,3 +1,12 @@
+/**
+ * \addtogroup Ethernet
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
+
 //*****************************************************************************
 //
 // ETHIsr.h - Prototypes for the Ethernet controller.
@@ -36,7 +45,7 @@ extern "C"
 //
 //*****************************************************************************	
 #define	ETH_HWADDR_LEN (6)
-	
+
 //*****************************************************************************
 //
 //! The maximal transmit unit.
@@ -50,7 +59,7 @@ extern "C"
 //
 //*****************************************************************************		
 #define	ETH_DEFAULT_LINK_SPEED 100
-	
+
 //*****************************************************************************
 //
 //! Mask for PHY interrupt(MR17) register to detect link up/down.
@@ -82,8 +91,7 @@ extern "C"
 //*****************************************************************************	
 #define ETH_FLUSH_RX			0x01
 #define ETH_FLUSH_TX			0x02
-	
-	
+
 //*****************************************************************************
 //
 //! Prototypes for the APIs.
@@ -93,14 +101,16 @@ extern xSemaphoreHandle ETHRxBinSemaphore[MAX_ETH_PORTS];
 extern xSemaphoreHandle ETHTxBinSemaphore[MAX_ETH_PORTS];
 extern xSemaphoreHandle ETHTxAccessMutex[MAX_ETH_PORTS];
 extern xSemaphoreHandle ETHRxAccessMutex[MAX_ETH_PORTS];
-		
-extern int ETHServiceTaskInit(const unsigned long ulPort);	
+
+extern int ETHServiceTaskInit(const unsigned long ulPort);
 extern int ETHServiceTaskEnable(const unsigned long ulPort);
 extern int ETHServiceTaskDisable(const unsigned long ulPort);
 extern int ETHServiceTaskLastError(const unsigned long ulPort);
-extern int ETHServiceTaskLinkStatus(const unsigned long ulPort);	
-extern int ETHServiceTaskFlush(const unsigned long ulPort, const unsigned long flCmd);
-extern int ETHServiceTaskMACAddress(const unsigned long ulPort, unsigned char *pucMACAddr);
+extern int ETHServiceTaskLinkStatus(const unsigned long ulPort);
+extern int ETHServiceTaskFlush(const unsigned long ulPort,
+		const unsigned long flCmd);
+extern int ETHServiceTaskMACAddress(const unsigned long ulPort,
+		unsigned char *pucMACAddr);
 extern int ETHServiceTaskEnableReceive(const unsigned long ulPort);
 extern int ETHServiceTaskPacketAvail(const unsigned long ulPort);
 extern int ETHServiceTaskWaitReady(const unsigned long ulPort);
@@ -115,3 +125,11 @@ extern int ETHServiceTaskWaitReady(const unsigned long ulPort);
 #endif	
 
 #endif /*ETHISR_H_*/
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

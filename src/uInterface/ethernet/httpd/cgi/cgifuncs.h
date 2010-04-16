@@ -25,6 +25,15 @@
 //
 //*****************************************************************************
 
+/**
+ * \addtogroup CGIandSSI
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
+
 #ifndef __CGIFUNCS_H__
 #define __CGIFUNCS_H__
 
@@ -38,11 +47,17 @@ tBoolean IsValidHexDigit(const char cDigit);
 unsigned char HexDigit(const char cDigit);
 tBoolean DecodeHexEscape(const char *pcEncoded, char *pcDecoded);
 unsigned long EncodeFormString(const char *pcDecoded, char *pcEncoded,
-                               unsigned long ulLen);
-unsigned long DecodeFormString(const  char *pcEncoded, char *pcDecoded,
-                               unsigned long ulLen);
+		unsigned long ulLen);
+unsigned long DecodeFormString(const char *pcEncoded, char *pcDecoded,
+		unsigned long ulLen);
 tBoolean CheckDecimalParam(const char *pcValue, long *plValue);
 long GetCGIParam(const char *pcName, char *pcParams[], char *pcValue[],
-                 int iNumParams, tBoolean *pbError);
+		int iNumParams, tBoolean *pbError);
 
 #endif // __CGIFUNCS_H__
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

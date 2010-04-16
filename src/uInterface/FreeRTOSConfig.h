@@ -2,7 +2,6 @@
  * \addtogroup Configuration
  * @{
  *
- * \file FreeRTOSConfig.h
  * \author Anziner, Hahn
  * \brief User defines for the RTOS system
  *
@@ -32,7 +31,7 @@
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 
 /* Set the following definitions to 1 to include the API function, or zero
-to exclude the API function. */
+ to exclude the API function. */
 
 #define INCLUDE_vTaskPrioritySet			1
 #define INCLUDE_uxTaskPriorityGet			1
@@ -43,8 +42,6 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelay					1
 #define INCLUDE_uxTaskGetStackHighWaterMark	1
 
-
-
 #define configKERNEL_INTERRUPT_PRIORITY 		( 7 << 5 )
 /* Priority 7, or 255 as only the top three bits are implemented.  This is the lowest priority. */
 
@@ -54,7 +51,7 @@ to exclude the API function. */
 /*
  * On the Stellaris family, three bits are available for hardware interrupt prioritization
  *  and therefore priority grouping values of three through seven have the same effect.
-*/
+ */
 #define SET_SYSCALL_INTERRUPT_PRIORITY(X) (((X) << 5)&0xE0)
 
 #endif /* FREERTOSCONFIG_H_ */

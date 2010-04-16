@@ -29,13 +29,10 @@
  * \addtogroup CGIandSSI
  * @{
  *
- * \file io.h
  * \author Anziner, Hahn
  * \brief Prototypes for I/O routines
  *
-*/
-
-
+ */
 
 #ifndef __IO_H__
 #define __IO_H__
@@ -50,13 +47,11 @@ extern "C"
 
 #ifdef INCLUDE_HTTPD_SSI
 
-
 /**
  The number of individual SSI tags that the HTTPD server can expect to
  find in our configuration pages.
-*/
+ */
 #include "taglib/taglib.h" // Definition of Strings
-
 #endif
 
 #include "ethernet/httpd/cgi/ssiparams.h"
@@ -73,3 +68,9 @@ int io_get_value_from_comtask(char* id);
 #endif
 
 #endif // __IO_H__
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

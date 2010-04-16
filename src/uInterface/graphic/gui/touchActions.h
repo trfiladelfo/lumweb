@@ -2,7 +2,6 @@
  * \addtogroup Graphic
  * @{
  *
- * \file touchActions.h
  * \author Anziner, Hahn
  * \brief
  *
@@ -25,6 +24,7 @@ void vCheckboxAction(tWidget* pWidget, unsigned long status);
 void vOpenEditorAction(tWidget *pWidget);
 
 #endif /* TOUCHACTIONS_H_ */
+
 //*****************************************************************************
 //
 // Close the Doxygen group.

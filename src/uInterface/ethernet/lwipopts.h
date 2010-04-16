@@ -34,9 +34,18 @@
 //
 //*****************************************************************************
 
+
+/**
+ * \addtogroup Ethernet
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
+
 #ifndef __LWIPOPTS_H__
 #define __LWIPOPTS_H__
-
 
 //*****************************************************************************
 //
@@ -81,7 +90,6 @@
 //#define MEMP_NUM_TCPIP_MSG_API          8
 //#define MEMP_NUM_TCPIP_MSG_INPKT        8
 #define PBUF_POOL_SIZE                    24    // Default 16, was 36
-
 //*****************************************************************************
 //
 // ---------- ARP options ----------
@@ -152,7 +160,7 @@
 //*****************************************************************************
 #define LWIP_AUTOIP                     0           // default is 0
 #define LWIP_DHCP_AUTOIP_COOP           ((LWIP_DHCP) && (LWIP_AUTOIP))
-                                                    // default is 0
+// default is 0
 
 //*****************************************************************************
 //
@@ -221,7 +229,7 @@
 #define TCP_MSS                        1500        // default is 128
 //#define TCP_CALCULATE_EFF_SEND_MSS      1
 #define TCP_SND_BUF                     (4 * TCP_MSS)
-                                                    // default is 256, was 6 *
+// default is 256, was 6 *
 #define TCP_MSL 5000U // The maximum segment lifetime in milliseconds default is 60000U
 //#define TCP_SND_QUEUELEN                (4 * (TCP_SND_BUF/TCP_MSS))
 //#define TCP_SNDLOWAT                    (TCP_SND_BUF/2)
@@ -243,9 +251,8 @@
 //*****************************************************************************
 #define PBUF_LINK_HLEN                  16          // default is 14
 #define PBUF_POOL_BUFSIZE               256
-                                                    // default is LWIP_MEM_ALIGN_SIZE(TCP_MSS+40+PBUF_LINK_HLEN)
+// default is LWIP_MEM_ALIGN_SIZE(TCP_MSS+40+PBUF_LINK_HLEN)
 #define ETH_PAD_SIZE                    2           // default is 0
-
 //*****************************************************************************
 //
 // ---------- Network Interfaces options ----------
@@ -295,7 +302,6 @@
 //*****************************************************************************
 //#define LWIP_TCPIP_CORE_LOCKING         0
 #define LWIP_NETCONN                    1           // default is 1
-
 //*****************************************************************************
 //
 // ---------- Socket Options ----------
@@ -396,7 +402,6 @@ extern void LWIPDebug(const char *pcString, ...);
 
 #define LWIP_DEBUG 1
 
-
 //#define LWIP_DBG_MIN_LEVEL              LWIP_DBG_LEVEL_OFF
 #define LWIP_DBG_MIN_LEVEL              LWIP_DBG_LEVEL_OFF
 //#define LWIP_DBG_MIN_LEVEL              LWIP_DBG_LEVEL_WARNING
@@ -446,3 +451,11 @@ extern void LWIPDebug(const char *pcString, ...);
 #endif
 
 #endif /* __LWIPOPTS_H__ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

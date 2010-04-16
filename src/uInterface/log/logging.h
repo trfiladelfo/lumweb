@@ -2,13 +2,11 @@
  * \addtogroup logging
  * @{
  *
- * \file logging.h
  * \author Anziner, Hahn
  * \brief Prototypes for handling log files
  *
  *
  */
-
 
 //*****************************************************************************
 //
@@ -37,7 +35,6 @@
 //*****************************************************************************
 FIL* log_file;
 
-
 /** Opens the log file (path defined as LOG_FILE_PATH) and
  *  sets file pointer to the end of file
  */
@@ -50,3 +47,11 @@ FRESULT initLog();
 FRESULT appendToLog(char *msg);
 
 #endif
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

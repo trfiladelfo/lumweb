@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file FloatInputField.c
  * \author Anziner, Hahn
  * \brief Routines for the FloatInputField tag
  *
@@ -11,7 +10,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 
 #include "FreeRTOS.h"
 

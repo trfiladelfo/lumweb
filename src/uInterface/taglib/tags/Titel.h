@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file Titel.h
  * \author Anziner, Hahn
  * \brief Prototypes for the Titel tag
  *

@@ -1,3 +1,12 @@
+/**
+ * \addtogroup Ethernet
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
+
 #ifndef LWIPSTACK_H_
 #define LWIPSTACK_H_
 
@@ -57,3 +66,11 @@ void stellarisif_debug_print(struct pbuf *p);
 //static struct netif lwip_netif_local;
 
 #endif /*LWIPSTACK_H_*/
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

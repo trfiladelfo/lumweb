@@ -2,7 +2,6 @@
  * \addtogroup logging
  * @{
  *
- * \file logging.c
  * \author Anziner, Hahn
  * \brief Routines for handling log files
  *
@@ -27,14 +26,12 @@
 #include "lmi_fs.h"
 #include "hw_types.h"
 
-
 #include "realtime.h"
 #include "log/logging.h"
 
 #include "setup.h"
 
 char buf[128], time_buf[30];
-
 
 /**
  Opens the log file (path defined as LOG_FILE_PATH) and
@@ -44,7 +41,8 @@ char buf[128], time_buf[30];
  @return FR_NO_FILE  .... memory alloctaion went wrong
  @return other RC    .... see return codes of f_open()
  */
-FRESULT initLog() {
+FRESULT initLog()
+{
 #if ENABLE_LOG
 	FRESULT rc = FR_NO_FILE;
 	log_file = (FIL*) pvPortMalloc(sizeof(FIL));
@@ -53,7 +51,8 @@ FRESULT initLog() {
 
 	fs_enable(400000);
 
-	if (log_file != NULL) {
+	if (log_file != NULL)
+	{
 #if DEBUG_LOG
 		printf("Opening file, memory OK \n");
 #endif
@@ -83,7 +82,8 @@ FRESULT initLog() {
  @return other RC    .... see return codes of f_open()
 
  */
-FRESULT appendToLog(char *msg) {
+FRESULT appendToLog(char *msg)
+{
 #if ENABLE_LOG
 	FRESULT rc = FR_NO_FILE;
 	unsigned int bw, i = 0;
@@ -98,13 +98,13 @@ FRESULT appendToLog(char *msg) {
 	// suspend all other tasks
 	vTaskSuspendAll();
 
-
 	snprintf(buf, 127, "%s : %s\n", time_buf, msg);
 	rc = f_write(log_file, buf, strlen(buf), &bw);
 
-	if (rc == FR_OK){
+	if (rc == FR_OK)
+	{
 #if DEBUG_LOG
-			printf("appendToLog: wrote msg %s", buf);
+		printf("appendToLog: wrote msg %s", buf);
 #endif
 		f_sync(log_file);
 	}
@@ -117,3 +117,10 @@ FRESULT appendToLog(char *msg) {
 	return -1;
 #endif
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

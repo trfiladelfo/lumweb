@@ -53,7 +53,6 @@
  * \addtogroup System
  * @{
  *
- * \file timer.c
  * \author Anziner, Hahn
  * \brief Contains the setup for the HighFrequencyTimer to run the scheduler
  *

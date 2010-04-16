@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file TimeInputField.c
  * \author Anziner, Hahn
  * \brief Routines for the TimeInputField tag
  *
@@ -64,13 +63,9 @@ void vTimeOnLoad(char* param, int len, void* this)
 
 char* pcTimeStrFormatter(void* line)
 {
-	snprintf(
-			(((basicDisplayLine*) line)->strValue),
-			DISPLAY_VALUE_TEXT_LEN,
-			"%02d:%02d",
-			(((basicDisplayLine*) line)->value / 60),
-			(((basicDisplayLine*) line)->value % 60)
-	);
+	snprintf((((basicDisplayLine*) line)->strValue), DISPLAY_VALUE_TEXT_LEN,
+			"%02d:%02d", (((basicDisplayLine*) line)->value / 60),
+			(((basicDisplayLine*) line)->value % 60));
 	return ((basicDisplayLine*) line)->strValue;
 }
 

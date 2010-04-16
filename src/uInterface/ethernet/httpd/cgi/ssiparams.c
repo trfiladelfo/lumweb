@@ -1,8 +1,10 @@
-/*
- * ssiparams.c
+/**
+ * \addtogroup CGIandSSI
+ * @{
  *
- *  Created on: Mar 6, 2010
- *      Author: d3f3nd3r
+ * \author Anziner, Hahn
+ * \brief
+ *
  */
 
 #include <stdio.h>
@@ -15,7 +17,6 @@
 
 #include "ethernet/httpd/cgi/ssiparams.h"
 
-
 /**
  adds a new element to the list
 
@@ -23,8 +24,9 @@
  @param *nameValue	pointer to name-value string ($name=$value)
 
  @return 0	element not added
-*/
-int SSIParamAdd(pSSIParam *root, char *nameValue) {
+ */
+int SSIParamAdd(pSSIParam *root, char *nameValue)
+{
 	char *value;
 	pSSIParam nParam, tmp = *(root);
 
@@ -39,7 +41,8 @@ int SSIParamAdd(pSSIParam *root, char *nameValue) {
 	nParam->name = pvPortMalloc(strlen(nameValue) - strlen(value) + 1);
 	nParam->value = pvPortMalloc(strlen(value) + 1);
 
-	if (nParam != NULL && nParam->name != NULL && nParam->value != NULL) {
+	if (nParam != NULL && nParam->name != NULL && nParam->value != NULL)
+	{
 
 		snprintf(nParam->name, (strlen(nameValue) - strlen(value)), "%s",
 				nameValue);
@@ -52,7 +55,8 @@ int SSIParamAdd(pSSIParam *root, char *nameValue) {
 		printf("Werte getrimmt\n");
 #endif
 
-		if (strlen(nParam->name) > 0) {
+		if (strlen(nParam->name) > 0)
+		{
 
 			nParam->next = tmp;
 			*(root) = nParam;
@@ -60,24 +64,31 @@ int SSIParamAdd(pSSIParam *root, char *nameValue) {
 			printf("SSIParamAdd: added element name: '%s' value: '%s' \n",
 					nParam->name, nParam->value);
 #endif
-		} else {
+		}
+		else
+		{
 
 #if DEBUG_SSI_PARAMS
 			printf("SSIParamAdd: didnt insert element, name empty\n");
 #endif
 		}
 
-	} else {
+	}
+	else
+	{
 #if DEBUG_SSI_PARAMS
 		printf(" ... fail\n");
 #endif
-		if (nParam->name != NULL) {
+		if (nParam->name != NULL)
+		{
 			vPortFree(nParam->name);
 		}
-		if (nParam->value != NULL) {
+		if (nParam->value != NULL)
+		{
 			vPortFree(nParam->value);
 		}
-		if (nParam != NULL) {
+		if (nParam != NULL)
+		{
 			vPortFree(nParam);
 		}
 	}
@@ -91,11 +102,13 @@ int SSIParamAdd(pSSIParam *root, char *nameValue) {
 
  @return element with $name .... element found
  @return NULL .... element not found
-*/
-pSSIParam SSIParamGet(pSSIParam root, char *name) {
+ */
+pSSIParam SSIParamGet(pSSIParam root, char *name)
+{
 	pSSIParam ret = NULL;
 
-	while (root != NULL) {
+	while (root != NULL)
+	{
 #if DEBUG_SSI_PARAMS
 		printf("SSIParamGet: element name: '%s' \n", root->name);
 #endif
@@ -114,13 +127,15 @@ pSSIParam SSIParamGet(pSSIParam root, char *name) {
 
  @return string with the value .... element found
  @return NULL .... element not found
-*/
-char* SSIParamGetValue(pSSIParam root, char *name) {
+ */
+char* SSIParamGetValue(pSSIParam root, char *name)
+{
 	pSSIParam p;
 	char* value = NULL;
 
 	p = SSIParamGet(root, name);
-	if (p != NULL) {
+	if (p != NULL)
+	{
 		value = p->value;
 #if DEBUG_SSI_PARAMS
 		printf("SSIParamGetValue: found value '%s' for %s \n", value, name);
@@ -134,11 +149,13 @@ char* SSIParamGetValue(pSSIParam root, char *name) {
  *
  * @param *root	pointer to root element of list
  *
-*/
-void SSIParamDeleteAll(pSSIParam *root) {
+ */
+void SSIParamDeleteAll(pSSIParam *root)
+{
 	pSSIParam p = (*root), del = NULL;
 
-	while (p != NULL) {
+	while (p != NULL)
+	{
 #if DEBUG_SSI_PARAMS
 		printf("SSIParamDeleteAll: delete element : %s \n", p->name);
 #endif
@@ -163,3 +180,10 @@ void SSIParamDeleteAll(pSSIParam *root) {
 	printf("SSIParamDeleteAll: deleted all elements \n");
 #endif
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

@@ -4,17 +4,16 @@
  *
  * GPV v3
  *
-*/
+ */
 
 /**
  * \addtogroup comTask
  * @{
  *
- * \file comTask.h
  * \author Anziner, Hahn
  * \brief defines the Communication Task (vComTask) to interact with the machine
  *
-*/
+ */
 
 #ifndef COMTASK_H
 #define COMTASK_H
@@ -24,13 +23,17 @@
 #include "queue.h"
 #include "hw_types.h"
 
-
 /** Command enummeration */
-enum com_commands {SET, GET};
+enum com_commands
+{
+	SET, GET
+};
 
 /** Datasource enummeraiton */
-enum com_dataSource {CONF, DATA};
-
+enum com_dataSource
+{
+	CONF, DATA
+};
 
 /** Message for the ComTask queue */
 typedef struct
@@ -46,10 +49,10 @@ typedef struct
 } xComMessage;
 
 /** Implementation for a init Routine */
-void vComTaskInitImpl (void);
+void vComTaskInitImpl(void);
 
 /** Prototype for the CommTask */
-void vComTask( void *pvParameters );
+void vComTask(void *pvParameters);
 
 /** Prototpye for the method that communicates directly with
  *  the machine (on CAN Bus or whatever) and sets values*/
@@ -60,3 +63,11 @@ int sendToMachine(char* id, int value);
 int getFormMachine(char* id);
 
 #endif /* COMTASK_H */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

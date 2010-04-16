@@ -1,3 +1,12 @@
+/**
+ * \addtogroup Ethernet
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
+
 //*****************************************************************************
 //
 // ETHIsr.c - Driver for Ethernet controller.
@@ -24,7 +33,6 @@
 
 #include "ETHIsr.h"
 
-
 //*****************************************************************************
 //
 // This structure represents status of SSI device and port(ETH0,ETH1,..). 
@@ -39,45 +47,48 @@ static volatile unsigned long ETHDevice[MAX_ETH_PORTS];
 //! Ethernet peripheral identification.
 //
 //*****************************************************************************
-static const unsigned long
-		ETHPeripheral[MAX_ETH_PORTS] = { SYSCTL_PERIPH_ETH, };
+static const unsigned long ETHPeripheral[MAX_ETH_PORTS] =
+{ SYSCTL_PERIPH_ETH, };
 
 //*****************************************************************************
 //
 //! Ethernet peripheral pin gate.
 //
 //*****************************************************************************
-static const unsigned long ETHPeripheralGate[MAX_ETH_PORTS] = {
-		SYSCTL_PERIPH_GPIOF, };
+static const unsigned long ETHPeripheralGate[MAX_ETH_PORTS] =
+{ SYSCTL_PERIPH_GPIOF, };
 
 //*****************************************************************************
 //
 //! The base address for the Ethernet associated with a port.
 //
 //*****************************************************************************
-static const unsigned long ETHBase[MAX_ETH_PORTS] = { ETH_BASE, };
+static const unsigned long ETHBase[MAX_ETH_PORTS] =
+{ ETH_BASE, };
 
 //*****************************************************************************
 //
 //! The port address for the ETH associated pins.
 //
 //*****************************************************************************
-static const unsigned long ETHPortBase[MAX_ETH_PORTS] = { GPIO_PORTF_BASE, };
+static const unsigned long ETHPortBase[MAX_ETH_PORTS] =
+{ GPIO_PORTF_BASE, };
 
 //*****************************************************************************
 //
 //! The pins associated with ETH peripheral.
 //
 //*****************************************************************************
-static const unsigned long
-		ETHPins[MAX_ETH_PORTS] = { GPIO_PIN_2 | GPIO_PIN_3, };
+static const unsigned long ETHPins[MAX_ETH_PORTS] =
+{ GPIO_PIN_2 | GPIO_PIN_3, };
 
 //*****************************************************************************
 //
 //! The interrupt for the ETH associated with a port.
 //
 //*****************************************************************************
-static const unsigned long ETHInterrupt[MAX_ETH_PORTS] = { INT_ETH, };
+static const unsigned long ETHInterrupt[MAX_ETH_PORTS] =
+{ INT_ETH, };
 
 //*****************************************************************************
 //
@@ -126,7 +137,8 @@ xSemaphoreHandle ETHRxAccessMutex[MAX_ETH_PORTS] =
 //! \return None.
 //
 //*****************************************************************************
-void ETH0IntHandler(void) {
+void ETH0IntHandler(void)
+{
 	static portBASE_TYPE xHigherPriorityTaskWoken;
 
 	unsigned long ulStatus;
@@ -136,7 +148,8 @@ void ETH0IntHandler(void) {
 	EthernetIntClear(ETHBase[0], ulStatus);
 
 	// See if RX event occured.
-	if (ulStatus & ETH_INT_RX) {
+	if (ulStatus & ETH_INT_RX)
+	{
 		// Disable Ethernet RX Interrupt.
 		EthernetIntDisable(ETH_BASE, ETH_INT_RX);
 
@@ -145,20 +158,23 @@ void ETH0IntHandler(void) {
 	}
 
 	// See if TX event occured.
-	if (ulStatus & ETH_INT_TXER) {
+	if (ulStatus & ETH_INT_TXER)
+	{
 		HWREGBITW(&ETHDevice[0], ETH_ERROR) = 1;
 		HWREGBITW(&ETHDevice[0], ETH_TXERROR) = 1;
 		xHigherPriorityTaskWoken = 0;
 	}
 
 	// See if TX event occured.
-	if (ulStatus & ETH_INT_TX) {
+	if (ulStatus & ETH_INT_TX)
+	{
 		HWREGBITW(&ETHDevice[0], ETH_ERROR) = 0;
 		xSemaphoreGiveFromISR(ETHTxBinSemaphore[0], &xHigherPriorityTaskWoken);
 	}
 
 	// See if RX overflow event occured.
-	if (ulStatus & ETH_INT_RXOF) {
+	if (ulStatus & ETH_INT_RXOF)
+	{
 		// Set error and flag
 		HWREGBITW(&ETHDevice[0], ETH_ERROR) = 1;
 		HWREGBITW(&ETHDevice[0], ETH_OVERFLOW) = 1;
@@ -167,7 +183,8 @@ void ETH0IntHandler(void) {
 	}
 
 	// See if PHY event occured.
-	if (ulStatus & ETH_INT_PHY) {
+	if (ulStatus & ETH_INT_PHY)
+	{
 		printf("PHY Event\n");
 		// Something important was happened with network
 		// no need to worry about while loop in EthernetPHYRead
@@ -176,7 +193,8 @@ void ETH0IntHandler(void) {
 		unsigned long phyStatus = EthernetPHYRead(ETHBase[0], PHY_MR17);
 
 		printf("phy: %X\n", (unsigned int) phyStatus);
-		switch (phyStatus & ETH_PHY_INT_MASKED) {
+		switch (phyStatus & ETH_PHY_INT_MASKED)
+		{
 		case ETH_LINK_DOWN:
 			HWREGBITW(&ETHDevice[0], ETH_ERROR) = 0;
 			HWREGBITW(&ETHDevice[0], ETH_LINK_OK) = 0;
@@ -201,11 +219,13 @@ void ETH0IntHandler(void) {
 //! \return 0 or -1 if error.
 //
 //*****************************************************************************
-int ETHServiceTaskInit(const unsigned long ulPort) {
+int ETHServiceTaskInit(const unsigned long ulPort)
+{
 	unsigned char hwaddr[ETH_HWADDR_LEN];
 	unsigned long ulUser0, ulUser1;
 
-	if (ulPort < MAX_ETH_PORTS) {
+	if (ulPort < MAX_ETH_PORTS)
+	{
 		// Check if peripheral is present
 		if (false == SysCtlPeripheralPresent(ETHPeripheral[ulPort]))
 			return -1;
@@ -239,7 +259,8 @@ int ETHServiceTaskInit(const unsigned long ulPort) {
 
 		FlashUserGet(&ulUser0, &ulUser1);
 
-		if ((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff)) {
+		if ((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff))
+		{
 			// TODO: do something...
 			printf("Flash new MAC\n");
 			FlashUserSet(0x001b2a00, 0x001e1f1d);
@@ -272,10 +293,12 @@ int ETHServiceTaskInit(const unsigned long ulPort) {
 //! \return 0 or -1 if error.
 //
 //*****************************************************************************
-int ETHServiceTaskEnable(unsigned long ulPort) {
+int ETHServiceTaskEnable(unsigned long ulPort)
+{
 	unsigned long temp;
 
-	if (ulPort < MAX_ETH_PORTS) {
+	if (ulPort < MAX_ETH_PORTS)
+	{
 		// Do whatever else is needed to initialize interface.
 		// Disable and clear all Ethernet Interrupts.
 		EthernetIntDisable(ETHBase[ulPort], (ETH_INT_PHY | ETH_INT_MDIO
@@ -349,9 +372,11 @@ int ETHServiceTaskEnable(unsigned long ulPort) {
 //! \return 0 or -1 if error.
 //
 //*****************************************************************************
-int ETHServiceTaskDisable(const unsigned long ulPort) {
+int ETHServiceTaskDisable(const unsigned long ulPort)
+{
 	if ((ulPort < MAX_ETH_PORTS)
-			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED))) {
+			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED)))
+	{
 		// Disable the ETH transmit and receive interrupts.
 		IntDisable(ETHInterrupt[ulPort]);
 
@@ -381,9 +406,11 @@ int ETHServiceTaskDisable(const unsigned long ulPort) {
 //! \return int or -1 if error.
 //
 //*****************************************************************************
-int ETHServiceTaskLastError(const unsigned long ulPort) {
+int ETHServiceTaskLastError(const unsigned long ulPort)
+{
 	if ((ulPort < MAX_ETH_PORTS)
-			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED))) {
+			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED)))
+	{
 		unsigned long err = ETHDevice[ulPort];
 
 		// Clear all flags except linkup flag and enabled device
@@ -407,9 +434,11 @@ int ETHServiceTaskLastError(const unsigned long ulPort) {
 //! \return int or -1 if error.
 //
 //*****************************************************************************
-int ETHServiceTaskLinkStatus(const unsigned long ulPort) {
+int ETHServiceTaskLinkStatus(const unsigned long ulPort)
+{
 	if ((ulPort < MAX_ETH_PORTS)
-			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED))) {
+			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED)))
+	{
 		return (int) HWREGBITW(&ETHDevice[ulPort], ETH_LINK_OK);
 	}
 	HWREGBITW(&ETHDevice[ulPort], ETH_ERROR) = 1;
@@ -429,8 +458,10 @@ int ETHServiceTaskLinkStatus(const unsigned long ulPort) {
 //
 //*****************************************************************************
 int ETHServiceTaskMACAddress(const unsigned long ulPort,
-		unsigned char *pucMACAddr) {
-	if ((ulPort < MAX_ETH_PORTS)) {
+		unsigned char *pucMACAddr)
+{
+	if ((ulPort < MAX_ETH_PORTS))
+	{
 		EthernetMACAddrGet(ETHBase[ulPort], pucMACAddr);
 		return (int) (0);
 	}
@@ -451,17 +482,21 @@ int ETHServiceTaskMACAddress(const unsigned long ulPort,
 //! \return 0 or -1 if error.
 //
 //*****************************************************************************
-int ETHServiceTaskFlush(const unsigned long ulPort, const unsigned long flCmd) {
+int ETHServiceTaskFlush(const unsigned long ulPort, const unsigned long flCmd)
+{
 	if ((ulPort < MAX_ETH_PORTS)
-			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED))) {
+			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED)))
+	{
 		// Checks, if flCmd contains valid command
-		if (!(flCmd & (ETH_FLUSH_RX | ETH_FLUSH_TX))) {
+		if (!(flCmd & (ETH_FLUSH_RX | ETH_FLUSH_TX)))
+		{
 			HWREGBITW(&ETHDevice[ulPort], ETH_ERROR) = 1;
 			HWREGBITW(&ETHDevice[ulPort], ETH_EBADOPT) = 1;
 			return (-1);
 		}
 
-		if (flCmd & ETH_FLUSH_RX) {
+		if (flCmd & ETH_FLUSH_RX)
+		{
 			// Access to shared variable   	
 			xSemaphoreTake( ETHRxAccessMutex[ulPort], ( portTickType ) portMAX_DELAY);
 
@@ -485,12 +520,14 @@ int ETHServiceTaskFlush(const unsigned long ulPort, const unsigned long flCmd) {
 			xSemaphoreGive(ETHRxAccessMutex[ulPort]);
 		}
 
-		if (flCmd & ETH_FLUSH_TX) {
+		if (flCmd & ETH_FLUSH_TX)
+		{
 			// Access to shared variable   	
 			xSemaphoreTake( ETHTxAccessMutex[ulPort], ( portTickType ) portMAX_DELAY);
 
 			// See if Ethernet is currently transmitting  a frame,
-			while (MAC_TR_NEWTX == HWREG(ETH_BASE + MAC_O_TR)) {
+			while (MAC_TR_NEWTX == HWREG(ETH_BASE + MAC_O_TR))
+			{
 				/*
 				 * vTaskDelay() does not provide a good method of controlling the frequency 
 				 * of a cyclical task as the path taken through the code, as well as other task and 
@@ -535,8 +572,10 @@ int ETHServiceTaskFlush(const unsigned long ulPort, const unsigned long flCmd) {
 //! \return 0,1 or -1 if error.
 //
 //*****************************************************************************
-int ETHServiceTaskPacketAvail(const unsigned long ulPort) {
-	if (ulPort < MAX_ETH_PORTS) {
+int ETHServiceTaskPacketAvail(const unsigned long ulPort)
+{
+	if (ulPort < MAX_ETH_PORTS)
+	{
 		// Return the availability of packets.
 		return ((HWREG(ETHBase[ulPort] + MAC_O_NP) & MAC_NP_NPR_M) ? 1 : 0);
 	}
@@ -545,8 +584,10 @@ int ETHServiceTaskPacketAvail(const unsigned long ulPort) {
 	return (-1);
 }
 
-int ETHServiceTaskEnableReceive(const unsigned long ulPort) {
-	if (ulPort < MAX_ETH_PORTS) {
+int ETHServiceTaskEnableReceive(const unsigned long ulPort)
+{
+	if (ulPort < MAX_ETH_PORTS)
+	{
 		EthernetIntEnable(ETHBase[ulPort], ETH_INT_RX);
 		return 0;
 	}
@@ -555,9 +596,11 @@ int ETHServiceTaskEnableReceive(const unsigned long ulPort) {
 	return (-1);
 }
 
-int ETHServiceTaskWaitReady(const unsigned long ulPort) {
+int ETHServiceTaskWaitReady(const unsigned long ulPort)
+{
 	if ((ulPort < MAX_ETH_PORTS)
-			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED))) {
+			&& (HWREGBITW(&ETHDevice[ulPort], ETH_ENABLED)))
+	{
 		vTaskSuspendAll();
 		// See if Ethernet completed autonegation,
 
@@ -573,3 +616,11 @@ int ETHServiceTaskWaitReady(const unsigned long ulPort) {
 	HWREGBITW(&ETHDevice[ulPort], ETH_EBADF) = 1;
 	return (-1);
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

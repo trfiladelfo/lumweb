@@ -1,8 +1,10 @@
-/*
- * dislpayBasics.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 19.02.2010
- *      Author: root
+ * \author Anziner, Hahn
+ * \brief
+ *
  */
 
 #ifndef DISLPAYBASICS_H_
@@ -34,7 +36,8 @@ extern tPushButtonWidget xDownButton;
 extern tPushButtonWidget xUpButton;
 
 // Basic Entity on the LCD
-typedef struct __basicDisplayLine {
+typedef struct __basicDisplayLine
+{
 	taglib* type;
 	int value;
 	int max;
@@ -50,7 +53,8 @@ typedef struct __basicDisplayLine {
 } basicDisplayLine;
 
 // Describtion of the BasicDisplayLayout
-typedef struct __basicDisplaySruct {
+typedef struct __basicDisplaySruct
+{
 	char* title;
 	tBoolean titleIsAllocated;
 	tBoolean menue;
@@ -81,3 +85,11 @@ void vInitializeMenuButton(void);
 void vInitializeTitle(void);
 
 #endif /* DISLPAYBASICS_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

@@ -2,7 +2,6 @@
  * \addtogroup System
  * @{
  *
- * \file main.c
  * \author Anziner, Hahn
  * \brief Contains the starting point for the application
  *

@@ -1,8 +1,10 @@
-/*
- * displayStyle.h
+/**
+ * \addtogroup Graphic
+ * @{
  *
- *  Created on: 19.02.2010
- *      Author: root
+ * \author Anziner, Hahn
+ * \brief
+ *
  */
 
 #ifndef DISPLAYSTYLE_H_
@@ -96,7 +98,6 @@
 #define DISPLAY_STATUS_MESSAGE_FONT					&g_sFontCm16
 #define DISPLAY_STATUS_MESSAGE_STYLE				(CANVAS_STYLE_TEXT | CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE)
 #define DISPLAY_STATUS_MESSAGE_TEXT					"Status Message"
-
 
 // Label
 #define DISPLAY_LABEL_LEFT							5

@@ -25,6 +25,14 @@
 //
 //*****************************************************************************
 
+/**
+ * \addtogroup DebugUART
+ * @{
+ *
+ * \author LuminaryMicro
+ * \brief
+ *
+ */
 #ifndef __UARTSTDIO_H__
 #define __UARTSTDIO_H__
 
@@ -63,7 +71,7 @@ extern "C"
 //
 //*****************************************************************************
 extern void UARTStdioInit(unsigned long ulPort);
-extern int  UARTgets(char *pcBuf, unsigned long ulLen);
+extern int UARTgets(char *pcBuf, unsigned long ulLen);
 extern unsigned char UARTgetc(void);
 extern int UARTprintf(const char *pcString, ...);
 extern int UARTwrite(const char *pcBuf, unsigned long ulLen);
@@ -86,3 +94,11 @@ extern void UARTEchoSet(tBoolean bEnable);
 #endif
 
 #endif // __UARTSTDIO_H__
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

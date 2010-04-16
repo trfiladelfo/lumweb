@@ -2,7 +2,6 @@
  * \addtogroup System
  * @{
  *
- * \file realtime.c
  * \author Anziner, Hahn
  * \brief Functions for the System Clock
  *

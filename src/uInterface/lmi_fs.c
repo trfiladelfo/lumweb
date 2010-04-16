@@ -24,6 +24,16 @@
 // This is part of revision 4905 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
+
+
+/**
+ * \addtogroup System
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief Contains the starting point for the application
+ *
+ */
 #include "FreeRTOS.h"
 #include <string.h>
 #include "lmi_fs.h"
@@ -34,7 +44,6 @@
 #include "driverlib/gpio.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
-//#include "ethernet/httpd/httpd.h"
 #include "ethernet/httpd/fsdata.h"
 #include "fatfs/ff.h"
 #include "fatfs/diskio.h"
@@ -68,7 +77,8 @@ static volatile tBoolean g_bFatFsEnabled = false;
 // Enable the SSI Port for FatFs usage.
 //
 //*****************************************************************************
-void fs_enable(unsigned long ulFrequency) {
+void fs_enable(unsigned long ulFrequency)
+{
 	//
 	// Disable the SSI Port.
 	//
@@ -91,7 +101,8 @@ void fs_enable(unsigned long ulFrequency) {
 // Initialize the file system.
 //
 //*****************************************************************************
-void fs_init(void) {
+void fs_init(void)
+{
 	FRESULT fresult;
 	DIR g_sDirObject;
 
@@ -104,7 +115,8 @@ void fs_init(void) {
 	// Initialize and mount the Fat File System.
 	//
 	fresult = f_mount(0, &g_sFatFs);
-	if (fresult != FR_OK) {
+	if (fresult != FR_OK)
+	{
 		return;
 	}
 
@@ -117,12 +129,15 @@ void fs_init(void) {
 	// Flag and display which file system we are using.
 	//
 
-	if (fresult == FR_OK) {
+	if (fresult == FR_OK)
+	{
 		//
 		// Indicate and display that we are using the SD file system.
 		//
 		g_bFatFsEnabled = true;
-	} else {
+	}
+	else
+	{
 		//
 		// Indicate and display that we are using the internal file system.
 		//
@@ -133,13 +148,15 @@ void fs_init(void) {
 //*****************************************************************************
 // File System tick handler.
 //*****************************************************************************
-void fs_tick(unsigned long ulTickMS) {
+void fs_tick(unsigned long ulTickMS)
+{
 	static unsigned long ulTickCounter = 0;
 
 	//
 	// Check if the file system has been enabled yet.
 	//
-	if (!g_bFatFsEnabled) {
+	if (!g_bFatFsEnabled)
+	{
 		return;
 	}
 
@@ -151,7 +168,8 @@ void fs_tick(unsigned long ulTickMS) {
 	//
 	// Check to see if the FAT FS tick needs to run.
 	//
-	if (ulTickCounter >= 10) {
+	if (ulTickCounter >= 10)
+	{
 		ulTickCounter = 0;
 		disk_timerproc();
 	}
@@ -164,7 +182,8 @@ void fs_tick(unsigned long ulTickMS) {
 //
 //*****************************************************************************
 struct fs_file *
-fs_open(char *name) {
+fs_open(char *name)
+{
 	const struct fsdata_file *ptTree;
 	struct fs_file *ptFile = NULL;
 	FIL *ptFatFile = NULL;
@@ -174,14 +193,16 @@ fs_open(char *name) {
 	// Allocate memory for the file system structure.
 	//
 	ptFile = (struct fs_file *) pvPortMalloc(sizeof(struct fs_file));
-	if (NULL == ptFile) {
+	if (NULL == ptFile)
+	{
 		return (NULL);
 	}
 
 	//
 	// Check to see if the Fat File System has been enabled.
 	//
-	if (g_bFatFsEnabled) {
+	if (g_bFatFsEnabled)
+	{
 		//
 		// Ensure that the file system access to the SSI port is active.
 		//
@@ -191,7 +212,8 @@ fs_open(char *name) {
 		// Allocate memory for the Fat File system handle.
 		//
 		ptFatFile = (FIL*) pvPortMalloc(sizeof(FIL));
-		if (NULL == ptFatFile) {
+		if (NULL == ptFatFile)
+		{
 			vPortFree(ptFile);
 			return (NULL);
 		}
@@ -200,7 +222,8 @@ fs_open(char *name) {
 		// Attempt to open the file on the Fat File System.
 		//
 		fresult = f_open(ptFatFile, name, FA_READ);
-		if (FR_OK == fresult) {
+		if (FR_OK == fresult)
+		{
 			ptFile->data = NULL;
 			ptFile->len = 0;
 			ptFile->index = 0;
@@ -225,12 +248,14 @@ fs_open(char *name) {
 	//
 	// Begin processing the linked list, looking for the requested file name.
 	//
-	while (NULL != ptTree) {
+	while (NULL != ptTree)
+	{
 		//
 		// Compare the requested file "name" to the file name in the
 		// current node.
 		//
-		if (strncmp(name, (char *) ptTree->name, ptTree->len) == 0) {
+		if (strncmp(name, (char *) ptTree->name, ptTree->len) == 0)
+		{
 			//
 			// Fill in the data pointer and length values from the
 			// linked list node.
@@ -267,7 +292,8 @@ fs_open(char *name) {
 	// If we didn't find the file, ptTee will be NULL.  Make sure we
 	// return a NULL pointer if this happens.
 	//
-	if (NULL == ptTree) {
+	if (NULL == ptTree)
+	{
 		vPortFree(ptFile);
 		ptFile = NULL;
 	}
@@ -283,11 +309,13 @@ fs_open(char *name) {
 // Close an opened file designated by the handle.
 //
 //*****************************************************************************
-void fs_close(struct fs_file *file) {
+void fs_close(struct fs_file *file)
+{
 	//
 	// If a Fat file was opened, free its object.
 	//
-	if (file->pextension) {
+	if (file->pextension)
+	{
 		vPortFree(file->pextension);
 	}
 
@@ -304,13 +332,15 @@ void fs_close(struct fs_file *file) {
 // a -1 if at the end of file.
 //
 //*****************************************************************************
-int fs_read(struct fs_file *file, char *buffer, int count) {
+int fs_read(struct fs_file *file, char *buffer, int count)
+{
 	int iAvailable;
 
 	//
 	// Check to see if a Fat File was opened and process it.
 	//
-	if (file->pextension) {
+	if (file->pextension)
+	{
 		UINT usBytesRead;
 		FRESULT fresult;
 
@@ -323,7 +353,8 @@ int fs_read(struct fs_file *file, char *buffer, int count) {
 		// Read the data.
 		//
 		fresult = f_read(file->pextension, buffer, count, &usBytesRead);
-		if ((fresult != FR_OK) || (usBytesRead == 0)) {
+		if ((fresult != FR_OK) || (usBytesRead == 0))
+		{
 			return (-1);
 		}
 		return ((int) usBytesRead);
@@ -332,7 +363,8 @@ int fs_read(struct fs_file *file, char *buffer, int count) {
 	//
 	// Check to see if more data is available.
 	//
-	if (file->len == file->index) {
+	if (file->len == file->index)
+	{
 		//
 		// There is no remaining data.  Return a -1 for EOF indication.
 		//
@@ -344,7 +376,8 @@ int fs_read(struct fs_file *file, char *buffer, int count) {
 	// parameter or the available data in the file system buffer.
 	//
 	iAvailable = file->len - file->index;
-	if (iAvailable > count) {
+	if (iAvailable > count)
+	{
 		iAvailable = count;
 	}
 
@@ -359,3 +392,11 @@ int fs_read(struct fs_file *file, char *buffer, int count) {
 	//
 	return (iAvailable);
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

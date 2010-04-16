@@ -1,8 +1,10 @@
-/*
- * tags.h
+/**
+ * \addtogroup TagLib
+ * @{
  *
- *  Created on: 02.03.2010
- *      Author: root
+ * \author Anziner, Hahn
+ * \brief
+ *
  */
 
 #ifndef TAGS_H_
@@ -22,7 +24,6 @@
 #include "taglib/tags/Titel.h"
 #include "taglib/tags/DefaultTags.h"
 
-
 #define NUM_CONFIG_TAGS    9
 
 taglib xTagList[NUM_CONFIG_TAGS];
@@ -39,5 +40,12 @@ taglib xTagList[NUM_CONFIG_TAGS];
 
 void vInitTagLibrary(void);
 
-
 #endif /* TAGS_H_ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+
