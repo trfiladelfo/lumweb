@@ -29,6 +29,16 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
+
+/**
+ * \addtogroup System
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief Contains the starting point for the application
+ *
+ */
+
 #ifndef __FS_H__
 #define __FS_H__
 
@@ -52,3 +62,11 @@ void fs_enable(unsigned long ulFrequency);
 void fs_init(void);
 
 #endif /* __FS_H__ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

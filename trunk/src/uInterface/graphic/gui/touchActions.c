@@ -2,7 +2,6 @@
  * \addtogroup Graphic
  * @{
  *
- * \file touchActions.c
  * \author Anziner, Hahn
  * \brief
  *
@@ -20,7 +19,8 @@
 
 #include "configuration/configloader.h"
 
-void vTouchLoadMenu(tWidget *pWidget) {
+void vTouchLoadMenu(tWidget *pWidget)
+{
 #if DEBUG_GRAPHIC
 	printf("vTouchLoadMenu: lade Menu\n");
 #endif
@@ -33,7 +33,8 @@ void vTouchLoadMenu(tWidget *pWidget) {
 #endif
 }
 
-void vTouchStoreValues(tWidget *pWidget) {
+void vTouchStoreValues(tWidget *pWidget)
+{
 	char* configLoad = loadFromConfig(IP_CONFIG_FILE, "DEFAULT_SET_PAGE");
 
 	vInitDisplay();
@@ -43,8 +44,10 @@ void vTouchStoreValues(tWidget *pWidget) {
 	vInitializeSaveButton();
 }
 
-void vPageUp(tWidget *pWidget) {
-	if (elementOffset > 0) {
+void vPageUp(tWidget *pWidget)
+{
+	if (elementOffset > 0)
+	{
 		elementOffset--;
 		vInitDisplay();
 		vDrawElementsOnDisplay();
@@ -52,17 +55,21 @@ void vPageUp(tWidget *pWidget) {
 	}
 }
 
-void vPageDown(tWidget *pWidget) {
+void vPageDown(tWidget *pWidget)
+{
 	elementOffset++;
 	vInitDisplay();
 	vDrawElementsOnDisplay();
 	vInitializeDownButton();
 }
 
-void vHyperlinkAction(tWidget *pWidget) {
+void vHyperlinkAction(tWidget *pWidget)
+{
 	basicDisplayLine *root = xDisplayRoot.entities;
-	while (root != NULL) {
-		if (root->valueWidget == pWidget) {
+	while (root != NULL)
+	{
+		if (root->valueWidget == pWidget)
+		{
 			xDisplayRoot.menue = true;
 			vInitDisplay();
 			vLoadWebPage(root->strValue, NULL);
@@ -73,10 +80,13 @@ void vHyperlinkAction(tWidget *pWidget) {
 	}
 }
 
-void vCheckboxAction(tWidget* pWidget, unsigned long status) {
+void vCheckboxAction(tWidget* pWidget, unsigned long status)
+{
 	basicDisplayLine *root = xDisplayRoot.entities;
-	while (root != NULL) {
-		if (root->valueWidget == pWidget) {
+	while (root != NULL)
+	{
+		if (root->valueWidget == pWidget)
+		{
 			root->value = (int) status;
 			break;
 		}
@@ -84,10 +94,13 @@ void vCheckboxAction(tWidget* pWidget, unsigned long status) {
 	}
 }
 
-void vOpenEditorAction(tWidget *pWidget) {
+void vOpenEditorAction(tWidget *pWidget)
+{
 	basicDisplayLine *root = xDisplayRoot.entities;
-	while (root != NULL) {
-		if (root->valueWidget == pWidget) {
+	while (root != NULL)
+	{
+		if (root->valueWidget == pWidget)
+		{
 			((tPushButtonWidget*) pWidget)->ulStyle &= (~PB_STYLE_PRESSED);
 			vOpenEditor(root);
 			break;

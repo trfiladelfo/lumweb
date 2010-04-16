@@ -2,11 +2,10 @@
  * \addtogroup Graphic
  * @{
  *
- * \file graphicTask.c
  * \author Anziner, Hahn
  * \brief Implementation of Graphics Task for the LM3S9B96 Board
  *
-*/
+ */
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -20,12 +19,14 @@
 //
 //*****************************************************************************
 
-void vGraphicTask(void* pvParameters) {
+void vGraphicTask(void* pvParameters)
+{
 
 	vInitDisplay();
 	vShowBootText("booting ...");
 
-	while (1) {
+	while (1)
+	{
 		//
 		// Process any messages in the widget message queue.
 		//
@@ -33,3 +34,11 @@ void vGraphicTask(void* pvParameters) {
 		vTaskDelay(1);
 	}
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

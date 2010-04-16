@@ -29,7 +29,6 @@
  * \addtogroup CGIandSSI
  * @{
  *
- * \file io.c
  * \author Anziner, Hahn
  * \brief I/O routines for the enet_io example application.
  *
@@ -121,9 +120,9 @@ static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen );
  *
  */
 static const tCGI g_psConfigCGIURIs[] =
-  {
-    { "/set.cgi", SetCGIHandler }, // CGI_INDEX_CONTROL
-    };
+{
+{ "/set.cgi", SetCGIHandler }, // CGI_INDEX_CONTROL
+		};
 
 /**
  *
@@ -147,23 +146,22 @@ static const tCGI g_psConfigCGIURIs[] =
  * Initialize IO and SSI Handlers
  *
  */
-void
-io_init(void)
+void io_init(void)
 {
 
 #ifdef INCLUDE_HTTPD_SSI
-  //
-  // Pass our tag information to the HTTP server.
-  //
-  printf("io_init NUM_CONFIG TAGS = %d\n", NUM_CONFIG_TAGS);
-  http_set_ssi_handler(SSIHandler);
+	//
+	// Pass our tag information to the HTTP server.
+	//
+	printf("io_init NUM_CONFIG TAGS = %d\n", NUM_CONFIG_TAGS);
+	http_set_ssi_handler(SSIHandler);
 #endif
 
 #ifdef INCLUDE_HTTPD_CGI
-  //
-  // Pass our CGI handlers to the HTTP server.
-  //
-  http_set_cgi_handlers(g_psConfigCGIURIs, NUM_CONFIG_CGI_URIS);
+	//
+	// Pass our CGI handlers to the HTTP server.
+	//
+	http_set_cgi_handlers(g_psConfigCGIURIs, NUM_CONFIG_CGI_URIS);
 #endif
 }
 
@@ -178,238 +176,240 @@ io_init(void)
 static char *
 SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
 {
-  int i;
-  long value = 0, r_value, decimal_place = 0, hour = 0, minute = 0;
-  char *name, save = 0, error = 0, *str_value = NULL, *str_decimal_place = NULL;
+	int i;
+	long value = 0, r_value, decimal_place = 0, hour = 0, minute = 0;
+	char *name, save = 0, error = 0, *str_value = NULL, *str_decimal_place =
+			NULL;
 
 #if DEBUG_CGI
-  printf("SetCGIHandler: new set.cgi request with %d Params\n", iNumParams);
+	printf("SetCGIHandler: new set.cgi request with %d Params\n", iNumParams);
 #endif
 
-  /*
-   // TODO MEMORY HANDLING
-   if (paramsSet != NULL && valuesSet != NULL) {
-   for (i = 0; i <= paramValueLen; i++) {
-   vPortFree(*(valuesSet + i));
-   vPortFree(*(paramsSet + i));
-   }
+	/*
+	 // TODO MEMORY HANDLING
+	 if (paramsSet != NULL && valuesSet != NULL) {
+	 for (i = 0; i <= paramValueLen; i++) {
+	 vPortFree(*(valuesSet + i));
+	 vPortFree(*(paramsSet + i));
+	 }
 
-   /		 vPortFree(**(paramsSet));
-   #if DEBUG_SSI
-   printf("io_print_saved_params: freed paramsSet \n");
-   #endif
+	 /		 vPortFree(**(paramsSet));
+	 #if DEBUG_SSI
+	 printf("io_print_saved_params: freed paramsSet \n");
+	 #endif
 
-   vPortFree(**(valuesSet));
-   #if DEBUG_SSI
-   printf("io_print_saved_params: freed valuesSet \n");
-   #endif
+	 vPortFree(**(valuesSet));
+	 #if DEBUG_SSI
+	 printf("io_print_saved_params: freed valuesSet \n");
+	 #endif
 
-   } else {
-   // TODO statische allokkierung dynamisch machen
-   paramsSet = pvPortMalloc(sizeof(char **) * 10);
-   valuesSet = pvPortMalloc(sizeof(char **) * 10);
-   paramValueLen = -1;
-   }
-   */
-  //test if set was success full
-  if (iNumParams > 0)
-    {
+	 } else {
+	 // TODO statische allokkierung dynamisch machen
+	 paramsSet = pvPortMalloc(sizeof(char **) * 10);
+	 valuesSet = pvPortMalloc(sizeof(char **) * 10);
+	 paramValueLen = -1;
+	 }
+	 */
+	//test if set was success full
+	if (iNumParams > 0)
+	{
 
-      for (i = 0; i < iNumParams; i++)
-        {
-          name = pcParam[i];
+		for (i = 0; i < iNumParams; i++)
+		{
+			name = pcParam[i];
 
-          if (strcmp(name, "uid") == 0 || strcmp(name, "ajax") == 0)
-            { // ignore params ajax and uid
-              ;
-            }
-          else
-            {
-              xCom_msg.cmd = SET;
-              xCom_msg.dataSouce = DATA;
-              xCom_msg.from = xHttpdQueue;
-              xCom_msg.taskToResume = xLwipTaskHandle;
-              xCom_msg.freeItem = pdFALSE;
+			if (strcmp(name, "uid") == 0 || strcmp(name, "ajax") == 0)
+			{ // ignore params ajax and uid
+				;
+			}
+			else
+			{
+				xCom_msg.cmd = SET;
+				xCom_msg.dataSouce = DATA;
+				xCom_msg.from = xHttpdQueue;
+				xCom_msg.taskToResume = xLwipTaskHandle;
+				xCom_msg.freeItem = pdFALSE;
 
-              xCom_msg.item = name;
-              /* check for checkbox value */
-              if (strcmp(pcValue[i], "on") == 0)
-                {
+				xCom_msg.item = name;
+				/* check for checkbox value */
+				if (strcmp(pcValue[i], "on") == 0)
+				{
 #if DEBUG_CGI
-                  printf("SetCGIHandler: Found Checkbox %s\n", name);
+					printf("SetCGIHandler: Found Checkbox %s\n", name);
 #endif
-                  xCom_msg.value = 1;
-                  save = 1;
+					xCom_msg.value = 1;
+					save = 1;
 
-                }
-              else
+				}
+				else
 
-              /*------ check for float value ----------------------*/
-              if (name[0] == 'f' && name[1] == '_')
-                {
-                  // Found float value
-                  str_value = strtok(pcValue[i], ".");
-                  str_decimal_place = strtok(NULL, ".");
+				/*------ check for float value ----------------------*/
+				if (name[0] == 'f' && name[1] == '_')
+				{
+					// Found float value
+					str_value = strtok(pcValue[i], ".");
+					str_decimal_place = strtok(NULL, ".");
 
-                  if ((CheckDecimalParam((const char*) str_decimal_place,
-                      &decimal_place) == pdTRUE) && (CheckDecimalParam(
-                      (const char*) str_value, &value) == pdTRUE))
-                    {
+					if ((CheckDecimalParam((const char*) str_decimal_place,
+							&decimal_place) == pdTRUE) && (CheckDecimalParam(
+							(const char*) str_value, &value) == pdTRUE))
+					{
 
-                      name += 2; //remove 'f_'
-                      value = value * 10 + decimal_place;
-                      xCom_msg.value = value; // zehntelschritte
-                      xCom_msg.item = name;
-                      save = 1;
+						name += 2; //remove 'f_'
+						value = value * 10 + decimal_place;
+						xCom_msg.value = value; // zehntelschritte
+						xCom_msg.item = name;
+						save = 1;
 #if DEBUG_CGI
-                      printf(
-                          "SetCGIHandler: Found VALID float param: %s=%d.%d \n",
-                          name + 2, (int) value, (int) decimal_place);
+						printf(
+								"SetCGIHandler: Found VALID float param: %s=%d.%d \n",
+								name + 2, (int) value, (int) decimal_place);
 #endif
-                    }
-                  else
-                    {
+					}
+					else
+					{
 #if DEBUG_CGI
-                      printf(
-                          "SetCGIHandler: Found INVALID float param: %s=%s \n",
-                          name + 2, pcValue[i]);
+						printf(
+								"SetCGIHandler: Found INVALID float param: %s=%s \n",
+								name + 2, pcValue[i]);
 #endif
-                      save = 0;
-                      return "/set_nok.htm";
-                    }
-                }
-              else
+						save = 0;
+						return "/set_nok.htm";
+					}
+				}
+				else
 
-              /*-----  check for time value ----------*/
-              if (pcParam[i][0] == 't' && pcParam[i][1] == '_')
-                {
-                  if (CheckDecimalParam((const char*) pcValue[i], &hour)
-                      == pdTRUE)
-                    {
+				/*-----  check for time value ----------*/
+				if (pcParam[i][0] == 't' && pcParam[i][1] == '_')
+				{
+					if (CheckDecimalParam((const char*) pcValue[i], &hour)
+							== pdTRUE)
+					{
 #if DEBUG_CGI
-                      printf(
-                          "SetCGIHandler: Found first VALID time param - hour: %s=%d \n",
-                          pcParam[i] + 2, (int) hour);
+						printf(
+								"SetCGIHandler: Found first VALID time param - hour: %s=%d \n",
+								pcParam[i] + 2, (int) hour);
 #endif
-                      //go to the next param , look for the minutes
-                      i++;
-                      if (i < iNumParams)
-                        {
-                          if (pcParam[i][0] == 't' && pcParam[i][1] == '_')
-                            {
+						//go to the next param , look for the minutes
+						i++;
+						if (i < iNumParams)
+						{
+							if (pcParam[i][0] == 't' && pcParam[i][1] == '_')
+							{
 
-                              if (CheckDecimalParam((const char*) pcValue[i],
-                                  &minute) == pdTRUE)
-                                {
+								if (CheckDecimalParam((const char*) pcValue[i],
+										&minute) == pdTRUE)
+								{
 #if DEBUG_CGI
-                                  printf(
-                                      "SetCGIHandler: Found second VALID time param - minute: %s=%d \n",
-                                      pcParam[i] + 2, (int) minute);
+									printf(
+											"SetCGIHandler: Found second VALID time param - minute: %s=%d \n",
+											pcParam[i] + 2, (int) minute);
 #endif
-                                  name += 2; //remove t_
+									name += 2; //remove t_
 
-                                  xCom_msg.item = name;
-                                  value = hour * 60 + minute;
-                                  xCom_msg.value = value;
-                                  save = 1;
-                                  hour = 0;
-                                  minute = 0;
-                                }
-                              else
-                                {
-                                  printf(
-                                      "SetCGIHandler: Found second INVALID time param: %s=%s \n",
-                                      pcParam[i] + 2, pcValue[i]);
-                                  return "/set_nok.htm";
-                                }
-                            }
-                          else
-                            {
+									xCom_msg.item = name;
+									value = hour * 60 + minute;
+									xCom_msg.value = value;
+									save = 1;
+									hour = 0;
+									minute = 0;
+								}
+								else
+								{
+									printf(
+											"SetCGIHandler: Found second INVALID time param: %s=%s \n",
+											pcParam[i] + 2, pcValue[i]);
+									return "/set_nok.htm";
+								}
+							}
+							else
+							{
 #if DEBUG_CGI
-                              printf(
-                                  "SetCGIHandler: Found first INVALID time param: %s=%s \n",
-                                  pcParam[i] + 2, pcValue[i]);
+								printf(
+										"SetCGIHandler: Found first INVALID time param: %s=%s \n",
+										pcParam[i] + 2, pcValue[i]);
 #endif
-                              return "/set_nok.htm";
-                            }
-                        }
-                    }
-                }
-              else
+								return "/set_nok.htm";
+							}
+						}
+					}
+				}
+				else
 
-              /*------ check for standard integer value ---------*/
-              if (CheckDecimalParam((const char*) pcValue[i], &value) == pdTRUE)
-                {
+				/*------ check for standard integer value ---------*/
+				if (CheckDecimalParam((const char*) pcValue[i], &value)
+						== pdTRUE)
+				{
 
 #if DEBUG_CGI
-                  printf("SetCGIHandler: Found integer param: %s=%d \n", name,
-                      (int) value);
+					printf("SetCGIHandler: Found integer param: %s=%d \n", name,
+							(int) value);
 #endif
 
-                  xCom_msg.value = value;
-                  save = 1;
+					xCom_msg.value = value;
+					save = 1;
 
-                }
+				}
 
-              /*---------- no valid param found !  -> ERROR --------*/
-              else
-                {
+				/*---------- no valid param found !  -> ERROR --------*/
+				else
+				{
 #if DEBUG_CGI
-                  printf("SetCGIHandler: ERROR invalid param %s=%s \n", name,
-                      pcValue[i]);
+					printf("SetCGIHandler: ERROR invalid param %s=%s \n", name,
+							pcValue[i]);
 #endif
-                }
+				}
 
-              if (save == 1)
-                { // send value to comTask
-                  save = 0;
-                  xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+				if (save == 1)
+				{ // send value to comTask
+					save = 0;
+					xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 
-                  /* Add params to global fields  for ssi tag SavedParams */
-                  /*
-                   if (paramsSet != NULL && valuesSet != NULL && i < 10) {
-                   *(paramsSet + i) = pvPortMalloc(strlen(name) + 1);
-                   *(valuesSet + i) = pvPortMalloc(strlen(pcValue[i]) + 1);
+					/* Add params to global fields  for ssi tag SavedParams */
+					/*
+					 if (paramsSet != NULL && valuesSet != NULL && i < 10) {
+					 *(paramsSet + i) = pvPortMalloc(strlen(name) + 1);
+					 *(valuesSet + i) = pvPortMalloc(strlen(pcValue[i]) + 1);
 
-                   if (*(paramsSet + i) != NULL && *(valuesSet + i)
-                   != NULL) {
-                   strcpy(*(paramsSet + i), name);
-                   strcpy(*(valuesSet + i), pcValue[i]);
-                   #if DEBUG_CGI
-                   printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
-                   #endif
-                   } */
-                  paramValueLen = i;
+					 if (*(paramsSet + i) != NULL && *(valuesSet + i)
+					 != NULL) {
+					 strcpy(*(paramsSet + i), name);
+					 strcpy(*(valuesSet + i), pcValue[i]);
+					 #if DEBUG_CGI
+					 printf("SetCGIHandler: added %s=%s to param/valueSet \n", *(paramsSet+i), *(valuesSet+i));
+					 #endif
+					 } */
+					paramValueLen = i;
 
-                  // gesetzten parameter reuecklesen, zur ueberpruefung ob ok
-                  r_value = io_get_value_from_comtask(name);
+					// gesetzten parameter reuecklesen, zur ueberpruefung ob ok
+					r_value = io_get_value_from_comtask(name);
 
-                  if (r_value != value)
-                    {
-                      printf(
-                          "SetCGIHandler: error rereading the value with id '%s'\n",
-                          name);
-                      return "/set_nok.htm";
-                    }
-                }
+					if (r_value != value)
+					{
+						printf(
+								"SetCGIHandler: error rereading the value with id '%s'\n",
+								name);
+						return "/set_nok.htm";
+					}
+				}
 
-            }
-        }
-      if (FindCGIParameter("ajax", pcParam, iNumParams) == -1)
-        return "/set_ok.ssi";
-      else
-        return "/set_oka.ssi";
+			}
+		}
+		if (FindCGIParameter("ajax", pcParam, iNumParams) == -1)
+			return "/set_ok.ssi";
+		else
+			return "/set_oka.ssi";
 
-    }
-  else
-    {
-      error = 1;
-    }
+	}
+	else
+	{
+		error = 1;
+	}
 
-  if (FindCGIParameter("ajax", pcParam, iNumParams) == -1)
-    return "/set_ok.ssi";
-  else
-    return "/set_oka.ssi";
+	if (FindCGIParameter("ajax", pcParam, iNumParams) == -1)
+		return "/set_ok.ssi";
+	else
+		return "/set_oka.ssi";
 
 }
 
@@ -425,44 +425,44 @@ SetCGIHandler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
  * max size of array: MAX_TAG_INSERT_LEN
  */
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
-static int
-SSIHandler(int iIndex, char *pcInsert, int iInsertLen, pSSIParam *params)
+static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen,
+		pSSIParam *params)
 #else
 static int
 SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 #endif
 {
 #ifndef INCLUDE_HTTPD_SSI_PARAMS
-  pSSIParam *params = NULL;
+	pSSIParam *params = NULL;
 #endif
 
 #if DEBUG_SSI
-  printf("SSI HANDLER: index: %d\n", iIndex);
+	printf("SSI HANDLER: index: %d\n", iIndex);
 #endif
-  //
-  // Which SSI tag have we been passed?
-  //
+	//
+	// Which SSI tag have we been passed?
+	//
 
-  if (iIndex >= 0 && iIndex < NUM_CONFIG_TAGS)
-    {
-      if (xTagList[iIndex].renderSSI != NULL)
-        {
-          xTagList[iIndex].renderSSI(pcInsert, iInsertLen, params);
-        }
-      else
-        {
-          snprintf(pcInsert, iInsertLen, "No Render Function");
-        }
-    }
-  else
-    {
-        snprintf(pcInsert, iInsertLen, "Unknown Tag Index");
-    }
+	if (iIndex >= 0 && iIndex < NUM_CONFIG_TAGS)
+	{
+		if (xTagList[iIndex].renderSSI != NULL)
+		{
+			xTagList[iIndex].renderSSI(pcInsert, iInsertLen, params);
+		}
+		else
+		{
+			snprintf(pcInsert, iInsertLen, "No Render Function");
+		}
+	}
+	else
+	{
+		snprintf(pcInsert, iInsertLen, "Unknown Tag Index");
+	}
 
-  //
-  // Tell the server how many characters our insert string contains.
-  //
-  return (strlen(pcInsert));
+	//
+	// Tell the server how many characters our insert string contains.
+	//
+	return (strlen(pcInsert));
 }
 #endif
 
@@ -479,20 +479,20 @@ SSIHandler(int iIndex, char *pcInsert, int iInsertLen )
 char*
 strtrimr(char *pszStr)
 {
-  int i, j; /* Local counters */
+	int i, j; /* Local counters */
 
-  /*-------------------------------------------------*/
+	/*-------------------------------------------------*/
 
-  j = i = strlen(pszStr) - 1; /* Calculate the length of the string */
+	j = i = strlen(pszStr) - 1; /* Calculate the length of the string */
 
-  while (iIsSpace(pszStr[i]) && (i >= 0))
+	while (iIsSpace(pszStr[i]) && (i >= 0))
 
-    /* WHILE string ends with a blank */
-    /*1994-01-08/Bac Even if all chars are blanks (= 0) */
+		/* WHILE string ends with a blank */
+		/*1994-01-08/Bac Even if all chars are blanks (= 0) */
 
-    pszStr[i--] = '\0'; /*- Replace blank with '\0' */
+		pszStr[i--] = '\0'; /*- Replace blank with '\0' */
 
-  return pszStr; /* Return no of replacements */
+	return pszStr; /* Return no of replacements */
 }
 
 /**
@@ -507,22 +507,22 @@ strtrimr(char *pszStr)
 char*
 strtriml(char *pszStr)
 {
-  int i = 0, j; /* Local counters */
+	int i = 0, j; /* Local counters */
 
-  /*-------------------------------------------------*/
+	/*-------------------------------------------------*/
 
-  j = strlen(pszStr) - 1; /* Calculate the length of the string */
+	j = strlen(pszStr) - 1; /* Calculate the length of the string */
 
-  while (iIsSpace(pszStr[i]) && (i <= j))
+	while (iIsSpace(pszStr[i]) && (i <= j))
 
-    /* WHILE string starts with a blank */
+		/* WHILE string starts with a blank */
 
-    i++; /*- Count no of leading blanks */
+		i++; /*- Count no of leading blanks */
 
-  if (0 < i) /* IF leading blanks are found */
-    strcpy(pszStr, &pszStr[i]); /*- Shift string to the left */
+	if (0 < i) /* IF leading blanks are found */
+		strcpy(pszStr, &pszStr[i]); /*- Shift string to the left */
 
-  return pszStr; /* Return no of replacements */
+	return pszStr; /* Return no of replacements */
 }
 
 /**
@@ -537,51 +537,58 @@ strtriml(char *pszStr)
 char*
 strtrim(char *pszStr)
 {
-  char *ret;
+	char *ret;
 
-  /*-------------------------------------------------*/
+	/*-------------------------------------------------*/
 
-  ret = strtrimr(pszStr); /* Remove trailing blanks */
-  ret = strtriml(ret); /* Remove leading blanks */
+	ret = strtrimr(pszStr); /* Remove trailing blanks */
+	ret = strtriml(ret); /* Remove leading blanks */
 
-  return ret;
+	return ret;
 }
 /**
  *
  * gets a value for $id from comTask
  *
  */
-int
-io_get_value_from_comtask(char* id)
+int io_get_value_from_comtask(char* id)
 {
 
 #if DEBUG_SSI
-  printf("io_get_value_from_comtask: getting values \n");
+	printf("io_get_value_from_comtask: getting values \n");
 #endif
-  xCom_msg.cmd = GET;
-  xCom_msg.dataSouce = DATA;
-  xCom_msg.from = xHttpdQueue;
-  xCom_msg.taskToResume = xLwipTaskHandle;
-  xCom_msg.freeItem = pdFALSE;
+	xCom_msg.cmd = GET;
+	xCom_msg.dataSouce = DATA;
+	xCom_msg.from = xHttpdQueue;
+	xCom_msg.taskToResume = xLwipTaskHandle;
+	xCom_msg.freeItem = pdFALSE;
 
-  xCom_msg.item = id;
-  xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
+	xCom_msg.item = id;
+	xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 #if DEBUG_SSI
-  printf("io_get_value_from_comtask: sending req to com task \n");
+	printf("io_get_value_from_comtask: sending req to com task \n");
 #endif
-  vTaskSuspend(xLwipTaskHandle);
+	vTaskSuspend(xLwipTaskHandle);
 #if DEBUG_SSI
-  printf("io_get_value_from_comtask: suspend lwipTask \n");
+	printf("io_get_value_from_comtask: suspend lwipTask \n");
 #endif
 
-  if (xQueueReceive(xHttpdQueue, &xCom_msg, ( portTickType ) 10 ) == pdTRUE)
-    {
+	if (xQueueReceive(xHttpdQueue, &xCom_msg, ( portTickType ) 10 ) == pdTRUE)
+	{
 #if DEBUG_SSI
-      printf("io_get_value_from_comtask: got values %s=%d \n", id,
-          xCom_msg.value);
+		printf("io_get_value_from_comtask: got values %s=%d \n", id,
+				xCom_msg.value);
 #endif
-      return xCom_msg.value;
-    }
-  else
-    return -1;
+		return xCom_msg.value;
+	}
+	else
+		return -1;
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

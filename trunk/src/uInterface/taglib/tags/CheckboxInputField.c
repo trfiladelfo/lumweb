@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file CheckboxInputField.c
  * \author Anziner, Hahn
  * \brief Routines for the CheckboxInputField tag
  *

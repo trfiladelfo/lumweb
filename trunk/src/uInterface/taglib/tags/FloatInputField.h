@@ -2,11 +2,10 @@
  * \addtogroup Tags
  * @{
  *
- * \file FloatInputField.h
  * \author Anziner, Hahn
  * \brief Protorypes for the FloatInputField tag
  *
-*/
+ */
 #ifndef FLOATINPUTFIELD_H_
 #define FLOATINPUTFIELD_H_
 

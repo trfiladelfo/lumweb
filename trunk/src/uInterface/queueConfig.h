@@ -2,7 +2,6 @@
  * \addtogroup Configuration
  * @{
  *
- * \file queueConfig.h
  * \author Anziner, Hahn
  * \brief Configfile for queues
  *
@@ -22,6 +21,9 @@
 xQueueHandle xComQueue;
 xQueueHandle xHttpdQueue;
 
+
+#endif /* QUEUECONFIG_H_ */
+
 //*****************************************************************************
 //
 // Close the Doxygen group.
@@ -29,5 +31,3 @@ xQueueHandle xHttpdQueue;
 //
 //*****************************************************************************
 
-
-#endif /* QUEUECONFIG_H_ */

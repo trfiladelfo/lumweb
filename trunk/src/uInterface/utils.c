@@ -2,7 +2,6 @@
  * \addtogroup System
  * @{
  *
- * \file utils.c
  * \author Anziner, Hahn
  * \brief Contains some useful Functions
  *

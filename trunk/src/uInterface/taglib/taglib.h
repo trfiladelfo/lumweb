@@ -1,3 +1,11 @@
+/**
+ * \addtogroup TagLib
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
 
 #ifndef __TAGLIB_H
 #define __TAGLIB_H
@@ -11,17 +19,18 @@
 /**
  * Structure for the TAG-Definition
  */
-typedef struct __taglibStruct {
-    int   tagindex;
+typedef struct __taglibStruct
+{
+	int tagindex;
 	char* tagname;
 
-	void (* renderSSI )(char * pcBuf, int iBufLen, pSSIParam *params);
+	void (* renderSSI)(char * pcBuf, int iBufLen, pSSIParam *params);
 
 	void (* onLoad)(char*, int, void* basicDisplayLine);
-	tWidget* (* onDisplay) (void* basicDisplayLine, int);
-	void (* onEditValue) (void* basicDisplayLine);
-	void (* onDestroy) (void* basicDisplayLine);
-	char* (* strFormatter) (void* basicDisplayLine);
+	tWidget* (* onDisplay)(void* basicDisplayLine, int);
+	void (* onEditValue)(void* basicDisplayLine);
+	void (* onDestroy)(void* basicDisplayLine);
+	char* (* strFormatter)(void* basicDisplayLine);
 
 	void* userSpace;
 } taglib;
@@ -56,9 +65,11 @@ void vCreateNewEntity(taglib *type, char* id, char* label, char* strValue,
  */
 void vInserIntoList(void* basicDisplayLine);
 
-
-
-
 #endif // End of Header
 
-
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

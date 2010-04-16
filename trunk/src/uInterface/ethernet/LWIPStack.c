@@ -1,3 +1,12 @@
+/**
+ * \addtogroup Ethernet
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
+
 //*****************************************************************************
 //
 // Include standard library declarations.
@@ -102,7 +111,8 @@ static struct netif lwip_netif;
 //! \return None.
 //!
 //*****************************************************************************
-static err_t low_level_init(struct netif *netif) {
+static err_t low_level_init(struct netif *netif)
+{
 
 	//ma ETHServiceTaskDisable(0);
 
@@ -130,7 +140,8 @@ static err_t low_level_init(struct netif *netif) {
 
 	// Create the task that handles the incoming packets.	
 	if (pdPASS
-			== xTaskCreate(ethernetif_input, ( signed portCHAR * ) "ETH_INPUT", netifINTERFACE_TASK_STACK_SIZE, (void *)netif, netifINTERFACE_TASK_PRIORITY, NULL)) {
+			== xTaskCreate(ethernetif_input, ( signed portCHAR * ) "ETH_INPUT", netifINTERFACE_TASK_STACK_SIZE, (void *)netif, netifINTERFACE_TASK_PRIORITY, NULL))
+	{
 		ETHServiceTaskEnable(0);
 		LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_input: Waiting for Ethernet to become ready\n"));
 		ETHServiceTaskWaitReady(0);
@@ -140,7 +151,9 @@ static err_t low_level_init(struct netif *netif) {
 
 		return ERR_OK;
 
-	} else {
+	}
+	else
+	{
 		LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_init: create receive task error\n"));
 		return ERR_IF;
 	}
@@ -154,7 +167,8 @@ static err_t low_level_init(struct netif *netif) {
  * @param netif the lwip network interface structure for this ethernetif
  * @return pointer to pbuf packet if available, NULL otherswise.
  */
-static struct pbuf * low_level_input(struct netif *netif) {
+static struct pbuf * low_level_input(struct netif *netif)
+{
 	struct pbuf *p, *q;
 	u16_t len;
 	u32_t temp;
@@ -168,9 +182,11 @@ static struct pbuf * low_level_input(struct netif *netif) {
 #endif
 
 	/* Check if a packet is available, if not, return NULL packet. */
-	if ((HWREG(ETH_BASE + MAC_O_NP) & MAC_NP_NPR_M) == 0) {
+	if ((HWREG(ETH_BASE + MAC_O_NP) & MAC_NP_NPR_M) == 0)
+	{
 		int err = ETHServiceTaskLastError(0);
-		if ((ETH_ERROR & err) && (ETH_OVERFLOW & err)) {
+		if ((ETH_ERROR & err) && (ETH_OVERFLOW & err))
+		{
 			LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_input: Ethernet overflow\n"));LINK_STATS_INC(link.drop);
 		}
 		return (NULL);
@@ -189,7 +205,8 @@ static struct pbuf * low_level_input(struct netif *netif) {
 	p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
 
 	/* If a pbuf was allocated, read the packet into the pbuf. */
-	if (p != NULL) {
+	if (p != NULL)
+	{
 		/* Place the first word into the first pbuf location. */
 		*(unsigned long *) p->payload = temp;
 		p->payload = (char *) (p->payload) + 4;
@@ -197,7 +214,8 @@ static struct pbuf * low_level_input(struct netif *netif) {
 
 		/* Process all but the last buffer in the pbuf chain. */
 		q = p;
-		while (q != NULL) {
+		while (q != NULL)
+		{
 			/* Setup a byte pointer into the payload section of the pbuf. */
 			ptr = q->payload;
 
@@ -206,7 +224,8 @@ static struct pbuf * low_level_input(struct netif *netif) {
 			 * (assume pbuf length is modulo 4)
 			 *
 			 */
-			for (i = 0; i < q->len; i += 4) {
+			for (i = 0; i < q->len; i += 4)
+			{
 				*ptr++ = HWREG(ETH_BASE + MAC_O_DATA);
 			}
 
@@ -229,8 +248,10 @@ static struct pbuf * low_level_input(struct netif *netif) {
 	}
 
 	// If no pbuf available, just drain the RX fifo.
-	else {
-		for (i = 4; i < len; i += 4) {
+	else
+	{
+		for (i = 4; i < len; i += 4)
+		{
 			temp = HWREG(ETH_BASE + MAC_O_DATA);
 		}
 
@@ -251,7 +272,8 @@ static struct pbuf * low_level_input(struct netif *netif) {
  * @param netif the lwip network interface structure for this ethernetif
  */
 
-static void ethernetif_input(void *pParams) {
+static void ethernetif_input(void *pParams)
+{
 	struct netif *netif;
 	//pf	struct ethernetif *ethernetif;
 	struct pbuf *p;
@@ -259,12 +281,15 @@ static void ethernetif_input(void *pParams) {
 	netif = (struct netif*) pParams;
 	//pf	ethernetif = netif->state;
 
-	for (;;) {
-		do {
+	for (;;)
+	{
+		do
+		{
 			// move received packet into a new pbuf
 			p = low_level_input(netif);
 
-			if ((p == NULL) && (0 == ETHServiceTaskPacketAvail(0))) {
+			if ((p == NULL) && (0 == ETHServiceTaskPacketAvail(0)))
+			{
 				// Actually enables only RX interrupt
 				ETHServiceTaskEnableReceive(0);
 
@@ -277,7 +302,8 @@ static void ethernetif_input(void *pParams) {
 
 		LWIP_DEBUGF(CORTEX_DEBUG, ("ethernetif_input: frame received\n"));
 
-		if (ERR_OK != netif->input(p, netif)) {
+		if (ERR_OK != netif->input(p, netif))
+		{
 			LWIP_DEBUGF(CORTEX_DEBUG, ("ethernetif_input: input error\n"));
 			pbuf_free(p);
 			p = NULL;
@@ -296,7 +322,8 @@ static void ethernetif_input(void *pParams) {
  *         an err_t value if the packet couldn't be sent
  *
  */
-static err_t low_level_output(struct netif *netif, struct pbuf *p) {
+static err_t low_level_output(struct netif *netif, struct pbuf *p)
+{
 	err_t status;
 
 	// Bump the reference count on the pbuf to prevent it from being
@@ -311,10 +338,13 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p) {
 		;
 
 	// If the transmitter is idle, send the pbuf now.
-	if (((HWREG(ETH_BASE + MAC_O_TR) & MAC_TR_NEWTX) == 0)) {
+	if (((HWREG(ETH_BASE + MAC_O_TR) & MAC_TR_NEWTX) == 0))
+	{
 		// Send packet via eth controller
 		status = low_level_transmit(netif, p);
-	} else {
+	}
+	else
+	{
 		LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_output: Ethernet transmitter busy\n"));
 		// Enable generating transmit interrupt for eth. controller
 		EthernetIntEnable(ETH_BASE, ETH_INT_TX);
@@ -350,7 +380,8 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p) {
  * @note This function MUST be called with interrupts disabled or with the
  *       Stellaris Ethernet transmit fifo protected.
  */
-static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
+static err_t low_level_transmit(struct netif *netif, struct pbuf *p)
+{
 	int iBuf;
 	unsigned char *pucBuf;
 	unsigned long *pulBuf;
@@ -359,12 +390,15 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
 	unsigned long ulGather;
 	unsigned char *pucGather;
 
-	if (0 == ETHServiceTaskLinkStatus(0)) {
+	if (0 == ETHServiceTaskLinkStatus(0))
+	{
 		// ~ bitwise negation, all bit except NETIF_FLAG_LINK_UP set to 1 and AND with current flag
 		netif->flags &= ~NETIF_FLAG_LINK_UP;
 		LWIP_DEBUGF(CORTEX_DEBUG, ("low_level_transmit: link is down\n"));LINK_STATS_INC(link.err);
 		return (ERR_IF);
-	} else {
+	}
+	else
+	{
 		netif->flags |= NETIF_FLAG_LINK_UP;
 	}
 
@@ -382,7 +416,8 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
 	ulGather = 0;
 
 	/* Copy data from the pbuf(s) into the TX Fifo. */
-	for (q = p; q != NULL; q = q->next) {
+	for (q = p; q != NULL; q = q->next)
+	{
 		/* Intialize a char pointer and index to the pbuf payload data. */
 		pucBuf = (unsigned char *) q->payload;
 		iBuf = 0;
@@ -392,7 +427,8 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
 		 * in the chain, fill it up and write it to the Tx FIFO.
 		 *
 		 */
-		while ((iBuf < q->len) && (iGather != 0)) {
+		while ((iBuf < q->len) && (iGather != 0))
+		{
 			/* Copy a byte from the pbuf into the gather buffer. */
 			pucGather[iGather] = pucBuf[iBuf++];
 
@@ -405,7 +441,8 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
 		 * we have a gather buffer to write into the Tx FIFO.
 		 *
 		 */
-		if ((iGather == 0) && (iBuf != 0)) {
+		if ((iGather == 0) && (iBuf != 0))
+		{
 			HWREG(ETH_BASE + MAC_O_DATA) = ulGather;
 			ulGather = 0;
 		}
@@ -418,7 +455,8 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
 		 * the end of the pbuf.
 		 *
 		 */
-		while ((iBuf + 4) <= q->len) {
+		while ((iBuf + 4) <= q->len)
+		{
 			HWREG(ETH_BASE + MAC_O_DATA) = *pulBuf++;
 			iBuf += 4;
 		}
@@ -428,7 +466,8 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
 		 * buffer for the next time.
 		 *
 		 */
-		while (iBuf < q->len) {
+		while (iBuf < q->len)
+		{
 			/* Copy a byte from the pbuf into the gather buffer. */
 			pucGather[iGather] = pucBuf[iBuf++];
 
@@ -462,7 +501,8 @@ static err_t low_level_transmit(struct netif *netif, struct pbuf *p) {
  *         ERR_MEM if private data couldn't be allocated
  *         any other err_t on error
  */
-err_t ethernetif_init(struct netif *netif) {
+err_t ethernetif_init(struct netif *netif)
+{
 	LWIP_ASSERT("netif != NULL", (netif != NULL));
 
 #if LWIP_NETIF_HOSTNAME
@@ -511,7 +551,8 @@ err_t ethernetif_init(struct netif *netif) {
 //! \return None.
 //
 //*****************************************************************************
-void LWIPServiceTaskInit(void *pvParameters) {
+void LWIPServiceTaskInit(void *pvParameters)
+{
 	struct ip_addr *ip_addr;
 	struct ip_addr *net_mask;
 	struct ip_addr *gw_addr;
@@ -535,11 +576,16 @@ void LWIPServiceTaskInit(void *pvParameters) {
 #endif
 
 	printf("LWIPSTACK: LOAD CONFIG: (%s)\n", configLoad);
-	if (configLoad == 0) {
+	if (configLoad == 0)
+	{
 		IPState = IPADDR_USE_AUTOIP;
-	} else if (strcmp(configLoad, "true") == 0) {
+	}
+	else if (strcmp(configLoad, "true") == 0)
+	{
 		IPState = IPADDR_USE_DHCP;
-	} else {
+	}
+	else
+	{
 		IPState = IPADDR_USE_STATIC;
 	}
 
@@ -551,13 +597,15 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	vTaskDelay(100 / portTICK_RATE_MS);
 
 	// Setup the network address values.
-	if (IPState == IPADDR_USE_STATIC) {
+	if (IPState == IPADDR_USE_STATIC)
+	{
 		ip_addr = getAddresFromConfig("IP_ADDRESS");
 		net_mask = getAddresFromConfig("IP_SUBNETMASK");
 		gw_addr = getAddresFromConfig("IP_GATEWAY");
 	}
 #if LWIP_DHCP || LWIP_AUTOIP
-	else {
+	else
+	{
 		ip_addr = pvPortMalloc(sizeof(struct ip_addr));
 		net_mask = pvPortMalloc(sizeof(struct ip_addr));
 		gw_addr = pvPortMalloc(sizeof(struct ip_addr));
@@ -583,14 +631,18 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 	// Start DHCP, if enabled.
 #if LWIP_DHCP
-	if (IPState == IPADDR_USE_DHCP) {
+	if (IPState == IPADDR_USE_DHCP)
+	{
 #ifdef ENABLE_GRAPHIC
 		vShowBootText("waiting for DHCP ...");
 #endif
 		printf("Starte DHCP Client ...     ");
-		if (dhcp_start(&lwip_netif) == ERR_OK) {
+		if (dhcp_start(&lwip_netif) == ERR_OK)
+		{
 			printf("[ok]\n");
-		} else {
+		}
+		else
+		{
 			printf("[fail]\n");
 		}
 	}
@@ -605,15 +657,18 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	}
 #endif
 
-	if (IPState == IPADDR_USE_STATIC) {
+	if (IPState == IPADDR_USE_STATIC)
+	{
 		// Bring the interface up.
 		netif_set_up(&lwip_netif);
 	}
 	vTaskDelay(1000 / portTICK_RATE_MS);
 
-	while (0 == netif_is_up(&lwip_netif)) {
+	while (0 == netif_is_up(&lwip_netif))
+	{
 		vTaskDelay(5000 / portTICK_RATE_MS);
-		if (0 == netif_is_up(&lwip_netif)) {
+		if (0 == netif_is_up(&lwip_netif))
+		{
 			dhcp_renew(&lwip_netif);
 		}
 	}
@@ -621,7 +676,8 @@ void LWIPServiceTaskInit(void *pvParameters) {
 	printnetif(&lwip_netif);
 
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_SERVER");
-	if (strcmp(configLoad, "true") == 0) {
+	if (strcmp(configLoad, "true") == 0)
+	{
 		/* Initialize HTTP, DNS, SNTP */
 		printf("HTTPD Starten ...\n");
 		httpd_init();
@@ -647,45 +703,61 @@ void LWIPServiceTaskInit(void *pvParameters) {
 
 #ifdef ENABLE_GRAPHIC
 	configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
-	if (strcmp(configLoad, "true") == 0) {
+	if (strcmp(configLoad, "true") == 0)
+	{
 		vShowBootText("loading menu ...");
 		vLoadMenu();
-	} else {
+	}
+	else
+	{
 		vShowBootText("ready for requests ...");
 	}
 	vPortFree(configLoad);
 #endif
 
 	// Nothing else to do.  No point hanging around.
-	while (1) {
+	while (1)
+	{
 		vTaskDelay(500 / portTICK_RATE_MS);
-		if (EthernetPHYRead(ETH_BASE, PHY_MR1) & ETH_PHY_LINK_UP) {
-			if (!(netif_is_up(&lwip_netif))) {
+		if (EthernetPHYRead(ETH_BASE, PHY_MR1) & ETH_PHY_LINK_UP)
+		{
+			if (!(netif_is_up(&lwip_netif)))
+			{
 				// set link up flag
 				netif_set_up(&lwip_netif);
 #ifdef ENABLE_GRAPHIC
 				vShowBootText("activate networkinterface ...");
 				configLoad = loadFromConfig(IP_CONFIG_FILE, "IS_CLIENT");
-				if (strcmp(configLoad, "true") == 0) {
+				if (strcmp(configLoad, "true") == 0)
+				{
 					vShowBootText("loading menu ...");
 					vLoadMenu();
-				} else {
+				}
+				else
+				{
 					vShowBootText("ready for requests ...");
 				}
 				vPortFree(configLoad);
 #endif
-				if (IPState == IPADDR_USE_DHCP) {
+				if (IPState == IPADDR_USE_DHCP)
+				{
 					printf("DHCP Adresse anfordern ...  ");
-					if (dhcp_renew(&lwip_netif) == ERR_OK) {
+					if (dhcp_renew(&lwip_netif) == ERR_OK)
+					{
 						printf("[ok]\n");
 						printnetif(&lwip_netif);
-					} else {
+					}
+					else
+					{
 						printf("[fail]\n");
 					}
 				}
 			}
-		} else {
-			if (netif_is_up(&lwip_netif)) {
+		}
+		else
+		{
+			if (netif_is_up(&lwip_netif))
+			{
 #ifdef ENABLE_GRAPHIC
 				vShowBootText("no networkconnection!!");
 #endif
@@ -708,10 +780,12 @@ void LWIPServiceTaskInit(void *pvParameters) {
 //! 		ERR_IFF if the interface is not initialized
 //
 //*****************************************************************************
-err_t LWIPServiceTaskIPConfigGet(struct netif *netif, IP_CONFIG * ipCfg) {
+err_t LWIPServiceTaskIPConfigGet(struct netif *netif, IP_CONFIG * ipCfg)
+{
 	LWIP_ASSERT("netif != NULL", (netif != NULL));
 
-	if ((netif == NULL) || (!(netif_is_up(netif)))) {
+	if ((netif == NULL) || (!(netif_is_up(netif))))
+	{
 		return ERR_IF;
 	}
 
@@ -719,9 +793,12 @@ err_t LWIPServiceTaskIPConfigGet(struct netif *netif, IP_CONFIG * ipCfg) {
 	ipCfg->NetMask = (unsigned long) netif->netmask.addr;
 	ipCfg->GWAddr = (unsigned long) netif->gw.addr;
 
-	if (netif->flags & NETIF_FLAG_DHCP) {
+	if (netif->flags & NETIF_FLAG_DHCP)
+	{
 		ipCfg->IPMode = IPADDR_USE_DHCP;
-	} else {
+	}
+	else
+	{
 		ipCfg->IPMode = IPADDR_USE_STATIC;
 	}
 	return ERR_OK;
@@ -742,10 +819,12 @@ err_t LWIPServiceTaskIPConfigGet(struct netif *netif, IP_CONFIG * ipCfg) {
 //! 		ERR_IFF if the interface is not initialized
 //
 //*****************************************************************************
-err_t LWIPServiceTaskMACGet(struct netif *netif, unsigned char *pucMAC) {
+err_t LWIPServiceTaskMACGet(struct netif *netif, unsigned char *pucMAC)
+{
 	LWIP_ASSERT("netif != NULL", (netif != NULL));
 
-	if (netif == NULL) {
+	if (netif == NULL)
+	{
 		return ERR_IF;
 	}
 
@@ -773,7 +852,8 @@ err_t LWIPServiceTaskMACGet(struct netif *netif, unsigned char *pucMAC) {
 //! \return None.
 //
 //*****************************************************************************
-void lwIPNetworkConfigChange(struct netif *netif, IP_CONFIG * ipCfg) {
+void lwIPNetworkConfigChange(struct netif *netif, IP_CONFIG * ipCfg)
+{
 	struct ip_addr ip_addr;
 	struct ip_addr net_mask;
 	struct ip_addr gw_addr;
@@ -797,13 +877,15 @@ void lwIPNetworkConfigChange(struct netif *netif, IP_CONFIG * ipCfg) {
 
 	// Setup the network address values.
 
-	if (ipCfg->IPMode == IPADDR_USE_STATIC) {
+	if (ipCfg->IPMode == IPADDR_USE_STATIC)
+	{
 		ip_addr.addr = htonl(ipCfg->IPAddr);
 		net_mask.addr = htonl(ipCfg->NetMask);
 		gw_addr.addr = htonl(ipCfg->GWAddr);
 	}
 #if LWIP_DHCP || LWIP_AUTOIP
-	else {
+	else
+	{
 		ip_addr.addr = 0;
 		net_mask.addr = 0;
 		gw_addr.addr = 0;
@@ -814,10 +896,12 @@ void lwIPNetworkConfigChange(struct netif *netif, IP_CONFIG * ipCfg) {
 	currentIPConfig.IPMode = IPADDR_USE_DHCP;
 	LWIPServiceTaskIPConfigGet(netif, &currentIPConfig);
 
-	switch (currentIPConfig.IPMode) {
+	switch (currentIPConfig.IPMode)
+	{
 	// Static IP
 
-	case IPADDR_USE_STATIC: {
+	case IPADDR_USE_STATIC:
+	{
 		// Set the new address parameters.  This will change the address
 		// configuration in lwIP, and if necessary, will reset any links
 		// that are active.  This is valid for all three modes.
@@ -826,7 +910,8 @@ void lwIPNetworkConfigChange(struct netif *netif, IP_CONFIG * ipCfg) {
 
 		// If we are going to DHCP mode, then start the DHCP server now.
 #if LWIP_DHCP
-		if (ipCfg->IPMode == IPADDR_USE_DHCP) {
+		if (ipCfg->IPMode == IPADDR_USE_DHCP)
+		{
 			dhcp_start(netif);
 		}
 #endif
@@ -844,12 +929,14 @@ void lwIPNetworkConfigChange(struct netif *netif, IP_CONFIG * ipCfg) {
 
 		// DHCP (with AutoIP fallback).
 #if LWIP_DHCP
-	case IPADDR_USE_DHCP: {
+	case IPADDR_USE_DHCP:
+	{
 		//
 		// If we are going to static IP addressing, then disable DHCP and
 		// force the new static IP address.
 		//
-		if (ipCfg->IPMode == IPADDR_USE_STATIC) {
+		if (ipCfg->IPMode == IPADDR_USE_STATIC)
+		{
 			dhcp_stop(netif);
 			// SEE bug http://savannah.nongnu.org/bugs/?22804
 			netif->flags &= ~NETIF_FLAG_DHCP;
@@ -930,3 +1017,9 @@ stellarisif_debug_print(struct pbuf *p)
 }
 #endif /* CORTEX_DEBUG */
 
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

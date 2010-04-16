@@ -34,11 +34,10 @@
  * \addtogroup httpd
  * @{
  *
- * \file httpd.c
  * \author Anziner, Hahn
  * \brief
  *
-*/
+ */
 
 /* This file is modified from the original version (httpd.c) as shipped with
  * lwIP version 1.3.0. Changes have been made to allow support for a
@@ -1622,3 +1621,11 @@ void http_set_cgi_handlers(const tCGI *pCGIs, int iNumHandlers) {
 #endif
 
 /*-----------------------------------------------------------------------------------*/
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

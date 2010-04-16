@@ -2,11 +2,10 @@
  * \addtogroup Tags
  * @{
  *
- * \file SavedParams.h
  * \author Anziner, Hahn
  * \brief Prototypes for the SavedParams tag
  *
-*/
+ */
 
 #ifndef SAVEDPARAMS_H_
 #define SAVEDPARAMS_H_

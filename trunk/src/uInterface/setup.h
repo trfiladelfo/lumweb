@@ -2,7 +2,6 @@
  * \addtogroup Configuration
  * @{
  *
- * \file setup.h
  * \author Anziner, Hahn
  * \brief global config file for the project
  *

@@ -2,11 +2,10 @@
  * \addtogroup Tags
  * @{
  *
- * \file Hyperlink.h
  * \author Anziner, Hahn
  * \brief Prototypes for the Hyperlink tag
  *
-*/
+ */
 
 #ifndef HYPERLINK_H_
 #define HYPERLINK_H_
@@ -15,8 +14,8 @@
 
 void vHyperlinkOnLoad(char* param, int len, void* this);
 void vHyperlinkRenderSSI(char * pcBuf, int iBufLen, pSSIParam *params);
-char* pcHyperlinkStrFormatter (void* this);
-tWidget* xHyperlinkOnDisplay (void* this, int row);
+char* pcHyperlinkStrFormatter(void* this);
+tWidget* xHyperlinkOnDisplay(void* this, int row);
 
 #endif /* HYPERLINK_H_ */
 

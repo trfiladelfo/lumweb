@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file DefaultTags.h
  * \author Anziner, Hahn
  * \brief Prototypes for dummy default tag
  *

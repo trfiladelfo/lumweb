@@ -2,16 +2,14 @@
  * \addtogroup Config
  * @{
  *
- * \file configloader.c
  * \author Anziner, Hahn
  * \brief Routines for conf file handling
  *
-*/
+ */
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
 
 #include "lmi_fs.h"
 #include "hw_types.h"
@@ -39,23 +37,27 @@ struct fs_file *config_file;
 /// read buffer
 char buffer[READBUFFERLEN];
 
-
-char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
+char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen)
+{
 	char* returnValue;
 	int j;
-	if (paramLen > 0) {
+	if (paramLen > 0)
+	{
 		paramLen = 0;
-		if (valueLen > 0) {
+		if (valueLen > 0)
+		{
 			returnValue = (char*) pvPortMalloc(valueLen * sizeof(char) + 1);
-			for (j = 0; j < valueLen && value[j] > 0x20 && value[j] < 0x7F; j++) {
+			for (j = 0; j < valueLen && value[j] > 0x20 && value[j] < 0x7F; j++)
+			{
 				returnValue[j] = value[j];
 			}
 			returnValue[j] = 0;
-			 strtrim(returnValue);
-			 xTaskResumeAll();
+			strtrim(returnValue);
+			xTaskResumeAll();
 			return returnValue;
 		}
-		for (j = 0; j < READBUFFERLEN; j++) {
+		for (j = 0; j < READBUFFERLEN; j++)
+		{
 			param[j] = 0;
 		}
 	}
@@ -68,7 +70,8 @@ char* paramAndValueFound(char* param, char* value, int paramLen, int valueLen) {
  * searchs the config file for a parameter and returns the value
  *
  */
-char* loadFromConfig(char* filePath, char* param) {
+char* loadFromConfig(char* filePath, char* param)
+{
 	int i, j;
 	tBoolean beforeEqual = true, isInComment = false;
 
@@ -83,73 +86,102 @@ char* loadFromConfig(char* filePath, char* param) {
 	int valueLen = 0;
 	config_file = fs_open(filePath);
 
-	if (config_file != NULL) {
-		while (fs_read(config_file, buffer, READBUFFERLEN) > 0) {
+	if (config_file != NULL)
+	{
+		while (fs_read(config_file, buffer, READBUFFERLEN) > 0)
+		{
 
-			for (i = 0; i < READBUFFERLEN; i++) {
-				if (last == '\n') {
+			for (i = 0; i < READBUFFERLEN; i++)
+			{
+				if (last == '\n')
+				{
 					beforeEqual = true;
 					isInComment = false;
-					for (j = 0; j < READBUFFERLEN; j++) {
+					for (j = 0; j < READBUFFERLEN; j++)
+					{
 						name[j] = 0;
 						value[j] = 0;
 					}
 					nameLen = 0;
 					valueLen = 0;
 				}
-				if (isInComment == true || buffer[i] == '#') {
-					if (buffer[i] == '#' && (nameLen > 0 || valueLen > 0)) {
+				if (isInComment == true || buffer[i] == '#')
+				{
+					if (buffer[i] == '#' && (nameLen > 0 || valueLen > 0))
+					{
 
-						if (strcmp(name, param) == 0 && beforeEqual == false) {
+						if (strcmp(name, param) == 0 && beforeEqual == false)
+						{
 							fs_close(config_file);
 							return paramAndValueFound(name, value, nameLen,
 									valueLen);
-						} else {
-							for (j = 0; j < READBUFFERLEN; j++) {
+						}
+						else
+						{
+							for (j = 0; j < READBUFFERLEN; j++)
+							{
 								name[j] = 0;
 								value[j] = 0;
 							}
 						}
 					}
 					isInComment = true;
-					while (i < READBUFFERLEN && buffer[i] != '\n') {
+					while (i < READBUFFERLEN && buffer[i] != '\n')
+					{
 						i++;
 					}
 					last = buffer[i];
-				} else {
+				}
+				else
+				{
 					//	printf("CONFIG: read char 0x%X (%c)\n", buffer[i],
 					//			buffer[i]);
 
-					if (buffer[i] == '=' && nameLen > 0) {
+					if (buffer[i] == '=' && nameLen > 0)
+					{
 						name[nameLen] = 0;
 						beforeEqual = false;
 
-						if (strcmp(name, param) != 0) {
-							while (i < READBUFFERLEN && buffer[i] != '\n') {
+						if (strcmp(name, param) != 0)
+						{
+							while (i < READBUFFERLEN && buffer[i] != '\n')
+							{
 								i++;
 							}
-							for (j = 0; j < READBUFFERLEN; j++) {
+							for (j = 0; j < READBUFFERLEN; j++)
+							{
 								name[j] = 0;
 							}
 						}
-					} else if (buffer[i] == '\n') {
+					}
+					else if (buffer[i] == '\n')
+					{
 						isInComment = false;
 						beforeEqual = true;
-						if (strcmp(name, param) == 0) {
+						if (strcmp(name, param) == 0)
+						{
 							fs_close(config_file);
 							return paramAndValueFound(name, value, nameLen,
 									valueLen);
-						} else {
-							for (j = 0; j < READBUFFERLEN; j++) {
+						}
+						else
+						{
+							for (j = 0; j < READBUFFERLEN; j++)
+							{
 								name[j] = 0;
 								value[j] = 0;
 							}
 						}
-					} else {
-						if (beforeEqual) {
+					}
+					else
+					{
+						if (beforeEqual)
+						{
 							name[nameLen] = buffer[i];
 							nameLen++;
-						} else {
+						}
+						else
+						{
 							value[valueLen] = buffer[i];
 							valueLen++;
 						}
@@ -159,13 +191,22 @@ char* loadFromConfig(char* filePath, char* param) {
 				}
 			}
 		}
-	} else {
-		#ifdef ENABLE_GRAPHIC
-			vShowBootText("Please insert a correct MicroSD card!");
-		#endif
+	}
+	else
+	{
+#ifdef ENABLE_GRAPHIC
+		vShowBootText("Please insert a correct MicroSD card!");
+#endif
 		printf("CONF: File can't be opened");
 	}
 	fs_close(config_file);
 	xTaskResumeAll();
 	return NULL;
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

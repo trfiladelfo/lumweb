@@ -2,11 +2,10 @@
  * \addtogroup Tags
  * @{
  *
- * \file SubmitInputField.h
  * \author Anziner, Hahn
  * \brief Prototypes for the SubmitInputField tag
  *
-*/
+ */
 
 #ifndef SUBMITINPUTFIELD_H_
 #define SUBMITINPUTFIELD_H_

@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file SubmitInputField.c
  * \author Anziner, Hahn
  * \brief Routines for the SubmitInputField tag
  *

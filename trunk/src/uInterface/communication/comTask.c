@@ -2,7 +2,6 @@
  * \addtogroup comTask
  * @{
  *
- * \file comTask.c
  * \author Anziner, Hahn
  * \brief implements the Communication Task (vComTask) to interact with the machine
  *
@@ -33,18 +32,20 @@
 
 xComMessage xMessage;
 
-
 /* Testvalues are read from sd card ! */
 
-void vComTask(void *pvParameters) {
+void vComTask(void *pvParameters)
+{
 	char buffer[100];
 
 	vComTaskInitImpl();
 
-	for (;;) {
+	for (;;)
+	{
 		/* Wait for a message to arrive */
 		if (xQueueReceive( xComQueue, &xMessage, ( portTickType ) 100 )
-				== pdTRUE) {
+				== pdTRUE)
+		{
 
 #if DEBUG_COM
 			printf("ComTask: Got Item from Queue \n");
@@ -52,12 +53,13 @@ void vComTask(void *pvParameters) {
 
 			xMessage.errorDesc = NULL;
 
-			if (xMessage.cmd == GET) {
+			if (xMessage.cmd == GET)
+			{
 				xMessage.value = -999;
 
 				xMessage.value = getFormMachine(xMessage.item);
 
-				if(xMessage.value == -999)
+				if (xMessage.value == -999)
 					sprintf(xMessage.errorDesc, "\"ERROR: %s\"", xMessage.item);
 
 #if DEBUG_COM
@@ -67,9 +69,11 @@ void vComTask(void *pvParameters) {
 				xQueueSend(xHttpdQueue, &xMessage, (portTickType) 0);
 				vTaskResume(xMessage.taskToResume);
 
-			} else if (xMessage.cmd == SET) {
+			}
+			else if (xMessage.cmd == SET)
+			{
 
-				if(sendToMachine(xMessage.item, xMessage.value) == -1)
+				if (sendToMachine(xMessage.item, xMessage.value) == -1)
 					sprintf(buffer, "FAIL: %s", xMessage.item);
 
 #if DEBUG_COM
@@ -77,7 +81,8 @@ void vComTask(void *pvParameters) {
 						xMessage.value);
 #endif
 
-				if (xMessage.freeItem == pdTRUE) {
+				if (xMessage.freeItem == pdTRUE)
+				{
 					vPortFree(xMessage.item);
 				}
 				vTaskResume(xMessage.taskToResume);
@@ -85,3 +90,11 @@ void vComTask(void *pvParameters) {
 		}
 	}
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

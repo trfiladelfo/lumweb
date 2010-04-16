@@ -29,6 +29,16 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
+
+/**
+ * \addtogroup httpd
+ * @{
+ *
+ * \author Adam Dunkels
+ * \brief
+ *
+*/
+
 #ifndef __FSDATA_H__
 #define __FSDATA_H__
 
@@ -40,3 +50,11 @@ struct fsdata_file {
 };
 
 #endif /* __FSDATA_H__ */
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

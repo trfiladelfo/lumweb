@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file IntegerInputField.h
  * \author Anziner, Hahn
  * \brief Prototypes for the IntegerInputField tag
  *

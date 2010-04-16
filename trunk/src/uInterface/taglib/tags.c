@@ -1,8 +1,10 @@
-/*
- * tags.c
+/**
+ * \addtogroup TagLib
+ * @{
  *
- *  Created on: 19.03.2010
- *      Author: root
+ * \author Anziner, Hahn
+ * \brief
+ *
  */
 
 #include "taglib/tags.h"
@@ -100,3 +102,11 @@ void vInitTagLibrary(void)
 	xTagList[8].strFormatter = pcFloatStrFormatter;
 	xTagList[8].userSpace = NULL;
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+

@@ -25,10 +25,19 @@
 //
 //*****************************************************************************
 
+
+/**
+ * \addtogroup CGIandSSI
+ * @{
+ *
+ * \author Anziner, Hahn
+ * \brief
+ *
+ */
+
 #include <string.h>
 #include <stdio.h>
 #include "hw_types.h"
-//pf #include "../../../utils/ustdlib.h"
 #include "cgifuncs.h"
 
 //*****************************************************************************
@@ -50,32 +59,31 @@
 // or -1 if the string does not exist in the array.
 //
 //*****************************************************************************
-int
-FindCGIParameter(const char *pcToFind, char *pcParam[], int iNumParams)
+int FindCGIParameter(const char *pcToFind, char *pcParam[], int iNumParams)
 {
-    int iLoop;
+	int iLoop;
 
-    //
-    // Scan through all the parameters in the array.
-    //
-    for(iLoop = 0; iLoop < iNumParams; iLoop++)
-    {
-        //
-        // Does the parameter name match the provided string?
-        //
-        if(strcmp(pcToFind, pcParam[iLoop]) == 0)
-        {
-            //
-            // We found a match - return the index.
-            //
-            return(iLoop);
-        }
-    }
+	//
+	// Scan through all the parameters in the array.
+	//
+	for (iLoop = 0; iLoop < iNumParams; iLoop++)
+	{
+		//
+		// Does the parameter name match the provided string?
+		//
+		if (strcmp(pcToFind, pcParam[iLoop]) == 0)
+		{
+			//
+			// We found a match - return the index.
+			//
+			return (iLoop);
+		}
+	}
 
-    //
-    // If we drop out, the parameter was not found.
-    //
-    return(-1);
+	//
+	// If we drop out, the parameter was not found.
+	//
+	return (-1);
 }
 
 //*****************************************************************************
@@ -91,19 +99,17 @@ FindCGIParameter(const char *pcToFind, char *pcParam[], int iNumParams)
 // false otherwise
 //
 //*****************************************************************************
-tBoolean
-IsValidHexDigit(const char cDigit)
+tBoolean IsValidHexDigit(const char cDigit)
 {
-    if(((cDigit >= '0') && (cDigit <= '9')) ||
-       ((cDigit >= 'a') && (cDigit <= 'f')) ||
-       ((cDigit >= 'A') && (cDigit <= 'F')))
-    {
-        return(true);
-    }
-    else
-    {
-        return(false);
-    }
+	if (((cDigit >= '0') && (cDigit <= '9')) || ((cDigit >= 'a') && (cDigit
+			<= 'f')) || ((cDigit >= 'A') && (cDigit <= 'F')))
+	{
+		return (true);
+	}
+	else
+	{
+		return (false);
+	}
 }
 
 //*****************************************************************************
@@ -120,32 +126,31 @@ IsValidHexDigit(const char cDigit)
 // the character passed is not valid hex.
 //
 //*****************************************************************************
-unsigned char
-HexDigit(const char cDigit)
+unsigned char HexDigit(const char cDigit)
 {
-    if((cDigit >= '0') && (cDigit <= '9'))
-    {
-        return(cDigit - '0');
-    }
-    else
-    {
-        if((cDigit >= 'a') && (cDigit <= 'f'))
-        {
-            return((cDigit - 'a') + 10);
-        }
-        else
-        {
-            if((cDigit >= 'A') && (cDigit <= 'F'))
-            {
-                return((cDigit - 'A') + 10);
-            }
-        }
-    }
+	if ((cDigit >= '0') && (cDigit <= '9'))
+	{
+		return (cDigit - '0');
+	}
+	else
+	{
+		if ((cDigit >= 'a') && (cDigit <= 'f'))
+		{
+			return ((cDigit - 'a') + 10);
+		}
+		else
+		{
+			if ((cDigit >= 'A') && (cDigit <= 'F'))
+			{
+				return ((cDigit - 'A') + 10);
+			}
+		}
+	}
 
-    //
-    // If we get here, we were passed an invalid hex digit so return 0xFF.
-    //
-    return(0xFF);
+	//
+	// If we get here, we were passed an invalid hex digit so return 0xFF.
+	//
+	return (0xFF);
 }
 
 //*****************************************************************************
@@ -166,20 +171,18 @@ HexDigit(const char cDigit)
 // to a valid escape sequence.
 //
 //*****************************************************************************
-tBoolean
-DecodeHexEscape(const char *pcEncoded, char *pcDecoded)
+tBoolean DecodeHexEscape(const char *pcEncoded, char *pcDecoded)
 {
-    if((pcEncoded[0] != '%') || !IsValidHexDigit(pcEncoded[1]) ||
-       !IsValidHexDigit(pcEncoded[2]))
-    {
-        return(false);
-    }
-    else
-    {
-        *pcDecoded = ((HexDigit(pcEncoded[1]) * 16) +
-                      HexDigit(pcEncoded[2]));
-        return(true);
-    }
+	if ((pcEncoded[0] != '%') || !IsValidHexDigit(pcEncoded[1])
+			|| !IsValidHexDigit(pcEncoded[2]))
+	{
+		return (false);
+	}
+	else
+	{
+		*pcDecoded = ((HexDigit(pcEncoded[1]) * 16) + HexDigit(pcEncoded[2]));
+		return (true);
+	}
 }
 
 //*****************************************************************************
@@ -199,53 +202,52 @@ DecodeHexEscape(const char *pcEncoded, char *pcDecoded)
 // not including the terminating NULL.
 //
 //*****************************************************************************
-unsigned long
-EncodeFormString(const char *pcDecoded, char *pcEncoded,
-                 unsigned long ulLen)
+unsigned long EncodeFormString(const char *pcDecoded, char *pcEncoded,
+		unsigned long ulLen)
 {
-    unsigned long ulLoop;
-    unsigned long ulCount;
+	unsigned long ulLoop;
+	unsigned long ulCount;
 
-    //
-    // Make sure we were not passed a tiny buffer.
-    //
-    if(ulLen <= 1)
-    {
-        return(0);
-    }
+	//
+	// Make sure we were not passed a tiny buffer.
+	//
+	if (ulLen <= 1)
+	{
+		return (0);
+	}
 
-    //
-    // Initialize our output character counter.
-    //
-    ulCount = 0;
+	//
+	// Initialize our output character counter.
+	//
+	ulCount = 0;
 
-    //
-    // Step through each character of the input until we run out of data or
-    // space to put our output in.
-    //
-    for(ulLoop = 0; pcDecoded[ulLoop] && (ulCount < (ulLen - 1)); ulLoop++)
-    {
-        switch(pcDecoded[ulLoop])
-        {
-            //
-            // Pass most characters without modification.
-            //
-            default:
-            {
-                pcEncoded[ulCount++] = pcDecoded[ulLoop];
-                break;
-            }
+	//
+	// Step through each character of the input until we run out of data or
+	// space to put our output in.
+	//
+	for (ulLoop = 0; pcDecoded[ulLoop] && (ulCount < (ulLen - 1)); ulLoop++)
+	{
+		switch (pcDecoded[ulLoop])
+		{
+		//
+		// Pass most characters without modification.
+		//
+		default:
+		{
+			pcEncoded[ulCount++] = pcDecoded[ulLoop];
+			break;
+		}
 
-            case '\'':
-            {
-                ulCount += snprintf(&pcEncoded[ulCount], (ulLen - ulCount),
-                                     "&#39;");
-                break;
-            }
-        }
-    }
+		case '\'':
+		{
+			ulCount
+					+= snprintf(&pcEncoded[ulCount], (ulLen - ulCount), "&#39;");
+			break;
+		}
+		}
+	}
 
-    return(ulCount);
+	return (ulCount);
 }
 
 //*****************************************************************************
@@ -266,91 +268,90 @@ EncodeFormString(const char *pcDecoded, char *pcEncoded,
 // including the terminating NULL.
 //
 //*****************************************************************************
-unsigned long
-DecodeFormString(const  char *pcEncoded, char *pcDecoded,
-                 unsigned long ulLen)
+unsigned long DecodeFormString(const char *pcEncoded, char *pcDecoded,
+		unsigned long ulLen)
 {
-    unsigned long ulLoop;
-    unsigned long ulCount;
-    tBoolean bValid;
+	unsigned long ulLoop;
+	unsigned long ulCount;
+	tBoolean bValid;
 
-    ulCount = 0;
-    ulLoop = 0;
+	ulCount = 0;
+	ulLoop = 0;
 
-    //
-    // Keep going until we run out of input or fill the output buffer.
-    //
-    while(pcEncoded[ulLoop] && (ulCount < (ulLen - 1)))
-    {
-        switch(pcEncoded[ulLoop])
-        {
-            //
-            // '+' in the encoded data is decoded as a space.
-            //
-            case '+':
-            {
-                pcDecoded[ulCount++] = ' ';
-                ulLoop++;
-                break;
-            }
+	//
+	// Keep going until we run out of input or fill the output buffer.
+	//
+	while (pcEncoded[ulLoop] && (ulCount < (ulLen - 1)))
+	{
+		switch (pcEncoded[ulLoop])
+		{
+		//
+		// '+' in the encoded data is decoded as a space.
+		//
+		case '+':
+		{
+			pcDecoded[ulCount++] = ' ';
+			ulLoop++;
+			break;
+		}
 
-            //
-            // '%' in the encoded data indicates that the following 2
-            // characters indicate the hex ASCII code of the decoded character.
-            //
-            case '%':
-            {
-                if(pcEncoded[ulLoop + 1] && pcEncoded[ulLoop + 2])
-                {
-                    //
-                    // Decode the escape sequence.
-                    //
-                    bValid = DecodeHexEscape(&pcEncoded[ulLoop],
-                                             &pcDecoded[ulCount]);
+			//
+			// '%' in the encoded data indicates that the following 2
+			// characters indicate the hex ASCII code of the decoded character.
+			//
+		case '%':
+		{
+			if (pcEncoded[ulLoop + 1] && pcEncoded[ulLoop + 2])
+			{
+				//
+				// Decode the escape sequence.
+				//
+				bValid = DecodeHexEscape(&pcEncoded[ulLoop],
+						&pcDecoded[ulCount]);
 
-                    //
-                    // If the escape sequence was valid, move to the next
-                    // output character.
-                    //
-                    if(bValid)
-                    {
-                        ulCount++;
-                    }
+				//
+				// If the escape sequence was valid, move to the next
+				// output character.
+				//
+				if (bValid)
+				{
+					ulCount++;
+				}
 
-                    //
-                    // Skip past the escape sequence in the encoded string.
-                    //
-                    ulLoop += 3;
-                }
-                else
-                {
-                    //
-                    // We reached the end of the string partway through an
-                    // escape sequence so just ignore it and return the number
-                    // of decoded characters found so far.
-                    //
-                    pcDecoded[ulCount] = '\0';
-                    return(ulCount);
-                }
-                break;
-            }
+				//
+				// Skip past the escape sequence in the encoded string.
+				//
+				ulLoop += 3;
+			}
+			else
+			{
+				//
+				// We reached the end of the string partway through an
+				// escape sequence so just ignore it and return the number
+				// of decoded characters found so far.
+				//
+				pcDecoded[ulCount] = '\0';
+				return (ulCount);
+			}
+			break;
+		}
 
-            //
-            // For all other characters, just copy the input to the output.
-            //
-            default:
-            {
-                pcDecoded[ulCount++] = pcEncoded[ulLoop++];
-                break;
-            }
-        }
-    }
+			//
+			// For all other characters, just copy the input to the output.
+			//
+		default:
+		{
+			pcDecoded[ulCount++] = pcEncoded[ulLoop++];
+			break;
+		}
+		}
+	}
 
-    //
-    // Terminate the string and return the number of characters we decoded.
-    //
-    pcDecoded[ulCount] = '\0';
-    return(ulCount);
+	//
+	// Terminate the string and return the number of characters we decoded.
+	//
+	pcDecoded[ulCount] = '\0';
+	return (ulCount);
 }
 
 //*****************************************************************************
@@ -371,120 +372,119 @@ DecodeFormString(const  char *pcEncoded, char *pcDecoded,
 // decimal number or \b false if not.
 
 //*****************************************************************************
-tBoolean
-CheckDecimalParam(const char *pcValue, long *plValue)
+tBoolean CheckDecimalParam(const char *pcValue, long *plValue)
 {
-    unsigned long ulLoop;
-    tBoolean bStarted;
-    tBoolean bFinished;
-    tBoolean bNeg;
-    long lAccum;
+	unsigned long ulLoop;
+	tBoolean bStarted;
+	tBoolean bFinished;
+	tBoolean bNeg;
+	long lAccum;
 
-    //
-    // Check that the string is a valid decimal number.
-    //
-    bStarted = false;
-    bFinished = false;
-    bNeg = false;
-    ulLoop = 0;
-    lAccum = 0;
+	//
+	// Check that the string is a valid decimal number.
+	//
+	bStarted = false;
+	bFinished = false;
+	bNeg = false;
+	ulLoop = 0;
+	lAccum = 0;
 
-    while(pcValue[ulLoop])
-    {
-        //
-        // Ignore whitespace before the string.
-        //
-        if(!bStarted)
-        {
-            if((pcValue[ulLoop] == ' ') || (pcValue[ulLoop] == '\t'))
-            {
-                ulLoop++;
-                continue;
-            }
+	while (pcValue[ulLoop])
+	{
+		//
+		// Ignore whitespace before the string.
+		//
+		if (!bStarted)
+		{
+			if ((pcValue[ulLoop] == ' ') || (pcValue[ulLoop] == '\t'))
+			{
+				ulLoop++;
+				continue;
+			}
 
-            //
-            // Ignore a + or - character as long as we have not started.
-            //
-            if((pcValue[ulLoop] == '+') || (pcValue[ulLoop] == '-'))
-            {
-                //
-                // If the string starts with a '-', remember to negate the
-                // result.
-                //
-                bNeg = (pcValue[ulLoop] == '-') ? true : false;
-                bStarted = true;
-                ulLoop++;
-            }
-            else
-            {
-                //
-                // We found something other than whitespace or a sign character
-                // so we start looking for numerals now.
-                //
-                bStarted = true;
-            }
-        }
+			//
+			// Ignore a + or - character as long as we have not started.
+			//
+			if ((pcValue[ulLoop] == '+') || (pcValue[ulLoop] == '-'))
+			{
+				//
+				// If the string starts with a '-', remember to negate the
+				// result.
+				//
+				bNeg = (pcValue[ulLoop] == '-') ? true : false;
+				bStarted = true;
+				ulLoop++;
+			}
+			else
+			{
+				//
+				// We found something other than whitespace or a sign character
+				// so we start looking for numerals now.
+				//
+				bStarted = true;
+			}
+		}
 
-        if(bStarted)
-        {
-            if(!bFinished)
-            {
-                //
-                // We expect to see nothing other than valid digit characters
-                // here.
-                //
-                if((pcValue[ulLoop] >= '0') && (pcValue[ulLoop] <= '9'))
-                {
-                    lAccum = (lAccum * 10) + (pcValue[ulLoop] - '0');
-                }
-                else
-                {
-                    //
-                    // Have we hit whitespace?  If so, check for no more
-                    // characters until the end of the string.
-                    //
-                    if((pcValue[ulLoop] == ' ') || (pcValue[ulLoop] == '\t'))
-                    {
-                        bFinished = true;
-                    }
-                    else
-                    {
-                        //
-                        // We got something other than a digit or whitespace so
-                        // this makes the string invalid as a decimal number.
-                        //
-                        return(false);
-                    }
-                }
-            }
-            else
-            {
-                //
-                // We are scanning for whitespace until the end of the string.
-                //
-                if((pcValue[ulLoop] != ' ') && (pcValue[ulLoop] != '\t'))
-                {
-                    //
-                    // We found something other than whitespace so the string
-                    // is not valid.
-                    //
-                    return(false);
-                }
-            }
+		if (bStarted)
+		{
+			if (!bFinished)
+			{
+				//
+				// We expect to see nothing other than valid digit characters
+				// here.
+				//
+				if ((pcValue[ulLoop] >= '0') && (pcValue[ulLoop] <= '9'))
+				{
+					lAccum = (lAccum * 10) + (pcValue[ulLoop] - '0');
+				}
+				else
+				{
+					//
+					// Have we hit whitespace?  If so, check for no more
+					// characters until the end of the string.
+					//
+					if ((pcValue[ulLoop] == ' ') || (pcValue[ulLoop] == '\t'))
+					{
+						bFinished = true;
+					}
+					else
+					{
+						//
+						// We got something other than a digit or whitespace so
+						// this makes the string invalid as a decimal number.
+						//
+						return (false);
+					}
+				}
+			}
+			else
+			{
+				//
+				// We are scanning for whitespace until the end of the string.
+				//
+				if ((pcValue[ulLoop] != ' ') && (pcValue[ulLoop] != '\t'))
+				{
+					//
+					// We found something other than whitespace so the string
+					// is not valid.
+					//
+					return (false);
+				}
+			}
 
-            //
-            // Move on to the next character in the string.
-            //
-            ulLoop++;
-        }
-    }
+			//
+			// Move on to the next character in the string.
+			//
+			ulLoop++;
+		}
+	}
 
-    //
-    // If we drop out of the loop, the string must be valid.  All we need to do
-    // now is negate the accumulated value if the string started with a '-'.
-    //
-    *plValue =  bNeg ? -lAccum : lAccum;
-    return(true);
+	//
+	// If we drop out of the loop, the string must be valid.  All we need to do
+	// now is negate the accumulated value if the string started with a '-'.
+	//
+	*plValue = bNeg ? -lAccum : lAccum;
+	return (true);
 }
 
 //*****************************************************************************
@@ -517,38 +517,45 @@ CheckDecimalParam(const char *pcValue, long *plValue)
 // which case \e *pbError will be \b true).
 //
 //*****************************************************************************
-long
-GetCGIParam(const char *pcName, char *pcParams[], char *pcValue[],
-            int iNumParams, tBoolean *pbError)
+long GetCGIParam(const char *pcName, char *pcParams[], char *pcValue[],
+		int iNumParams, tBoolean *pbError)
 {
-    int iParam;
-    long lValue;
-    tBoolean bRetcode;
+	int iParam;
+	long lValue;
+	tBoolean bRetcode;
 
-    //
-    // Is the parameter we are looking for in the list?
-    //
-    iParam = FindCGIParameter(pcName, pcParams, iNumParams);
-    if(iParam != -1)
-    {
-        //
-        // We found the parameter so now get its value.
-        //
-        bRetcode = CheckDecimalParam(pcValue[iParam], &lValue);
-        if(bRetcode)
-        {
-            //
-            // All is well - return the parameter value.
-            //
-            return(lValue);
-        }
-    }
+	//
+	// Is the parameter we are looking for in the list?
+	//
+	iParam = FindCGIParameter(pcName, pcParams, iNumParams);
+	if (iParam != -1)
+	{
+		//
+		// We found the parameter so now get its value.
+		//
+		bRetcode = CheckDecimalParam(pcValue[iParam], &lValue);
+		if (bRetcode)
+		{
+			//
+			// All is well - return the parameter value.
+			//
+			return (lValue);
+		}
+	}
 
-    //
-    // If we reach here, there was a problem so return 0 and set the error
-    // flag.
-    //
-    *pbError = true;
-    return(0);
+	//
+	// If we reach here, there was a problem so return 0 and set the error
+	// flag.
+	//
+	*pbError = true;
+	return (0);
 }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
+
 

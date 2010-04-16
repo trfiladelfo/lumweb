@@ -2,11 +2,10 @@
  * \addtogroup Tags
  * @{
  *
- * \file Group.h
  * \author Anziner, Hahn
  * \brief Prototypes for the Group tag
  *
-*/
+ */
 
 #ifndef GROUP_H_
 #define GROUP_H_

@@ -2,7 +2,6 @@
  * \addtogroup Tags
  * @{
  *
- * \file SavedParams.c
  * \author Anziner, Hahn
  * \brief Routines for the SavedParams tag
  *

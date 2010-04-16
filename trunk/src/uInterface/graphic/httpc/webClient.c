@@ -2,7 +2,6 @@
  * \addtogroup Graphic
  * @{
  *
- * \file webClient.c
  * \author Anziner, Hahn
  * \brief
  *
@@ -26,15 +25,14 @@
 #include "taglib/taglib.h"
 #include "taglib/tags.h"
 
-
-
 #define DELIMITOR_CHAR '$'
 
 struct ip_addr *remoteIP = NULL;
 
 void vParseParameter(char* html, u16_t len);
 
-void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
+void vLoadWebPage(char* page, basicDisplayLine* paramsParameter)
+{
 
 	basicDisplayLine *params = paramsParameter;
 	struct netconn *conn;
@@ -49,12 +47,17 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 
 	strcpy(buffer, "GET /");
 	strcat(buffer, page);
-	while (params != NULL) {
-		if (params->id != NULL) {
-			if (first == true) {
+	while (params != NULL)
+	{
+		if (params->id != NULL)
+		{
+			if (first == true)
+			{
 				strcat(buffer, "?");
 				first = false;
-			} else {
+			}
+			else
+			{
 				strcat(buffer, "&");
 			}
 			strcat(buffer, params->id);
@@ -71,9 +74,11 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 
 	vClearDisplay();
 
-	if (remoteIP == NULL) {
+	if (remoteIP == NULL)
+	{
 		remoteIP = getAddresFromConfig("REMOTE_IP");
-		if (remoteIP == NULL) {
+		if (remoteIP == NULL)
+		{
 			vShowBootText("RemoteIP is NULL!");
 			return;
 		}
@@ -91,36 +96,46 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 	// create a connection
 	connErr = netconn_connect(conn, remoteIP, 80);
 
-	if (conn != NULL && connErr == 0) {
+	if (conn != NULL && connErr == 0)
+	{
 
 		// send request
 		writeErr = netconn_write(conn, &buffer, sizeof(buffer), NETCONN_NOCOPY);
 
-		if (writeErr == 0) {
+		if (writeErr == 0)
+		{
 
-			do {
+			do
+			{
 				// fetch next data
 				inBuf = netconn_recv(conn);
-				do {
+				do
+				{
 					vTaskSuspendAll();
 					{
 						// read data
 						netbuf_data(inBuf, (void**) &pageData, &length);
 
-						for (i = 0; i < length && bufferpos < HTTPC_BUFFER_LEN; i++) {
-							if (pageData[i] == DELIMITOR_CHAR) {
-								if (output == true) {
+						for (i = 0; i < length && bufferpos < HTTPC_BUFFER_LEN; i++)
+						{
+							if (pageData[i] == DELIMITOR_CHAR)
+							{
+								if (output == true)
+								{
 									output = false;
 									buffer[bufferpos] = 0;
 									vParseParameter(buffer, bufferpos);
-								} else {
+								}
+								else
+								{
 									output = true;
 									bufferpos = 0;
 									continue;
 								}
 							}
 
-							if (output == true) {
+							if (output == true)
+							{
 								buffer[bufferpos] = pageData[i];
 								bufferpos++;
 							}
@@ -133,27 +148,34 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 				} while (netbuf_next(inBuf) >= 0);
 
 				// delete buffer
-				if (inBuf != NULL) {
+				if (inBuf != NULL)
+				{
 					netbuf_delete(inBuf);
 				}
 
 			} while (inBuf != NULL);
-		} else {
+		}
+		else
+		{
 			snprintf(buffer, HTTPC_BUFFER_LEN, "WEBCLIENT: READ ERROR: %d\n",
 					connErr);
 			printf(buffer);
 			vShowBootText(buffer);
 		}
 
-	} else {
+	}
+	else
+	{
 		snprintf(buffer, HTTPC_BUFFER_LEN, "WEBCLIENT: ERROR: %d\n", connErr);
 		printf(buffer);
 		vShowBootText(buffer);
 	}
 
 	// close connection
-	if (conn != NULL) {
-		while (netconn_delete(conn) != ERR_OK) {
+	if (conn != NULL)
+	{
+		while (netconn_delete(conn) != ERR_OK)
+		{
 			vTaskDelay(1);
 		}
 	}
@@ -165,7 +187,8 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter) {
 /**
  * Parse the Special Komments for the GUI
  */
-void vParseParameter(char* html, u16_t len) {
+void vParseParameter(char* html, u16_t len)
+{
 	int i, bufferpos = 0, nrOfTags, tagPos;
 
 	nrOfTags = NUM_CONFIG_TAGS;
@@ -177,13 +200,16 @@ void vParseParameter(char* html, u16_t len) {
 	printf("vParseParameter\n");
 #endif
 
-	for (i = 0; i < len; i++) {
-		if (!iIsSpace(html[i])) {
+	for (i = 0; i < len; i++)
+	{
+		if (!iIsSpace(html[i]))
+		{
 			break;
 		}
 	}
 
-	for (; i < len && !iIsSpace(html[i]); i++) {
+	for (; i < len && !iIsSpace(html[i]); i++)
+	{
 		buffer[bufferpos] = html[i];
 		bufferpos++;
 	}
@@ -193,11 +219,14 @@ void vParseParameter(char* html, u16_t len) {
 	printf("vParseParameter: Found Type: %s\n", buffer);
 #endif
 
-	for (tagPos = 0; tagPos < nrOfTags && strcmp(buffer, xTagList[tagPos].tagname) != 0; tagPos++) {
-			;
+	for (tagPos = 0; tagPos < nrOfTags && strcmp(buffer,
+			xTagList[tagPos].tagname) != 0; tagPos++)
+	{
+		;
 	}
 
-	if (tagPos >= 0 && tagPos < nrOfTags) {
+	if (tagPos >= 0 && tagPos < nrOfTags)
+	{
 		xTagList[tagPos].onLoad(html, len, newLine);
 	}
 

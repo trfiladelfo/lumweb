@@ -2,7 +2,6 @@
  * \addtogroup Configuration
  * @{
  *
- * \file setup.c
  * \author Anziner, Hahn
  * \brief File with the setup function
  *

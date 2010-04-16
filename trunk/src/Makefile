@@ -45,7 +45,7 @@ SOURCE=	syscall.c \
 		$(ETHERNET_DIR)/LWIPStack.c \
 		$(ETHERNET_DIR)/ETHIsr.c \
 		$(COMM_DIR)/comTask.c \
-		$(COMM_DIR)/impl/canBusImpl.c \
+		$(COMM_DIR)/impl/sdCardImpl.c \
 		$(UART_DIR)/uartstdio.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
