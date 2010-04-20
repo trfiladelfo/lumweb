@@ -13,7 +13,13 @@
 
 #include "FreeRTOSConfig.h"
 
-/// Stack size for the LWIP Task (also the Webserver)
+//*****************************************************************************
+//
+// LWIP Task
+//
+//*****************************************************************************
+
+/// Stack size for the LWIP Task (the Webserver)
 #define LWIP_STACK_SIZE		512*2
 
 /// Task name for the LWIP Task
@@ -24,6 +30,13 @@
 
 /// Task handle for LWIP, used for suspending and resuming tasks
 xTaskHandle xLwipTaskHandle;
+
+
+//*****************************************************************************
+//
+// Graphic Task
+//
+//*****************************************************************************
 
 /// Stack size for the Graphic Task (Graphic user Interface)
 #define GRAPH_STACK_SIZE	512
@@ -36,6 +49,13 @@ xTaskHandle xLwipTaskHandle;
 
 /// Task handle for Graphic Task, used for suspending and resuming tasks
 xTaskHandle xGraphTaskHandle;
+
+
+//*****************************************************************************
+//
+// Com Task
+//
+//*****************************************************************************
 
 /// Stack size for the Communication Task
 #define COM_STACK_SIZE		128 * 2
@@ -50,22 +70,11 @@ xTaskHandle xGraphTaskHandle;
 xTaskHandle xComTaskHandle;
 
 
-/// Stack size for the SD-Card Manager Task
-#define SDCARD_STACK_SIZE		128
-
-/// Task name for the SD-Card Manager Task
-#define SDCARD_TASK_NAME		"sdcard"
-
-/// Task priority (0 = idle)
-#define SDCARD_TASK_PRIORITY  	0
-
-/// Startpoint for the SD-Card Manager Task
-extern void vSDcardTask(void *pvParameters);
-
-/// Task handler for the SD-Card Manager Task
-xTaskHandle xSdCardTaskHandle;
-
-
+//*****************************************************************************
+//
+// Real Time Task
+//
+//*****************************************************************************
 /// Stack size for the Clock Task
 #define TIME_STACK_SIZE		128
 
