@@ -153,7 +153,9 @@ void io_init(void)
 	//
 	// Pass our tag information to the HTTP server.
 	//
+#if DEBUG_SSI
 	printf("io_init NUM_CONFIG TAGS = %d\n", NUM_CONFIG_TAGS);
+#endif
 	http_set_ssi_handler(SSIHandler);
 #endif
 

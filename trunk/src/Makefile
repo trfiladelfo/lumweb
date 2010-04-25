@@ -175,7 +175,6 @@ startup.o : startup.c Makefile
 	$(CC) -c $(CFLAGS) -O1 startup.c -o startup.o
 
 clean :
-	touch Makefile
 	rm  -f $(OBJS)
 	rm  -f *.o
 	rm  -f *.map
