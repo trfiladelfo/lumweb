@@ -105,7 +105,9 @@ tWidget* xHyperlinkOnDisplay(void* this, int row)
 		line->valueWidget = NULL;
 	}
 
+#if DEBUG_TAGS
 	printf("xHyperlinkOnDisplay: new Hyperlink created\n");
+#endif
 
 	line->valueWidget = pvPortMalloc(sizeof(tPushButtonWidget));
 	((tPushButtonWidget*) line->valueWidget)->pFont = DISPLAY_VALUE_FONT;

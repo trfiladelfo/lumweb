@@ -34,10 +34,10 @@
 #define DEBUG_MEMORY 		 0 // default 0
 
 /// enable debugging messages for graphic stuff
-#define DEBUG_GRAPHIC 		 1 // default 0
+#define DEBUG_GRAPHIC 		 0 // default 0
 
 /// enable debugging messages for the webclient
-#define DEBUG_HTTPC			 1 // default 0
+#define DEBUG_HTTPC			 0 // default 0
 
 /// enable debugging messages for the graphic editor
 #define DEBUG_GRAPHIC_EDITOR 0 // default 0
@@ -52,13 +52,13 @@
 #define DEBUG_LOG 			 0 // default 0
 
 /// enable debugging messages for tags
-#define DEBUG_TAGS			 1 // default 0
+#define DEBUG_TAGS			 0 // default 0
 
 /// enable debugging messages for cgi routines
 #define DEBUG_CGI 			 0 // default 0
 
 /// enable debugging messages for comTask
-#define DEBUG_COM			0 // default 0
+#define DEBUG_COM			1 // default 0
 
 
 

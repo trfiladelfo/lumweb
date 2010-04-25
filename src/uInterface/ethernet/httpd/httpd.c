@@ -408,13 +408,18 @@ static int extract_uri_parameters(struct http_state *hs, char *params) {
 static void get_tag_insert(struct http_state *hs) {
 	int loop;
 
+#if DEBUG_HTTPC
 	printf("get_tag_insert %x %x\n", (unsigned int) g_pfnSSIHandler, (unsigned int)xTagList);
+#endif
 	if (g_pfnSSIHandler != NULL && xTagList != NULL && g_iNumTags > 0) {
-
+#if DEBUG_HTTPC
                 printf("get_tag_insert - tags vorhanden\n");
+#endif
 		/* Find this tag in the list we have been provided. */
 		for (loop = 0; loop < g_iNumTags; loop++) {
+#if DEBUG_HTTPC
                       printf("get_tag_insert: TagName %s\n",  xTagList[loop].tagname);
+#endif
 			if (strcmp(hs->tag_name,  xTagList[loop].tagname) == 0) {
 #ifdef INCLUDE_HTTPD_SSI_PARAMS
 				hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
@@ -423,8 +428,6 @@ static void get_tag_insert(struct http_state *hs) {
 				hs->tag_insert_len = g_pfnSSIHandler(loop, hs->tag_insert,
 						MAX_TAG_INSERT_LEN);
 #endif
-
-				//printf("TAG INSERT DONE\n");
 				return;
 			}
 		}

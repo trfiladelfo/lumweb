@@ -57,8 +57,6 @@ extern void vPortSVCHandler(void);
 extern void Timer0IntHandler(void);
 extern void ETH0IntHandler(void);
 
-extern void CANIntHandler(void);
-
 //*****************************************************************************
 //
 // External declarations for the interrupt handlers used by the application.
@@ -142,7 +140,6 @@ void (* const g_pfnVectors[])(void) =
 		IntDefaultHandler, // Timer 3 subtimer B
 		IntDefaultHandler, // I2C1 Master and Slave
 		IntDefaultHandler, // Quadrature Encoder 1
-		//CANIntHandler, // CAN0
 		IntDefaultHandler, // CAN0
 		IntDefaultHandler, // CAN1
 		IntDefaultHandler, // CAN2
