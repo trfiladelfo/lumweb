@@ -19,6 +19,7 @@
 // COM Queue
 //
 //*****************************************************************************
+
 /// Size of the COM Queue
 #define COM_QUEUE_SIZE 		6
 
@@ -30,6 +31,7 @@ xQueueHandle xComQueue;
 // HTTDP Queue
 //
 //*****************************************************************************
+
 /// Size of the HTTPD Queue
 #define HTTPD_QUEUE_SIZE 	6
 
