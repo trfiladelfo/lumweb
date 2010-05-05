@@ -121,8 +121,8 @@ static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen );
  */
 static const tCGI g_psConfigCGIURIs[] =
 {
-{ "/set.cgi", SetCGIHandler }, // CGI_INDEX_CONTROL
-		};
+		{ "/set.cgi", SetCGIHandler }, /// CGI_INDEX_CONTROL
+};
 
 /**
  *

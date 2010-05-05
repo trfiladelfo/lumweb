@@ -16,8 +16,8 @@
 #define ETHERNET_INT_PRIORITY   0xC0
 
 /// Enable logging in /log/sys.log on the SD Card
-#define ENABLE_LOG		 	 0 // default 0
 
+#define ENABLE_LOG		 	 0 // default 0
 /// Enable the graphic stuff
 #define ENABLE_GRAPHIC		 1 // default 1
 
@@ -52,7 +52,7 @@
 /// enable debugging messages for the logging framework
 #define DEBUG_LOG 			 0 // default 0
 
-/// enable debugging messages for tags
+/// enable debugging messages for tags in the taglib
 #define DEBUG_TAGS			 0 // default 0
 
 /// enable debugging messages for cgi routines
@@ -60,7 +60,6 @@
 
 /// enable debugging messages for comTask
 #define DEBUG_COM			1 // default 0
-
 
 
 /// initialize hardware
