@@ -9,7 +9,7 @@
 			<center>
 			<form method="get" action="set.cgi" name="demo" id="form-demo" onsubmit="return submit_form(this)">
 				<!--#Titel label=Demo --><br/>
-				<!--#IntegerInputField id=d1 name=DemoName min=5 max=10 increment=1 --><br/>
+				<!--#FloatInputField id=kurve label=Heizkurve max=2 min=1 increment=0.1 --><br/>
 				
 				<!--#SubmitInputField label=Speichern form_id=demo -->  
 			</form>
