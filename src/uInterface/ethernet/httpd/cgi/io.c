@@ -559,6 +559,7 @@ int io_get_value_from_comtask(char* id)
 #if DEBUG_SSI
 	printf("io_get_value_from_comtask: getting values \n");
 #endif
+	// insert values into xComMessage structur
 	xCom_msg.cmd = GET;
 	xCom_msg.dataSouce = DATA;
 	xCom_msg.from = xHttpdQueue;
@@ -566,6 +567,8 @@ int io_get_value_from_comtask(char* id)
 	xCom_msg.freeItem = pdFALSE;
 
 	xCom_msg.item = id;
+
+	// send message to ComQueue
 	xQueueSend(xComQueue, &xCom_msg, (portTickType) 0);
 #if DEBUG_SSI
 	printf("io_get_value_from_comtask: sending req to com task \n");
