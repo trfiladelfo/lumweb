@@ -185,7 +185,7 @@ void vLoadWebPage(char* page, basicDisplayLine* paramsParameter)
 }
 
 /**
- * Parse the Special Komments for the GUI
+ * Parse the Special Comments for the GUI
  */
 void vParseParameter(char* html, u16_t len)
 {
