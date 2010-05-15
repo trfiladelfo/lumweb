@@ -1,8 +1,8 @@
 # Makefile for the Luminary Project.
 # This Makefile is made for the CodeSourcery G++ Lite Compiler and optimized for the LM3S9B96
 #
-# Please change only the first Part of this File until. This is the Variable Part of the Makefile
-# The last Part of this File contains the Compiler Options
+# Please change only the first Part of this file. 
+# The last part of this file contains the compiler options.
 #
 # Author:  Anzinger Martin, Hahn Florian
 # Version: 1.0
@@ -151,11 +151,6 @@ CFLAGS=-I $(SOURCE_DIR) \
 		-Dgcc \
 		-D malloc=pvPortMalloc -D free=vPortFree \
 		
-		
-	
-		# -D GCC_ARMCM3_LM3S102 \
-		 -fdata-sections 
-
 LIBS= $(LUMINARY_DRIVER_DIR)/driverlib/gcc/libdriver.a $(GRLIB_COMMON_DIR)/gcc/libgr.a  
 
 OBJS = $(SOURCE:.c=.o)
