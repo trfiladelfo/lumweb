@@ -1,0 +1,817 @@
+Archive member included because of file (symbol)
+
+../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                              rit128x96x4.o (GPIOPadConfigSet)
+../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                              ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o) (IntRegister)
+../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                              rit128x96x4.o (SSIConfigSetExpClk)
+../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                              rit128x96x4.o (SysCtlPeripheralPresent)
+../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                              uartstdio.o (UARTEnable)
+../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(cpu.o)
+                              ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o) (CPUcpsid)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-atoi.o)
+                              simulation.o (atoi)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-memcpy.o)
+                              ustdlib.o (memcpy)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strcmp.o)
+                              simulation.o (strcmp)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strlen.o)
+                              simulation.o (strlen)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strncpy.o)
+                              ustdlib.o (strncpy)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o)
+                              /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-atoi.o) (_strtol_r)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-ctype_.o)
+                              /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o) (__ctype_ptr__)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-impure.o)
+                              /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o) (_impure_ptr)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_udivsi3.o)
+                              /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o) (__aeabi_uidiv)
+/opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_dvmd_tls.o)
+                              /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_udivsi3.o) (__aeabi_idiv0)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x00000000         0x00040000         xr
+SRAM             0x20000000         0x00010000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD rit128x96x4.o
+LOAD ustdlib.o
+LOAD uartstdio.o
+LOAD simulation.o
+LOAD startup.o
+LOAD ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a
+LOAD ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libgr.a
+START GROUP
+LOAD /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a
+LOAD /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a
+END GROUP
+
+.text           0x00000000     0x3434
+ *(.isr_vector)
+ .isr_vector    0x00000000       0xf0 startup.o
+                0x00000000                g_pfnVectors
+ *(.text*)
+ .text          0x000000f0        0x0 rit128x96x4.o
+ .text.RITWriteCommand
+                0x000000f0       0x84 rit128x96x4.o
+ .text.RITWriteData
+                0x00000174       0x8c rit128x96x4.o
+ .text.RIT128x96x4Clear
+                0x00000200       0x94 rit128x96x4.o
+                0x00000200                RIT128x96x4Clear
+ .text.RIT128x96x4StringDraw
+                0x00000294      0x1e0 rit128x96x4.o
+                0x00000294                RIT128x96x4StringDraw
+ .text.RIT128x96x4ImageDraw
+                0x00000474       0xec rit128x96x4.o
+                0x00000474                RIT128x96x4ImageDraw
+ .text.RIT128x96x4Enable
+                0x00000560       0x9c rit128x96x4.o
+                0x00000560                RIT128x96x4Enable
+ .text.RIT128x96x4Disable
+                0x000005fc       0x7c rit128x96x4.o
+                0x000005fc                RIT128x96x4Disable
+ .text.RIT128x96x4Init
+                0x00000678      0x208 rit128x96x4.o
+                0x00000678                RIT128x96x4Init
+ .text.RIT128x96x4DisplayOn
+                0x00000880       0x60 rit128x96x4.o
+                0x00000880                RIT128x96x4DisplayOn
+ .text.RIT128x96x4DisplayOff
+                0x000008e0       0x18 rit128x96x4.o
+                0x000008e0                RIT128x96x4DisplayOff
+ .text          0x000008f8        0x0 ustdlib.o
+ .text.uvsnprintf
+                0x000008f8      0x508 ustdlib.o
+                0x000008f8                uvsnprintf
+ .text.usprintf
+                0x00000e00       0x34 ustdlib.o
+                0x00000e00                usprintf
+ .text.usnprintf
+                0x00000e34       0x34 ustdlib.o
+                0x00000e34                usnprintf
+ .text          0x00000e68        0x0 uartstdio.o
+ .text.UARTStdioInit
+                0x00000e68       0xb0 uartstdio.o
+                0x00000e68                UARTStdioInit
+ .text.UARTwrite
+                0x00000f18       0x68 uartstdio.o
+                0x00000f18                UARTwrite
+ .text.sendchar
+                0x00000f80       0x44 uartstdio.o
+                0x00000f80                sendchar
+ .text.UARTgets
+                0x00000fc4       0xf4 uartstdio.o
+                0x00000fc4                UARTgets
+ .text.getkey   0x000010b8       0x1c uartstdio.o
+                0x000010b8                getkey
+ .text.UARTprintf
+                0x000010d4      0x494 uartstdio.o
+                0x000010d4                UARTprintf
+ .text          0x00001568        0x0 simulation.o
+ .text.main     0x00001568      0x220 simulation.o
+                0x00001568                main
+ .text.findChar
+                0x00001788       0x54 simulation.o
+                0x00001788                findChar
+ .text          0x000017dc        0x0 startup.o
+ .text.NmiSR    0x000017dc        0x4 startup.o
+ .text.FaultISR
+                0x000017e0        0x4 startup.o
+ .text.IntDefaultHandler
+                0x000017e4        0x4 startup.o
+ .text.uipprintf
+                0x000017e8        0xc startup.o
+                0x000017e8                uipprintf
+ .text.IntEmptyHandler
+                0x000017f4        0x4 startup.o
+ .text.ResetISR
+                0x000017f8       0x70 startup.o
+                0x000017f8                ResetISR
+ .text          0x00001868        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+ .text.GPIOGetIntNumber
+                0x00001868       0xa4 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+ .text.GPIODirModeSet
+                0x0000190c       0x44 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x0000190c                GPIODirModeSet
+ .text.GPIODirModeGet
+                0x00001950       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001950                GPIODirModeGet
+ .text.GPIOIntTypeSet
+                0x00001970       0x70 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001970                GPIOIntTypeSet
+ .text.GPIOIntTypeGet
+                0x000019e0       0x30 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x000019e0                GPIOIntTypeGet
+ .text.GPIOPadConfigSet
+                0x00001a10      0x130 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001a10                GPIOPadConfigSet
+ .text.GPIOPadConfigGet
+                0x00001b40       0x78 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001b40                GPIOPadConfigGet
+ .text.GPIOPinIntEnable
+                0x00001bb8        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001bb8                GPIOPinIntEnable
+ .text.GPIOPinIntDisable
+                0x00001bc4       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001bc4                GPIOPinIntDisable
+ .text.GPIOPinIntStatus
+                0x00001bd4       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001bd4                GPIOPinIntStatus
+ .text.GPIOPinIntClear
+                0x00001be4        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001be4                GPIOPinIntClear
+ .text.GPIOPinRead
+                0x00001bec        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001bec                GPIOPinRead
+ .text.GPIOPinWrite
+                0x00001bf4        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001bf4                GPIOPinWrite
+ .text.GPIOPinTypeADC
+                0x00001bfc       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001bfc                GPIOPinTypeADC
+ .text.GPIOPinTypeCAN
+                0x00001c18       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001c18                GPIOPinTypeCAN
+ .text.GPIOPinTypeComparator
+                0x00001c34       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001c34                GPIOPinTypeComparator
+ .text.GPIOPinTypeGPIOInput
+                0x00001c50       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001c50                GPIOPinTypeGPIOInput
+ .text.GPIOPinTypeGPIOOutput
+                0x00001c6c       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001c6c                GPIOPinTypeGPIOOutput
+ .text.GPIOPinTypeGPIOOutputOD
+                0x00001c88       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001c88                GPIOPinTypeGPIOOutputOD
+ .text.GPIOPinTypeI2C
+                0x00001ca4       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001ca4                GPIOPinTypeI2C
+ .text.GPIOPinTypePWM
+                0x00001cc0       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001cc0                GPIOPinTypePWM
+ .text.GPIOPinTypeQEI
+                0x00001cdc       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001cdc                GPIOPinTypeQEI
+ .text.GPIOPinTypeSSI
+                0x00001cf8       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001cf8                GPIOPinTypeSSI
+ .text.GPIOPinTypeTimer
+                0x00001d14       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001d14                GPIOPinTypeTimer
+ .text.GPIOPinTypeUART
+                0x00001d30       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001d30                GPIOPinTypeUART
+ .text.GPIOPinTypeUSBDigital
+                0x00001d4c       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001d4c                GPIOPinTypeUSBDigital
+ .text.GPIOPortIntUnregister
+                0x00001d68       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001d68                GPIOPortIntUnregister
+ .text.GPIOPortIntRegister
+                0x00001d7c       0x18 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+                0x00001d7c                GPIOPortIntRegister
+ .text          0x00001d94        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ .text.IntDefaultHandler
+                0x00001d94        0x4 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ .text.IntRegister
+                0x00001d98       0x3c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001d98                IntRegister
+ .text.IntUnregister
+                0x00001dd4       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001dd4                IntUnregister
+ .text.IntPriorityGroupingSet
+                0x00001de8       0x1c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001de8                IntPriorityGroupingSet
+ .text.IntPriorityGroupingGet
+                0x00001e04       0x24 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001e04                IntPriorityGroupingGet
+ .text.IntPrioritySet
+                0x00001e28       0x28 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001e28                IntPrioritySet
+ .text.IntPriorityGet
+                0x00001e50       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001e50                IntPriorityGet
+ .text.IntEnable
+                0x00001e70       0x74 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001e70                IntEnable
+ .text.IntDisable
+                0x00001ee4       0x74 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001ee4                IntDisable
+ .text.IntMasterDisable
+                0x00001f58        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001f58                IntMasterDisable
+ .text.IntMasterEnable
+                0x00001f64        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+                0x00001f64                IntMasterEnable
+ .text          0x00001f70        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+ .text.SSIConfigSetExpClk
+                0x00001f70       0x48 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00001f70                SSIConfigSetExpClk
+ .text.SSIEnable
+                0x00001fb8        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00001fb8                SSIEnable
+ .text.SSIDisable
+                0x00001fc4        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00001fc4                SSIDisable
+ .text.SSIIntEnable
+                0x00001fd0        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00001fd0                SSIIntEnable
+ .text.SSIIntDisable
+                0x00001fd8        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00001fd8                SSIIntDisable
+ .text.SSIIntStatus
+                0x00001fe4        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00001fe4                SSIIntStatus
+ .text.SSIIntClear
+                0x00001ff0        0x4 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00001ff0                SSIIntClear
+ .text.SSIDataPut
+                0x00001ff4       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00001ff4                SSIDataPut
+ .text.SSIDataPutNonBlocking
+                0x00002004       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00002004                SSIDataPutNonBlocking
+ .text.SSIDataGet
+                0x00002014       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00002014                SSIDataGet
+ .text.SSIDataGetNonBlocking
+                0x00002028       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00002028                SSIDataGetNonBlocking
+ .text.SSIDMAEnable
+                0x0000203c        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x0000203c                SSIDMAEnable
+ .text.SSIDMADisable
+                0x00002044        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00002044                SSIDMADisable
+ .text.SSIIntUnregister
+                0x00002050       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00002050                SSIIntUnregister
+ .text.SSIIntRegister
+                0x00002070       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+                0x00002070                SSIIntRegister
+ .text          0x00002090        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .text.SysCtlSRAMSizeGet
+                0x00002090       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002090                SysCtlSRAMSizeGet
+ .text.SysCtlFlashSizeGet
+                0x000020a4       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000020a4                SysCtlFlashSizeGet
+ .text.SysCtlPinPresent
+                0x000020b8       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000020b8                SysCtlPinPresent
+ .text.SysCtlPeripheralPresent
+                0x000020cc       0x28 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000020cc                SysCtlPeripheralPresent
+ .text.SysCtlPeripheralReset
+                0x000020f4       0x44 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000020f4                SysCtlPeripheralReset
+ .text.SysCtlPeripheralEnable
+                0x00002138       0x24 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002138                SysCtlPeripheralEnable
+ .text.SysCtlPeripheralDisable
+                0x0000215c       0x24 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x0000215c                SysCtlPeripheralDisable
+ .text.SysCtlPeripheralSleepEnable
+                0x00002180       0x24 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002180                SysCtlPeripheralSleepEnable
+ .text.SysCtlPeripheralSleepDisable
+                0x000021a4       0x24 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000021a4                SysCtlPeripheralSleepDisable
+ .text.SysCtlPeripheralDeepSleepEnable
+                0x000021c8       0x24 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000021c8                SysCtlPeripheralDeepSleepEnable
+ .text.SysCtlPeripheralDeepSleepDisable
+                0x000021ec       0x24 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000021ec                SysCtlPeripheralDeepSleepDisable
+ .text.SysCtlPeripheralClockGating
+                0x00002210       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002210                SysCtlPeripheralClockGating
+ .text.SysCtlIntEnable
+                0x00002230       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002230                SysCtlIntEnable
+ .text.SysCtlIntDisable
+                0x00002240       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002240                SysCtlIntDisable
+ .text.SysCtlIntClear
+                0x00002250        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002250                SysCtlIntClear
+ .text.SysCtlIntStatus
+                0x0000225c       0x18 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x0000225c                SysCtlIntStatus
+ .text.SysCtlLDOSet
+                0x00002274        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002274                SysCtlLDOSet
+ .text.SysCtlLDOGet
+                0x00002280        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002280                SysCtlLDOGet
+ .text.SysCtlLDOConfigSet
+                0x0000228c        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x0000228c                SysCtlLDOConfigSet
+ .text.SysCtlReset
+                0x00002298       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002298                SysCtlReset
+ .text.SysCtlResetCauseGet
+                0x000022a8        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000022a8                SysCtlResetCauseGet
+ .text.SysCtlResetCauseClear
+                0x000022b4       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000022b4                SysCtlResetCauseClear
+ .text.SysCtlBrownOutConfigSet
+                0x000022c4       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000022c4                SysCtlBrownOutConfigSet
+ .text.SysCtlDelay
+                0x000022d4        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000022d4                SysCtlDelay
+ .text.SysCtlClockSet
+                0x000022dc      0x168 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000022dc                SysCtlClockSet
+ .text.SysCtlClockGet
+                0x00002444      0x150 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002444                SysCtlClockGet
+ .text.SysCtlPWMClockSet
+                0x00002594       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002594                SysCtlPWMClockSet
+ .text.SysCtlPWMClockGet
+                0x000025a8       0x18 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000025a8                SysCtlPWMClockGet
+ .text.SysCtlADCSpeedSet
+                0x000025c0       0x34 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000025c0                SysCtlADCSpeedSet
+ .text.SysCtlADCSpeedGet
+                0x000025f4       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000025f4                SysCtlADCSpeedGet
+ .text.SysCtlIOSCVerificationSet
+                0x00002604       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002604                SysCtlIOSCVerificationSet
+ .text.SysCtlMOSCVerificationSet
+                0x00002624       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002624                SysCtlMOSCVerificationSet
+ .text.SysCtlPLLVerificationSet
+                0x00002644       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002644                SysCtlPLLVerificationSet
+ .text.SysCtlClkVerificationClear
+                0x00002664       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002664                SysCtlClkVerificationClear
+ .text.SysCtlGPIOAHBEnable
+                0x00002674       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002674                SysCtlGPIOAHBEnable
+ .text.SysCtlGPIOAHBDisable
+                0x00002684       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002684                SysCtlGPIOAHBDisable
+ .text.SysCtlUSBPLLEnable
+                0x00002698       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x00002698                SysCtlUSBPLLEnable
+ .text.SysCtlUSBPLLDisable
+                0x000026a8       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000026a8                SysCtlUSBPLLDisable
+ .text.SysCtlDeepSleep
+                0x000026b8       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000026b8                SysCtlDeepSleep
+ .text.SysCtlSleep
+                0x000026d8        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000026d8                SysCtlSleep
+ .text.SysCtlIntUnregister
+                0x000026e0       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000026e0                SysCtlIntUnregister
+ .text.SysCtlIntRegister
+                0x000026f0       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+                0x000026f0                SysCtlIntRegister
+ .text          0x00002704        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+ .text.UARTParityModeSet
+                0x00002704        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002704                UARTParityModeSet
+ .text.UARTParityModeGet
+                0x00002710        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002710                UARTParityModeGet
+ .text.UARTFIFOLevelSet
+                0x00002718        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002718                UARTFIFOLevelSet
+ .text.UARTFIFOLevelGet
+                0x00002720       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002720                UARTFIFOLevelGet
+ .text.UARTConfigGetExpClk
+                0x00002730       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002730                UARTConfigGetExpClk
+ .text.UARTEnable
+                0x00002750       0x18 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002750                UARTEnable
+ .text.UARTDisable
+                0x00002768       0x24 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002768                UARTDisable
+ .text.UARTConfigSetExpClk
+                0x0000278c       0x38 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x0000278c                UARTConfigSetExpClk
+ .text.UARTEnableSIR
+                0x000027c4       0x18 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x000027c4                UARTEnableSIR
+ .text.UARTDisableSIR
+                0x000027dc        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x000027dc                UARTDisableSIR
+ .text.UARTCharsAvail
+                0x000027e8       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x000027e8                UARTCharsAvail
+ .text.UARTSpaceAvail
+                0x000027f8       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x000027f8                UARTSpaceAvail
+ .text.UARTCharGetNonBlocking
+                0x00002808       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002808                UARTCharGetNonBlocking
+ .text.UARTCharGet
+                0x00002818       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002818                UARTCharGet
+ .text.UARTCharPutNonBlocking
+                0x00002828       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002828                UARTCharPutNonBlocking
+ .text.UARTCharPut
+                0x0000283c       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x0000283c                UARTCharPut
+ .text.UARTBreakCtl
+                0x0000284c       0x18 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x0000284c                UARTBreakCtl
+ .text.UARTIntEnable
+                0x00002864        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002864                UARTIntEnable
+ .text.UARTIntDisable
+                0x0000286c        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x0000286c                UARTIntDisable
+ .text.UARTIntStatus
+                0x00002878        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002878                UARTIntStatus
+ .text.UARTIntClear
+                0x00002884        0x4 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002884                UARTIntClear
+ .text.UARTDMAEnable
+                0x00002888        0x8 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002888                UARTDMAEnable
+ .text.UARTDMADisable
+                0x00002890        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x00002890                UARTDMADisable
+ .text.UARTIntUnregister
+                0x0000289c       0x2c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x0000289c                UARTIntUnregister
+ .text.UARTIntRegister
+                0x000028c8       0x2c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+                0x000028c8                UARTIntRegister
+ .text          0x000028f4       0x14 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(cpu.o)
+                0x000028f4                CPUcpsid
+                0x00002904                CPUwfi
+                0x000028fc                CPUcpsie
+ .text          0x00002908       0x18 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-atoi.o)
+                0x00002908                _atoi_r
+                0x00002914                atoi
+ .text          0x00002920      0x12c /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-memcpy.o)
+                0x00002920                memcpy
+ .text          0x00002a4c      0x1dc /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strcmp.o)
+                0x00002a4c                strcmp
+ .text          0x00002c28       0x60 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strlen.o)
+                0x00002c28                strlen
+ .text          0x00002c88       0x80 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strncpy.o)
+                0x00002c88                strncpy
+ .text          0x00002d08      0x16c /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o)
+                0x00002e58                strtol
+                0x00002d08                _strtol_r
+ .text          0x00002e74        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-ctype_.o)
+ .text          0x00002e74        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-impure.o)
+ .text          0x00002e74       0x8c /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_udivsi3.o)
+                0x00002e74                __udivsi3
+                0x00002e74                __aeabi_uidiv
+                0x00002eec                __aeabi_uidivmod
+ .text          0x00002f00        0x4 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_dvmd_tls.o)
+                0x00002f00                __aeabi_ldiv0
+                0x00002f00                __aeabi_idiv0
+ *(.rodata*)
+ .rodata.g_pucRIT128x96x4VerticalInc
+                0x00002f04        0x2 rit128x96x4.o
+ .rodata.g_pucRIT128x96x4HorizontalInc
+                0x00002f06        0x2 rit128x96x4.o
+ .rodata.g_pucFont
+                0x00002f08      0x1e0 rit128x96x4.o
+ .rodata.g_pucRIT128x96x4Init
+                0x000030e8       0x4f rit128x96x4.o
+ .rodata.pucCommand2.1541
+                0x00003137        0x3 rit128x96x4.o
+ .rodata.pucCommand1.1540
+                0x0000313a        0x3 rit128x96x4.o
+ .rodata.pucCommand1.1725
+                0x0000313d        0x2 rit128x96x4.o
+ *fill*         0x0000313f        0x1 00
+ .rodata        0x00003140       0x1c ustdlib.o
+ .rodata.g_pcHex
+                0x0000315c        0x4 ustdlib.o
+ .rodata        0x00003160       0x28 uartstdio.o
+ .rodata.g_pcHex
+                0x00003188        0x4 uartstdio.o
+ .rodata.g_ulUARTBase
+                0x0000318c        0xc uartstdio.o
+ .rodata.g_ulUARTPeriph
+                0x00003198        0xc uartstdio.o
+ .rodata        0x000031a4       0x88 simulation.o
+ .rodata.g_pulPriority
+                0x0000322c       0x20 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ .rodata.g_pulRegs
+                0x0000324c       0x40 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ .rodata.g_pulDCRegs
+                0x0000328c       0x10 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .rodata.g_pulXtals
+                0x0000329c       0x5c ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .rodata.g_pulDCGCRegs
+                0x000032f8        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .rodata.g_pulRCGCRegs
+                0x00003304        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .rodata.g_pulSCGCRegs
+                0x00003310        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .rodata.g_pulSRCRRegs
+                0x0000331c        0xc ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .rodata        0x00003328      0x101 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-ctype_.o)
+                0x00003328                _ctype_
+ *fill*         0x00003429        0x3 00
+ .rodata        0x0000342c        0x4 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-impure.o)
+                0x0000342c                _global_impure_ptr
+ .rodata.str1.4
+                0x00003430        0x4 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-impure.o)
+                0x00003434                _etext = .
+
+.glue_7         0x00003434        0x0
+ .glue_7        0x00000000        0x0 linker stubs
+
+.glue_7t        0x00003434        0x0
+ .glue_7t       0x00000000        0x0 linker stubs
+
+.vfp11_veneer   0x00003434        0x0
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+
+.v4_bx          0x00003434        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+
+.data           0x20000000      0x1fc load address 0x00003434
+                0x20000000                _data = .
+ *(vtable)
+ vtable         0x20000000      0x100 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ *(.data*)
+ .data          0x20000100        0x0 rit128x96x4.o
+ .data          0x20000100        0x0 ustdlib.o
+ .data          0x20000100        0x0 uartstdio.o
+ .data          0x20000100        0x0 simulation.o
+ .data          0x20000100        0x0 startup.o
+ .data          0x20000100        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+ .data          0x20000100        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ .data          0x20000100        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+ .data          0x20000100        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .data          0x20000100        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+ .data          0x20000100        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(cpu.o)
+ .data          0x20000100        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-atoi.o)
+ .data          0x20000100        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-memcpy.o)
+ .data          0x20000100        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strcmp.o)
+ .data          0x20000100        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strlen.o)
+ .data          0x20000100        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strncpy.o)
+ .data          0x20000100        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o)
+ .data          0x20000100        0x8 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-ctype_.o)
+                0x20000100                __ctype_ptr
+                0x20000104                __ctype_ptr__
+ .data          0x20000108       0xf4 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-impure.o)
+                0x20000108                _impure_ptr
+ .data          0x200001fc        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_udivsi3.o)
+ .data          0x200001fc        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_dvmd_tls.o)
+                0x200001fc                _edata = .
+
+.bss            0x200001fc      0x204 load address 0x00003630
+                0x200001fc                _bss = .
+ *(.bss*)
+ .bss           0x200001fc        0x0 rit128x96x4.o
+ .bss.ulGPIOId  0x200001fc        0x4 rit128x96x4.o
+                0x200001fc                ulGPIOId
+ .bss.ulGPIOBase
+                0x20000200        0x4 rit128x96x4.o
+                0x20000200                ulGPIOBase
+ .bss.ulOLEDDC_PIN
+                0x20000204        0x4 rit128x96x4.o
+                0x20000204                ulOLEDDC_PIN
+ .bss.ulOLEDEN_PIN
+                0x20000208        0x4 rit128x96x4.o
+                0x20000208                ulOLEDEN_PIN
+ .bss.g_bSSIEnabled
+                0x2000020c        0x1 rit128x96x4.o
+ .bss.g_pucBuffer
+                0x2000020d        0x8 rit128x96x4.o
+ .bss           0x20000215        0x0 ustdlib.o
+ .bss           0x20000215        0x0 uartstdio.o
+ *fill*         0x20000215        0x3 00
+ .bss.g_ulBase  0x20000218        0x4 uartstdio.o
+ .bss.bLastWasCR.2486
+                0x2000021c        0x1 uartstdio.o
+ .bss           0x2000021d        0x0 simulation.o
+ .bss           0x2000021d        0x0 startup.o
+ *fill*         0x2000021d        0x3 00
+ .bss.pulStack  0x20000220      0x1e0 startup.o
+ .bss           0x20000400        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+ .bss           0x20000400        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ .bss           0x20000400        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+ .bss           0x20000400        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .bss           0x20000400        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+ .bss           0x20000400        0x0 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(cpu.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-atoi.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-memcpy.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strcmp.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strlen.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strncpy.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-ctype_.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-impure.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_udivsi3.o)
+ .bss           0x20000400        0x0 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_dvmd_tls.o)
+ *(COMMON)
+                0x20000400                _ebss = .
+OUTPUT(Luminary_Webinterface.axf elf32-littlearm)
+
+.debug_abbrev   0x00000000      0x4a2
+ .debug_abbrev  0x00000000       0xd9 rit128x96x4.o
+ .debug_abbrev  0x000000d9       0xfe ustdlib.o
+ .debug_abbrev  0x000001d7      0x109 uartstdio.o
+ .debug_abbrev  0x000002e0       0xad simulation.o
+ .debug_abbrev  0x0000038d      0x115 startup.o
+
+.debug_info     0x00000000      0xd28
+ .debug_info    0x00000000      0x457 rit128x96x4.o
+ .debug_info    0x00000457      0x267 ustdlib.o
+ .debug_info    0x000006be      0x337 uartstdio.o
+ .debug_info    0x000009f5      0x1a5 simulation.o
+ .debug_info    0x00000b9a      0x18e startup.o
+
+.debug_line     0x00000000      0x569
+ .debug_line    0x00000000      0x1a8 rit128x96x4.o
+ .debug_line    0x000001a8      0x131 ustdlib.o
+ .debug_line    0x000002d9      0x181 uartstdio.o
+ .debug_line    0x0000045a       0x76 simulation.o
+ .debug_line    0x000004d0       0x99 startup.o
+
+.debug_frame    0x00000000      0x4d0
+ .debug_frame   0x00000000      0x14c rit128x96x4.o
+ .debug_frame   0x0000014c       0x7c ustdlib.o
+ .debug_frame   0x000001c8       0xd8 uartstdio.o
+ .debug_frame   0x000002a0       0x50 simulation.o
+ .debug_frame   0x000002f0       0x84 startup.o
+ .debug_frame   0x00000374       0x40 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-atoi.o)
+ .debug_frame   0x000003b4       0x30 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-memcpy.o)
+ .debug_frame   0x000003e4       0x30 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strcmp.o)
+ .debug_frame   0x00000414       0x20 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strlen.o)
+ .debug_frame   0x00000434       0x28 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strncpy.o)
+ .debug_frame   0x0000045c       0x54 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o)
+ .debug_frame   0x000004b0       0x20 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_udivsi3.o)
+
+.debug_loc      0x00000000      0x4e4
+ .debug_loc     0x00000000      0x21a rit128x96x4.o
+ .debug_loc     0x0000021a       0xbd ustdlib.o
+ .debug_loc     0x000002d7      0x14c uartstdio.o
+ .debug_loc     0x00000423       0x70 simulation.o
+ .debug_loc     0x00000493       0x51 startup.o
+
+.debug_pubnames
+                0x00000000      0x214
+ .debug_pubnames
+                0x00000000      0x10c rit128x96x4.o
+ .debug_pubnames
+                0x0000010c       0x3c ustdlib.o
+ .debug_pubnames
+                0x00000148       0x66 uartstdio.o
+ .debug_pubnames
+                0x000001ae       0x28 simulation.o
+ .debug_pubnames
+                0x000001d6       0x3e startup.o
+
+.debug_aranges  0x00000000      0x150
+ .debug_aranges
+                0x00000000       0x68 rit128x96x4.o
+ .debug_aranges
+                0x00000068       0x30 ustdlib.o
+ .debug_aranges
+                0x00000098       0x48 uartstdio.o
+ .debug_aranges
+                0x000000e0       0x28 simulation.o
+ .debug_aranges
+                0x00000108       0x48 startup.o
+
+.debug_ranges   0x00000000      0x128
+ .debug_ranges  0x00000000       0x60 rit128x96x4.o
+ .debug_ranges  0x00000060       0x28 ustdlib.o
+ .debug_ranges  0x00000088       0x40 uartstdio.o
+ .debug_ranges  0x000000c8       0x20 simulation.o
+ .debug_ranges  0x000000e8       0x40 startup.o
+
+.debug_str      0x00000000      0x496
+ .debug_str     0x00000000      0x238 rit128x96x4.o
+                                0x269 (size before relaxing)
+ .debug_str     0x00000238       0xdc ustdlib.o
+                                0x18a (size before relaxing)
+ .debug_str     0x00000314       0xa0 uartstdio.o
+                                0x1ee (size before relaxing)
+ .debug_str     0x000003b4       0x50 simulation.o
+                                0x123 (size before relaxing)
+ .debug_str     0x00000404       0x92 startup.o
+                                 0xed (size before relaxing)
+
+.comment        0x00000000      0x181
+ .comment       0x00000000       0x2b rit128x96x4.o
+ .comment       0x0000002b       0x2b ustdlib.o
+ .comment       0x00000056       0x2b uartstdio.o
+ .comment       0x00000081       0x2b simulation.o
+ .comment       0x000000ac       0x2b startup.o
+ .comment       0x000000d7       0x22 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+ .comment       0x000000f9       0x22 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ .comment       0x0000011b       0x22 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+ .comment       0x0000013d       0x22 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .comment       0x0000015f       0x22 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+
+.ARM.attributes
+                0x00000000       0x2f
+ .ARM.attributes
+                0x00000000       0x31 rit128x96x4.o
+ .ARM.attributes
+                0x00000031       0x31 ustdlib.o
+ .ARM.attributes
+                0x00000062       0x31 uartstdio.o
+ .ARM.attributes
+                0x00000093       0x31 simulation.o
+ .ARM.attributes
+                0x000000c4       0x31 startup.o
+ .ARM.attributes
+                0x000000f5       0x31 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(gpio.o)
+ .ARM.attributes
+                0x00000126       0x31 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(interrupt.o)
+ .ARM.attributes
+                0x00000157       0x31 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(ssi.o)
+ .ARM.attributes
+                0x00000188       0x31 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(sysctl.o)
+ .ARM.attributes
+                0x000001b9       0x31 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(uart.o)
+ .ARM.attributes
+                0x000001ea       0x21 ../external/lm3s8962/driverlib/arm-none-eabi-gcc/libdriver.a(cpu.o)
+ .ARM.attributes
+                0x0000020b       0x27 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-atoi.o)
+ .ARM.attributes
+                0x00000232       0x27 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-memcpy.o)
+ .ARM.attributes
+                0x00000259       0x27 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strcmp.o)
+ .ARM.attributes
+                0x00000280       0x27 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strlen.o)
+ .ARM.attributes
+                0x000002a7       0x27 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strncpy.o)
+ .ARM.attributes
+                0x000002ce       0x27 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-strtol.o)
+ .ARM.attributes
+                0x000002f5       0x27 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-ctype_.o)
+ .ARM.attributes
+                0x0000031c       0x27 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/../../../../arm-none-eabi/lib/thumb2/libc.a(lib_a-impure.o)
+ .ARM.attributes
+                0x00000343       0x17 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_udivsi3.o)
+ .ARM.attributes
+                0x0000035a       0x17 /opt/arm/arm-2009q1/bin/../lib/gcc/arm-none-eabi/4.3.3/thumb2/libgcc.a(_dvmd_tls.o)
