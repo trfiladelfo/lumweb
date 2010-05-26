@@ -9,7 +9,7 @@
 # Date:	   2009 - 2010
 #
 
-NAME = Luminary_Webinterface
+NAME = Maschinen_Simulation
 
 LUMINARY_DRIVER_DIR=external/lm3s9b96
 RTOS_SOURCE_DIR=external/freeRTOS/Source
@@ -45,7 +45,7 @@ SOURCE=	syscall.c \
 		$(ETHERNET_DIR)/LWIPStack.c \
 		$(ETHERNET_DIR)/ETHIsr.c \
 		$(COMM_DIR)/comTask.c \
-		$(COMM_DIR)/impl/sdCardImpl.c \
+		$(COMM_DIR)/impl/UARTImpl.c \
 		$(UART_DIR)/uartstdio.c \
 		$(RTOS_SOURCE_DIR)/list.c \
 		$(RTOS_SOURCE_DIR)/queue.c \
