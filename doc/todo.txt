@@ -1,27 +1,27 @@
 Tasks:
 	- Maschinenkommunikation							100% - Bis jetzt nur eine Testklasse mit SD-Card implementiert
 	
-	- Touchinterface									 95%
+	- Touchinterface									 100%
 		- Webanbindung								    100% - Manchmal fehler beim Aufbauen - GRLIB Fehler
-		- Objeke bauen und anzeigen 					 90% - Sortieren Nach Typ und config vom Server Nachladen
+		- Objeke bauen und anzeigen 					 100% - Sortieren Nach Typ und config vom Server Nachladen
 		
-	- Webinterface										 99%
-		- SSI											 99% - Overflow bei Langen Zahlen
+	- Webinterface										 100%
+		- SSI											100%
 		- CGI											100%
 		- HTML											100%
 
 	22.2.2010 ##########################################################################
 
 to do:
-	* ParamName overflow
-	* Quellcode Sortieren nach Typen mit Indirekten FunctionCall
-   
+	
 nice to have:
 	* Cursorposition bei der Eingabe auf dem Touch
 	* Fehlerbehandlung HTTP (200)
-	* Step by Step Anleitung für Erstellung einer einfachen Seite.
 	
 done:
+	* Step by Step Anleitung für Erstellung einer einfachen Seite.
+	* ParamName overflow
+	* Quellcode Sortieren nach Typen mit Indirekten FunctionCall
 	* Geänderte Parameter zurücklesen und beim Client anzeigen
 	* Titel Tag und Gruppen (titel, group)  
 	* 3 Typische Seiten (Normal, Absenkbetrieb (Zeit und Temperatur); Heizkuve; Menü)	
@@ -31,22 +31,4 @@ done:
    	* Watchdog
    	* Fehlerbehandlung Tagparsen in getValueForParam im Grafiktask
 	* Logo in der Präsentation
-   	
-   	
-   	Ideensammlung ########################################################################
-   	
-   	Vorschlag CAN Kommunikation:
-
-CAN-Kommunikation: 
-	Bitmuster
-	
-	AAAA AAAD WWWW WWWW WWWW WWWW
-	
-	A ... Adresse / ID
-	D ... Decimal (= 1 Nachkommastelle)
-	W ... Werte (4Byte = Int32)	
-	
-	
-   	
-   	
 
