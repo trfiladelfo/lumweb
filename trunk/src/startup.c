@@ -57,6 +57,8 @@ extern void vPortSVCHandler(void);
 extern void Timer0IntHandler(void);
 extern void ETH0IntHandler(void);
 
+//extern void UARTStdioIntHandler(void);
+
 //*****************************************************************************
 //
 // External declarations for the interrupt handlers used by the application.

@@ -22,25 +22,12 @@
 #include "hw_memmap.h"
 #include "hw_ints.h"
 
-#include "can.h"
 #include "gpio.h"
 #include "sysctl.h"
 #include "interrupt.h"
 
+#include "uart/uartstdio.h"
 
-tCANMsgObject g_MsgObjectRx;
-
-#define BUFFER_LEN 32
-
-char ucBufferIn[BUFFER_LEN];
-
-int ulStatus = 0;
-
-
-void CANIntHandler(void)
-{
-    CANIntClear(CAN0_BASE, ulStatus);
-}
 
 
 void vComTaskInitImpl(void)
@@ -53,7 +40,7 @@ int sendToMachine(char* id, int value)
 {
 	int rc = 0;
 	
-	UARTprintf("!s:%s=%d", id, value);
+	UARTprintf("!s:%s=%d\n", id, value);
 
 	
 	return rc;
@@ -65,9 +52,9 @@ int getFormMachine(char* id)
 	int value = -999; // error code
 	char read_buf[32];
 	
+	//UARTFlushRx();
 	UARTprintf("!g:%s\n", id);
-
-	UARTgets(&read_buf, 32);
+	UARTgets(read_buf, 32);
 
 	UARTprintf("READ from Machine: '%s'\n", read_buf);
 

@@ -56,6 +56,11 @@ extern "C"
 // the transmit and receive buffers respectively.
 //
 //*****************************************************************************
+
+//#ifndef UART_BUFFERED
+//#define UART_BUFFERED 1
+//#endif
+
 #ifdef UART_BUFFERED
 #ifndef UART_RX_BUFFER_SIZE
 #define UART_RX_BUFFER_SIZE     128
