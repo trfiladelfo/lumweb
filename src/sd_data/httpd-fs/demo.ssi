@@ -8,10 +8,14 @@
 		<div id="container">
 			<center>
 			<form method="get" action="set.cgi" name="demo" id="form-demo" onsubmit="return submit_form(this)">
-				<!--#Titel label=Demo --><br/>
+				<!--#Titel label=Temperaturen --><br/>
 				<!--#FloatInputField id=kurve label=Heizkurve max=2 min=1 increment=0.1 --><br/>
-				
-				<!--#SubmitInputField label=Speichern form_id=demo -->  
+				<!--#IntegerInputField id=iinput label=Integer --><br/>
+				<!--#CheckboxInputField id=running label=Eingeschaltet --><br/>
+				<!--#TimeInputField id=night label=Ende --><br/>
+				<!--#Group label=Gruppe --><br/>
+				<!--#Hyperlink label=Hyperlink value=/demo.ssi --><br/>
+				<!--#SubmitInputField label=Speichern form_id=demo --> <br/>
 			</form>
 			</center>
 		</div>
